@@ -286,8 +286,8 @@ The **Mnemosyne Neural OS platform** — including the desktop application, Reso
 ### Maintainer — live GitHub stats (year to date)
 
 <!--PROFILE_STATS_START-->
-![GitHub contributions 2026](https://img.shields.io/static/v1?label=contributions+2026&message=1612&color=22c55e&logo=github&style=flat-square)
-![Commits 2026](https://img.shields.io/static/v1?label=commits+2026&message=1575&color=0369a1&logo=github&style=flat-square)
+![GitHub contributions 2026](https://img.shields.io/static/v1?label=contributions+2026&message=1737&color=22c55e&logo=github&style=flat-square)
+![Commits 2026](https://img.shields.io/static/v1?label=commits+2026&message=1700&color=0369a1&logo=github&style=flat-square)
 *Includes private repos · updated weekly by Actions*
 <!--PROFILE_STATS_END-->
 
