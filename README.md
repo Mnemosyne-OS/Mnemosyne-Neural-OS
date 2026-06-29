@@ -236,8 +236,8 @@ distributed without explicit written permission from XPACEGEMS LLC.
 
 **The Resonance benchmark.** By replacing standard stochastic Vector RAG with a
 deterministic Spine Architecture, Mnemosyne OS reports a large accuracy gain over
-conventional retrieval — audited in the open whitepaper, with JSON telemetry and
-visual proofs.
+conventional retrieval — documented in the open whitepaper, with JSON telemetry and
+methodology you can inspect.
 **[Read the Resonance Whitepaper →](https://mnemosyne-os.gitbook.io/resonance-whitepaper)**
 
 ```
@@ -253,7 +253,7 @@ i18n namespaces       : 62+
 Electron security     : A-grade (all mitigations active)
 ```
 
-The platform has been independently audited through structured stability protocols:
+The platform tracks internal QA and stability milestones (self-assessed, not third-party audits):
 
 | Cert | Description | Status |
 |------|-------------|--------|
