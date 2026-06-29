@@ -13,10 +13,8 @@ Read these documents first. They are not optional context — they are the law:
 | Document | Why It Matters |
 |----------|---------------|
 | [IPC Security Bridge](./doc/architecture/IPC_SECURITY_BRIDGE.md) | Every interaction between main process and renderer goes through this |
-| [Embedding Cascade](./doc/architecture/EMBEDDING_CASCADE.md) | All AI embedding work follows this provider cascade |
-| [FGAC Policy System](./doc/architecture/FGAC_POLICY_SYSTEM.md) | All access control logic follows these rules |
-| [Resonance Query Pipeline](./doc/architecture/RESONANCE_QUERY_PIPELINE.md) | All semantic search goes through this pipeline |
-| [Stability Report](./doc/technical/STABILITY_OPTIMIZATION_REPORT.md) | Current state, metrics, quality baseline |
+| [Nexus Graph Fusion Spec](./doc/technical/NEXUS_GRAPH_FUSION_SPEC.md) | Multi-zone knowledge-graph indexing (read-only, path-secured) |
+| [Privacy & Telemetry](./doc/technical/PRIVACY_TELEMETRY.md) | No telemetry SDK; keys in OS secure storage |
 
 ---
 

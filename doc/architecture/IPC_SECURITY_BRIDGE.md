@@ -38,19 +38,18 @@ Mnemosyne does neither.
 ## Security Configuration (Electron `BrowserWindow`)
 
 ```typescript
-// apps/desktop-dashboard/electron/window-setup.service.ts
 const win = new BrowserWindow({
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
     contextIsolation: true,   // Renderer cannot access Node APIs
-    sandbox: true,            // Chromium sandbox enforced
     nodeIntegration: false,   // No Node.js in renderer — ever
     webSecurity: true,        // Same-origin policy enforced
+    sandbox: true,            // Chromium sandbox for web content
   }
 })
 ```
 
-This configuration is A-grade per Electron Security Checklist. All four mitigations are **simultaneously active** — not just declared.
+`contextIsolation`, `nodeIntegration: false` and `webSecurity` are enforced on **every** window. The Chromium `sandbox` is enabled for web content and relaxed only on the windows that host the local-AI worker threads (`node-llama-cpp`, embeddings) — there it is mitigated by context isolation and Zod-validated IPC.
 
 ---
 

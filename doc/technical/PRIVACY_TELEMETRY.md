@@ -11,7 +11,7 @@
 ## Sensitive data
 
 - **API keys** are stored preferably in the OS secure storage (Electron `safeStorage`: Keychain / DPAPI / libsecret) when available; otherwise in the local config file.
-- See `electron/services/secure-storage.service.ts` and `electron/services/config.service.ts`.
+- Handled by the secure-storage and config services in the main process (`safeStorage`-backed).
 
 ## If things change
 
