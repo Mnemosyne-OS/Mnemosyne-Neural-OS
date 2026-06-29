@@ -1,7 +1,7 @@
 # IPC Security Bridge — Architecture Deep Dive
 
 > **Audience:** Engineers evaluating Mnemosyne's security posture and architectural maturity.  
-> **Status:** Production — Certified operational since 2026-03-24 ([CERT-001](../certifications/CERT-001_MNEMOSYNE_OPERATIONAL_STABILITY.md))
+> **Status:** Production
 
 ---
 

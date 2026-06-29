@@ -26,7 +26,7 @@ SOFTWARE.
 
 This MIT license applies to:
 - The **MnemoForge CLI** source code and documentation (`cli/`)
-- The **Resonance Whitepaper** and all technical documentation (`resonance-whitepaper/`)
+- The **Developer SDK** packages (`packages/`) and examples (`examples/`)
 - The **Neural Coding Handbook** (`handbook/`)
 
 ## Mnemosyne OS Desktop — Proprietary License

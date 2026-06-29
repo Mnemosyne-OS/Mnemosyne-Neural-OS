@@ -96,20 +96,6 @@ Mnemosyne Certified brings:
 
 ---
 
-### Technical Quality Badges
-
-Independently of certification level, modules can earn specific technical validation badges:
-
-| Badge | What it validates |
-|---|---|
-| **CERT-001** | Operational stability — resilience, auto-healing, Panic Lockdown compatibility |
-| **CERT-002** | Sovereignty — FGAC compliance, SCC integration, multi-project isolation |
-| **CERT-003** | Resonance — Neural-Link (libp2p) compatibility, Zero-Raw-Data in transit |
-
-These are technical labels, not tiers. A module can carry one, two, or all three depending on what it does.
-
----
-
 ### Developer Tooling
 
 | Tool | Description |

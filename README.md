@@ -30,7 +30,6 @@
 <!-- Download + MnemoForge badges: auto-updated by `.github/workflows/sync-readme-release-badges.yml` on Release (tags `v…` = OS setup, `cli-…` = CLI). -->
 [![Download Mnemosyne OS](https://img.shields.io/badge/Download-Mnemosyne%20OS%20(v1.1.0--beta.1)%20%C2%B7%20NEW-111827?style=for-the-badge&logo=github)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.1.0-beta.1)
 [![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(Open_Source)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
-[![Resonance Whitepaper](https://img.shields.io/badge/📖_Resonance_Whitepaper-ef4444?style=for-the-badge&logo=gitbook)](https://mnemosyne-os.gitbook.io/resonance-whitepaper)
 
 <br/>
 
@@ -232,13 +231,7 @@ distributed without explicit written permission from XPACEGEMS LLC.
 
 ---
 
-## Proof & quality
-
-**The Resonance benchmark.** By replacing standard stochastic Vector RAG with a
-deterministic Spine Architecture, Mnemosyne OS reports a large accuracy gain over
-conventional retrieval — documented in the open whitepaper, with JSON telemetry and
-methodology you can inspect.
-**[Read the Resonance Whitepaper →](https://mnemosyne-os.gitbook.io/resonance-whitepaper)**
+## Quality
 
 ```
 TypeScript errors     : 0   (strict mode, noUncheckedIndexedAccess)
@@ -252,15 +245,6 @@ Languages             : 3 (EN / FR / ES)
 i18n namespaces       : 62+
 Electron security     : A-grade (all mitigations active)
 ```
-
-The platform tracks internal QA and stability milestones (self-assessed, not third-party audits):
-
-| Cert | Description | Status |
-|------|-------------|--------|
-| [CERT-001](doc/certifications/CERT-001_MNEMOSYNE_OPERATIONAL_STABILITY.md) | Mnemosyne Operational Stability — 7-day gate | ✅ Certified 2026-03-24 |
-| [CERT-002](doc/certifications/CERT-002_SCC_SOVEREIGNTY_COMMAND_CENTER.md) | Sovereignty Command Center | ✅ Certified |
-| [CERT-003](doc/certifications/CERT-003_P2P_SHADOW_SYNC_INTER_CITADEL_RESONANCE.md) | P2P Shadow Sync — Inter-Citadel Resonance | ✅ Certified |
-| [STAB-2026-03-31](doc/STABILITY_OPTIMIZATION_REPORT.md) | Optimization & Stability Report | ✅ Certified 2026-03-31 |
 
 ---
 
