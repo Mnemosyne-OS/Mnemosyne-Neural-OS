@@ -21,7 +21,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
 ![Electron](https://img.shields.io/badge/Electron-39-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
-![Tests](https://img.shields.io/badge/tests-1336%20passed-22c55e)
+![Tests](https://img.shields.io/badge/tests-passing-22c55e)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 [![version](https://img.shields.io/github/v/release/yaka0007/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases)
 
@@ -173,7 +173,7 @@ from, third-party code.
 │  Zustand (state) · i18next (EN/FR/ES) · Tailwind CSS   │
 │                                                         │
 │  30+ lazy-loaded routes · Suspense boundaries          │
-│  62+ i18n namespaces · 88 test files · 1,336 tests     │
+│  62+ i18n namespaces · Vitest + Testing Library suite  │
 └────────────────────┬────────────────────────────────────┘
                      │ Context Bridge · Zod-validated IPC
                      │ contextIsolation: true · nodeIntegration: false
@@ -236,14 +236,11 @@ distributed without explicit written permission from XPACEGEMS LLC.
 ```
 TypeScript errors     : 0   (strict mode, noUncheckedIndexedAccess)
 ESLint warnings       : 0
-Test pass rate        : 100%  (1,336 / 1,336)
-Test files            : 88
+Test suite            : Vitest + Testing Library (green CI)
 CI pipeline           : ✅ Green (typecheck → lint → i18n → tests)
-Source files          : 1,281 TS/TSX files
-Lines of code         : 220,000+ (src) + 43,000+ (electron)
 Languages             : 3 (EN / FR / ES)
 i18n namespaces       : 62+
-Electron security     : A-grade (all mitigations active)
+Electron security     : context isolation · Zod-validated IPC · CSP
 ```
 
 ---
