@@ -2,6 +2,8 @@
   "name": "@mnemosyne_os/public-contracts",
   "version": "0.2.0",
   "description": "Public types, Zod schemas, and interfaces for Mnemosyne OS. No business logic. Official integration surface.",
+  "author": "Tony Trochet",
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

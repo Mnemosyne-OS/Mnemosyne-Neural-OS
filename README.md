@@ -218,8 +218,9 @@ Mnemosyne is built on three principles:
 
 ## Roadmap
 
-- [ ] Public beta release (install-ready `.exe` / `.dmg`)
+- [x] **Public beta — Mnemosyne OS v1.1.0-beta.1** (Soul Studio · Resonance · First Contact)
 - [x] **MnemoForge CLI v1.3.18 published on npm** — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
+- [ ] 🚀 **Mnemosyne OS Infinity Edition — V1 final public launch**
 - [ ] Team features (shared vault, multi-soul coordination)
 - [ ] Self-hosted sync server
 - [ ] Plugin marketplace for community soul profiles
@@ -251,6 +252,33 @@ mnemoforge
 
 ---
 
+## 🧩 Build on Mnemosyne OS — Layer 2 SDK
+
+Mnemosyne OS is not a closed box. A growing **open developer surface** lets you
+build your own apps, agents, and skins that plug into the OS — talking to the
+memory runtime through a **public Gateway contract**, never the Cognitive Core.
+
+```bash
+npm create @mnemosyne/app
+```
+
+| Package | What it does |
+|---|---|
+| [`@mnemosyne_os/sdk`](packages/sdk) | Connect an app to the local AI memory runtime (WebSocket / Electron IPC) |
+| [`@mnemosyne_os/public-contracts`](packages/public-contracts) | Shared types & Zod schemas — the integration contract |
+| [`@mnemosyne_os/design-sdk`](packages/design-sdk) | Build custom UI skins in pure JSON — zero TypeScript |
+| [`@mnemosyne_os/eval-sdk`](packages/eval-sdk) | Evaluate an integration without touching the core |
+| [`@mnemosyne/create-app`](packages/create-app) | Scaffold a new Mnemosyne app in one command |
+
+Start from the [cartridge boilerplate](examples/cartridge-boilerplate) and you're
+talking to the vault — under FGAC, scoped, and consent-gated — in minutes.
+
+**Zero-Trust by design:** every SDK connection authenticates with a short-lived
+JWT, listens on `127.0.0.1` only, and is bounded by the scopes your app manifest
+declares. The OS sees your requests; you never see the core.
+
+---
+
 ## Licensing
 
 This repository follows an **open-core model**:
@@ -258,6 +286,7 @@ This repository follows an **open-core model**:
 | Component | License | Description |
 |-----------|---------|-------------|
 | **MnemoForge CLI** (`/cli`) | [MIT](./cli/LICENSE) | Open source — free to use, modify, and redistribute |
+| **Developer SDK** (`/packages/*`) | [MIT](./LICENSE) | Open — build apps, agents & skins on Mnemosyne OS |
 | **Mnemosyne Neural OS** (platform) | Proprietary | © 2026 XPACEGEMS LLC — All rights reserved |
 
 The **MnemoForge CLI** is MIT licensed. Anyone can use it to scaffold AI-governed modules, fork it, or build on top of it.
