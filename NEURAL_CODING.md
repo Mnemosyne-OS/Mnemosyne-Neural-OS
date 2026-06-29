@@ -57,7 +57,7 @@ This is not a technical skill. It is a communication skill refined by systems th
 
 *Neural Coding equivalent:* "The search system must work fully offline using Ollama if available. If Ollama is not running, cascade through Jina AI, Cohere, Gemini, then OpenAI — in that order. Never fail silently: if no provider works, throw `RESONANCE_NO_EMBEDDING_PROVIDER`. Track which provider was used. If the index was built with a different embedding dimension than the current query, detect the mismatch and fall back to text scoring instead of returning wrong results."
 
-One of these produces a demo. The other produces the [Embedding Cascade](./doc/architecture/EMBEDDING_CASCADE.md).
+One of these produces a demo. The other produces the Embedding Cascade.
 
 ### 2. Architectural Judgment
 

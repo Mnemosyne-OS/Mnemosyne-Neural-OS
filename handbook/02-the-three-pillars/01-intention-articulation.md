@@ -54,7 +54,7 @@ This will produce something. It will probably work in the demo. It will fail in 
 >
 > **Observable result:** running `search('quantum computing')` returns results sorted by semantic relevance, with a snippet showing why the result matched, and metadata including `_dimMismatch: true` if text fallback was used."
 
-This version produces the [Embedding Cascade](../doc/architecture/EMBEDDING_CASCADE.md).
+This version produces the Embedding Cascade.
 
 ---
 

@@ -77,7 +77,7 @@ Honest answer required.
 >
 > This also means conflict rules can be added, modified, or removed in one place without touching the UI."
 
-The Veto, in this case, produces the `checkMixConflicts()` function in the [FGAC Policy System](../doc/architecture/FGAC_POLICY_SYSTEM.md) — a pre-grant rules engine that evaluates classification isolation, mix size limits, and path validity before any grant is applied.
+The Veto, in this case, produces the `checkMixConflicts()` function in the FGAC Policy System — a pre-grant rules engine that evaluates classification isolation, mix size limits, and path validity before any grant is applied.
 
 The first version worked. The vetoed version was right.
 
