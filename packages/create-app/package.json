@@ -1,0 +1,13 @@
+{
+  "name": "@mnemosyne/create-app",
+  "version": "1.0.0",
+  "description": "Scaffold a new Mnemosyne OS app with one command",
+  "keywords": ["mnemosyne", "ai", "sdk", "scaffold", "create-app"],
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-mnemosyne-app": "./bin/create.js",
+    "create-app": "./bin/create.js"
+  },
+  "files": ["bin"]
+}

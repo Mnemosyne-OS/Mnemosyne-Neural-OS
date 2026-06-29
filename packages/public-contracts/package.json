@@ -1,0 +1,31 @@
+{
+  "name": "@mnemosyne_os/public-contracts",
+  "version": "0.2.0",
+  "description": "Public types, Zod schemas, and interfaces for Mnemosyne OS. No business logic. Official integration surface.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./schemas": {
+      "require": "./dist/schemas.js",
+      "import": "./dist/schemas.js",
+      "types": "./dist/schemas.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json -w",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0",
+    "typescript": "^5.5.0"
+  }
+}

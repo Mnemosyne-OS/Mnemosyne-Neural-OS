@@ -1,0 +1,17 @@
+{
+  "name": "@mnemosyne_os/eval-sdk",
+  "version": "0.1.1",
+  "description": "Evaluation SDK for Mnemosyne OS integration. Interact with the Gateway without exposing the Cognitive Core.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "dependencies": {
+    "@mnemosyne_os/public-contracts": "^0.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

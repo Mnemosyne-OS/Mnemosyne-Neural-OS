@@ -1,0 +1,26 @@
+{
+  "$schema": "../../packages/design-sdk/skin-schema.json",
+  "id": "ocean-dark",
+  "name": "OCEAN DARK",
+  "version": "1.0.0",
+  "author": "yaka0007",
+  "description": "Deep ocean blues and teals. Calm and cold. Depth 4000m.",
+  "tokens": {
+    "--accent":             "#00b4d8",
+    "--accent-dim":         "#0077b6",
+    "--accent-glow":        "rgba(0, 180, 216, 0.15)",
+    "--accent-border":      "rgba(0, 180, 216, 0.28)",
+    "--bg-void":            "#020c14",
+    "--bg-surface":         "#041825",
+    "--bg-panel":           "#061c2e",
+    "--bg-card":            "rgba(6, 28, 46, 0.88)",
+    "--bg-hover":           "rgba(0, 180, 216, 0.06)",
+    "--status-active":      "#00b4d8",
+    "--text-primary":       "#caf0f8",
+    "--text-secondary":     "#90e0ef",
+    "--text-muted":         "#2d6a8a",
+    "--text-accent":        "#00b4d8",
+    "--shadow-accent":      "0 0 24px rgba(0, 180, 216, 0.22)",
+    "--border-accent":      "1px solid rgba(0, 180, 216, 0.28)"
+  }
+}

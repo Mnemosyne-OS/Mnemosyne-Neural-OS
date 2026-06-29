@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/yaka0007/Mnemosyne-Neural-OS/packages/design-sdk/skin-schema.json",
+  "title": "MnemosyneSkinManifest",
+  "description": "Schema for a Mnemosyne OS skin manifest JSON file. Defines CSS variable overrides for the UI. See DR-011→014.",
+  "type": "object",
+  "required": ["id", "name", "version", "tokens"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique machine-readable slug. No spaces. Cannot be 'mnemo-default' (reserved).",
+      "pattern": "^[^\\s]+$",
+      "not": { "const": "mnemo-default" },
+      "examples": ["my-cyber-skin", "studio-dark-v2"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable display name shown in the Skin Picker.",
+      "minLength": 1,
+      "examples": ["CYBER DARK", "Studio Purple"]
+    },
+    "version": {
+      "type": "string",
+      "description": "SemVer version string.",
+      "examples": ["1.0.0", "0.2.1"]
+    },
+    "author": {
+      "type": "string",
+      "description": "Optional author name or handle.",
+      "examples": ["yaka0007", "Jane Designer"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description shown in the Skin Picker tooltip.",
+      "examples": ["Dark cyberpunk palette with neon purple accents."]
+    },
+    "preview": {
+      "type": "string",
+      "description": "Optional preview image. Can be a base64 data: URI or relative path.",
+      "examples": ["data:image/png;base64,..."]
+    },
+    "tokens": {
+      "type": "object",
+      "description": "CSS variable overrides. Only variables defined in the SDK allowlist are accepted (DR-012).",
+      "additionalProperties": false,
+      "properties": {
+        "--accent":             { "type": "string", "description": "Primary accent color (hex, rgb, hsl)" },
+        "--accent-dim":         { "type": "string", "description": "Dimmed variant of accent" },
+        "--accent-glow":        { "type": "string", "description": "Glow / shadow accent (rgba recommended)" },
+        "--accent-border":      { "type": "string", "description": "Accent border color (rgba recommended)" },
+        "--bg-void":            { "type": "string", "description": "Deepest background color (app base)" },
+        "--bg-surface":         { "type": "string", "description": "Surface background (panels, cards)" },
+        "--bg-panel":           { "type": "string", "description": "Panel background" },
+        "--bg-card":            { "type": "string", "description": "Card / overlay background" },
+        "--bg-hover":           { "type": "string", "description": "Hover state background" },
+        "--status-active":      { "type": "string", "description": "Active / live indicator color" },
+        "--status-idle":        { "type": "string", "description": "Idle indicator color" },
+        "--status-hibernating": { "type": "string", "description": "Hibernating / sleeping indicator" },
+        "--status-overload":    { "type": "string", "description": "Error / overload indicator" },
+        "--status-warning":     { "type": "string", "description": "Warning indicator" },
+        "--text-primary":       { "type": "string", "description": "Primary text color" },
+        "--text-secondary":     { "type": "string", "description": "Secondary text color" },
+        "--text-muted":         { "type": "string", "description": "Muted / disabled text" },
+        "--text-accent":        { "type": "string", "description": "Accent-colored text" },
+        "--font-mono":          { "type": "string", "description": "Monospace font stack (for code, labels)" },
+        "--font-ui":            { "type": "string", "description": "UI font stack (for readable text)" },
+        "--space-xs":           { "type": "string", "description": "Extra-small spacing (e.g. 4px)" },
+        "--space-sm":           { "type": "string", "description": "Small spacing (e.g. 8px)" },
+        "--space-md":           { "type": "string", "description": "Medium spacing (e.g. 16px)" },
+        "--space-lg":           { "type": "string", "description": "Large spacing (e.g. 24px)" },
+        "--space-xl":           { "type": "string", "description": "Extra-large spacing" },
+        "--space-2xl":          { "type": "string", "description": "2× extra-large spacing" },
+        "--radius-sm":          { "type": "string", "description": "Small border radius (e.g. 4px)" },
+        "--radius-md":          { "type": "string", "description": "Medium border radius" },
+        "--radius-lg":          { "type": "string", "description": "Large border radius" },
+        "--border-accent":      { "type": "string", "description": "Accent border shorthand (e.g. 1px solid rgba(...))" },
+        "--border-subtle":      { "type": "string", "description": "Subtle border shorthand" },
+        "--border-overload":    { "type": "string", "description": "Error/overload border shorthand" },
+        "--shadow-panel":       { "type": "string", "description": "Panel drop shadow" },
+        "--shadow-card":        { "type": "string", "description": "Card drop shadow" },
+        "--shadow-accent":      { "type": "string", "description": "Accent glow shadow" },
+        "--shadow-overload":    { "type": "string", "description": "Overload/error glow shadow" },
+        "--transition-fast":    { "type": "string", "description": "Fast transition (e.g. 0.1s ease)" },
+        "--transition-normal":  { "type": "string", "description": "Normal transition" },
+        "--transition-slow":    { "type": "string", "description": "Slow transition" },
+        "--titlebar-height":    { "type": "string", "description": "⚠ Advanced: titlebar height. Changing this may break layout." },
+        "--panel-left-width":   { "type": "string", "description": "⚠ Advanced: left panel width. Changing this may break layout." },
+        "--panel-right-width":  { "type": "string", "description": "⚠ Advanced: right panel width. Changing this may break layout." }
+      }
+    }
+  }
+}

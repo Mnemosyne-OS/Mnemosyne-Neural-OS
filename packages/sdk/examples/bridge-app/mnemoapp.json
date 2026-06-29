@@ -1,0 +1,15 @@
+{
+  "id": "my-bridge-app",
+  "name": "My Bridge App",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "mnemosyne_sdk": "^2.0.0",
+  "description": "Example Layer 2 app reading cognitive bridges from Mnemosyne OS.",
+  "scopes": [
+    "vault:read:DEV",
+    "bridge:read"
+  ],
+  "vaults": ["DEV"],
+  "intents": ["QUERY", "BRIDGE_READ"],
+  "max_chronicle_size_kb": 64
+}

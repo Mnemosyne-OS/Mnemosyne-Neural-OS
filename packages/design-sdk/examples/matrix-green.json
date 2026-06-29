@@ -1,0 +1,29 @@
+{
+  "$schema": "../../packages/design-sdk/skin-schema.json",
+  "id": "matrix-green",
+  "name": "MATRIX GREEN",
+  "version": "1.0.0",
+  "author": "yaka0007",
+  "description": "Enter the Matrix. Pure neon green on total black. Follow the white rabbit.",
+  "tokens": {
+    "--accent":             "#00ff41",
+    "--accent-dim":         "#00cc33",
+    "--accent-glow":        "rgba(0, 255, 65, 0.18)",
+    "--accent-border":      "rgba(0, 255, 65, 0.30)",
+    "--bg-void":            "#000000",
+    "--bg-surface":         "#020802",
+    "--bg-panel":           "#030d03",
+    "--bg-card":            "rgba(3, 13, 3, 0.90)",
+    "--bg-hover":           "rgba(0, 255, 65, 0.07)",
+    "--status-active":      "#00ff41",
+    "--status-idle":        "#004d12",
+    "--status-warning":     "#aaff00",
+    "--text-primary":       "#b8ffca",
+    "--text-secondary":     "#5dba74",
+    "--text-muted":         "#1a4d25",
+    "--text-accent":        "#00ff41",
+    "--font-mono":          "'Courier New', 'Lucida Console', monospace",
+    "--shadow-accent":      "0 0 30px rgba(0, 255, 65, 0.25)",
+    "--border-accent":      "1px solid rgba(0, 255, 65, 0.30)"
+  }
+}

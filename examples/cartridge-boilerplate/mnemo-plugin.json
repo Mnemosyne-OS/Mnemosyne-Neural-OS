@@ -1,0 +1,20 @@
+{
+  "name": "@mnemosyne-plugins/boilerplate",
+  "displayName": "Cartridge Boilerplate",
+  "version": "1.0.0",
+  "description": "Standard template for Mnemosyne OS Cartridges",
+  "permissions": ["vault:read", "model:infer", "dialog:open"],
+  "updateStrategy": "git",
+  "entrypoints": {
+    "renderer": "http://localhost:5185/index.html"
+  },
+  "widgets": [
+    {
+      "id": "boilerplate-main",
+      "name": "Boilerplate Widget",
+      "route": "index.html",
+      "defaultWidth": 500,
+      "defaultHeight": 600
+    }
+  ]
+}

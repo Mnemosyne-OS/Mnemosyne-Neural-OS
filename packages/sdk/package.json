@@ -1,0 +1,53 @@
+{
+  "name": "@mnemosyne_os/sdk",
+  "version": "1.2.1",
+  "description": "Official SDK for building Layer 2 apps on Mnemosyne OS — connects to the local AI memory runtime via WebSocket or Electron IPC.",
+  "keywords": ["mnemosyne", "ai", "memory", "vector", "sdk", "sovereign", "layer2", "local-ai", "electron"],
+  "author": {
+    "name": "Tony Trochet",
+    "email": "tony@xpacegems.com",
+    "url": "https://www.linkedin.com/in/tony-t-19544650/"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "repository": { "type": "git", "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS.git" },
+  "bugs": { "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS/issues" },
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean --external ws",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch --external ws",
+    "typecheck": "tsc --noEmit",
+    "release": "npm run typecheck && npm run build && npm publish --access public",
+    "release:patch": "npm run typecheck && npm run build && npm version patch --no-git-tag-version && npm publish --access public",
+    "release:minor": "npm run typecheck && npm run build && npm version minor --no-git-tag-version && npm publish --access public",
+    "release:major": "npm run typecheck && npm run build && npm version major --no-git-tag-version && npm publish --access public"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "optionalDependencies": {
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.5.10",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  },
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

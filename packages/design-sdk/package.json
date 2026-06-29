@@ -1,0 +1,40 @@
+{
+  "name": "@mnemosyne_os/design-sdk",
+  "version": "0.1.0",
+  "description": "Mnemosyne Design SDK — Create custom UI skins for Mnemosyne OS using only JSON. Zero TypeScript required.",
+  "keywords": ["mnemosyne", "design-sdk", "skin", "theme", "css-variables", "layer2"],
+  "author": {
+    "name": "Tony Trochet",
+    "email": "tony@xpacegems.com",
+    "url": "https://github.com/yaka0007"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "repository": { "type": "git", "url": "git+https://github.com/yaka0007/Mnemosyne-Neural-OS.git" },
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./schema": "./skin-schema.json"
+  },
+  "files": ["dist", "skin-schema.json", "README.md"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "validate": "node ../../scripts/skin-validate.mjs",
+    "release": "npm run typecheck && npm run build && npm publish --access public"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": { "node": ">=18.0.0" }
+}

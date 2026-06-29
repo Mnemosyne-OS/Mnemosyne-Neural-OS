@@ -1,0 +1,30 @@
+{
+  "$schema": "../../packages/design-sdk/skin-schema.json",
+  "id": "retrowave",
+  "name": "RETROWAVE",
+  "version": "1.0.0",
+  "author": "yaka0007",
+  "description": "Synthwave sunset. Hot pink + cyan neon on deep purple void. 80s Miami forever.",
+  "tokens": {
+    "--accent":             "#ff2d78",
+    "--accent-dim":         "#cc1d5d",
+    "--accent-glow":        "rgba(255, 45, 120, 0.18)",
+    "--accent-border":      "rgba(255, 45, 120, 0.32)",
+    "--bg-void":            "#0a0014",
+    "--bg-surface":         "#120022",
+    "--bg-panel":           "#18002e",
+    "--bg-card":            "rgba(24, 0, 46, 0.88)",
+    "--bg-hover":           "rgba(255, 45, 120, 0.07)",
+    "--status-active":      "#ff2d78",
+    "--status-idle":        "#4d0066",
+    "--status-warning":     "#ffae00",
+    "--status-overload":    "#ff4400",
+    "--text-primary":       "#f0d0ff",
+    "--text-secondary":     "#cc88ff",
+    "--text-muted":         "#5a2070",
+    "--text-accent":        "#ff2d78",
+    "--shadow-accent":      "0 0 30px rgba(255, 45, 120, 0.28)",
+    "--shadow-panel":       "0 8px 32px rgba(0,0,0,0.8), 0 0 2px rgba(255,45,120,0.1)",
+    "--border-accent":      "1px solid rgba(255, 45, 120, 0.35)"
+  }
+}
