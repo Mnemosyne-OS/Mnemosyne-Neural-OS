@@ -12,7 +12,9 @@
 | MnemoForge CLI v1.0.0 published | Apr 2026 | [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) on npm |
 | Resonance Engine Whitepaper | Apr 2026 | 3-layer cognitive memory architecture documented |
 | SECURITY.md (A-grade) | Apr 2026 | SLA, architecture table, audit results |
-| Open-core licensing model | Apr 2026 | CLI = MIT · Platform = Proprietary |
+| Public beta — Mnemosyne OS v1.1.0-beta.1 | Jun 2026 | Soul Studio · Resonance · First Contact |
+| Layer-2 Developer SDK | Jun 2026 | `@mnemosyne_os/sdk` · `design-sdk` · `eval-sdk` · `public-contracts` |
+| Open-core licensing model | Apr 2026 | CLI + Developer SDK = MIT · Platform = Proprietary |
 | NexusGraph (interactive memory graph) | Q1 2026 | Per-document AI memory governance |
 | Multi-Resonance (project isolation) | Q1 2026 | Per-project RESONANCE_INDEX + bridges |
 | Resonance Bridges | Q1 2026 | Instant cross-project memory merge |
@@ -27,7 +29,7 @@
 
 | Milestone | Status | Notes |
 |-----------|--------|-------|
-| Public beta installer (`.exe` / `.dmg`) | 🔄 In progress | Download-and-run, no CLI needed |
+| Mnemosyne OS Infinity Edition — V1 final launch | 🔄 In progress | Flagship desktop app, public release |
 | MnemoForge CLI v1.1 — `mnemoforge add` command | 🔄 Planned | Add components to existing modules |
 | Resonance Engine whitepaper v2 | 📝 Planned | Temporal weighting + confidence decay |
 | GitHub Discussions — community feedback | 🔄 Active | [Join the conversation](../../discussions) |
@@ -78,4 +80,4 @@ The CLI is the open-source entry point to the Mnemosyne ecosystem.
 
 ---
 
-*Last updated: April 2026 · XPACEGEMS LLC*
+*Last updated: June 2026 · XPACEGEMS LLC*

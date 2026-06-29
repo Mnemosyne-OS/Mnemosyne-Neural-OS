@@ -175,8 +175,8 @@ from, third-party code.
 │  30+ lazy-loaded routes · Suspense boundaries          │
 │  62+ i18n namespaces · 88 test files · 1,336 tests     │
 └────────────────────┬────────────────────────────────────┘
-                     │ Context Bridge (379 methods)
-                     │ contextIsolation: true · sandbox: true
+                     │ Context Bridge · Zod-validated IPC
+                     │ contextIsolation: true · nodeIntegration: false
 ┌────────────────────▼────────────────────────────────────┐
 │                    MAIN PROCESS (Electron)               │
 │  IPC Registry · Modular services architecture           │
@@ -189,9 +189,9 @@ from, third-party code.
 ```
 
 **Security-first Electron architecture**
-- `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`
-- 379 explicitly declared IPC methods via Context Bridge
-- Zod-validated IPC handlers with audit logging
+- `contextIsolation: true`, `nodeIntegration: false` on every window
+- `sandbox: true` for web content — relaxed only for the local-AI worker threads, mitigated by context isolation + Zod-validated IPC
+- Explicitly declared IPC methods via Context Bridge, validated with Zod + audit logging
 - Strict Content Security Policy
 
 **Sovereignty enforced in code**
