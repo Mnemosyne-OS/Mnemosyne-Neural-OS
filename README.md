@@ -205,7 +205,7 @@ from, third-party code.
 - **Frontend:** React 18, TypeScript (strict mode), Vite
 - **State:** Zustand with `useShallow` atomic selectors
 - **AI Integration:** Claude API, Ollama (local LLMs), OpenAI-compatible endpoints
-- **Testing:** Vitest + Testing Library — 1,336 tests, 100% pass rate
+- **Testing:** Vitest + Testing Library — green CI gate
 - **CI/CD:** GitHub Actions — typecheck + lint + i18n validation + tests
 
 ---
