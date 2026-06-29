@@ -10,3 +10,16 @@ Thumbs.db
 
 # Marketing drafts (private)
 .marketing/
+
+# Dependencies & build artifacts
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+.turbo/
+
+# Logs & env
+*.log
+.env
+.env.*
+!.env.example

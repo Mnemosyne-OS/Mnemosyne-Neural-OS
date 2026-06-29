@@ -1,0 +1,17 @@
+{
+  "name": "mnemosyne-os-ecosystem",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Mnemosyne OS — open developer ecosystem (SDK, CLI, examples)",
+  "license": "MIT",
+  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaka0007/Mnemosyne-Neural-OS.git"
+  },
+  "packageManager": "pnpm@10.25.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "build:packages": "pnpm -r --filter \"./packages/*\" build"
+  }
+}
