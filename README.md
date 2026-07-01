@@ -132,29 +132,29 @@ sovereignty over what executes, what's stored, and what syncs.
 <br/>
 
 <div align="center">
-  <img src="assets/nexus-graph.png" alt="Nexus Graph: Active Resonance" width="800" />
+  <img src="assets/neural-map.jpg" alt="Neural Map — topology-driven memory graph" width="820" />
   <br/>
-  <em>Nexus Graph: Semantic memory vector visualization of your local knowledge vault</em>
+  <em>Neural Map: your vault rendered as a living mathematical topology — Enneper surface, Klein bottle, Lorenz attractor, Clifford torus… the equation <strong>is</strong> the shape</em>
   <br/><br/><br/>
 
-  <img src="assets/soulstudio.png" alt="Soul Studio Welcome" width="800" />
+  <img src="assets/neural-map-torus.jpg" alt="Neural Map — torus topology" width="820" />
   <br/>
-  <em>Soul Studio: The genesis terminal for building AI identities</em>
+  <em>Every node is a memory, every edge a resonance — here the same graph wound onto a torus, tuned live</em>
   <br/><br/><br/>
 
-  <img src="assets/genesis-protocol.png" alt="Genesis Protocol" width="800" />
+  <img src="assets/ai-configuration.jpg" alt="AI Configuration — multi-model, local or cloud" width="820" />
   <br/>
-  <em>Genesis Protocol: Configuration of the Soul's temporal anchor and Astral Birth Certificate</em>
+  <em>Multi-model by design: run memory 100% local, cloud, or hybrid — Gemini, Claude, OpenAI, Groq, Mistral, DeepSeek, Ollama</em>
   <br/><br/><br/>
 
-  <img src="assets/personality-forge.png" alt="MnemoDex Ecosystem" width="800" />
+  <img src="assets/mnemohub-store.jpg" alt="MnemoHub — build, sign and publish a cartridge" width="820" />
   <br/>
-  <em>MnemoDex: Universal index of MBTI AI Archetypes ready for immediate initialization</em>
+  <em>MnemoHub: build a cartridge on the SDK, sign it with your sovereign wallet, and publish it to the ecosystem</em>
   <br/><br/><br/>
 
-  <img src="assets/mnemohub.png" alt="MnemoHub Platform" width="800" />
+  <img src="assets/sovereign-notes.jpg" alt="Sovereign Notes" width="820" />
   <br/>
-  <em>MnemoHub: Centralized ecosystem for installing modular AI applications and widgets</em>
+  <em>Sovereign Notes: write in a local, classified, resonance-aware vault — every note feeds the memory</em>
   <br/><br/>
 </div>
 
