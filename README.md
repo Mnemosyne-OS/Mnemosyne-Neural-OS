@@ -130,6 +130,8 @@ Not one big "AI" black box — several independent, purpose-built engines:
 > 📄 **Deep dive:** [**The Resonance Engine** — technical whitepaper](doc/RESONANCE_ENGINE_WHITEPAPER.md).
 > The full architecture behind these engines: why memory should *resonate* rather than be looked
 > up, how consolidation and adaptive selection work, and the LongMemEval results — kept current as the engine ships.
+>
+> 📚 **Full documentation** — concepts, architecture, governance, and design decisions live in [`doc/`](doc/).
 
 ### How memory works
 
@@ -460,7 +462,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 - [x] 🧩 **MnemoHub** — signed cartridge marketplace, community submission pipeline, live publishing
 - [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
-- [x] ⚡ **MnemoForge CLI v1.3.18** on npm — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
+- [x] ⚡ **MnemoForge CLI v1.4.7** on npm — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
 - [x] 🌱 **Public beta — v1.1.0-beta.1** — where it started (personality-profile builder, semantic memory graph, first-contact onboarding)
 
 ### What's next
