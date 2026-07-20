@@ -115,7 +115,7 @@ mnemoforge
 
 | Feature | Command |
 |---|---|
-| 🪬 Soul Protocol — inject behavioral archetypes into your IDE | `mnemoforge soul inject` |
+| 🪬 Soul Protocol — a persistent personality profile for your agent (tone, values, behavioral rules as a structured system-prompt), injected straight into your IDE | `mnemoforge soul inject` |
 | 📋 Canvas Rules — living ruleset persisted across sessions | vault-based, auto-applied |
 | 🗂️ Chronicle System — structured AI memory files | `mnemoforge chronicle write` |
 | 🔌 MCP Server — expose vault tools to any agent | `mnemoforge serve` |
@@ -143,7 +143,7 @@ executes, what's stored, and what syncs.
 
 | Module | Description |
 |--------|-------------|
-| 🧭 **Neural Map** | Your memory rendered as a living mathematical topology — nodes are memories, edges are resonance, tuned live |
+| 🧭 **Neural Map** | Your memory rendered as a living mathematical topology — nodes are memories, edges are semantic similarity between them, tuned live |
 | 🧩 **MnemoHub** | A store of cartridges (mini-apps) whose catalog is signed by a sovereign wallet and verified client-side before anything renders |
 | 💤 **Dream State** | A consolidation engine that replays and links memories during idle phases |
 | 🗄️ **Vaults** | Memory partitioned by life domain, each with its own protection level and consent boundary |
@@ -226,7 +226,7 @@ Full methodology, root-cause analysis, and all 16 raw run logs are public:
 
   <img src="assets/neural-map-torus.jpg" alt="Neural Map — torus topology" width="820" />
   <br/>
-  <em>Every node is a memory, every edge a resonance — here the same graph wound onto a torus, tuned live</em>
+  <em>Every node is a memory, every edge a measured semantic link — here the same graph wound onto a torus, tuned live</em>
   <br/><br/><br/>
 
   <img src="assets/ai-configuration.jpg" alt="AI Configuration — multi-model, local or cloud" width="820" />
@@ -241,7 +241,7 @@ Full methodology, root-cause analysis, and all 16 raw run logs are public:
 
   <img src="assets/sovereign-notes.jpg" alt="Sovereign Notes" width="820" />
   <br/>
-  <em>Sovereign Notes: write in a local, classified, resonance-aware vault — every note feeds the memory</em>
+  <em>Sovereign Notes: write in a local, classified vault — every note is embedded and retrievable, feeding the same memory your agent draws on</em>
   <br/><br/>
 </div>
 
