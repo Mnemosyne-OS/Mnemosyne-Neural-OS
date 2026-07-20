@@ -152,8 +152,8 @@ jobs:
 
             const block = [
               '<!--PROFILE_STATS_START-->',
-              `![GitHub contributions ${year}](${badgeUrl('contributions ' + year, totalContrib, '22c55e')})`,
-              `![Commits ${year}](${badgeUrl('commits ' + year, commitContrib, '0369a1')})`,
+              `![GitHub contributions ${year}](${badgeUrl('contributions ' + year, totalContrib, '22c55e')}) ![Commits ${year}](${badgeUrl('commits ' + year, commitContrib, '0369a1')})`,
+              '',
               footnote,
               '<!--PROFILE_STATS_END-->',
             ].join('\n');
