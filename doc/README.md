@@ -9,6 +9,7 @@ The map of everything written about Mnemosyne. New here? Start with **Concepts**
 
 | Doc | What it covers |
 |---|---|
+| 💡 [Why Mnemosyne exists](WHY.md) | **The relationship layer** — the thesis behind the whole project: everyone builds the intelligence, Mnemosyne builds the relationship |
 | 📖 [Concepts & Glossary](CONCEPTS.md) | The mental model (Vault → Chronicle → Spine → Resonance → governance) and every product/architecture term defined |
 | 🏗️ [Architecture Overview](ARCHITECTURE.md) | The process model, the engines, and the life of a memory from ingestion to answer |
 
