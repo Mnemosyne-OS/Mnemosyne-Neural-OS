@@ -25,15 +25,14 @@ The map of everything written about Mnemosyne. New here? Start with **Concepts**
 |---|---|
 | 🛡️ [Governance & Sovereignty](GOVERNANCE.md) | What the human controls, what agents are allowed to do, and what never leaves your machine |
 | 🔐 [Security Policy](../SECURITY.md) | Reporting a vulnerability, the hardening table, supported versions |
-| 🔗 [IPC Security Bridge](architecture/IPC_SECURITY_BRIDGE.md) | The Zod-validated main ↔ renderer boundary, for engineers evaluating the security posture |
-| 🕵️ [Privacy & Telemetry](technical/PRIVACY_TELEMETRY.md) | The no-telemetry-without-consent stance |
+| 🔗 [IPC Security Bridge](IPC_SECURITY_BRIDGE.md) | The Zod-validated main ↔ renderer boundary, for engineers evaluating the security posture |
+| 🕵️ [Privacy & Telemetry](PRIVACY_TELEMETRY.md) | The no-telemetry-without-consent stance |
 
 ## The thinking behind it
 
 | Doc | What it covers |
 |---|---|
 | 🧭 [Design Decisions](DESIGN_DECISIONS.md) | *Why* it's built this way — open-core, local-first, augment-never-replace, fail-loud, and more |
-| 🌐 [Neural Fusion Spec](technical/NEXUS_GRAPH_FUSION_SPEC.md) | Multi-zone knowledge-graph indexing (technical spec) |
 
 ## Build on it
 

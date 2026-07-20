@@ -46,7 +46,7 @@ crosses through a validated bridge.
 ```
 
 Security posture, at a glance (details in [GOVERNANCE.md](GOVERNANCE.md) and the
-[IPC Security Bridge](architecture/IPC_SECURITY_BRIDGE.md)):
+[IPC Security Bridge](IPC_SECURITY_BRIDGE.md)):
 
 - `contextIsolation: true`, `nodeIntegration: false` on every window; `sandbox` is on for
   web content and relaxed only for local-AI worker windows, compensated by context
@@ -123,4 +123,4 @@ See the [README](../README.md#build-on-mnemosyne-os) and the
 - [The Resonance Engine whitepaper](RESONANCE_ENGINE_WHITEPAPER.md)
 - [Governance & Sovereignty](GOVERNANCE.md)
 - [Design decisions](DESIGN_DECISIONS.md)
-- [IPC Security Bridge](architecture/IPC_SECURITY_BRIDGE.md)
+- [IPC Security Bridge](IPC_SECURITY_BRIDGE.md)

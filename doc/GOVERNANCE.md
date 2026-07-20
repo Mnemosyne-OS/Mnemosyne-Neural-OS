@@ -94,6 +94,6 @@ to breach.
 ## 5. Where to go deeper
 
 - [Security Policy](../SECURITY.md) — reporting, hardening table, supported versions
-- [IPC Security Bridge](architecture/IPC_SECURITY_BRIDGE.md) — the validated main↔renderer boundary
-- [Privacy & telemetry](technical/PRIVACY_TELEMETRY.md) — the no-telemetry stance
+- [IPC Security Bridge](IPC_SECURITY_BRIDGE.md) — the validated main↔renderer boundary
+- [Privacy & telemetry](PRIVACY_TELEMETRY.md) — the no-telemetry stance
 - [Design decisions](DESIGN_DECISIONS.md) — *why* sovereignty is enforced in code, not policy
