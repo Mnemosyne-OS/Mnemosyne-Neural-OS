@@ -212,7 +212,7 @@ Two ways in:
 - 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity).
 
 ```bash
-npm create @mnemosyne/app
+npm create @mnemosyne_os/app
 ```
 
 | Package | What it does |
@@ -220,8 +220,7 @@ npm create @mnemosyne/app
 | [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Connect an app to the local AI memory runtime (WebSocket / Electron IPC) |
 | [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | Shared types & Zod schemas — the integration contract |
 | [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | Build custom UI skins in pure JSON — zero TypeScript |
-| [`@mnemosyne_os/eval-sdk`](packages/eval-sdk) | Evaluate an integration without touching the core |
-| [`@mnemosyne/create-app`](packages/create-app) | Scaffold a new Mnemosyne app in one command |
+| [`@mnemosyne_os/create-app`](packages/create-app) | Scaffold a new Mnemosyne app in one command |
 
 Start from the [cartridge boilerplate](examples/cartridge-boilerplate) and you're
 ingesting and querying the vault — under FGAC, scoped, and consent-gated — in minutes.

@@ -26,7 +26,7 @@ and exposes a WebSocket API for Layer 2 apps to tap into its cognitive engine.
 | [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | latest | MCP server — plug Claude / Cursor / any MCP agent into your vault |
 | [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | `1.4.7` | CLI — scaffold, chronicles, MCP server |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | `0.0.1` | P2P — multi-agent synchronization |
-| **`@mnemosyne_os/sdk`** | **`1.2.1`** | **SDK — build Layer 2 apps** |
+| **`@mnemosyne_os/sdk`** | **`1.3.0`** | **SDK — build Layer 2 apps** |
 
 ---
 
@@ -236,12 +236,14 @@ type MnemoScope =
   | 'vault:read:SOCIAL'   | 'vault:write:SOCIAL'
   | 'vault:read:PERSONAL' | 'vault:write:PERSONAL'
   | 'vault:read:FINANCE'  | 'vault:write:FINANCE'
-  | 'vault:read:COOK'     | 'vault:write:COOK'
+  | 'vault:read:RESEARCH' | 'vault:write:RESEARCH'
+  | 'vault:read:CUSTOM'   | 'vault:write:CUSTOM'   // wildcard for any user-created vault
   | 'share:request'       | 'share:grant'
   | 'monorepo:read'        // git log + readFile
   | 'agents:read'          // list connected agents
-  | 'nft:validate'         // MnemoStore NFT licence validation
   | 'neural:graph:read'    // NeuralGraph access
+  | 'bridge:read'          // Perpetual Memory Bridges (getBridgeHistory / computeResonance)
+  | 'nft:validate'         // reserved for MnemoStore NFT gating (roadmap — see NFT Licence below)
   | 'llm:query';           // Direct LLM queries (premium)
 ```
 
@@ -255,6 +257,7 @@ import { MNEMOSYNE_METHODS } from '@mnemosyne_os/sdk';
 MNEMOSYNE_METHODS.REGISTER         // 'sdk.register'
 MNEMOSYNE_METHODS.INGEST           // 'sdk.ingest'
 MNEMOSYNE_METHODS.QUERY            // 'sdk.query'
+MNEMOSYNE_METHODS.ASK              // 'sdk.ask'
 MNEMOSYNE_METHODS.RESONANCES_LIST  // 'sdk.resonances.list'
 MNEMOSYNE_METHODS.UPDATE_POSITION  // 'sdk.resonance.updatePosition'
 MNEMOSYNE_METHODS.GIT_LOG          // 'sdk.git.log'
@@ -296,26 +299,45 @@ More event types coming in future releases (agent:connected, tamper-alert, nft-r
 
 ---
 
-## NFT Licence (MnemoStore)
+## NFT Licence (MnemoStore) — roadmap
 
-Apps distributed on MnemoStore can gate access with NFT licences:
+> **Not yet available.** The `nft:validate` scope and the `NFTLicenseParams` /
+> `NFTValidation` types are reserved for on-chain licence gating, but no client
+> method (`validateNFTLicense`) is implemented and the OS does not yet answer
+> `sdk.nft.validate`. Declaring the scope is harmless; do not build against it
+> until this section documents a live API.
 
-```json
-// app.manifest.json
-{ "scopes": ["nft:validate"] }
-```
-
-```typescript
-// Via MnemoClient (Node.js)
-const validation = await client.validateNFTLicense('0xYourWalletAddress');
-if (!validation.valid) process.exit(1);
-```
-
-> Validation is done on-chain by Mnemosyne OS — cached 5 min to avoid blockchain spam.
+When shipped, apps distributed on MnemoStore will be able to gate access with an
+NFT licence by declaring `"scopes": ["nft:validate"]` and calling a validation
+method that resolves on-chain (cached to avoid RPC spam).
 
 ---
 
 ## Changelog
+
+### 1.3.0 — Ask Mnemosyne
+
+- **NEW** `ask(question, vault?)` on both `MnemoClientBrowser` and `MnemoClient`,
+  and `MNEMOSYNE_METHODS.ASK` (`sdk.ask`). Runs the full RAG+LLM pipeline and
+  returns a synthesized prose answer plus its source chronicles (`AskResult`),
+  vs `query()` which returns raw chronicles. Same `vault:read:*` scope + `QUERY`
+  intent as `query` — no manifest change needed. Slower (runs the LLM).
+- No breaking changes.
+
+### 1.2.1 — Bridge API + republish
+
+- **NEW** `bridge:read` scope, plus `getBridgeHistory()` and `computeResonance()`
+  on `MnemoClientBrowser` (Perpetual Memory Bridges, Phase 58–59). `computeResonance`
+  embeds the input text and ranks by cosine vs. stored bridge vectors, falling back
+  to a keyword heuristic when the embedding model is offline.
+- Republish of the 1.2.0 line; no breaking changes.
+
+> **On the "v2.0" label:** earlier drafts branded the Bridge API as "v2.0.0 /
+> Phase 59" and floated an `mnemoapp.json` manifest with an `api_version` field.
+> **That was never shipped.** The manifest is still `app.manifest.json` with
+> `mnemosyne_sdk`, `vaults`, and `intents` (the source of truth is the Zod
+> validator in `src/manifest.ts`). `getBridgeSessions()` was likewise never
+> implemented. There is no `2.0.0` on npm — the current version line is `1.3.x`.
 
 ### v1.2.0 — 2026-06-07 — Semantic Bridge
 
@@ -327,16 +349,13 @@ if (!validation.valid) process.exit(1);
 - **FIX** Bundle no longer crashes under pure Node ESM. v1.1.0 inlined `ws` and produced a tsup `__require2('events')` shim that threw `Dynamic require of "events" is not supported` at module load — making `npm install @mnemosyne_os/sdk` followed by `import` from any plain Node script crash on startup. `ws` is now an `optionalDependency`, marked external in the build, so the SDK loads cleanly in any ESM context (MCP servers, CLIs, Node services).
 - **COMPAT** Fully backward-compatible: existing `query(text, options)` calls without the new fields behave exactly as in 1.1.0.
 
-### v2.0.0 — 2026-05-01 — Phase 59 Active Cognitive Filter
+### Phase 58–59 (Bridge API — folded into 1.2.1, no separate release)
 
-- **NEW** `bridge:read` scope — unlocks `computeResonance`, `getBridgeHistory`, `getBridgeSessions`
-- **UPGRADE** `computeResonance` now uses **true vector embedding** (Phase 59):
-  embed input text → cosine vs. stored bridge spine vectors → real similarity scores.
-  Falls back to keyword heuristic (Phase 58) when embedding model is offline.
-- **NEW** `docs/BRIDGE_API.md` — full Bridge API reference
-- **NEW** `docs/MANIFEST.md` — `mnemoapp.json` manifest specification
-- **NEW** `mnemoapp.json` replaces `app.manifest.json` (old format still accepted, deprecated)
-- **NEW** `api_version: "2.0"` field in manifest (replaces `mnemosyne_sdk`)
+- `bridge:read` scope unlocks `computeResonance` and `getBridgeHistory` on
+  `MnemoClientBrowser`.
+- `computeResonance` uses true vector embedding (embed input → cosine vs. stored
+  bridge spine vectors), falling back to a keyword heuristic when the embedding
+  model is offline.
 
 ### v1.1.0 — 2026-04-27
 - **NEW** `MnemoClientBrowser` — zero-dependency browser client (native WebSocket API)

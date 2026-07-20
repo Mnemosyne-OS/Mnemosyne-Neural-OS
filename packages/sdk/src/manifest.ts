@@ -1,14 +1,14 @@
 /**
  * @mnemosyne/sdk — AppManifest Validator
  *
- * Valide le fichier app.manifest.json avant toute connexion.
- * Utilise Zod pour un parsing strict — aucun champ inconnu passé au serveur.
+ * Validates the app.manifest.json file before any connection.
+ * Uses Zod for strict parsing — no unknown field is passed to the server.
  *
- * ## Règle Zero-Trust (MN-004)
- * Le GRANT utilisateur est TOUJOURS requis si l'app déclare un scope vault:*.
- * Ce n'est PAS un flag que l'app contrôle — c'est l'OS qui décide en lisant les scopes.
- * Un manifest avec `requires_grant: false` mais `scopes: ['vault:read:DEV']` DOIT
- * quand même passer par le popup de consentement. L'OS appelle `requiresOsGrant(manifest)`.
+ * ## Zero-Trust Rule (MN-004)
+ * The user GRANT is ALWAYS required if the app declares a vault:* scope.
+ * This is NOT a flag the app controls — the OS decides by reading the scopes.
+ * A manifest with `requires_grant: false` but `scopes: ['vault:read:DEV']` MUST
+ * still go through the consent popup. The OS calls `requiresOsGrant(manifest)`.
  *
  * [SDK][ZERO-TRUST][AUDIT-TRAIL][MN-004]
  */
@@ -18,7 +18,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { AppManifest } from './types.js';
 
-// ── Schéma Zod ────────────────────────────────────────────────────────────────
+// ── Zod Schema ────────────────────────────────────────────────────────────────
 
 // ── Scopes ──────────────────────────────────────────────────────────────────
 
@@ -41,8 +41,8 @@ const VALID_SCOPES = [
 ] as const;
 
 /**
- * Scopes qui requièrent TOUJOURS un GRANT utilisateur côté OS.
- * Indépendant de tout flag déclaré par l'app.
+ * Scopes that ALWAYS require a user GRANT on the OS side.
+ * Independent of any flag declared by the app.
  * [MN-004]
  */
 export const GRANT_REQUIRED_SCOPE_PREFIXES = [
@@ -84,20 +84,20 @@ export const AppManifestSchema = z.object({
   intents: z.array(z.enum(VALID_INTENTS)).min(1),
   max_chronicle_size_kb: z.number().int().min(1).max(1024).optional().default(64),
   /**
-   * @deprecated Remplacé par requiresOsGrant() — ce flag n'a aucun effet sur la sécurité.
-   * L'OS décide toujours en fonction des scopes déclarés (MN-004).
+   * @deprecated Replaced by requiresOsGrant() — this flag has no effect on security.
+   * The OS always decides based on the declared scopes (MN-004).
    */
   requires_consent: z.boolean().optional().default(false),
   description: z.string().max(256).optional(),
 });
-// Note : pas de .strict() — le MnemoStore manifest peut avoir des champs additionnels
-// (uiMode, uiEntryPoint, etc.). Le SDK valide uniquement ses propres champs.
+// Note: no .strict() — the MnemoStore manifest may have additional fields
+// (uiMode, uiEntryPoint, etc.). The SDK validates only its own fields.
 
-// ── Fonctions utilitaires ─────────────────────────────────────────────────────
+// ── Utility functions ─────────────────────────────────────────────────────────
 
 /**
- * Charge et valide un manifest depuis le filesystem.
- * @throws {Error} si le manifest est invalide ou introuvable
+ * Loads and validates a manifest from the filesystem.
+ * @throws {Error} if the manifest is invalid or not found
  */
 export function loadManifest(pathOrManifest: string | AppManifest): AppManifest {
   if (typeof pathOrManifest === 'string') {
@@ -114,8 +114,8 @@ export function loadManifest(pathOrManifest: string | AppManifest): AppManifest 
 }
 
 /**
- * Parse et valide un objet manifest brut.
- * @throws {Error} avec détail des violations Zod
+ * Parses and validates a raw manifest object.
+ * @throws {Error} with detail of the Zod violations
  */
 export function parseManifest(raw: unknown): AppManifest {
   const result = AppManifestSchema.safeParse(raw);
@@ -153,7 +153,7 @@ export function assertScope(manifest: AppManifest, scope: (typeof VALID_SCOPES)[
 }
 
 /**
- * Vérifie qu'un vault est accessible selon le manifest.
+ * Verifies that a vault is accessible according to the manifest.
  */
 export function assertVault(manifest: AppManifest, vault: string): void {
   if (!(manifest.vaults as string[]).includes(vault)) {
@@ -164,19 +164,19 @@ export function assertVault(manifest: AppManifest, vault: string): void {
 }
 
 /**
- * [MN-004] Détermine si l'OS DOIT afficher un popup de consentement utilisateur
- * AVANT d'autoriser cette app à s'exécuter.
+ * [MN-004] Determines whether the OS MUST show a user consent popup
+ * BEFORE allowing this app to run.
  *
- * La décision est basée UNIQUEMENT sur les scopes déclarés dans le manifest.
- * Elle est imperméable à tout flag (`requires_grant`, `requires_consent`) que
- * l'app pourrait contrôler elle-même.
+ * The decision is based ONLY on the scopes declared in the manifest.
+ * It is impervious to any flag (`requires_grant`, `requires_consent`) that
+ * the app could control itself.
  *
- * Règle : tout scope avec préfixe `vault:*`, `share:*` ou `llm:query` → GRANT requis.
+ * Rule: any scope with prefix `vault:*`, `share:*` or `llm:query` → GRANT required.
  *
  * @example
  * ```typescript
  * import { requiresOsGrant } from '@mnemosyne_os/sdk';
- * // Dans LAUNCH_LAYER2_APP (main process) :
+ * // In LAUNCH_LAYER2_APP (main process):
  * if (requiresOsGrant(appManifest)) {
  *   const granted = await showPermissionPrompt(appManifest);
  *   if (!granted) return { success: false, error: 'GRANT_DENIED' };

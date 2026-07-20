@@ -1,7 +1,15 @@
-# Bridge API — Mnemosyne OS SDK v2.0
+# Bridge API — Mnemosyne OS (shipped in SDK 1.2.1)
+
+> ⚠️ **This page documents the raw in-app Electron IPC surface
+> (`window.mnemosyne.*`), which is available to host-renderer widgets — not the
+> Layer 2 SDK.** From the SDK client, the equivalents are
+> `client.getBridgeHistory(...)` and `client.computeResonance(text, topK)` on
+> `MnemoClientBrowser` (see the main README). **`getBridgeSessions()` is not
+> implemented** on either surface — ignore the section below until a live API
+> replaces it.
 
 > **Scope required:** `bridge:read`  
-> **IPC channels:** `mnemosync:compute-resonance`, `mnemosync:get-bridge-history`, `mnemosync:get-bridge-sessions`
+> **IPC channels:** `mnemosync:compute-resonance`, `mnemosync:get-bridge-history`
 
 ---
 
@@ -142,11 +150,16 @@ const { success, bridges } = await window.mnemosyne.getBridgeHistory({
 
 ---
 
-## Method: `getBridgeSessions()`
+## Method: `getBridgeSessions()` — NOT IMPLEMENTED
+
+> This method was specced but never shipped on any surface (no SDK method, no
+> IPC channel). Do not build against it. Kept here only to document the intended
+> shape for a future release.
 
 Returns the list of scan sessions (each scan = one run of Semantic Reflect).
 
 ```typescript
+// Roadmap — not yet available:
 const { success, sessions, totalBridges } = await window.mnemosyne.getBridgeSessions();
 ```
 
@@ -172,7 +185,7 @@ const { success, sessions, totalBridges } = await window.mnemosyne.getBridgeSess
 
 ## Scope declaration
 
-Add `bridge:read` to your `mnemoapp.json` to unlock the Bridge API:
+Add `bridge:read` to your `app.manifest.json` to unlock the Bridge API:
 
 ```json
 {
@@ -180,6 +193,6 @@ Add `bridge:read` to your `mnemoapp.json` to unlock the Bridge API:
 }
 ```
 
-> **`bridge:read`** grants READ access to `getBridgeHistory`, `getBridgeSessions`, `computeResonance`.  
+> **`bridge:read`** grants READ access to `getBridgeHistory` and `computeResonance`.  
 > It never grants the ability to write or modify bridges.  
 > `saveBridges` is CORE-ONLY and inaccessible to Layer 2 apps.

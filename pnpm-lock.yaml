@@ -44,16 +44,6 @@ importers:
         specifier: ^5.3.0
         version: 5.9.3
 
-  packages/eval-sdk:
-    dependencies:
-      '@mnemosyne_os/public-contracts':
-        specifier: ^0.2.0
-        version: 0.2.0
-    devDependencies:
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-
   packages/public-contracts:
     dependencies:
       zod:
@@ -488,9 +478,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@mnemosyne_os/public-contracts@0.2.0':
-    resolution: {integrity: sha512-Q3hJIVooQ82HnIPyHEErI1/cDc+pr99fVlt6sgcA2s4NqOjLbPF98kf4O/1bPe9VRC2yS29cqxptC68nhc8lTw==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -1428,10 +1415,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
-
-  '@mnemosyne_os/public-contracts@0.2.0':
-    dependencies:
-      zod: 3.25.76
 
   '@pkgjs/parseargs@0.11.0':
     optional: true

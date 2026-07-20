@@ -1,9 +1,27 @@
 {
   "name": "@mnemosyne_os/public-contracts",
-  "version": "0.2.0",
-  "description": "Public types, Zod schemas, and interfaces for Mnemosyne OS. No business logic. Official integration surface.",
-  "author": "Tony Trochet",
+  "version": "0.2.1",
+  "description": "Public types, Zod schemas, and interfaces for Mnemosyne OS. No business logic — the official integration surface.",
   "license": "MIT",
+  "author": "Tony Trochet <tony@xpacegems.com> (https://xpacegems.com)",
+  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaka0007/Mnemosyne-Neural-OS.git",
+    "directory": "packages/public-contracts"
+  },
+  "bugs": {
+    "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS/issues"
+  },
+  "keywords": [
+    "mnemosyne",
+    "types",
+    "zod",
+    "schemas",
+    "contracts",
+    "sdk",
+    "memory"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -18,10 +36,20 @@
       "types": "./dist/schemas.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json -w",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "dependencies": {
     "zod": "^3.23.8"

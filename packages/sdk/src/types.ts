@@ -76,16 +76,16 @@ export type MnemoIntent =
  */
 export type MnemoVault = 'DEV' | 'SOCIAL' | 'PERSONAL' | 'FINANCE' | 'RESEARCH' | (string & {});
 
-/** Types de spine sémantiques */
+/** Semantic spine types */
 export type SpineType =
   | 'GIT' | 'ARCHITECTURE' | 'DECISION' | 'DEBUG' | 'FEATURE'
   | 'REDDIT_POST' | 'LINKEDIN_POST' | 'SOCIAL_NODE'
   | 'DOCUMENT' | 'NOTE' | 'CUSTOM'
-  /** Créé par le Cockpit ou via sdk.resonances.list */
+  /** Created by the Cockpit or via sdk.resonances.list */
   | 'RESONANCE'
-  /** Persistance de session / contexte de reprise */
+  /** Session persistence / resume context */
   | 'SESSION'
-  /** Mise à jour de position (phase, état courant) */
+  /** Position update (phase, current state) */
   | 'POSITION_UPDATE'
   | 'API' | 'DOC' | 'ERROR'
   /** [PHASE-64] Affective & Ideational Spines */
@@ -94,69 +94,69 @@ export type SpineType =
   | 'CONTEXTUAL' | 'DISCOVERY'
   | (string & {});
 
-/** Manifest de l'application — fichier `app.manifest.json` */
+/** Application manifest — `app.manifest.json` file */
 export interface AppManifest {
-  /** Identifiant unique stable de l'app (snake_case recommandé) */
+  /** Stable unique identifier of the app (snake_case recommended) */
   id: string;
-  /** Nom affiché à l'utilisateur */
+  /** Name displayed to the user */
   name: string;
-  /** Version SemVer */
+  /** SemVer version */
   version: string;
-  /** Auteur ou organisation */
+  /** Author or organization */
   author?: string;
-  /** Version du SDK requise */
+  /** Required SDK version */
   mnemosyne_sdk: string;
-  /** Scopes demandés — Zero-Trust : tout scope non listé est refusé */
+  /** Requested scopes — Zero-Trust: any unlisted scope is refused */
   scopes: MnemoScope[];
-  /** Vaults accessibles */
+  /** Accessible vaults */
   vaults: MnemoVault[];
-  /** Intents IPC autorisés */
+  /** Authorized IPC intents */
   intents: MnemoIntent[];
-  /** Taille maximale d'une chronicle (KB) — défaut 64KB */
+  /** Maximum size of a chronicle (KB) — default 64KB */
   max_chronicle_size_kb?: number;
   /**
-   * Si true, chaque requête inter-app déclenche un popup de consentement utilisateur.
-   * Si false, le consentement est demandé une seule fois et mémorisé.
+   * If true, each inter-app request triggers a user consent popup.
+   * If false, consent is requested once and remembered.
    */
   requires_consent?: boolean;
-  /** Description courte affichée dans le Synaptic Hub */
+  /** Short description displayed in the Synaptic Hub */
   description?: string;
 }
 
 // ── Client Config ─────────────────────────────────────────────────────────────
 
 export interface MnemoClientOptions {
-  /** Identifiant de l'app — doit correspondre à AppManifest.id */
+  /** Identifier of the app — must match AppManifest.id */
   appId: string;
-  /** Chemin vers app.manifest.json ou objet manifest inline */
+  /** Path to app.manifest.json or inline manifest object */
   manifest: string | AppManifest;
   /**
-   * Transport à utiliser :
-   *   'ws'  → WebSocket local (app Node.js externe à Mnemosyne)
-   *   'ipc' → Electron IPC (app embarquée via PluginHub)
-   *   'auto' → Détecte automatiquement selon l'environnement (défaut)
+   * Transport to use:
+   *   'ws'  → local WebSocket (Node.js app external to Mnemosyne)
+   *   'ipc' → Electron IPC (app embedded via PluginHub)
+   *   'auto' → Automatically detects based on the environment (default)
    */
   transport?: 'ws' | 'ipc' | 'auto';
-  /** Port du WebSocket server Mnemosyne (défaut: 7799) */
+  /** Port of the Mnemosyne WebSocket server (default: 7799) */
   wsPort?: number;
-  /** Token JWT d'authentification (obtenu via MnemoClient.register) */
+  /** JWT authentication token (obtained via MnemoClient.register) */
   token?: string;
-  /** Timeout des requêtes en ms (défaut: 30000) */
+  /** Request timeout in ms (default: 30000) */
   timeoutMs?: number;
 }
 
 // ── Ingest ────────────────────────────────────────────────────────────────────
 
 export interface IngestPayload {
-  /** Contenu textuel brut à vectoriser */
+  /** Raw text content to vectorize */
   content: string;
-  /** Type de spine sémantique */
+  /** Semantic spine type */
   spineType: SpineType;
-  /** Vault de destination */
+  /** Destination vault */
   vault: MnemoVault;
-  /** Métadonnées optionnelles (non vectorisées, stockées as-is) */
+  /** Optional metadata (not vectorized, stored as-is) */
   metadata?: Record<string, unknown>;
-  /** Dimension des vecteurs (défaut: 512) */
+  /** Vector dimension (default: 512) */
   dimension?: number;
 }
 
@@ -164,18 +164,18 @@ export interface IngestResult {
   success: boolean;
   chronicleId?: string;
   error?: string;
-  /** Si true, le contenu a été nettoyé par l'AI-Firewall (injection détectée) */
+  /** If true, the content was sanitized by the AI-Firewall (injection detected) */
   sanitized?: boolean;
 }
 
 // ── Query ─────────────────────────────────────────────────────────────────────
 
 export interface QueryOptions {
-  /** Nombre max de résultats (défaut: 10) */
+  /** Max number of results (default: 10) */
   limit?: number;
-  /** Vault à interroger (défaut: vault déclaré dans le manifest) */
+  /** Vault to query (default: vault declared in the manifest) */
   vault?: MnemoVault;
-  /** Seuil de similarité minimum 0-1 (défaut: 0.0) */
+  /** Minimum similarity threshold 0-1 (default: 0.0) */
   threshold?: number;
   /**
    * [SDK 1.2 — Semantic Bridge] Opt-in true semantic ranking.
@@ -209,7 +209,7 @@ export interface QueryOptions {
 
 export interface Chronicle {
   id: string;
-  /** Contenu textuel du chronicle. Peut être absent si seul le vecteur est stocké. */
+  /** Text content of the chronicle. May be absent if only the vector is stored. */
   content?: string;
   spineType: SpineType;
   score: number;
@@ -247,14 +247,43 @@ export interface QueryResult {
   _semantic?: QuerySemanticDebug;
 }
 
+/**
+ * Result of `ask()` — a synthesized (RAG+LLM) prose answer plus the source
+ * chronicles it was grounded in. Unlike `query()` (raw chronicles), Mnemosyne
+ * reasons over its memory and answers directly. Always check `sources` before
+ * fully trusting `answer`.
+ */
+export interface AskResult {
+  success: boolean;
+  answer: string;
+  sources: Chronicle[];
+  error?: string;
+}
+
+/**
+ * Options for ask() — [v1.4 RETRIEVAL-PROFILE].
+ * The engine's historical defaults (5 sources × 1200 chars each) are tuned
+ * for terse IDE answers; recall-heavy callers (benchmarks, agents synthesizing
+ * across many memories) can request a richer context. Clamped server-side
+ * (topK ≤ 32, maxSourceChars ≤ 6000).
+ */
+export interface AskOptions {
+  /** Cognitive ranking scope for type-weighting (see QueryOptions.scope). */
+  scope?: string;
+  /** Number of chronicles handed to the answering LLM (default: 5). */
+  topK?: number;
+  /** Per-source truncation cap in chars (default: 1200). */
+  maxSourceChars?: number;
+}
+
 // ── Cross-App Share ───────────────────────────────────────────────────────────
 
 export interface ShareRequest {
-  /** App source dont on veut lire les vecteurs */
+  /** Source app whose vectors we want to read */
   fromAppId: string;
-  /** Raison affichée à l'utilisateur dans le popup de consentement */
+  /** Reason displayed to the user in the consent popup */
   reason: string;
-  /** Timeout du consentement en ms (défaut: 60000) */
+  /** Consent timeout in ms (default: 60000) */
   timeoutMs?: number;
 }
 
@@ -291,6 +320,17 @@ export interface VaultInfo {
   chronicleCount: number;
   /** SQLite file size in KB. */
   sizeKb: number;
+  // ── Governance metadata (present when the OS could read the vault manifest) ──
+  /** Vault type (DEV, PERSONAL, RESEARCH, …). */
+  type?: string;
+  /** Vault description. */
+  description?: string;
+  /** Protection level: `'NORMAL'` or `'MAXIMUM'` (private/sensitive). */
+  protection?: string;
+  /** Vaults this one may be mixed with: `['*']` open, `[]` isolated. */
+  mixableWith?: string[];
+  /** `false` = benchmark sandbox or private store, not cross-pollinatable memory. */
+  visibleInNeuralMap?: boolean;
 }
 
 export interface VaultListResult {
@@ -299,6 +339,24 @@ export interface VaultListResult {
   coreVaults: VaultInfo[];
   /** User-created custom vaults. */
   customVaults: VaultInfo[];
+  error?: string;
+}
+
+// ── App Sandbox Vault ─────────────────────────────────────────────────────────
+
+/**
+ * Result of `sdk.vault.sandbox.ensure` — the per-app sandbox write model.
+ * The vault is derived from the appId and starts fully walled off; only the
+ * human can unlock permanence (mixing into their real memory).
+ */
+export interface SandboxVaultResult {
+  success: boolean;
+  /** Vault name to pass as the `vault` argument of ingest/query (e.g. `APP-MY-CRM`). */
+  vault?: string;
+  /** True when this call created the vault (false = it already existed). */
+  created?: boolean;
+  /** True when the human has already unlocked permanence for this sandbox. */
+  unlocked?: boolean;
   error?: string;
 }
 
@@ -425,15 +483,15 @@ export interface PositionUpdateResult {
 // ── Git & Agents (used by the Cockpit and Layer 2 apps) ─────────────────────
 
 /**
- * Un commit git retourné par MNEMOSYNE_METHODS.GIT_LOG.
- * Le path du repo est hardcodé côté serveur (Zero-Trust).
+ * A git commit returned by MNEMOSYNE_METHODS.GIT_LOG.
+ * The repo path is hardcoded server-side (Zero-Trust).
  */
 export interface GitCommit {
   hash: string;
   fullHash?: string;
   author: string;
   message: string;
-  /** Type conventional commit (feat/fix/chore/…) */
+  /** Conventional commit type (feat/fix/chore/…) */
   type: string;
   ts: number;
   repo: string;
@@ -457,7 +515,7 @@ export interface GitLogResult {
 }
 
 /**
- * Un agent SDK retourné par MNEMOSYNE_METHODS.LIST_AGENTS.
+ * An SDK agent returned by MNEMOSYNE_METHODS.LIST_AGENTS.
  */
 export interface AgentInfo {
   id: string;
@@ -471,31 +529,31 @@ export interface AgentInfo {
 // ── NFT Licence ───────────────────────────────────────────────────────────────
 
 /**
- * Paramètres pour valider une licence NFT.
- * La validation se fait on-chain via le runtime Mnemosyne OS (pas directement dans le SDK).
+ * Parameters to validate an NFT licence.
+ * Validation is done on-chain via the Mnemosyne OS runtime (not directly in the SDK).
  */
 export interface NFTLicenseParams {
-  /** Adresse du wallet à vérifier */
+  /** Wallet address to verify */
   walletAddress: string;
-  /** Chain ID cible — voir MNEMOSYNE_CHAINS dans constants.ts */
+  /** Target chain ID — see MNEMOSYNE_CHAINS in constants.ts */
   chainId?: number;
 }
 
-/** Résultat de validation d'une licence NFT */
+/** Result of an NFT licence validation */
 export interface NFTValidation {
-  /** true si le wallet possède le NFT de licence de cette app */
+  /** true if the wallet holds the licence NFT for this app */
   valid: boolean;
   walletAddress: string;
   appId: string;
-  /** Timestamp Unix ms de la vérification */
+  /** Unix ms timestamp of the verification */
   checkedAt: number;
-  /** Timestamp Unix ms d'expiration du cache OS (5 min) */
+  /** Unix ms timestamp of the OS cache expiry (5 min) */
   cacheExpiresAt?: number;
 }
 
 // ── NeuralGraph ───────────────────────────────────────────────────────────────
 
-/** Un nœud dans le NeuralGraph */
+/** A node in the NeuralGraph */
 export interface GraphNode {
   id: string;
   label: string;
@@ -504,7 +562,7 @@ export interface GraphNode {
   timestamp: string;
 }
 
-/** Une arête dans le NeuralGraph */
+/** An edge in the NeuralGraph */
 export interface GraphEdge {
   source: string;
   target: string;
@@ -512,7 +570,7 @@ export interface GraphEdge {
   type: 'causal' | 'temporal' | 'semantic';
 }
 
-/** Résultat d'une requête sur le NeuralGraph */
+/** Result of a query on the NeuralGraph */
 export interface GraphQueryResult {
   success: boolean;
   nodes: GraphNode[];
@@ -628,4 +686,118 @@ export interface MnemoEvent<T = unknown> {
   type: MnemoEventType;
   data: T;
   timestamp: number;
+}
+
+// ── v1.4.0 — Read-only Introspection (Dream State + Spine assignments) ───────
+
+/** One endpoint (chronicle) of a dream bridge. */
+export interface DreamBridgeEndpoint {
+  chronicleId: number;
+  spineType: string;
+  /** Vault name as recorded by the dream engine (core vault name, e.g. 'dev'). */
+  vault: string;
+  /** Short excerpt of the chronicle content (~240 chars), when resolvable. */
+  excerpt?: string;
+}
+
+/**
+ * A connection discovered by the nocturnal Dream State engine between two
+ * chronicles. `dbs` is the composite Dream Bridge Score (prime-aware,
+ * orthogonal to raw cosine) — higher = stronger dreamed connection.
+ * [DREAM-STATE][READ-ONLY]
+ */
+export interface DreamBridge {
+  id: number;
+  /** Dream scan session that produced this bridge. */
+  sessionId: string | null;
+  scannedAt: string;
+  /** Composite Dream Bridge Score. */
+  dbs: number;
+  /** Raw cosine similarity between the two chronicles. */
+  cosine: number;
+  from: DreamBridgeEndpoint;
+  to: DreamBridgeEndpoint;
+}
+
+/** Options for dreamBridges(). */
+export interface DreamBridgesOptions {
+  /** Max bridges to return (default: 50, server cap: 200). */
+  limit?: number;
+  /** Minimum Dream Bridge Score (default: 0). */
+  minDbs?: number;
+  /** Restrict to a single dream scan session. */
+  sessionId?: string;
+  /** Only return bridges touching this chronicle id. */
+  chronicleId?: number;
+}
+
+/** Result of dreamBridges(). */
+export interface DreamBridgesResult {
+  success: boolean;
+  bridges: DreamBridge[];
+  error?: string;
+}
+
+/** One chronicle → spine assignment. */
+export interface SpineAssignment {
+  chronicleId: number;
+  /** Spine taxon id the chronicle is currently assigned to. */
+  spineType: string;
+  createdAt: string;
+  /** Short excerpt of the chronicle content (~240 chars), when resolvable. */
+  excerpt?: string;
+}
+
+/** Per-spine chronicle count for the queried vault. */
+export interface SpineCount {
+  spineType: string;
+  count: number;
+}
+
+/** A node of the global spine taxonomy tree (nature → sub-spines). */
+export interface SpineTaxonNode {
+  id: string;
+  label: string;
+  kind: 'nature' | 'subspine';
+  pack: string;
+  color?: string;
+  icon?: string;
+  origin: 'system' | 'user' | 'llm';
+  children?: SpineTaxonNode[];
+}
+
+/** Options for spineAssignments(). */
+export interface SpineAssignmentsOptions {
+  /** Vault to inspect (default: first vault declared in the manifest). */
+  vault?: MnemoVault;
+  /** Restrict to one spine taxon id (e.g. 'DOCUMENT'). */
+  spineType?: string;
+  /** Max assignments returned (default: 100, server cap: 500). */
+  limit?: number;
+  /** Pagination offset (default: 0). */
+  offset?: number;
+  /** Also return the global spine taxonomy tree. */
+  includeTaxonomy?: boolean;
+}
+
+/** Result of spineAssignments(). */
+export interface SpineAssignmentsResult {
+  success: boolean;
+  /** Vault the assignments were read from (as resolved server-side). */
+  vault: string;
+  /** Newest-first page of chronicle → spine assignments. */
+  assignments: SpineAssignment[];
+  /** Per-spine counts across the WHOLE vault (not just this page). */
+  counts: SpineCount[];
+  /** Total chronicles matching the filter (for pagination). */
+  total: number;
+  /**
+   * Whole-vault count of chronicles with NO embedding vector yet — these are
+   * invisible to semantic retrieval. Poll until 0 before benchmarking/querying
+   * freshly ingested data ("memory ready" gate).
+   */
+  unvectorized?: number;
+  /** Global taxonomy tree — present only when `includeTaxonomy: true`. */
+  taxonomy?: SpineTaxonNode[];
+  error?: string;
 }

@@ -1,9 +1,19 @@
 {
-  "name": "@mnemosyne/create-app",
+  "name": "@mnemosyne_os/create-app",
   "version": "1.0.0",
   "description": "Scaffold a new Mnemosyne OS app with one command",
   "keywords": ["mnemosyne", "ai", "sdk", "scaffold", "create-app"],
   "license": "MIT",
+  "author": "Tony Trochet <tony@xpacegems.com> (https://xpacegems.com)",
+  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaka0007/Mnemosyne-Neural-OS.git",
+    "directory": "packages/create-app"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "bin": {
     "create-mnemosyne-app": "./bin/create.js",

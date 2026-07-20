@@ -3,7 +3,7 @@
   "name": "My Bridge App",
   "version": "1.0.0",
   "author": "Your Name",
-  "mnemosyne_sdk": "^2.0.0",
+  "mnemosyne_sdk": "^1.2.0",
   "description": "Example Layer 2 app reading cognitive bridges from Mnemosyne OS.",
   "scopes": [
     "vault:read:DEV",

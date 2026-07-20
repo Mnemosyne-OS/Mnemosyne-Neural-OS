@@ -1,11 +1,11 @@
 /**
  * @mnemosyne_os/sdk — MnemoClientBrowser
  *
- * Client WebSocket 100% browser-native pour les apps Layer 2 qui tournent
- * dans un renderer Electron ou un navigateur web.
- * N'utilise PAS le package `ws` (Node-only) — uniquement l'API WebSocket native.
+ * 100% browser-native WebSocket client for Layer 2 apps that run
+ * in an Electron renderer or a web browser.
+ * Does NOT use the `ws` package (Node-only) — only the native WebSocket API.
  *
- * Usage dans une app React/Vite :
+ * Usage in a React/Vite app:
  * ```typescript
  * import { MnemoClientBrowser } from '@mnemosyne_os/sdk';
  *
@@ -21,7 +21,7 @@
 
 import { MNEMOSYNE_WS_HOST, MNEMOSYNE_WS_PORT } from './constants.js';
 import type {
-  AppManifest, Chronicle, GitCommit, AgentInfo,
+  AppManifest, Chronicle, GitCommit, AgentInfo, AskResult, AskOptions,
   IngestResult, QueryOptions, QueryResult, RegisterResult,
   ResonanceRecord, PositionUpdateResult,
   VaultListResult, CorrelateOptions, CorrelateResult,
@@ -29,6 +29,11 @@ import type {
   DynamicSpineResult, DynamicSpineInfo,
   // [PHASE-58] Bridge Platform APIs
   BridgeHistoryOptions, BridgeHistoryResult, ResonanceScore,
+  // [v1.4.0] Read-only introspection
+  DreamBridgesOptions, DreamBridgesResult,
+  SpineAssignmentsOptions, SpineAssignmentsResult,
+  // [v1.5.0] Per-app sandbox vault
+  SandboxVaultResult,
 } from './types.js';
 
 // ── Internal types ────────────────────────────────────────────────────────────
@@ -60,11 +65,11 @@ type PendingRpc = {
 // ── MnemoClientBrowser ────────────────────────────────────────────────────────
 
 /**
- * Client SDK browser-native. Communique avec le SDK WebSocket Server de
- * Mnemosyne OS sur ws://127.0.0.1:7799 via l'API WebSocket standard.
+ * Browser-native SDK client. Communicates with the Mnemosyne OS SDK
+ * WebSocket Server on ws://127.0.0.1:7799 via the standard WebSocket API.
  *
- * Compatible : Chrome, Firefox, Electron renderer, Safari, Vite, Next.js.
- * Non compatible : Node.js (utiliser MnemoClient à la place).
+ * Compatible: Chrome, Firefox, Electron renderer, Safari, Vite, Next.js.
+ * Not compatible: Node.js (use MnemoClient instead).
  */
 export class MnemoClientBrowser {
   private readonly ws:                WebSocket;
@@ -93,11 +98,11 @@ export class MnemoClientBrowser {
   // ── Static factory ───────────────────────────────────────────────────────────
 
   /**
-   * Crée une connexion WebSocket native vers le SDK server de Mnemosyne OS.
+   * Creates a native WebSocket connection to the Mnemosyne OS SDK server.
    *
-   * @param host - Hostname du SDK server (défaut: '127.0.0.1')
-   * @param port - Port du SDK server (défaut: 7799)
-   * @param timeoutMs - Timeout de chaque RPC en ms (défaut: 15000)
+   * @param host - Hostname of the SDK server (default: '127.0.0.1')
+   * @param port - Port of the SDK server (default: 7799)
+   * @param timeoutMs - Timeout of each RPC in ms (default: 15000)
    */
   static connect(
     host     = MNEMOSYNE_WS_HOST,
@@ -176,10 +181,10 @@ export class MnemoClientBrowser {
   // ── Auth ─────────────────────────────────────────────────────────────────────
 
   /**
-   * Enregistre l'app auprès de Mnemosyne OS et obtient un JWT 24h.
-   * Doit être appelé avant toute autre méthode.
+   * Registers the app with Mnemosyne OS and obtains a 24h JWT.
+   * Must be called before any other method.
    *
-   * @throws si le manifest est invalide ou si l'OS refuse l'enregistrement
+   * @throws if the manifest is invalid or if the OS refuses the registration
    */
   async register(manifest: AppManifest): Promise<RegisterResult> {
     const res = await this.call<RegisterResult>('sdk.register', { manifest });
@@ -190,9 +195,9 @@ export class MnemoClientBrowser {
   // ── Vault ─────────────────────────────────────────────────────────────────────
 
   /**
-   * Ingère du contenu dans le vault Mnemosyne.
-   * Le contenu est vectorisé par le runtime OS (pas dans le SDK).
-   * Requiert le scope `vault:write:<vault>` et l'intent `INGEST`.
+   * Ingests content into the Mnemosyne vault.
+   * The content is vectorized by the OS runtime (not in the SDK).
+   * Requires the `vault:write:<vault>` scope and the `INGEST` intent.
    */
   async ingest(
     content:   string,
@@ -209,14 +214,14 @@ export class MnemoClientBrowser {
   }
 
   /**
-   * Requête sémantique sur le vault — retourne les chronicles les plus proches.
-   * Requiert le scope `vault:read:<vault>` et l'intent `QUERY`.
+   * Semantic query against the vault — returns the closest chronicles.
+   * Requires the `vault:read:<vault>` scope and the `QUERY` intent.
    *
-   * @param text    - Texte de recherche
-   * @param vault   - Vault cible (défaut: 'DEV')
-   * @param limit   - Nombre max de résultats (défaut: 10)
-   * @param options - [SDK 1.2] Options sémantiques additionnelles (semantic,
-   *                  scope, spineTypeFilter). Voir {@link QueryOptions}.
+   * @param text    - Search text
+   * @param vault   - Target vault (default: 'DEV')
+   * @param limit   - Max number of results (default: 10)
+   * @param options - [SDK 1.2] Additional semantic options (semantic,
+   *                  scope, spineTypeFilter). See {@link QueryOptions}.
    */
   async query(
     text:    string,
@@ -234,6 +239,38 @@ export class MnemoClientBrowser {
     });
     if (!res.success) throw new Error(res.error ?? 'query failed');
     return res.chronicles ?? [];
+  }
+
+  /**
+   * Ask Mnemosyne a question and get a SYNTHESIZED prose answer (RAG+LLM) plus
+   * the source chronicles it used — Mnemosyne reasons across its memory and
+   * answers directly, like a teammate who knows the whole project. Use for
+   * "why / who / how" questions. Slower than {@link query} (runs the LLM).
+   * Requires scope `vault:read:<vault>` and the QUERY intent (same as query).
+   *
+   * @param question - Natural-language question
+   * @param vault - Vault to reason over (default 'DEV')
+   * @param options - [v1.4] Retrieval profile: `{ scope?, topK?, maxSourceChars? }` —
+   *                  raise topK/maxSourceChars for recall-heavy questions
+   *                  (defaults: 5 sources × 1200 chars; clamped server-side).
+   */
+  async ask(question: string, vault = 'DEV', options: AskOptions = {}): Promise<AskResult> {
+    const res = await this.call<{ success: boolean; answer?: string; sources?: Chronicle[]; error?: string }>(
+      'sdk.ask', {
+        appId: this.appId ?? 'unknown',
+        text: question,
+        vault,
+        ...(options.scope          !== undefined ? { scope: options.scope }                   : {}),
+        ...(options.topK           !== undefined ? { topK: options.topK }                     : {}),
+        ...(options.maxSourceChars !== undefined ? { maxSourceChars: options.maxSourceChars } : {}),
+      },
+    );
+    return {
+      success: res.success,
+      answer:  res.answer  ?? '',
+      sources: res.sources ?? [],
+      ...(res.error !== undefined ? { error: res.error } : {}),
+    };
   }
 
   // ── Resonances ────────────────────────────────────────────────────────────────
@@ -267,12 +304,12 @@ export class MnemoClientBrowser {
   // ── Monorepo ──────────────────────────────────────────────────────────────────
 
   /**
-   * Retourne les commits récents du monorepo Mnemosyne OS.
-   * Requiert le scope `monorepo:read` et l'intent `GIT_LOG`.
-   * [SECURITY] Le chemin du repo est hardcodé côté serveur.
+   * Returns the recent commits of the Mnemosyne OS monorepo.
+   * Requires the `monorepo:read` scope and the `GIT_LOG` intent.
+   * [SECURITY] The repo path is hardcoded server-side.
    *
-   * @param limit - Nombre de commits max (défaut: 20)
-   * @param since - Date relative Git (ex: '30 days ago', '2024-01-01')
+   * @param limit - Max number of commits (default: 20)
+   * @param since - Relative Git date (e.g. '30 days ago', '2024-01-01')
    */
   async gitLog(limit = 20, since?: string): Promise<GitCommit[]> {
     const res = await this.call<{ success: boolean; commits: GitCommit[] }>(
@@ -282,11 +319,11 @@ export class MnemoClientBrowser {
   }
 
   /**
-   * Lit un fichier `.md` depuis le repo Mnemosyne OS.
-   * Requiert le scope `monorepo:read`.
-   * [SECURITY] Seuls les fichiers `.md` sont accessibles, path sanitizé côté serveur.
+   * Reads a `.md` file from the Mnemosyne OS repo.
+   * Requires the `monorepo:read` scope.
+   * [SECURITY] Only `.md` files are accessible, path sanitized server-side.
    *
-   * @param path - Chemin relatif au repo (ex: 'docs/ARCHITECTURE.md')
+   * @param path - Path relative to the repo (e.g. 'docs/ARCHITECTURE.md')
    */
   async readFile(path: string): Promise<string> {
     const res = await this.call<{ content: string }>('sdk.readFile', { path });
@@ -312,9 +349,68 @@ export class MnemoClientBrowser {
    * Returns all available vaults (core built-ins + user-created custom vaults).
    * Use the `id` field of each entry as the `vault` param in `ingest()` and `query()`.
    * Requires intent `LIST_VAULTS`.
+   *
+   * [v1.4 CONTRACT FIX] The server answers with a flat `{ success, vaults }`
+   * (id = workspace id, name = display name) — NOT the `{ coreVaults,
+   * customVaults }` this method has always advertised. Until 1.4 the split
+   * arrays were silently `undefined` for every caller. Normalize here so the
+   * advertised type is finally true (and pass a future split through as-is).
    */
+  /**
+   * Idempotently ensures this app's OWN sandbox vault exists — an isolated
+   * vault derived from the app id, walled off by default (no mixing, hidden
+   * from the neural map and the dream layer). Write freely into the returned
+   * `vault`; only the HUMAN can unlock permanence, from the Vault Manager.
+   */
+  async ensureSandboxVault(): Promise<SandboxVaultResult> {
+    return this.call<SandboxVaultResult>('sdk.vault.sandbox.ensure', {
+      appId: this.appId ?? 'unknown',
+    });
+  }
+
   async vaultsList(): Promise<VaultListResult> {
-    return this.call<VaultListResult>('sdk.vaults.list', { appId: this.appId ?? 'unknown' });
+    const CORE = new Set(['DEV', 'SOCIAL', 'PERSONAL', 'FINANCE', 'RESEARCH']);
+    const res = await this.call<{
+      success: boolean;
+      error?: string;
+      vaults?: Array<{
+        id?: string; name?: string; state?: string; chronicleCount?: number;
+        type?: string; description?: string; protection?: string;
+        mixableWith?: string[]; visibleInNeuralMap?: boolean;
+      }>;
+      coreVaults?: VaultListResult['coreVaults'];
+      customVaults?: VaultListResult['customVaults'];
+    }>('sdk.vaults.list', { appId: this.appId ?? 'unknown' });
+
+    if (res.coreVaults || res.customVaults) {
+      return {
+        success: res.success,
+        coreVaults: res.coreVaults ?? [],
+        customVaults: res.customVaults ?? [],
+        ...(res.error !== undefined ? { error: res.error } : {}),
+      };
+    }
+
+    const all = (res.vaults ?? []).map((v) => ({
+      id:             String(v.id ?? ''),
+      displayName:    String(v.name ?? v.id ?? ''),
+      fixed:          CORE.has(String(v.id ?? '').toUpperCase()),
+      color:          '',
+      chronicleCount: typeof v.chronicleCount === 'number' ? v.chronicleCount : 0,
+      sizeKb:         0,
+      // Governance metadata (undefined when the OS could not read the manifest).
+      ...(v.type !== undefined ? { type: v.type } : {}),
+      ...(v.description !== undefined ? { description: v.description } : {}),
+      ...(v.protection !== undefined ? { protection: v.protection } : {}),
+      ...(v.mixableWith !== undefined ? { mixableWith: v.mixableWith } : {}),
+      ...(v.visibleInNeuralMap !== undefined ? { visibleInNeuralMap: v.visibleInNeuralMap } : {}),
+    }));
+    return {
+      success: res.success,
+      coreVaults: all.filter((v) => v.fixed),
+      customVaults: all.filter((v) => !v.fixed),
+      ...(res.error !== undefined ? { error: res.error } : {}),
+    };
   }
 
   // ── Correlate [v1.2.0] ──────────────────────────────────────────────────────────
@@ -459,11 +555,57 @@ export class MnemoClientBrowser {
     });
   }
 
+  // ── Read-only Introspection [v1.4.0] ─────────────────────────────────────────
+
+  /**
+   * Lists the connections the Dream State engine discovered between chronicles
+   * during its nocturnal scans — "what did you dream about last night?". Each
+   * bridge carries its DBS/cosine scores and both linked chronicles.
+   *
+   * Required manifest: `scopes: ['bridge:read']`, `intents: ['BRIDGE_READ']`
+   *
+   * @param options - Optional filters: `{ limit, minDbs, sessionId, chronicleId }`
+   *
+   * @example
+   * ```typescript
+   * const { bridges } = await client.dreamBridges({ minDbs: 0.5, limit: 20 });
+   * bridges.forEach(b => console.log(`${b.from.excerpt} ⇄ ${b.to.excerpt} (dbs ${b.dbs})`));
+   * ```
+   */
+  async dreamBridges(options: DreamBridgesOptions = {}): Promise<DreamBridgesResult> {
+    return this.call<DreamBridgesResult>('sdk.dream.bridges', {
+      appId: this.appId ?? 'unknown',
+      ...options,
+    });
+  }
+
+  /**
+   * Lists chronicle → spine assignments for a vault — "how did you classify
+   * this memory?". Returns a newest-first page of assignments, per-spine counts
+   * across the whole vault, and (optionally) the global taxonomy tree.
+   *
+   * Required manifest: `scopes: ['vault:read:<vault>']`, `intents: ['QUERY']`
+   *
+   * @param options - `{ vault?, spineType?, limit?, offset?, includeTaxonomy? }`
+   *
+   * @example
+   * ```typescript
+   * const res = await client.spineAssignments({ vault: 'ARENA', includeTaxonomy: true });
+   * console.log(res.counts); // [{ spineType: 'DOCUMENT', count: 412 }, …]
+   * ```
+   */
+  async spineAssignments(options: SpineAssignmentsOptions = {}): Promise<SpineAssignmentsResult> {
+    return this.call<SpineAssignmentsResult>('sdk.spine.assignments', {
+      appId: this.appId ?? 'unknown',
+      ...options,
+    });
+  }
+
   // ── Events ────────────────────────────────────────────────────────────────────
 
   /**
-   * Enregistre un handler pour les push events envoyés par l'OS.
-   * Déclenché par exemple quand un autre client ingère un chronicle (`chronicle:new`).
+   * Registers a handler for the push events sent by the OS.
+   * Triggered for example when another client ingests a chronicle (`chronicle:new`).
    *
    * @example
    * ```typescript
@@ -479,7 +621,7 @@ export class MnemoClientBrowser {
   }
 
   /**
-   * Enregistre un callback appelé quand la connexion WS est fermée par l'OS.
+   * Registers a callback invoked when the WS connection is closed by the OS.
    */
   onDisconnect(fn: () => void): void {
     this._onDisconnect = fn;
@@ -488,7 +630,7 @@ export class MnemoClientBrowser {
   // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
   /**
-   * Ferme la connexion WebSocket proprement.
+   * Closes the WebSocket connection cleanly.
    */
   close(): void {
     this.ws.close(1000, 'Client close');
@@ -498,11 +640,11 @@ export class MnemoClientBrowser {
 
   get isConnected(): boolean { return this.ws.readyState === WebSocket.OPEN; }
 
-  /** Token JWT actuel (null avant register()) */
+  /** Current JWT token (null before register()) */
   get currentToken(): string | null { return this.token; }
 
   /**
-   * AppId extrait du JWT actuel, ou null si non enregistré.
+   * AppId extracted from the current JWT, or null if not registered.
    */
   get appId(): string | null {
     if (!this.token) return null;

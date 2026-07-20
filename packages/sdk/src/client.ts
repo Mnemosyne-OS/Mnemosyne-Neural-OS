@@ -1,10 +1,10 @@
 /**
  * @mnemosyne/sdk — MnemoClient
  *
- * Client principal du SDK. Dual transport : WebSocket (externe) + IPC Electron (embarqué).
- * Authentification JWT HMAC-SHA256.
+ * Main SDK client. Dual transport: WebSocket (external) + Electron IPC (embedded).
+ * JWT HMAC-SHA256 authentication.
  *
- * Usage minimal :
+ * Minimal usage:
  * ```typescript
  * import { MnemoClient } from '@mnemosyne/sdk';
  * const client = await MnemoClient.connect({ appId: 'my-app', manifest: './app.manifest.json' });
@@ -24,11 +24,20 @@ import type {
   IngestResult,
   QueryOptions,
   QueryResult,
+  AskResult,
+  AskOptions,
   ShareRequest,
   ShareResult,
   RegisterResult,
   GitLogOptions,
   GitLogResult,
+  DreamBridgesOptions,
+  DreamBridgesResult,
+  SpineAssignmentsOptions,
+  SpineAssignmentsResult,
+  VaultInfo,
+  VaultListResult,
+  SandboxVaultResult,
   MnemoEvent,
   MnemoEventType,
 } from './types.js';
@@ -64,8 +73,8 @@ export class MnemoClient {
   // ── Static factory ──────────────────────────────────────────────────────────
 
   /**
-   * Crée et connecte un client Mnemosyne.
-   * @throws si le manifest est invalide ou la connexion échoue
+   * Creates and connects a Mnemosyne client.
+   * @throws if the manifest is invalid or the connection fails
    */
   static async connect(options: MnemoClientOptions): Promise<MnemoClient> {
     const client = new MnemoClient(options);
@@ -99,11 +108,11 @@ export class MnemoClient {
     if (transport === 'ws') {
       await this._connectWs();
     } else {
-      // IPC : on suppose qu'on tourne dans Electron — window.mnemosyne est disponible
+      // IPC: assume we are running in Electron — window.mnemosyne is available
       this._connectIpc();
     }
 
-    // Handshake : enregistre l'app et récupère un token JWT
+    // Handshake: register the app and retrieve a JWT token
     if (!this.options.token) {
       const reg = await this._register();
       this.token = reg.token;
@@ -119,7 +128,7 @@ export class MnemoClient {
   private _resolveTransport(): 'ws' | 'ipc' {
     if (this.options.transport === 'ipc') return 'ipc';
     if (this.options.transport === 'ws')  return 'ws';
-    // auto : IPC si window.mnemosyne existe (Electron renderer), sinon WS
+    // auto: IPC if window.mnemosyne exists (Electron renderer), otherwise WS
     const hasIpc = typeof globalThis !== 'undefined' &&
       typeof (globalThis as Record<string, unknown>)['window'] !== 'undefined' &&
       typeof ((globalThis as Record<string, unknown>)['window'] as Record<string, unknown>)['mnemosyne'] !== 'undefined';
@@ -134,12 +143,14 @@ export class MnemoClient {
       const url = `ws://127.0.0.1:${this.options.wsPort}`;
       this.ws   = new WebSocket(url);
 
+      let opened = false;
       const timeout = setTimeout(() => {
         this.ws?.terminate();
         reject(new Error(`[MnemoSDK] Connection timeout to ${url}`));
       }, this.options.timeoutMs);
 
       this.ws.on('open', () => {
+        opened = true;
         clearTimeout(timeout);
         resolve();
       });
@@ -157,6 +168,13 @@ export class MnemoClient {
 
       this.ws.on('error', (err) => {
         this._emit('error', { message: err.message });
+        // Reject the connect promise immediately on a pre-open failure (e.g.
+        // ECONNREFUSED when Mnemosyne OS isn't running) instead of blocking for
+        // the full connection timeout.
+        if (!opened) {
+          clearTimeout(timeout);
+          reject(new Error(`[MnemoSDK] Cannot connect to ${url}: ${err.message}`));
+        }
       });
 
       this.ws.on('close', () => {
@@ -173,8 +191,8 @@ export class MnemoClient {
   }
 
   private _connectIpc(): void {
-    // En mode IPC, les appels passent par window.mnemosyne
-    // Le WS n'est pas créé — on délègue directement à _rpcIpc()
+    // In IPC mode, calls go through window.mnemosyne
+    // The WS is not created — we delegate directly to _rpcIpc()
     this.connected = true;
   }
 
@@ -217,7 +235,7 @@ export class MnemoClient {
   }
 
   private async _rpcIpc<T>(method: string, params: unknown): Promise<T> {
-    // Mapping méthode SDK → canal IPC Mnemosyne
+    // Mapping SDK method → Mnemosyne IPC channel
     const mnemo = (globalThis as Record<string, unknown>)['window'] as
       { mnemosyne: Record<string, (...args: unknown[]) => Promise<unknown>> } | undefined;
 
@@ -268,8 +286,9 @@ export class MnemoClient {
   }
 
   /**
-   * Renouvelle le token JWT avant expiration.
-   * Appelé automatiquement si le token expire dans moins de 5 minutes.
+   * Renews the JWT by re-registering. Call this manually before the 24h token
+   * expires — there is no automatic renewal timer. A long-lived Node client that
+   * never calls this will start failing RPCs once the token lapses.
    */
   async renewToken(): Promise<void> {
     const reg  = await this._register();
@@ -280,8 +299,8 @@ export class MnemoClient {
   // ── Public API ──────────────────────────────────────────────────────────────
 
   /**
-   * Ingère du contenu dans le vault Mnemosyne.
-   * Isolé par source_app_id — seule ton app peut lire ce qu'elle écrit.
+   * Ingest content into the Mnemosyne vault.
+   * Isolated by source_app_id — only your app can read what it writes.
    */
   async ingest(payload: IngestPayload): Promise<IngestResult> {
     assertScope(this.manifest, `vault:write:${payload.vault}` as import('./types.js').MnemoScope);
@@ -303,7 +322,65 @@ export class MnemoClient {
   }
 
   /**
-   * Requête sémantique — retourne uniquement les chronicles de ton app (source_app_id isolation).
+   * List the vaults the OS exposes, each with its governance metadata
+   * (type, protection, mixableWith, visibleInNeuralMap) so an agent can honor
+   * the rules before targeting one — parity with MnemoClientBrowser.vaultsList().
+   * See the agent covenant (@mnemosyne_os/mcp) for what the flags mean.
+   */
+  async vaultsList(): Promise<VaultListResult> {
+    const CORE = new Set(['DEV', 'SOCIAL', 'PERSONAL', 'FINANCE', 'RESEARCH']);
+    const res = await this._rpc<{
+      success: boolean;
+      error?: string;
+      vaults?: Array<Partial<VaultInfo> & { name?: string }>;
+      coreVaults?: VaultInfo[];
+      customVaults?: VaultInfo[];
+    }>('sdk.vaults.list', { appId: this.manifest.id });
+
+    if (res.coreVaults || res.customVaults) {
+      return {
+        success:      res.success,
+        coreVaults:   res.coreVaults ?? [],
+        customVaults: res.customVaults ?? [],
+        ...(res.error !== undefined ? { error: res.error } : {}),
+      };
+    }
+
+    const all: VaultInfo[] = (res.vaults ?? []).map((v) => ({
+      id:             String(v.id ?? ''),
+      displayName:    String(v.name ?? v.id ?? ''),
+      fixed:          CORE.has(String(v.id ?? '').toUpperCase()),
+      color:          '',
+      chronicleCount: typeof v.chronicleCount === 'number' ? v.chronicleCount : 0,
+      sizeKb:         0,
+      ...(v.type !== undefined ? { type: v.type } : {}),
+      ...(v.description !== undefined ? { description: v.description } : {}),
+      ...(v.protection !== undefined ? { protection: v.protection } : {}),
+      ...(v.mixableWith !== undefined ? { mixableWith: v.mixableWith } : {}),
+      ...(v.visibleInNeuralMap !== undefined ? { visibleInNeuralMap: v.visibleInNeuralMap } : {}),
+    }));
+    return {
+      success:      res.success,
+      coreVaults:   all.filter((v) => v.fixed),
+      customVaults: all.filter((v) => !v.fixed),
+      ...(res.error !== undefined ? { error: res.error } : {}),
+    };
+  }
+
+  /**
+   * Idempotently ensures this app's OWN sandbox vault exists — an isolated
+   * vault derived from the app id, walled off by default (no mixing, hidden
+   * from the neural map and the dream layer). Write freely into the returned
+   * `vault`; only the HUMAN can unlock permanence, from the Vault Manager.
+   */
+  async ensureSandboxVault(): Promise<SandboxVaultResult> {
+    return this._rpc<SandboxVaultResult>('sdk.vault.sandbox.ensure', {
+      appId: this.manifest.id,
+    });
+  }
+
+  /**
+   * Semantic query — returns only your app's chronicles (source_app_id isolation).
    */
   async query(text: string, options: QueryOptions = {}): Promise<QueryResult> {
     const vault = options.vault ?? this.manifest.vaults[0]!;
@@ -329,9 +406,60 @@ export class MnemoClient {
   }
 
   /**
-   * Demande un accès aux chronicles d'une autre app.
-   * Déclenche un popup de consentement utilisateur dans Mnemosyne OS.
-   * Timeout : 60s par défaut (configurable).
+   * Ask Mnemosyne a question — a synthesized (RAG+LLM) prose answer plus the
+   * source chronicles it used, instead of raw hits. Mnemosyne reasons across
+   * its memory and answers directly. Slower than query() (runs the LLM).
+   * Requires scope `vault:read:<vault>` and the QUERY intent.
+   */
+  async ask(question: string, vault = this.manifest.vaults[0]!, options: AskOptions = {}): Promise<AskResult> {
+    assertScope(this.manifest, `vault:read:${vault}` as import('./types.js').MnemoScope);
+    if (!this.manifest.intents.includes('QUERY')) {
+      throw new Error('[MnemoSDK] Intent "QUERY" not declared in manifest');
+    }
+    return this._rpc<AskResult>('sdk.ask', {
+      appId: this.manifest.id,
+      text: question,
+      vault,
+      ...(options.scope          !== undefined ? { scope: options.scope }                   : {}),
+      ...(options.topK           !== undefined ? { topK: options.topK }                     : {}),
+      ...(options.maxSourceChars !== undefined ? { maxSourceChars: options.maxSourceChars } : {}),
+    });
+  }
+
+  /**
+   * Lists the connections the Dream State engine discovered between chronicles
+   * during its nocturnal scans — "what did you dream about last night?". Each
+   * bridge carries its DBS/cosine scores and both linked chronicles (id, spine,
+   * vault, excerpt). Read-only.
+   * Requires scope `bridge:read` and intent `BRIDGE_READ`.
+   */
+  async dreamBridges(options: DreamBridgesOptions = {}): Promise<DreamBridgesResult> {
+    assertScope(this.manifest, 'bridge:read');
+    if (!this.manifest.intents.includes('BRIDGE_READ')) {
+      throw new Error('[MnemoSDK] Intent "BRIDGE_READ" not declared in manifest');
+    }
+    return this._rpc<DreamBridgesResult>('sdk.dream.bridges', { appId: this.manifest.id, ...options });
+  }
+
+  /**
+   * Lists chronicle → spine assignments for a vault — "how did you classify
+   * this memory?". Returns a newest-first page of assignments, per-spine counts
+   * across the whole vault, and (optionally) the global taxonomy tree. Read-only.
+   * Requires scope `vault:read:<vault>` and intent `QUERY`.
+   */
+  async spineAssignments(options: SpineAssignmentsOptions = {}): Promise<SpineAssignmentsResult> {
+    const vault = options.vault ?? this.manifest.vaults[0]!;
+    assertScope(this.manifest, `vault:read:${vault}` as import('./types.js').MnemoScope);
+    if (!this.manifest.intents.includes('QUERY')) {
+      throw new Error('[MnemoSDK] Intent "QUERY" not declared in manifest');
+    }
+    return this._rpc<SpineAssignmentsResult>('sdk.spine.assignments', { appId: this.manifest.id, ...options, vault });
+  }
+
+  /**
+   * Requests access to another app's chronicles.
+   * Triggers a user consent popup in Mnemosyne OS.
+   * Timeout: 60s by default (configurable).
    */
   async requestShare(request: ShareRequest): Promise<ShareResult> {
     assertScope(this.manifest, 'share:request');
@@ -351,7 +479,7 @@ export class MnemoClient {
       this.handlers.set(type, new Set());
     }
     this.handlers.get(type)!.add(handler as EventHandler);
-    // Retourne une fonction de cleanup
+    // Returns a cleanup function
     return () => this.handlers.get(type)?.delete(handler as EventHandler);
   }
 
@@ -365,8 +493,8 @@ export class MnemoClient {
   // ── Lifecycle ───────────────────────────────────────────────────────────────
 
   /**
-   * Ferme proprement la connexion.
-   * Attend la résolution de tous les RPC en cours.
+   * Closes the connection cleanly.
+   * Waits for all in-flight RPCs to resolve.
    */
   async disconnect(): Promise<void> {
     this.connected = false;
@@ -387,8 +515,8 @@ export class MnemoClient {
   get appManifest(): AppManifest { return { ...this.manifest }; }
 
   /**
-   * Inspecte le token actuel (décodé, sans vérification cryptographique).
-   * Utilise un décodeur base64url universel (Node + Browser) — MN-005.
+   * Inspects the current token (decoded, without cryptographic verification).
+   * Uses a universal base64url decoder (Node + Browser) — MN-005.
    */
   get tokenInfo(): { sub: string; exp: number; scopes: string[] } | null {
     if (!this.token) return null;
@@ -406,7 +534,7 @@ export class MnemoClient {
   }
 
   /**
-   * [PHASE-50] Lit un fichier .md depuis le repo OS (docs/, packages/).
+   * [PHASE-50] Reads a .md file from the OS repo (docs/, packages/).
    */
   async readFile(path: string): Promise<string> {
     const res = await this._rpc<{ content: string }>('sdk.readFile', { path });

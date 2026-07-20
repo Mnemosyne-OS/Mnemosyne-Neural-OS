@@ -55,10 +55,10 @@ All Electron security mitigations are active in production:
 |---------|-------|-----|
 | `contextIsolation` | `true` | Isolates renderer from main process |
 | `nodeIntegration` | `false` | Prevents Node.js access from renderer |
-| `sandbox` | `true` | OS-level process sandboxing |
+| `sandbox` | `true` (web content) · `false` (local-AI workers) | Web content is sandboxed; local-AI worker windows relax it to run in-process inference, compensated by `contextIsolation` + Zod-validated IPC |
 | `webSecurity` | `true` | Enforces same-origin policy |
 | `devTools` | disabled in production | Prevents runtime inspection |
-| IPC surface | `contextBridge` only | 379 explicitly declared methods |
+| IPC surface | `contextBridge` only | 242 explicitly declared IPC channels |
 
 All IPC handlers are **Zod-validated** with structured audit logging.
 
