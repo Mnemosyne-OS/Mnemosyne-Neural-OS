@@ -291,7 +291,7 @@ Miami, FL 33122, USA
 [LinkedIn](https://www.linkedin.com/in/tony-t-19544650/) · [GitHub @yaka0007](https://github.com/yaka0007)
 
 **Part of:** [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)  
-**Built with:** Claude (Anthropic) · Antigravity (Google DeepMind) · Cursor
+**Built through Neural Coding:** human-architected, with Claude (Anthropic), Antigravity (Google DeepMind), and Cursor directed as instruments.
 
 ---
 
