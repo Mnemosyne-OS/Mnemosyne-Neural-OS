@@ -19,7 +19,7 @@
 
 [![CI](https://github.com/yaka0007/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/yaka0007/Mnemosyne-Neural-OS/actions)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
-![Electron](https://img.shields.io/badge/Electron-39-47848f?logo=electron)
+![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
@@ -47,7 +47,7 @@ stable, documented surface; the Cognitive Core stays sealed and never exposed.
 Two ways in:
 
 - 🛠️ **Build on it** — scaffold an app and you're talking to the memory vault in minutes.
-- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.1.0-beta.1).
+- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity).
 
 ```bash
 npm create @mnemosyne/app
@@ -100,32 +100,29 @@ mnemoforge
 
 ## The flagship app — Mnemosyne OS Infinity Edition
 
-The reference application of the ecosystem: a **production-grade AI Operating System**
-that puts multi-agent intelligence under strict user control. Powered by a
-**Decentralized Neural Kernel**, it integrates LLMs locally and privately via a secure
-**libp2p Transport** and an audited **IPC Registry**.
+The reference application of the ecosystem: a **local-first AI Operating System** that
+puts a sovereign memory core under strict user control. It runs LLMs locally or in the
+cloud, keeps every encrypted vault on your machine, and — for agent-to-agent sync — can
+speak over a **libp2p** transport (`@mnemosyne-workspace/mnemosync-p2p`).
 
-Unlike fragmented AI wrappers, Mnemosyne enforces **Zero-Raw-Data** policies — your
-encrypted knowledge vault is never indiscriminately exposed. Every agentic connection
-is governed by strict **FGAC (Fine-Grained Access Control)**, ensuring total
-sovereignty over what executes, what's stored, and what syncs.
+Unlike fragmented AI wrappers, Mnemosyne never exposes your knowledge vault
+indiscriminately. Every agentic connection is governed by **FGAC (Fine-Grained Access
+Control)** and 242 Zod-validated IPC channels, ensuring total sovereignty over what
+executes, what's stored, and what syncs.
 
 ### Core Modules
 
 | Module | Description |
 |--------|-------------|
-| 🔮 **Resonance** | Cognitive semantic architecture injecting continuous, resonant memory into the AI's context |
-| 🧠 **MnemoBrain** | Multi-model AI conversation hub — Claude, Ollama (local), OpenAI-compatible |
-| 🎭 **Soul Studio** | AI identity builder — 16 MBTI archetypes, OCEAN personality model, custom soul profiles |
-| 🌐 **MnemoDex** | Universal index of 16 MBTI archetypes and custom AI souls |
-| 🗄️ **MnemoVault** | Encrypted local knowledge vault with full-text search and file management |
-| 🔄 **MnemoSync** | Multi-agent orchestration with P2P Shadow Sync and real-time coordination |
-| 🛡️ **Policy Studio** | AI governance layer with FGAC (Fine-Grained Access Control) |
-| 📊 **MnemoStrategist** | AI planner integrating the BMAD 2.0 system for real-life project creation (Web2 & Web3) |
-| ⚡ **MnemoForge** | AI-driven app generator — scaffold full Mnemosyne modules from a prompt |
-| 🧩 **MnemoHub** | Centralized ecosystem hub for managing all optional apps, widgets, and features |
-| 🔗 **NexusGraph** | Knowledge graph visualization |
-| 🎯 **Cockpit** | Personalized AI dashboard with modular widgets |
+| 🧭 **Neural Map** | Your memory rendered as a living mathematical topology — nodes are memories, edges are resonance, tuned live |
+| 🧩 **MnemoHub** | A store of cartridges (mini-apps) whose catalog is signed by a sovereign wallet and verified client-side before anything renders |
+| 💤 **Dream State** | A consolidation engine that replays and links memories during idle phases |
+| 🗄️ **Vaults** | Memory partitioned by life domain, each with its own protection level and consent boundary |
+| 🎙️ **Voice Assistant** | Local or cloud speech, streaming STT/TTS, gapless local playback |
+| 💬 **Multimodal Chat** | Text, voice, and file-grounded conversation with live retrieval from your own vaults |
+| 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running — laptop LLM to frontier cloud model |
+| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (NFT on Base), pseudonym claims, and cloud credits — no account, no password |
+| 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
 
 ### Interface Gallery
 
@@ -173,13 +170,13 @@ from, third-party code.
 │  Zustand (state) · i18next (EN/FR/ES) · Tailwind CSS   │
 │                                                         │
 │  30+ lazy-loaded routes · Suspense boundaries          │
-│  62+ i18n namespaces · Vitest + Testing Library suite  │
+│  47 i18n namespaces · Vitest + Testing Library suite    │
 └────────────────────┬────────────────────────────────────┘
                      │ Context Bridge · Zod-validated IPC
                      │ contextIsolation: true · nodeIntegration: false
 ┌────────────────────▼────────────────────────────────────┐
 │                    MAIN PROCESS (Electron)               │
-│  IPC Registry · Modular services architecture           │
+│  242 IPC channels · Modular services architecture        │
 │  Structured logging (ANSI → userData/logs/main.log)     │
 │  Content Security Policy · Node.js binary resolver      │
 │                                                         │
@@ -201,7 +198,7 @@ from, third-party code.
 - No telemetry without consent
 
 **Stack**
-- **Runtime:** Electron 39, Node.js 22
+- **Runtime:** Electron 31, Node.js 22
 - **Frontend:** React 18, TypeScript (strict mode), Vite
 - **State:** Zustand with `useShallow` atomic selectors
 - **AI Integration:** Claude API, Ollama (local LLMs), OpenAI-compatible endpoints
@@ -222,10 +219,10 @@ ecosystem built around a proprietary core.
 | **Mnemosyne Neural OS** (platform) | Proprietary | © 2026 XPACEGEMS LLC — All rights reserved |
 
 The **SDK** and **MnemoForge CLI** are MIT licensed — fork them, build on them, ship
-your own apps. The **Mnemosyne Neural OS platform** — the desktop application,
-Resonance Engine, MnemoVault, MnemoSync, Policy Studio, and associated services — is
-**proprietary software**. No part of the platform may be copied, modified, or
-distributed without explicit written permission from XPACEGEMS LLC.
+your own apps. The **Mnemosyne Neural OS platform** — the desktop application, Neural
+Map, MnemoHub, Dream State, Vaults, and associated services — is **proprietary
+software**. No part of the platform may be copied, modified, or distributed without
+explicit written permission from XPACEGEMS LLC.
 
 > For licensing inquiries: [dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com)
 
@@ -239,7 +236,7 @@ ESLint warnings       : 0
 Test suite            : Vitest + Testing Library (green CI)
 CI pipeline           : ✅ Green (typecheck → lint → i18n → tests)
 Languages             : 3 (EN / FR / ES)
-i18n namespaces       : 62+
+i18n namespaces       : 47
 Electron security     : context isolation · Zod-validated IPC · CSP
 ```
 
@@ -253,8 +250,8 @@ Mnemosyne is built on three principles:
 telemetry without consent. FGAC controls what the AI can and cannot access.
 
 **2. Multi-model** — No vendor lock-in. Claude for reasoning quality, Ollama for
-local/offline runs, any OpenAI-compatible endpoint. The soul profile layer works
-across all backends.
+local/offline runs, any OpenAI-compatible endpoint — switch per task, or let the app
+route automatically.
 
 **3. Agentic by design** — Not a chat interface with file upload. A real orchestration
 layer where multiple AI agents coordinate, with policy enforcement and audit trails.
@@ -265,10 +262,10 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 
 - [x] **Public beta — Mnemosyne OS v1.1.0-beta.1** (Soul Studio · Resonance · First Contact)
 - [x] **MnemoForge CLI v1.3.18 published on npm** — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
-- [ ] 🚀 **Mnemosyne OS Infinity Edition — V1 final public launch**
-- [ ] Team features (shared vault, multi-soul coordination)
+- [x] 🚀 **Mnemosyne OS Infinity Edition — public launch**, now at [**v1.3.2 · The Memory Covenant**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity)
+- [ ] Team features (shared vault, multi-agent coordination)
 - [ ] Self-hosted sync server
-- [ ] Plugin marketplace for community soul profiles
+- [ ] Plugin marketplace for community cartridges
 
 ---
 
