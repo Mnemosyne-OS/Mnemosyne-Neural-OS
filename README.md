@@ -24,6 +24,7 @@
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
+[![LongMemEval-M](https://img.shields.io/badge/LongMemEval--M-72.9%25-33ffd6?style=flat-square)](https://github.com/yaka0007/mnemosyne-benchmarks)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 [![version](https://img.shields.io/github/v/release/yaka0007/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases)
 
@@ -139,6 +140,26 @@ flowchart LR
     style B fill:#1a1a2e,stroke:#7c3aed,color:#fff
     style F fill:#1a0e1a,stroke:#ff6b9d,color:#fff
 ```
+
+### Proven on LongMemEval-M — not just a pitch
+
+| | |
+|---|---|
+| **64.6 % → 72.9 %** | overall accuracy, full-haystack (hard) variant |
+| **1/8 → 5/8** | multi-session recall — the category that actually needs a memory engine |
+| Every HIT above | **replayed and reproduced** before being counted — no cherry-picked runs |
+
+[LongMemEval](https://github.com/xiaowu0162/LongMemEval) is a public,
+independent long-term-memory benchmark. Its **full-haystack** variant surrounds
+every question's evidence with ~480 distractor sessions — the closest published
+setup to a real, lived-in memory vault, and harder than the `-S` slice most
+reported numbers use.
+
+72.9 % is a stated **lower bound** — only the multi-session category was
+re-run with the full engine; other categories weren't retried yet.
+Full methodology, root-cause analysis, and all 16 raw run logs are public:
+
+**→ [mnemosyne-benchmarks](https://github.com/yaka0007/mnemosyne-benchmarks)**
 
 ### Interface Gallery
 
