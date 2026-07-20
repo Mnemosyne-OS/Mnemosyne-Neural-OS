@@ -396,7 +396,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 - [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
 - [x] ⚡ **MnemoForge CLI v1.3.18** on npm — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
-- [x] 🌱 **Public beta — v1.1.0-beta.1** — where it started (Soul Studio · Resonance · First Contact)
+- [x] 🌱 **Public beta — v1.1.0-beta.1** — where it started (personality-profile builder, semantic memory graph, first-contact onboarding)
 
 ### What's next
 - [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so users can reach each other directly, peer to peer, with **no classic internet required**
@@ -430,7 +430,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 
 <br/>
 
-*"The model may not know who it is. The soul does."*
+*Memory decides who an agent stays between sessions — not whatever model happens to be running.*
 
 <br/>
 
