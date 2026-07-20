@@ -1,0 +1,23 @@
+<svg viewBox="0 0 240 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="infTitle">
+  <title id="infTitle">Mnemosyne OS — the infinity sigil, living memory made visible</title>
+  <defs>
+    <linearGradient id="infinityFlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6">
+        <animate attributeName="stop-color" values="#8B5CF6;#38BDF8;#33FFD6;#8B5CF6" dur="16s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#38BDF8">
+        <animate attributeName="stop-color" values="#38BDF8;#33FFD6;#8B5CF6;#38BDF8" dur="16s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+  </defs>
+  <g style="transform-origin: 120px 64px;">
+    <animateTransform attributeName="transform" type="scale" values="1;1.08;1" dur="4s" repeatCount="indefinite" />
+    <path d="M64,64 C64,36 92,36 120,64 C148,92 176,92 176,64 C176,36 148,36 120,64 C92,92 64,92 64,64 Z"
+      fill="none" stroke="#8892a6" stroke-opacity="0.22" stroke-width="9" stroke-linecap="round" />
+    <path d="M64,64 C64,36 92,36 120,64 C148,92 176,92 176,64 C176,36 148,36 120,64 C92,92 64,92 64,64 Z"
+      fill="none" stroke="url(#infinityFlow)" stroke-width="9" stroke-linecap="round"
+      pathLength="300" stroke-dasharray="140 160">
+      <animate attributeName="stroke-dashoffset" from="0" to="-300" dur="4s" repeatCount="indefinite" />
+    </path>
+  </g>
+</svg>

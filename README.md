@@ -2,6 +2,8 @@
 
 <br/>
 
+<img src="assets/infinity-animated.svg" width="200" alt="Mnemosyne OS — the infinity sigil, living memory made visible" />
+
 ```
 ███╗   ███╗███╗   ██╗███████╗███╗   ███╗ ██████╗ ███████╗██╗   ██╗███╗   ██╗███████╗
 ████╗ ████║████╗  ██║██╔════╝████╗ ████║██╔═══██╗██╔════╝╚██╗ ██╔╝████╗  ██║██╔════╝
