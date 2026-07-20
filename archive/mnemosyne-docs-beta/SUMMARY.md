@@ -52,10 +52,8 @@
 * [Chronicles — Index](../handbook/chronicles/README.md)
 * [The Open Standard Session — 2026-04-04](../handbook/chronicles/CHRONICLE-2026-04-04-the-open-standard-session.md)
 
-## Community & Perspectives
+## Community
 
-* [An AI's View of This Codebase](../AI_PERSPECTIVE.md)
-* [IRINA — A Testimony](../IRINA_PERSPECTIVE.md)
 * [Contributing (Humans)](../CONTRIBUTING.md)
 * [Contributing (AI Agents)](../CONTRIBUTING_AI.md)
 * [Code of Conduct](../CODE_OF_CONDUCT.md)

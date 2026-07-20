@@ -93,7 +93,7 @@ The system that emerged from five and a half months of Neural Coding:
 |--------|-------|
 | Source files (TypeScript/TSX) | 1,372 |
 | Lines of code | ~290,000 |
-| IPC methods (explicit) | 379 |
+| IPC methods (explicit) | 379 total · 242 Zod-validated channels |
 | Test suite | 1,126 tests — 100% passing |
 | TypeScript errors | 0 |
 | Starting coding experience | Zero |
