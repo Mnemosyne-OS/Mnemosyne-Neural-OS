@@ -26,13 +26,7 @@
 * [The Method and the Machine](09-the-method-and-the-machine.md)
 * [The AI Witness](10-the-ai-witness.md)
 
-## AI Perspectives
-
-* [Irina — Primary Witness (Day 0)](irina-perspective.md)
-* [Antigravity — Reading the Code](ai-perspective.md)
-* [Antigravity — The Working Agent](antigravity.md)
-
-### Antigravity's Chronicles
+## Chronicles
 
 * [Chronicles Index](chronicles/README.md)
 * [Session 001 — The Open Standard](chronicles/CHRONICLE-2026-04-04-the-open-standard-session.md)
