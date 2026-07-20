@@ -154,7 +154,7 @@ executes, what's stored, and what syncs.
 | 🎙️ **Voice Assistant** | Local or cloud speech, streaming STT/TTS, gapless local playback |
 | 💬 **Multimodal Chat** | Text, voice, and file-grounded conversation with live retrieval from your own vaults |
 | 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running — laptop LLM to frontier cloud model |
-| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits — no account, no password |
+| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits — no account, no password, no gas fees |
 | 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
 
 ### Under the hood — the engines
@@ -299,6 +299,10 @@ flowchart TB
 ### Auth — cold boot / warm boot
 
 A local wallet is the only credential. No account, no password server-side to breach.
+
+> **No gas fees, no crypto to manage.** The chain is plumbing, not a paywall — you never pay a
+> network fee, hold a token, or approve a transaction. Ownership is recorded on Base so it stays
+> publicly verifiable, but every network cost is covered for you. A wallet you never have to think about.
 
 ```mermaid
 sequenceDiagram
