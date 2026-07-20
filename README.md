@@ -362,6 +362,14 @@ Map, MnemoHub, Dream State, Vaults, and associated services — is **proprietary
 software**. No part of the platform may be copied, modified, or distributed without
 explicit written permission from XPACEGEMS LLC.
 
+**Why the core is closed.** Everything you need to *build* is open; what stays sealed is
+the part that took years of full-time R&D to get right — the memory engines (Spine,
+Retrieval, Dream State) behind the LongMemEval numbers above. Keeping that core
+proprietary is what lets an independent lab sustain the project, fund the open ecosystem
+around it, and grow a team — instead of handing a hard-won engine to anyone who would
+re-skin it. The trade is deliberate: everything above the Gateway is yours to fork; the
+engine that makes it worth building on stays ours.
+
 > For licensing inquiries: [dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com)
 
 ---
@@ -429,16 +437,6 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 ---
 
 <div align="center">
-
-### Maintainer — live GitHub stats (year to date)
-
-<!--PROFILE_STATS_START-->
-![GitHub contributions 2026](https://img.shields.io/static/v1?label=contributions+2026&message=0&color=22c55e&logo=github&style=flat-square) ![Commits 2026](https://img.shields.io/static/v1?label=commits+2026&message=0&color=0369a1&logo=github&style=flat-square)
-
-*Fallback: public grid + commit search (max 1000; private may be incomplete) · weekly — badges stale, `PROFILE_STATS_PAT` needs rotating*
-<!--PROFILE_STATS_END-->
-
-<br/>
 
 *Memory decides who an agent stays between sessions — not whatever model happens to be running.*
 
