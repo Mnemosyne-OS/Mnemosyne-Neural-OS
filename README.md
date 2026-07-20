@@ -302,9 +302,10 @@ Mnemosyne is built on three principles:
 **1. Sovereignty** — Your data stays local. Your models run locally if you choose. No
 telemetry without consent. FGAC controls what the AI can and cannot access.
 
-**2. Multi-model** — No vendor lock-in. Claude for reasoning quality, Ollama for
-local/offline runs, any OpenAI-compatible endpoint — switch per task, or let the app
-route automatically.
+**2. Multi-model** — No vendor lock-in. Claude, GPT, Gemini, Groq, Mistral, DeepSeek,
+and MiniMax in the cloud; Ollama or a local GGUF model fully offline; any
+OpenAI-compatible endpoint on top — switch per task, or let the app route
+automatically.
 
 **3. Agentic by design** — Not a chat interface with file upload. A real orchestration
 layer where multiple AI agents coordinate, with policy enforcement and audit trails.
