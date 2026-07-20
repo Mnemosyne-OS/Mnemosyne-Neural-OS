@@ -302,10 +302,10 @@ Running Mnemosyne OS is unlocked by an **Engramm** — named after the *engram*,
 trace a memory leaves in the brain. Fitting for a memory OS: it's your own verifiable trace of
 ownership.
 
-Rather than an account and a monthly subscription, your license is recorded on-chain (Base) and
-bound to your wallet — you hold it, you own your copy, and anyone can verify it. The same Engramm
-is what drives your sovereign pseudonym and cloud credits. Holding it and checking it cost you
-nothing — see below.
+Rather than an account and a monthly subscription, your license lives on-chain (Base), bound to
+your wallet — not to a machine, not to an email. You hold it, so you own your copy and carry it to
+any device you want, and anyone can verify it. The same Engramm drives your sovereign pseudonym
+and cloud credits. Holding it and checking it cost you nothing — see below.
 
 ### Auth — cold boot / warm boot
 
@@ -376,6 +376,10 @@ your own apps. The **Mnemosyne Neural OS platform** — the desktop application,
 Map, MnemoHub, Dream State, Vaults, and associated services — is **proprietary
 software**. No part of the platform may be copied, modified, or distributed without
 explicit written permission from XPACEGEMS LLC.
+
+**End-user licensing is separate from the code license above.** *Running* Mnemosyne OS is unlocked
+per user by the [Engramm](#the-engramm-license) — an on-chain license bound to your wallet, not a
+subscription — while the SDK and CLI you *build with* stay MIT.
 
 **Why the core is closed.** Everything you need to *build* is open; what stays sealed is
 the part that took years of full-time R&D to get right — the memory engines (Spine,
