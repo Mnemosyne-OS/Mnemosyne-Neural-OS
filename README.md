@@ -127,6 +127,10 @@ Not one big "AI" black box — several independent, purpose-built engines:
 - **242 Zod-validated IPC channels** connect all of the above to the UI — auto-generated
   and checked by a drift test on every build.
 
+> 📄 **Deep dive:** [**The Resonance Engine** — technical whitepaper](doc/RESONANCE_ENGINE_WHITEPAPER.md).
+> The full architecture behind these engines: why memory should *resonate* rather than be looked
+> up, how consolidation and adaptive selection work, and the LongMemEval results — kept current as the engine ships.
+
 ### How memory works
 
 ```mermaid
