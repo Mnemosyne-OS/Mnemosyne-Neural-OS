@@ -89,6 +89,24 @@ Mnemosyne is one answer to a question the industry hasn't yet asked clearly:
 
 ---
 
+## On the horizon
+
+The relationship layer is still deepening. Two capabilities in design extend the triad —
+teased here, not yet shipped:
+
+- **Soul Studio** *(extends Identity)* — shaping an agent's identity as a first-class
+  experience: a name, a voice, values, and behavioral constraints that travel with every
+  session. Today this lives as the [Soul Protocol](../cli/docs) in the CLI; a richer,
+  in-app studio for crafting who your AI *is* is on the way.
+- **Narcissus** *(extends History)* — the AI writing a composed, first-person reflection on
+  its collaboration with you: not a log, but an introspection of how you've worked together
+  and what it has come to understand. Memory that doesn't just *recall* the relationship —
+  it *reflects* on it.
+
+Both are designed and land in future updates.
+
+---
+
 ## How it was built
 
 Mnemosyne OS was built by an independent lab — human-architected through **Neural Coding**:
