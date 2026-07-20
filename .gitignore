@@ -23,3 +23,9 @@ build/
 .env
 .env.*
 !.env.example
+
+# Debug & scratch artifacts (never publish)
+tmp_*
+scratch/
+*.pid
+stdout.txt

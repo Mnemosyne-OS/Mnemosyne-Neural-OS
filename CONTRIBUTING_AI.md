@@ -303,11 +303,17 @@ These settings are in `electron/main.ts` and **must never be changed:**
 
 ```
 contextIsolation: true   → Never set to false
-sandbox:          true   → Never set to false
+sandbox:          true   → Web-content windows; relaxed only for local-AI worker windows (see note)
 nodeIntegration:  false  → Never set to true
 webSecurity:      true   → Never set to false
 webviewTag:       false  → Never set to true
 ```
+
+> **Note on `sandbox`.** Windows that render web content run sandboxed. A small number
+> of local-AI worker windows require `sandbox: false` to spawn in-process inference
+> threads; they carry no remote content and are compensated by `contextIsolation: true`,
+> `nodeIntegration: false`, and Zod-validated IPC through the Gateway. Never relax
+> `sandbox` on a window that renders untrusted or remote content.
 
 **IPC Channel Naming:**
 ```
