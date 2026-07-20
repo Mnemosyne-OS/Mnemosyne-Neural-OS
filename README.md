@@ -82,14 +82,18 @@ public and inspectable — read exactly what a cartridge does before you run it.
 
 | Cartridge | What it is | License |
 |---|---|---|
-| [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) | A living PDF library that reads aloud with word-synced highlighting | **MIT** |
-| [Translator](https://github.com/yaka0007/mnemosyne_OS-translator) | Batch-translate text & Markdown with your own AI key | **MIT** |
 | [MnemoArchipel](https://github.com/yaka0007/MnemoArchipel---Mnemosyne-OS) | The sovereign, offline-first personal CRM | Cartridge License · source-available |
 | [MnemoResto](https://github.com/yaka0007/MnemoResto---MnemosyneOS) | A full restaurant suite — POS, reservations, tips, per-product VAT, inventory | Cartridge License · source-available |
 | [BMAD 2.0](https://github.com/yaka0007/mnemosyne_OS-bmad) | A wizard that turns an idea into a structured project blueprint | Cartridge License · source-available |
+| [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) | A living PDF library that reads aloud with word-synced highlighting | **MIT** |
+| [Translator](https://github.com/yaka0007/mnemosyne_OS-translator) | Batch-translate text & Markdown with your own AI key | **MIT** |
 
 *MIT cartridges are yours to fork and ship anywhere. The **Cartridge License** is source-available —
 read it, learn from it, modify it — with one condition: it runs inside the Mnemosyne OS ecosystem.*
+
+> **🧩 Make your own.** Scaffold a cartridge from the [boilerplate](examples/cartridge-boilerplate),
+> build it against the SDK, and publish it to MnemoHub — exactly how these were made. From `npm create`
+> to a signed, installable cartridge, the whole path is yours.
 
 ---
 
