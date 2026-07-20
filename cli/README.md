@@ -220,7 +220,7 @@ Miami, FL 33122, USA
 Founder & Lead Architect: [Tony Trochet](https://www.linkedin.com/in/tony-t-19544650/)
 
 Built as part of **Mnemosyne Neural OS** — a sovereign AI operating system.  
-Powered by **Antigravity (Google DeepMind)** · **Claude (Anthropic)** · **Cursor**
+Built through **Neural Coding** — human-architected, with Antigravity (Google DeepMind), Claude (Anthropic), and Cursor directed as instruments.
 
 > *"The model may not know who it is. The soul does."*
 

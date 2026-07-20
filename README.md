@@ -432,7 +432,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 **LinkedIn:** [Tony Trochet](https://www.linkedin.com/in/tony-t-19544650/)  
 **GitHub:** [@yaka0007](https://github.com/yaka0007)
 
-> Built with Claude (Anthropic) · Antigravity (Google DeepMind) · Cursor
+> Built through **Neural Coding** — human-architected, with Claude (Anthropic), Antigravity (Google DeepMind), and Cursor directed as instruments.
 
 ---
 
