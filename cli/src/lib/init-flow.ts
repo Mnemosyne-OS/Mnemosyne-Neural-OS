@@ -1,7 +1,7 @@
 // init-flow.ts — Interactive prompts for chronicle init
 // Separated from cli.ts to keep the orchestrator thin
 
-import inquirer from 'inquirer';
+import { getInquirer } from './lazy.js';
 import chalk from 'chalk';
 import { IDE_LIST, PROVIDERS_BY_IDE } from './providers.js';
 import type { VaultConfig, RegisteredModel, ChronicleStyle } from './vault.js';
@@ -25,6 +25,7 @@ export interface ProfileResult {
 }
 
 export async function askPrimaryProfile(existing?: VaultConfig | null): Promise<ProfileResult> {
+  const inquirer = await getInquirer();
   const defaultVault =
     `${process.env['USERPROFILE'] ?? process.env['HOME'] ?? '~'}/Documents/MnemoVault`;
 
@@ -91,6 +92,7 @@ export async function askPrimaryProfile(existing?: VaultConfig | null): Promise<
 
 // ── Extra profile (Step 5 loop) ──────────────────────────────────────────────
 export async function askExtraProfile(count: number): Promise<RegisteredModel | null> {
+  const inquirer = await getInquirer();
   const { wantMore } = await (inquirer as any).prompt([{
     type: 'confirm',
     name: 'wantMore',

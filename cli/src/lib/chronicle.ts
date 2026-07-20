@@ -67,6 +67,7 @@ export function buildChronicleContent(opts: ChronicleOptions): string {
 **IDE**: ${config.ide}
 **Provider**: ${config.provider}
 **Workspace**: ${config.workspace ?? 'unset'}
+**Project**: ${config.resonanceProject ?? 'unset'}
 **Model**: ${config.modelId}
 **Model Name**: ${config.displayName}
 **Type**: ${type}
@@ -85,12 +86,12 @@ source: cli
 ide: ${config.ide}
 provider: ${config.provider}
 workspace: ${config.workspace ?? 'unset'}
+resonance_project: ${config.resonanceProject ?? 'unset'}
 model: ${config.modelId}
 display_name: ${config.displayName}
 type: ${type}
 date: ${new Date().toISOString()}
 tags: ${allTags.join(', ')}
-chronicle_path: ${config.vaultPath}/.cli_resonance/${config.ide}/${config.provider}
 -->
 `;
 }
