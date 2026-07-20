@@ -73,6 +73,32 @@ ingesting and querying the vault — under FGAC, scoped, and consent-gated — i
 
 ---
 
+## Why call it an "OS"?
+
+Not because it has a kernel or drivers — because it does what an OS does:
+**it manages resources on behalf of processes that shouldn't have to manage them
+themselves.** Linux does that for programs (CPU, RAM, disk, network). Mnemosyne does
+the same thing for **AI agents**, and the resources are just different:
+
+| An agent needs | Mnemosyne manages it via |
+|---|---|
+| **Memory** | Vaults — SQLite + vector stores, partitioned by domain, encrypted at rest |
+| **Context** | Chronicles + semantic retrieval — the agent never rebuilds its past by hand |
+| **Compute** | Routing across model tiers (budget/standard/premium, local/cloud) by task complexity |
+| **Hardware** | Real GPU/CPU dispatch for local speech (CUDA detection, isolated sidecars) so a heavy model never blocks the app |
+| **I/O** | A signed intent protocol (query / ingest / forget / focus) instead of raw reads and writes |
+| **Security** | FGAC, scoped JWTs, Zero-Trust IPC validation |
+| **Persistence** | Cross-session continuity — no cold start on every invocation |
+
+This isn't a marketing stretch invented for this repo. **MemGPT** (Packer et al., UC
+Berkeley, 2023, [arXiv:2310.08560](https://arxiv.org/abs/2310.08560)) proposed the same
+"OS for LLMs" analogy in a peer-reviewed paper — virtual context management modeled on
+OS memory hierarchies. Mnemosyne takes that same premise further: not a single-session
+context-paging technique, but a system that runs continuously, isolates multiple agents,
+and persists on the machine as a daemon — not a library you import and lose on exit.
+
+---
+
 ## The open ecosystem
 
 The open surface of Mnemosyne OS is **MIT-licensed** and free to build on:
@@ -126,6 +152,33 @@ executes, what's stored, and what syncs.
 | 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running — laptop LLM to frontier cloud model |
 | 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits — no account, no password |
 | 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
+
+### Under the hood — the engines
+
+Not one big "AI" black box — several independent, purpose-built engines:
+
+- **Embedding engine** — a priority-ordered chain of embedding providers (cloud, local
+  ONNX, Ollama). Tries each in order and **fails loud rather than returning a null
+  vector** — a failed embedding must never silently become an invisible memory.
+- **Retrieval engine** — an in-RAM, decrypted vector cache (int8-quantized to scale),
+  ANN search unioned with exact term matching before the final re-rank pass.
+- **Spine engine** — classifies every memory by semantic nature (its "spine" + tags),
+  from a taxonomy that lives as **data**, not hardcoded logic — so new categories don't
+  require a code change.
+- **Dream State** — two-speed consolidation. A fast, low-latency tier extracts facts
+  during active use; a heavier tier runs at idle/night to resolve contradictions and
+  link memories across sessions. Output is appended alongside raw retrieval, never
+  silently replacing it — see the [benchmark results](#proven-on-longmemeval-m--not-just-a-pitch) below.
+- **Adaptive RAG (the "gearbox")** — rather than injecting every retrieved candidate,
+  context selection (top-k / MMR / low-discrepancy sampling) scales to both the model
+  tier you're running and the thinking mode you pick.
+- **Voice engines, STT and TTS, fully independent** — speech-to-text runs small models
+  in-process and large models in an **isolated GPU/CPU sidecar** (a big STT model loaded
+  in-process can crash the whole app); text-to-speech runs system, cloud, or local
+  (offline binary or GPU voice cloning), scheduled sample-accurately for gapless
+  playback. No NVIDIA GPU → automatic CPU fallback, never a hard block.
+- **242 Zod-validated IPC channels** connect all of the above to the UI — auto-generated
+  and checked by a drift test on every build.
 
 ### How memory works
 
