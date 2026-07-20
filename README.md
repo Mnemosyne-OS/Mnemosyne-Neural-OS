@@ -296,6 +296,17 @@ flowchart TB
     style Chain fill:#1a1a0e,stroke:#f39c12,color:#fff
 ```
 
+### The Engramm License
+
+Running Mnemosyne OS is unlocked by an **Engramm** — named after the *engram*, the physical
+trace a memory leaves in the brain. Fitting for a memory OS: it's your own verifiable trace of
+ownership.
+
+Rather than an account and a monthly subscription, your license is recorded on-chain (Base) and
+bound to your wallet — you hold it, you own your copy, and anyone can verify it. The same Engramm
+is what drives your sovereign pseudonym and cloud credits. Holding it and checking it cost you
+nothing — see below.
+
 ### Auth — cold boot / warm boot
 
 A local wallet is the only credential. No account, no password server-side to breach.
