@@ -1,6 +1,6 @@
 # Privacy and telemetry
 
-**Last checked:** 2026-03
+**Last checked:** 2026-07
 
 ## Telemetry
 

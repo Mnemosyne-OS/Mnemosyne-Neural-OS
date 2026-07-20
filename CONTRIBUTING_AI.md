@@ -12,9 +12,9 @@ Read these documents first. They are not optional context — they are the law:
 
 | Document | Why It Matters |
 |----------|---------------|
-| [IPC Security Bridge](./doc/architecture/IPC_SECURITY_BRIDGE.md) | Every interaction between main process and renderer goes through this |
-| [Nexus Graph Fusion Spec](./doc/technical/NEXUS_GRAPH_FUSION_SPEC.md) | Multi-zone knowledge-graph indexing (read-only, path-secured) |
-| [Privacy & Telemetry](./doc/technical/PRIVACY_TELEMETRY.md) | No telemetry SDK; keys in OS secure storage |
+| [IPC Security Bridge](./doc/IPC_SECURITY_BRIDGE.md) | Every interaction between main process and renderer goes through this |
+| [Documentation index](./doc/README.md) | Concepts, architecture, governance & design-decision docs |
+| [Privacy & Telemetry](./doc/PRIVACY_TELEMETRY.md) | No telemetry SDK; keys in OS secure storage |
 
 ---
 
