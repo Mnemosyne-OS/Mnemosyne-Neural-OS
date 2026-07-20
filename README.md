@@ -154,7 +154,7 @@ executes, what's stored, and what syncs.
 | 🎙️ **Voice Assistant** | Local or cloud speech, streaming STT/TTS, gapless local playback |
 | 💬 **Multimodal Chat** | Text, voice, and file-grounded conversation with live retrieval from your own vaults |
 | 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running — laptop LLM to frontier cloud model |
-| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits — no account, no password |
+| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits — no account, no password, no gas fees |
 | 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
 
 ### Under the hood — the engines
@@ -296,9 +296,24 @@ flowchart TB
     style Chain fill:#1a1a0e,stroke:#f39c12,color:#fff
 ```
 
+### The Engramm License
+
+Running Mnemosyne OS is unlocked by an **Engramm** — named after the *engram*, the physical
+trace a memory leaves in the brain. Fitting for a memory OS: it's your own verifiable trace of
+ownership.
+
+Rather than an account and a monthly subscription, your license lives on-chain (Base), bound to
+your wallet — not to a machine, not to an email. You hold it, so you own your copy and carry it to
+any device you want, and anyone can verify it. The same Engramm drives your sovereign pseudonym
+and cloud credits. Holding it and checking it cost you nothing — see below.
+
 ### Auth — cold boot / warm boot
 
 A local wallet is the only credential. No account, no password server-side to breach.
+
+> **No gas fees, no crypto to manage.** The chain is plumbing, not a paywall — you never pay a
+> network fee, hold a token, or approve a transaction. Ownership is recorded on Base so it stays
+> publicly verifiable, but every network cost is covered for you. A wallet you never have to think about.
 
 ```mermaid
 sequenceDiagram
@@ -361,6 +376,10 @@ your own apps. The **Mnemosyne Neural OS platform** — the desktop application,
 Map, MnemoHub, Dream State, Vaults, and associated services — is **proprietary
 software**. No part of the platform may be copied, modified, or distributed without
 explicit written permission from XPACEGEMS LLC.
+
+**End-user licensing is separate from the code license above.** *Running* Mnemosyne OS is unlocked
+per user by the [Engramm](#the-engramm-license) — an on-chain license bound to your wallet, not a
+subscription — while the SDK and CLI you *build with* stay MIT.
 
 **Why the core is closed.** Everything you need to *build* is open; what stays sealed is
 the part that took years of full-time R&D to get right — the memory engines (Spine,
