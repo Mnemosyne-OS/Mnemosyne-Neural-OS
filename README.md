@@ -124,6 +124,20 @@ executes, what's stored, and what syncs.
 | 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (NFT on Base), pseudonym claims, and cloud credits — no account, no password |
 | 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
 
+### How memory works
+
+```mermaid
+flowchart LR
+    A["Document · conversation · file"] --> B["Vault<br/>domain-isolated, graduated protection"]
+    B --> C["Chronicle<br/>content + semantic type + embedding vector"]
+    C --> D["Semantic retrieval (RAG)"]
+    D --> E["query() / ask()"]
+    F["Dream State<br/>cold consolidation"] -. replays & links .-> C
+
+    style B fill:#1a1a2e,stroke:#7c3aed,color:#fff
+    style F fill:#1a0e1a,stroke:#ff6b9d,color:#fff
+```
+
 ### Interface Gallery
 
 <br/>
@@ -163,26 +177,65 @@ The open SDK and the sealed core are separated by a single boundary: the **Gatew
 Apps speak a public contract; the core's internals are never shipped to, or reachable
 from, third-party code.
 
+```mermaid
+flowchart TB
+    subgraph Renderer["Renderer Process (React)"]
+        UI["React 18 · TypeScript strict · Vite<br/>i18next (EN/FR/ES) · 30+ lazy-loaded routes"]
+    end
+
+    subgraph Bridge["contextIsolation: true · nodeIntegration: false"]
+        CB["Context Bridge<br/>242 Zod-validated IPC channels"]
+    end
+
+    subgraph Main["Main Process (Electron)"]
+        SVC["Services: AI · Vault · Drive · Workspace<br/>Shadow · Window · Network · FGAC · Scheduler"]
+    end
+
+    subgraph Net["Sovereign network (127.0.0.1 only)"]
+        SDKWS["SDK WebSocket"]
+        MCP["MCP server"]
+    end
+
+    subgraph Chain["Base L2 — on-chain"]
+        NFT["Engramm License NFT"]
+    end
+
+    UI <--> CB
+    CB <--> Main
+    Main --> SDKWS
+    Main --> MCP
+    Main -. verify via Gateway .-> NFT
+
+    style Main fill:#1a1a2e,stroke:#7c3aed,color:#fff
+    style Renderer fill:#0f172a,stroke:#38bdf8,color:#fff
+    style Chain fill:#1a1a0e,stroke:#f39c12,color:#fff
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    RENDERER PROCESS                     │
-│  React 18 · TypeScript strict · Vite · Framer Motion   │
-│  Zustand (state) · i18next (EN/FR/ES) · Tailwind CSS   │
-│                                                         │
-│  30+ lazy-loaded routes · Suspense boundaries          │
-│  47 i18n namespaces · Vitest + Testing Library suite    │
-└────────────────────┬────────────────────────────────────┘
-                     │ Context Bridge · Zod-validated IPC
-                     │ contextIsolation: true · nodeIntegration: false
-┌────────────────────▼────────────────────────────────────┐
-│                    MAIN PROCESS (Electron)               │
-│  242 IPC channels · Modular services architecture        │
-│  Structured logging (ANSI → userData/logs/main.log)     │
-│  Content Security Policy · Node.js binary resolver      │
-│                                                         │
-│  Services: AI · Vault · Drive · Workspace · Shadow      │
-│             Window · Network · FGAC · Scheduler         │
-└─────────────────────────────────────────────────────────┘
+
+### Auth — cold boot / warm boot
+
+A local wallet is the only credential. No account, no password server-side to breach.
+
+```mermaid
+sequenceDiagram
+    participant U as "You"
+    participant W as "Sovereign wallet (local)"
+    participant G as "Gateway"
+    participant C as "Base L2 (chain)"
+    participant T as "TPM / OS Keychain"
+
+    Note over U,T: Cold boot (first launch / new machine)
+    U->>W: launch the app
+    W->>G: signed challenge
+    G->>C: verify Engramm NFT on-chain
+    C-->>G: does this wallet hold the license?
+    G-->>W: signed verdict
+    W->>T: derive AES-256 key, store it
+
+    Note over U,T: Warm boot (every launch after)
+    U->>T: Windows Hello / Touch ID
+    T-->>U: releases the key → the runtime wakes up
+
+    Note over W,T: Physical theft = a mathematical vault<br/>encrypted SQLite unreadable + TPM locked
 ```
 
 **Security-first Electron architecture**
