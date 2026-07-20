@@ -24,7 +24,7 @@
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
-[![Mnemosyne OS Benchmark](https://img.shields.io/badge/MnemosyneOS--Benchmark-72.9%25-33ffd6?style=flat-square)](https://github.com/yaka0007/MnemosyneOS---benchmarks)
+[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-72.9%25_·_verifiable-33ffd6?style=flat-square)](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 [![version](https://img.shields.io/github/v/release/yaka0007/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases)
 
@@ -33,6 +33,10 @@
 <!-- Download + MnemoForge badges: auto-updated by `.github/workflows/sync-readme-release-badges.yml` on Release (tags `v…` = OS setup, `cli-…` = CLI). -->
 [![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v1.3.2-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity)
 [![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(Open_Source)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
+
+<br/>
+
+[![Recompute our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Recompute_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)
 
 <br/>
 
@@ -210,9 +214,14 @@ reported numbers use.
 
 72.9 % is a stated **lower bound** — only the multi-session category was
 re-run with the full engine; other categories weren't retried yet.
-Full methodology, root-cause analysis, and all 16 raw run logs are public:
 
-**→ [MnemosyneOS---benchmarks](https://github.com/yaka0007/MnemosyneOS---benchmarks)**
+**Don't take the number on faith — recompute it.** The published grader and
+per-question verdicts let you re-derive the score in one command, no engine and
+no network. Full methodology, root-cause analysis, and all 16 raw run logs are
+public too:
+
+**🔍 [Recompute it yourself — live results page →](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+&nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
 
 ### Interface Gallery
 
