@@ -408,6 +408,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 - [x] 🌱 **Public beta — v1.1.0-beta.1** — where it started (personality-profile builder, semantic memory graph, first-contact onboarding)
 
 ### What's next
+- [ ] 🗜️ **Context compression protocols** — standardized, natively-integrated memory compression so a lifetime of accumulated memory never saturates the context window of small local models. Memory that keeps growing must stay cheap to carry — this is what keeps Mnemosyne sovereign on modest, on-device hardware.
 - [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so users can reach each other directly, peer to peer, with **no classic internet required**
 - [ ] 👥 Team features — shared vaults, multi-agent coordination
 - [ ] 🖥️ Self-hosted sync server
