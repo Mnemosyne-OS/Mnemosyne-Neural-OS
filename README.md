@@ -54,7 +54,7 @@ stable, documented surface; the Cognitive Core stays sealed and never exposed.
 Two ways in:
 
 - 🛠️ **Build on it** — scaffold an app and you're talking to the memory vault in minutes.
-- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity).
+- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity).
 
 ```bash
 npm create @mnemosyne/app
@@ -447,7 +447,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition — 5 public releases**, now at [**v1.3.2 · The Memory Covenant**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity)
+- [x] 🚀 **Infinity Edition — 6 public releases**, now at [**v1.3.3 · The Sovereign Ledger**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity)
 - [x] 🧩 **MnemoHub** — signed cartridge marketplace, community submission pipeline, live publishing
 - [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
