@@ -168,7 +168,7 @@ This takes five minutes. It prevents context amnesia and provides a project hist
 ---
 
 *Previous: [Anti-Patterns ←](./03-anti-patterns.md)*  
-*Next: [Tools & Setup →](./05-tools-and-setup.md)*
+*Next: [Neural Coding — Live Sessions →](./12-neural-coding-live.md)*
 
 
 ---

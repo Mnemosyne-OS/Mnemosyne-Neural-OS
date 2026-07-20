@@ -334,4 +334,4 @@ This is not code uniformity for its own sake. It is the foundation that transfor
 ---
 
 *Part of the [Mnemosyne OS Documentation](./README.md)*\
-*See also: [Developer Guide →](./16-developer-guide.md) · [MnemoBrain →](./11-mnemobrain.md) · [MnemoHub →](./09-mnemohub.md)*
+*See also: [MnemoBrain →](./11-mnemobrain.md) · [MnemoHub →](./09-mnemohub.md)*

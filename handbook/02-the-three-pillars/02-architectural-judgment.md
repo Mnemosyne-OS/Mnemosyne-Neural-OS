@@ -72,7 +72,7 @@ Sometimes the AI solves a symptom, not the cause. Sometimes it puts logic in the
 > - Logs failures to a central log file
 > - Makes the handler list observable (so I can see all handlers in one place)"
 
-This reasoning produced the [IPC Registry pattern](../doc/architecture/IPC_SECURITY_BRIDGE.md) — a centralized registry with per-module fault isolation. It's architecturally distinct from "add try/catch everywhere" even though both prevent crashes.
+This reasoning produced the [IPC Registry pattern](../../doc/architecture/IPC_SECURITY_BRIDGE.md) — a centralized registry with per-module fault isolation. It's architecturally distinct from "add try/catch everywhere" even though both prevent crashes.
 
 The difference is Architectural Judgment.
 

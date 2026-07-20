@@ -138,5 +138,4 @@ The purpose of MnemoChronicle and `mnemoforge-cli` is to make this automatic, st
 ---
 
 *Previous: [The Veto ←](./02-the-three-pillars/03-the-veto.md)*  
-*Next: [The Method and the Machine →](./09-the-method-and-the-machine.md)*  
-*See also: [Chronicles →](./chronicles/README.md)*
+*Next: [The Method and the Machine →](./09-the-method-and-the-machine.md)*
