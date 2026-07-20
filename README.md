@@ -201,10 +201,10 @@ public too:
 
 ## Build on Mnemosyne OS
 
-**Mnemosyne OS is a sovereign, local-first AI operating system — with an open
-developer surface to build on top of it.** Your apps, agents, and skins talk to a
-private AI memory runtime through a **public Gateway contract**. You build against a
-stable, documented surface; the Cognitive Core stays sealed and never exposed.
+You've seen what it is and that it works — now build on it. Your apps, agents, and
+skins talk to the private AI memory runtime through a **public Gateway contract**: a
+stable, documented surface you build against, while the Cognitive Core stays sealed
+and never exposed.
 
 Two ways in:
 
