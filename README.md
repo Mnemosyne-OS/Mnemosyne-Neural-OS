@@ -19,7 +19,9 @@
 
 <br/>
 
-*Give any AI a memory of its own — on your machine, persistent between sessions, and visible as a living map.*
+*Everyone is building the intelligence. Mnemosyne builds the **relationship** — the memory that makes an AI truly know you, across sessions and across time. On your machine. Yours to see.*
+
+[**→ Why the relationship layer**](doc/WHY.md)
 
 <br/>
 
