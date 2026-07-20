@@ -1,300 +1,346 @@
-# The Resonance Engine: A Multi-Layer Cognitive Memory Architecture for Sovereign AI Systems
+# The Resonance Engine: A Multi-Engine Cognitive Memory Architecture for Sovereign AI Systems
 
-**Technical Whitepaper — v1.0**  
-**XPACEGEMS LLC** · Miami, FL 33122, USA  
-**Author:** Tony Trochet, Founder & Lead Architect  
-**Date:** April 2026  
-**Status:** Production-deployed · Part of Mnemosyne Neural OS v1.0
+**Technical Whitepaper — v2.0 · Living document**
+**Current as of Mnemosyne Neural OS v1.3.3 · Revised July 2026**
+**XPACEGEMS LLC** · Miami, FL 33122, USA
+**Author:** Tony Trochet, Founder & Lead Architect
+**Status:** Production-deployed · Part of Mnemosyne Neural OS
+
+> This is a living document. It tracks the architecture as it ships, not a frozen
+> snapshot — it is revised as the engine evolves. Prior editions described the earlier
+> "Resonance/NexusGraph" design; this edition reflects the current multi-engine system.
 
 ---
 
 ## Abstract
 
-Standard Retrieval-Augmented Generation (RAG) systems retrieve documents by keyword or vector similarity — a one-dimensional operation that treats memory as a static lookup table. The **Resonance Engine** is a cognitive memory architecture built for the [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS) that operates across three simultaneous layers: *semantic crystallization*, *multi-dimensional vector retrieval*, and *interactive graph control*. The result is a system that does not simply retrieve information — it perceives relevance, organizes knowledge autonomously, and allows the user to govern what the AI is allowed to remember.
+Standard Retrieval-Augmented Generation (RAG) retrieves documents by keyword or vector
+similarity — a one-dimensional operation that treats memory as a static lookup table.
+The **Resonance Engine** is the cognitive memory architecture of the
+[Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS). Its name is its
+thesis: memory should not be *looked up*, it should **resonate** — the context that
+matters vibrates into focus against the intent of the question, while the rest stays
+quiet.
 
-Resonance operates entirely on the user's local machine, with support for fully offline operation via local embedding models. No vault content is transmitted to external servers without explicit user configuration.
+Resonance is not a single module. It is a set of independent, purpose-built engines —
+**Embedding**, **Spine**, **Retrieval**, **Dream State**, and **Adaptive RAG** — working
+in concert, under a governance layer (**Neural Map**) that lets the user decide what the
+AI is allowed to remember. It runs entirely on the user's machine, supports fully offline
+operation, and never transmits vault content to external servers without explicit user
+configuration. Its retrieval quality is measured, not asserted: see
+[§8, Proven on LongMemEval-M](#8-proven-on-longmemeval-m).
 
 ---
 
 ## 1. The Problem with Standard RAG
 
-Retrieval-Augmented Generation has become the dominant approach for grounding AI responses in personal or organizational knowledge bases. In a typical RAG pipeline:
+In a typical RAG pipeline, documents are chunked into embedding vectors, the query is
+embedded, the top-N nearest chunks are retrieved by cosine similarity, and those chunks
+are prepended to the model's context. This approach has four well-known limitations.
 
-1. Documents are chunked and converted to embedding vectors
-2. A user query is also converted to a vector
-3. The system retrieves the N chunks with the highest cosine similarity
-4. These chunks are prepended to the AI's context as "retrieved memory"
+**1.1 Intent blindness.** Pure vector similarity measures geometric proximity in embedding
+space. It does not understand *why* the user is asking, what they have been working on, or
+what context surrounds the query. Two questions that sound different but carry the same
+intent may retrieve unrelated documents.
 
-This approach has three well-known limitations:
+**1.2 Static memory.** Standard RAG indexes documents as-is, with no semantic enrichment.
+A note is only findable if the query matches its exact words. There is no autonomous
+understanding of what a document *means* or how it relates to the rest of the vault.
 
-**1.1 Intent Blindness**  
-Pure vector similarity measures geometric proximity in embedding space. It does not understand *why* a user is asking, what emotional or strategic context surrounds the query, or what the user has been working on recently. Two queries that sound different but carry the same intent may retrieve completely unrelated documents.
+**1.3 No control plane.** Once indexed, every document participates equally in retrieval.
+The user cannot say "this one is confidential — exclude it," or reason about what the AI
+is allowed to know. There is no governance over memory.
 
-**1.2 Static Memory**  
-Standard RAG indexes documents as they are — with no semantic enrichment. A document about "the Brazil project status update from last Tuesday" is only findable if the user's query semantically matches those exact words. There is no autonomous understanding of what the document *means*, what topics it covers, or how it relates to other documents.
+**1.4 Aggregation blindness.** Because raw chunks are retrieved in isolation, questions
+that span *time* — "how many times did I…", "what's the running total across the year" —
+fail. The evidence is scattered across dozens of sessions the model never assembles. Pure
+retrieval can find *a* fact; it cannot *consolidate* facts.
 
-**1.3 No User Control Plane**  
-Once indexed, all documents participate equally in retrieval. Users cannot tell the system "this document is confidential — exclude it from AI context" or "these two projects should share memory during this session." There is no governance layer over what the AI is allowed to know.
-
-The Resonance Engine addresses all three.
+The Resonance Engine addresses all four.
 
 ---
 
 ## 2. Architecture Overview
 
-The Resonance Engine is composed of three interlocking layers that work in concert during both indexation and retrieval.
+Resonance is realized by five engines, plus a governance plane. Each is independently
+purpose-built — not one "AI" black box — and they cooperate across both indexation and
+retrieval.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    RESONANCE ENGINE                          │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  LAYER 3 — NexusGraph Control Plane                 │   │
-│  │  Interactive graph · Node enable/disable ·          │   │
-│  │  Exclusion lists · Visual vault topology            │   │
-│  └─────────────────────┬───────────────────────────────┘   │
-│                        │ governs                             │
-│  ┌─────────────────────▼───────────────────────────────┐   │
-│  │  LAYER 2 — Vector Memory (Global Index)             │   │
-│  │  Multi-provider embedding cascade (5 providers)     │   │
-│  │  Cosine similarity · Tag boost · Text fallback      │   │
-│  │  Dimension-aware · Local-first · Adaptive delay      │   │
-│  └─────────────────────┬───────────────────────────────┘   │
-│                        │ enriched by                         │
-│  ┌─────────────────────▼───────────────────────────────┐   │
-│  │  LAYER 1 — Semantic Crystallization                 │   │
-│  │  LLM-driven tag + summary extraction per chunk      │   │
-│  │  Paragraph-level chunking · Hashtag normalization   │   │
-│  │  Multi-provider (Ollama → Gemini) · Rate-aware      │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                          THE RESONANCE ENGINE                         │
+│                                                                       │
+│   ┌────────────────────────────────────────────────────────────┐    │
+│   │  NEURAL MAP — governance & topology                        │    │
+│   │  the vault as a living graph · per-node consent control     │    │
+│   └───────────────────────────┬────────────────────────────────┘    │
+│                               │ governs                               │
+│   ┌───────────────────────────▼────────────────────────────────┐    │
+│   │  ADAPTIVE RAG ("the gearbox")                              │    │
+│   │  context selection scaled to the model & thinking mode      │    │
+│   └───────────────────────────┬────────────────────────────────┘    │
+│                               │ selects from                         │
+│   ┌───────────────────────────▼────────────────────────────────┐    │
+│   │  RETRIEVAL ENGINE                                          │    │
+│   │  in-RAM int8 vector cache · ANN ∪ exact-term · re-rank      │    │
+│   └──────────────┬───────────────────────────┬─────────────────┘    │
+│                  │ enriched by               │ augmented by          │
+│   ┌──────────────▼──────────────┐  ┌─────────▼──────────────────┐    │
+│   │  SPINE ENGINE               │  │  DREAM STATE               │    │
+│   │  semantic nature + tags     │  │  idle consolidation ledgers │    │
+│   │  taxonomy-as-data           │  │  augment, never replace     │    │
+│   └──────────────┬──────────────┘  └────────────────────────────┘    │
+│                  │ built on                                           │
+│   ┌──────────────▼─────────────────────────────────────────────┐    │
+│   │  EMBEDDING ENGINE                                          │    │
+│   │  priority-ordered provider chain · fails loud, never null   │    │
+│   └────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Layer 1 — Semantic Crystallization
+## 3. The Embedding Engine
 
-### 3.1 The Problem with Manual Tagging
+Every memory begins as a vector. The Embedding engine is a **priority-ordered chain of
+embedding providers** — cloud, local ONNX, and Ollama — tried in order until one succeeds.
 
-Most knowledge management systems require users to manually tag their documents — a discipline that breaks down quickly in practice. Notes accumulate without tags; the knowledge base becomes an opaque blob that neither the user nor the AI can navigate.
+Its defining principle is that it **fails loud rather than returning a null vector.** A
+failed embedding must never silently become an invisible memory: if no provider can embed
+a chunk, the system surfaces the failure instead of storing an un-retrievable record. The
+active model is whatever the user selects in Settings — a single, explicit source of truth,
+never a hidden bundled default.
 
-Resonance's Crystallization layer inverts this assumption: **the AI tags the documents, not the user.**
-
-### 3.2 How It Works
-
-When a new document is added to the MnemoVault, the Crystallization engine:
-
-1. **Chunks the document** into coherent paragraphs of 200–4,000 characters, preserving semantic boundaries
-2. **Calls a language model** (local via Ollama or cloud via Gemini) with a structured extraction prompt
-3. **Extracts 3–8 semantic hashtags** and a one-sentence summary from each chunk
-4. **Normalizes and deduplicates** the tags (e.g., `AI Research`, `#AI-Research`, `ai_research` → unified `#ai_research`)
-5. **Stores enriched entries** in the project's `RESONANCE_INDEX.json`, mapping each hashtag to the source chunks and documents
-
-The result: a document about "Q1 investor relations, board meeting recap, capital allocation discussion" automatically crystallizes into tags like `#investor_relations`, `#board_meeting`, `#capital_allocation` — without the user doing anything.
-
-### 3.3 Sovereign by Design
-
-The Crystallization engine operates with a strict **local-first cascade**:
-- **Ollama** (local, no network, no API key) — attempted first
-- **Gemini API** — fallback if Ollama is unavailable, with exponential backoff on rate limits
-
-When operating in Local mode, no document content leaves the machine.
+This is what makes offline operation first-class: with a local provider available, the
+entire ingestion path runs on the user's machine, and no content leaves it.
 
 ---
 
-## 4. Layer 2 — Multi-Dimensional Vector Memory
+## 4. The Spine Engine — Semantic Classification
 
-### 4.1 The Global Index
+Most knowledge systems ask the user to tag their documents — a discipline that collapses
+in practice. Resonance inverts this: **the system classifies memories, not the user.**
 
-Resonance maintains a persistent `resonance.index.json` in the user's application data directory. This index stores, for each indexed document:
+The Spine engine assigns every memory a **spine** — its semantic *nature* — refined by
+optional sub-spines and cross-cutting *tags*. Crucially, this taxonomy **lives as data,
+not as hardcoded logic.** New categories do not require a code change; the taxonomy is the
+single source of truth from which ranking weights, visual color, and consolidation buckets
+all derive.
 
-- The document's content hash (for change detection — unmodified files are never re-embedded)
-- The embedding vector (768D to 1024D depending on the provider)
-- A 1,000-character text preview
-- Semantic tags (inherited from Layer 1)
-- Optional priority weight
-
-This index is never transmitted anywhere. It lives entirely on the user's disk.
-
-### 4.2 The Embedding Provider Cascade
-
-To guarantee that Resonance works for every user — whether they have cloud API keys or not — the system implements a **5-provider sequential cascade**:
-
-| Priority | Provider | Dimension | Requires |
-|----------|----------|-----------|----------|
-| 1 | Ollama (local) | 768–1024D | Local install |
-| 2 | Jina AI | 768D | Free API key |
-| 3 | Cohere | 1024D | Free API key |
-| 4 | Gemini | 768D | Google API key |
-| 5 | OpenAI | 1536D | OpenAI API key |
-
-The system automatically detects which providers are available at runtime and selects the first working provider. The provider used is recorded in the index metadata to prevent dimension mismatches on subsequent searches.
-
-### 4.3 The Retrieval Pipeline
-
-When a user sends a message in MnemoBrain (Mnemosyne's AI chat), the Resonance Engine intercepts the query and performs:
-
-1. **Hashtag extraction** — identifies any `#tags` in the query
-2. **Semantic vector generation** — the query text is embedded using the same provider cascade (using `query` mode for asymmetric models like Jina)
-3. **Multi-factor scoring** for each indexed document:
-   - **Cosine similarity** — vector proximity to the query (primary signal)
-   - **Tag boost** — additional weight if hashtags in the query match crystallized tags
-   - **Text fallback** — keyword-based scoring for zero-vector or dimension-mismatch situations
-   - **Priority weight** — user-assigned document importance
-4. **Dimension safety** — if the index was built with a different embedding provider than the current query, the system gracefully falls back to text matching and warns the user
-5. **Ranked injection** — the top-N memory fragments are injected into the AI's system prompt with source attribution
-
-The user sees in real time how many sources were used in the response.
-
-### 4.4 Adaptive Rate Control
-
-Cloud providers impose rate limits. Resonance implements **adaptive delay**:
-- Local embeddings (Ollama): 50ms between documents
-- Cloud embeddings: 1,200ms between documents (respects ~50 req/min quotas)
-
-Indexation also supports **abort-at-next-file** — the user can interrupt a long indexation without data corruption.
+The result: a note about "Q1 investor relations, board recap, capital allocation"
+classifies itself — its nature and tags become the handles the Retrieval and Dream engines
+later resonate against, with no manual curation.
 
 ---
 
-## 5. Layer 3 — The NexusGraph Control Plane
+## 5. The Retrieval Engine
 
-### 5.1 Making the Invisible Visible
+When the user asks a question, the Retrieval engine is what makes the relevant context
+resonate. Its pipeline is a substantial departure from a brute-force cosine scan.
 
-A knowledge vault is only useful if its topology is navigable. NexusGraph is Resonance's visual interface — a real-time, interactive graph where every indexed document is a node, and edges represent thematic proximity derived from shared crystallized tags.
+1. **In-RAM, quantized cache.** Vectors are decrypted once into memory when a vault opens;
+   the data on disk stays encrypted at rest. The in-RAM cache is **int8-quantized** so it
+   stays small enough to scale to a lived-in vault.
 
-### 5.2 Active Memory Control
+2. **ANN ∪ exact-term.** Candidate generation runs an **approximate-nearest-neighbor**
+   vector search **unioned with an exact-term match set.** Vector search finds what a
+   query *means*; exact-term matching guarantees that rare identifiers, codenames, and
+   proper nouns a pure-vector search would miss are never lost.
 
-The defining capability of NexusGraph is not visualization — it is **governance**. Each node in the graph can be:
+3. **Dimension-aware routing.** A query is only ever compared against vectors from its own
+   embedding space. Mismatched spaces are refused rather than silently — and wrongly —
+   compared, so switching embedding models can never quietly corrupt retrieval.
 
-- **Enabled** (default) — the document participates in memory retrieval
-- **Disabled** — the document is excluded from all future retrieval, persisted across sessions in `resonance.excluded.json`
-
-This allows the user to say, permanently, "Mnemosyne, you are not allowed to use this document as memory." The AI becomes governable at the document level.
-
-This is not a soft preference — exclusions are enforced at the query layer, before any similarity computation. Excluded documents are invisible to the AI.
-
----
-
-## 6. Multi-Resonance: Project-Scoped Memory with Bridges
-
-### 6.1 The Problem with a Single Memory Space
-
-A knowledge worker operates across multiple contexts — client projects, personal research, strategic planning, creative work. A single undifferentiated memory space creates noise: material from one project bleeds into AI responses for another.
-
-Resonance introduces **Project Resonance** — each project has an isolated `RESONANCE_INDEX.json` that is independent of the global vault index.
-
-### 6.2 Project Isolation and Selective Bridging
-
-When a project is loaded in Mnemosyne, the AI's memory is scoped exclusively to that project's index. Cross-project contamination is architecturally impossible without explicit configuration.
-
-The **Resonance Bridge** mechanism allows the user to declare, on demand, that two projects should share memory during a session. Bridges are:
-- **Instantaneous** — no re-indexation required; the bridge merges existing indexes in memory
-- **Bi-directional** — each project contributes its crystallized knowledge to the other
-- **Session-scoped** — bridges do not persist by default; each session starts clean
-
-This enables workflows like: *"For today's meeting, let me merge my Product Strategy project memory with my Investor Relations project memory."*
+4. **Re-rank.** A final ranking pass refines the candidate pool before the top fragments
+   are injected into the model's context, with source attribution. The user sees, in real
+   time, how many sources grounded the response.
 
 ---
 
-## 7. Soul Profile Integration
+## 6. Dream State — Consolidation While You're Away
 
-Resonance does not operate in a vacuum. Mnemosyne's **Soul Profiles** — AI personality configurations that define reasoning style, emotional context, and behavioral constraints — influence how retrieved memory fragments are weighted and presented.
+Retrieval finds facts. **Dream State** assembles them. It is a **two-speed consolidation
+engine** and the direct answer to §1.4's aggregation blindness.
 
-A Soul Profile configured for "strategic analysis" will cause Resonance to weight high-priority, recent, and action-oriented fragments more heavily. A profile configured for "creative exploration" relaxes scoring constraints and allows lower-confidence associations to surface.
+- A **fast, low-latency tier** extracts facts during active use.
+- A **heavier tier runs at idle** — while the machine is quiet — re-reading memory by topic,
+  resolving contradictions, and linking evidence *across sessions*. It writes compact
+  **ledgers**: a factual summary of a topic that has already done the cross-session
+  assembly, so an aggregation question ("how many, how much, across time") is answered from
+  a consolidated view instead of scattered chunks.
 
-The Soul layer is the closest analog to the "emotional echoes" described in Mnemosyne's design philosophy — a cognitive coloring of what is remembered and how.
-
----
-
-## 8. Operational Properties
-
-### 8.1 Local-First, Cloud-Optional
-
-Resonance is designed to operate with **zero cloud dependency**:
-
-- Embedding: Ollama models (`nomic-embed-text`, `mxbai-embed-large`, `bge-m3`, etc.)
-- Crystallization: Any Ollama-compatible chat model
-- LLM inference: Ollama for full local operation
-
-In this configuration, the entire pipeline — from document ingestion to AI response — occurs on the user's machine. No data leaves the local environment.
-
-### 8.2 Incremental Indexation
-
-Documents are indexed incrementally using content hashing. When a document changes, only the changed document is re-embedded — a single API call rather than a full vault re-scan. Unchanged documents incur zero API cost.
-
-### 8.3 Graceful Degradation
-
-The system never fails hard. If no embedding provider is available, retrieval degrades gracefully to keyword matching. If provider dimensions mismatch (e.g., the vault was indexed with Gemini and retrieved with Ollama), the system warns the user clearly and activates text fallback — returning results rather than errors.
+Its single non-negotiable architectural property is **augment, never replace.** Measured
+against the alternative, replacing raw memory with summaries was a net loss — so the raw is
+always kept, and the ledger is *added alongside it*. On the read path, consolidated output
+surfaces through a **reserved tier appended after** the normal results; it never evicts a
+raw session. The ledger answers "how many across the year"; the raw still answers the exact
+fact. And because every consolidation is a *written* memory, the human can inspect and
+revoke it — consolidation is never a silent deletion.
 
 ---
 
-## 9. Differentiators vs. Existing RAG Systems
+## 7. Adaptive RAG — The Gearbox
 
-| Capability | Standard RAG | Resonance Engine |
-|-----------|-------------|-----------------|
-| Indexation | Manual embedding, no enrichment | Semantic crystallization (auto-tagging + summarization) |
-| Retrieval | Vector similarity only | Vector + tag boost + text fallback (multi-factor) |
-| Memory control | All-or-nothing | Per-document governance via NexusGraph |
-| Memory scope | Single flat space | Multi-project isolation with selective bridges |
-| Local operation | Rare (most use cloud) | First-class, zero cloud required |
-| Provider resilience | Single provider | 5-provider cascade with automatic fallback |
-| Rate management | User responsibility | Adaptive delay, backoff, abort-at-next-file |
-| Dimension safety | Undefined behavior | Detected, warned, graceful text fallback |
-| Soul integration | N/A | Personality-weighted retrieval |
-| Graph visualization | N/A | NexusGraph — interactive topology with node control |
+More context is not better context. Injecting every retrieved candidate drowns a small
+local model and wastes a large one. **Adaptive RAG** — the "gearbox" — scales context
+selection to *both* the model tier you are running and the thinking mode you pick.
+
+Rather than a fixed top-N, it selects with mechanisms including **top-k, MMR (maximal
+marginal relevance), and low-discrepancy sampling** — trading raw relevance against
+diversity so the injected set covers the question without redundancy. A laptop LLM and a
+frontier cloud model receive context shaped to what each can actually use.
 
 ---
 
-## 10. Implementation Status
+## 8. Proven on LongMemEval-M
 
-The Resonance Engine is **production-deployed** in Mnemosyne Neural OS v1.0.
+Resonance is measured against a public, independent benchmark rather than asserted.
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Vector indexation | ✅ Production | 5-provider cascade, incremental, checksum-based |
-| Semantic crystallization | ✅ Production | Ollama + Gemini, rate-adaptive |
-| NexusGraph visualization | ✅ Production | Real-time, interactive, persistent exclusions |
-| Multi-Resonance (project isolation) | ✅ Production | Per-project `RESONANCE_INDEX.json` |
-| Resonance Bridges | ✅ Production | On-demand, session-scoped, instant merge |
-| Soul Profile integration | ✅ Production | Personality-weighted context injection |
-| Local-only mode | ✅ Production | Ollama-only, zero cloud, toggle via UI |
-| Strategist context building | ✅ Production | Scoped retrieval for AI planning modules |
+|  |  |
+|---|---|
+| **64.6 % → 72.9 %** | overall accuracy, full-haystack (hard) variant |
+| **1/8 → 5/8** | multi-session recall — the category that actually needs a memory engine |
+
+[LongMemEval](https://github.com/xiaowu0162/LongMemEval)'s **full-haystack** variant
+surrounds every question's evidence with ~480 distractor sessions — the closest published
+setup to a real, lived-in memory vault, and harder than the `-S` slice most reported
+numbers use.
+
+**72.9 % is a stated lower bound** — only the multi-session category was re-run with the
+full engine; other categories weren't retried yet. And the number is not asked for on faith:
+the published grader and per-question verdicts let anyone **re-derive the score in one
+command, no engine and no network.** Every counted HIT was replayed and reproduced before
+being counted — no cherry-picked runs.
+
+**→ [Recompute it yourself — live results](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+&nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
+
+The jump from 1/8 to 5/8 on multi-session recall is the point: it is precisely the category
+that a memory *engine* — consolidation plus cross-session linking — exists to fix.
 
 ---
 
-## 11. Future Directions
+## 9. Governance — Neural Map & Vaults
 
-- **Temporal weighting** — fragments from recent sessions weighted more heavily to reflect the current focus of the user's work
-- **Confidence decay** — crystallized tags degrade in confidence as source documents age or are modified
-- **Cross-soul resonance** — different Soul Profiles maintaining independent memory lenses over the same vault
-- **Federated resonance** — MnemoSync P2P synchronization of indexes between trusted peers, enabling shared team memory without a central server
-- **Nonce-based CSP migration** — removing `unsafe-inline` from the CSP while preserving the dynamic theme system
+A memory engine that the user cannot govern is a liability, not a feature. Resonance puts
+the human in control at two levels.
+
+**Vaults.** Memory is partitioned by life domain — code, notes, research, journal, social —
+each an encrypted store (SQLite + vector data, encrypted at rest) with its own protection
+level and consent boundary. Retrieval for a given context is scoped to the vaults the user
+has allowed; domain isolation is enforced, not advisory.
+
+**Neural Map.** The vault is rendered as a living mathematical topology — every node a
+memory, every edge a measured semantic link — that is navigable *and* governable. Its
+defining capability is not visualization but **consent**: what the AI may read, write, or
+sync is controlled here, per the governing tenet of the whole system — *memory perceives,
+situates, and reveals; the human governs.* Exclusions are enforced at the query layer,
+before any similarity computation. What the human turns off is invisible to the AI.
+
+Access is further bounded by **Fine-Grained Access Control (FGAC)**, scoped short-lived
+tokens, and a Zod-validated IPC boundary (242 explicitly declared channels), so a
+third-party app or agent sees only what its manifest was granted — never the core.
 
 ---
 
-## 12. Conclusion
+## 10. Operational Properties
 
-The Resonance Engine represents a departure from the prevailing RAG paradigm. Where standard retrieval is a one-dimensional lookup, Resonance is a three-layer cognitive system: documents crystallize their own semantic identity, vectors locate proximity across the entire knowledge space, and the user governs — with document-level precision — what the AI is and is not allowed to know.
+**10.1 Local-first, cloud-optional.** With a local embedding provider and a local chat
+model (via Ollama), the entire pipeline — ingestion to answer — runs on the user's machine,
+with zero cloud dependency and no data leaving the local environment.
 
-The result is a memory architecture that is simultaneously more intelligent (it understands what documents mean), more capable (it retrieves by intent, not just similarity), more sovereign (the user controls every node), and more resilient (it runs entirely offline when required).
+**10.2 Incremental indexation.** Memories are indexed incrementally by content hash. When a
+document changes, only the changed document is re-embedded; unchanged content incurs zero
+cost and is never needlessly re-processed.
 
-Resonance is not a feature. It is the cognitive substrate on which Mnemosyne Neural OS is built.
+**10.3 Graceful degradation.** The system never fails hard on retrieval. If no embedding
+provider is available, retrieval degrades to exact-term matching rather than erroring. If a
+query's embedding space does not match the stored one, the mismatch is detected and refused,
+not silently miscompared — returning honest results instead of wrong ones.
+
+---
+
+## 11. Differentiators vs. Standard RAG
+
+| Capability | Standard RAG | The Resonance Engine |
+|---|---|---|
+| Indexation | Manual, no enrichment | Automatic semantic classification (Spine, taxonomy-as-data) |
+| Retrieval | Vector similarity only | ANN ∪ exact-term + re-rank (rare terms never lost) |
+| Aggregation over time | Fails (scattered chunks) | Dream State consolidation ledgers |
+| Context selection | Fixed top-N | Adaptive gearbox (top-k / MMR / low-discrepancy), model-aware |
+| Memory control | All-or-nothing | Per-node governance via Neural Map |
+| Memory scope | Single flat space | Domain-isolated vaults with consent boundaries + FGAC |
+| Provider resilience | Single provider | Priority chain, fails loud (never a null vector) |
+| Model-switch safety | Undefined behavior | Dimension-aware routing, refuses cross-space compares |
+| Storage | Plaintext index | Encrypted at rest, decrypted in-RAM (int8) only when open |
+| Verification | Vibes | Public LongMemEval result, recomputable in one command |
+
+---
+
+## 12. Implementation Status
+
+The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current: v1.3.3).
+
+| Engine / component | Status |
+|---|---|
+| Embedding engine (provider chain, fail-loud) | ✅ Production |
+| Spine engine (taxonomy-as-data classification) | ✅ Production |
+| Retrieval engine (in-RAM int8 cache, ANN ∪ exact-term, re-rank) | ✅ Production |
+| Dream State (two-speed consolidation, augment-never-replace) | ✅ Production |
+| Adaptive RAG / gearbox (model- & mode-aware selection) | ✅ Production |
+| Neural Map (topology + per-node governance) | ✅ Production |
+| Vaults (domain isolation, encrypted at rest, FGAC) | ✅ Production |
+| Local-only mode (Ollama, zero cloud) | ✅ Production |
+
+---
+
+## 13. Future Directions
+
+- **Temporal weighting** — fragments from recent sessions weighted to reflect the user's
+  current focus.
+- **Confidence decay** — consolidated summaries lose confidence as their source memories
+  age or change.
+- **Fully local night-time consolidation** — running the heavier consolidation tier on a
+  local reasoning model, so even the "dreaming" needs no cloud (a direction, not yet shipped).
+- **Federated resonance** — P2P synchronization of memory between trusted peers over a
+  sovereign libp2p transport, enabling shared team memory with no central server.
+- **Nonce-based CSP** — removing `unsafe-inline` while preserving the dynamic theme system.
+
+---
+
+## 14. Conclusion
+
+The Resonance Engine is a departure from the prevailing RAG paradigm. Where standard
+retrieval is a one-dimensional lookup, Resonance is a cooperative system of engines:
+memories classify their own semantic nature, an approximate-plus-exact search locates
+proximity across the whole space, idle consolidation assembles facts across time, a gearbox
+shapes context to the model, and the human governs — with per-node precision — what the AI
+is and is not allowed to know.
+
+The result is a memory architecture that is more intelligent (it understands what memories
+mean), more capable (it retrieves by intent and consolidates across time), more sovereign
+(the user controls every node, offline if they choose), more resilient (it degrades
+gracefully and never corrupts on a model switch), and — uniquely — **measured**, on a
+public benchmark anyone can recompute.
+
+Resonance is not a feature. It is the cognitive substrate on which Mnemosyne Neural OS is
+built — the reason context *resonates* into the right answer instead of being looked up.
 
 ---
 
 ## About
 
-**XPACEGEMS LLC** — Independent AI Software Lab  
-Miami, FL 33122, USA  
+**XPACEGEMS LLC** — Independent AI Software Lab
+Miami, FL 33122, USA
 
-**Tony Trochet** — Founder & Lead Architect  
+**Tony Trochet** — Founder & Lead Architect
 [LinkedIn](https://www.linkedin.com/in/tony-t-19544650/) · [GitHub @yaka0007](https://github.com/yaka0007)
 
-**Part of:** [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)  
+**Part of:** [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)
 **Built through Neural Coding:** human-architected, with Claude (Anthropic), Antigravity (Google DeepMind), and Cursor directed as instruments.
 
 ---
 
-*© 2026 XPACEGEMS LLC. All rights reserved.*  
-*This whitepaper describes the architecture and design philosophy of the Resonance Engine. No source code is disclosed herein. The Mnemosyne Neural OS platform is proprietary software.*  
+*© 2026 XPACEGEMS LLC. All rights reserved.*
+*This whitepaper describes the architecture and design philosophy of the Resonance Engine. No source code is disclosed herein. The Mnemosyne Neural OS platform is proprietary software.*
 *The MnemoForge CLI, a companion scaffolding tool, is separately available under the MIT License.*
