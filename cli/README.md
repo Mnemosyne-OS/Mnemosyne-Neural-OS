@@ -11,31 +11,49 @@
 
 **MnemoForge CLI** — The Inception Engine of the Mnemosyne Neural OS
 
-[![NPM Version](https://img.shields.io/badge/version-1.2.2-violet?style=flat-square)](https://www.npmjs.com/package/@mnemosyne_os/forge)
+[![NPM Version](https://img.shields.io/npm/v/@mnemosyne_os/forge?style=flat-square&color=8B5CF6&label=version)](https://www.npmjs.com/package/@mnemosyne_os/forge)
 [![Status](https://img.shields.io/badge/status-beta-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![Ollama](https://img.shields.io/badge/Ollama-local%20AI-black?style=flat-square)](https://ollama.com)
 [![Part of Mnemosyne](https://img.shields.io/badge/ecosystem-Mnemosyne%20Neural%20OS-8B5CF6?style=flat-square)](https://github.com/yaka0007/Mnemosyne-Neural-OS)
 
 </div>
 
-> **⚠️ This package is in active beta development.** APIs and commands may change between minor versions. We are using it in production on Mnemosyne OS itself — feedback and issues welcome.
+> **⚠️ Active beta.** APIs may change between minor versions. We run this in production on the Mnemosyne OS monorepo — feedback welcome.
+
+---
+
+## Ecosystem
+
+| Package | Version | Role |
+|---------|---------|------|
+| **`@mnemosyne_os/forge`** | `1.4.7` | **CLI — scaffold, chronicles, MCP server, resonance agents** |
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | `1.0.0` | SDK — build Layer 2 apps connected to Mnemosyne OS runtime |
+| [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | `0.0.1` | P2P — anonymous multi-agent synchronization via libp2p |
+
+> All packages are independent. Use only what you need.
 
 ---
 
 ## What is MnemoForge?
 
-**MnemoForge** is the official CLI for the [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS) ecosystem.
+**MnemoForge** is the official CLI for the [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS) — a sovereign AI operating system built for the next generation of developer-agent collaboration.
 
 It gives AI agents something they fundamentally lack: **persistent, versionable, IDE-agnostic memory**.
 
-Every time an agent starts a new session, it starts from zero. MnemoForge fixes this with two systems:
+Every time an agent starts a session, it starts from zero. MnemoForge fixes this:
 
 | System | Purpose |
 |---|---|
-| **Chronicles** | Structured memory files capturing key decisions and sessions |
-| **Workspace / Resonance Project** | Project-level rules that any agent reads at session start |
+| **Chronicles** | Structured memory files — key decisions, sessions, architectural moments |
+| **Resonance Profiles** | IDE + Provider + Workspace identity — any agent, any tool |
+| **Resonance Bridge** | Multi-agent protocol — pulse, inbox, send — agents talk to each other |
+| **Local AI Filter** | Ollama integration — compress context before MCP injection (token-safe) |
+| **MCP Server** | `mnemoforge serve` — exposes vault tools to any MCP-compatible agent |
+| **Soul Profiles** | `mnemoforge soul dex` — inject behavioral archetypes (Architect, Shipper...) into your IDE |
+| **Canvas Rules** | Living ruleset of agent + human rules, persisted in vault, never re-explained |
 
 > **"Don't just scaffold code. Scaffold intelligence."**
 
@@ -47,10 +65,10 @@ Every time an agent starts a new session, it starts from zero. MnemoForge fixes 
 npm install -g @mnemosyne_os/forge
 ```
 
-Verify:
+Then run:
 
 ```bash
-mnemoforge --version
+mnemoforge
 ```
 
 ---
@@ -58,89 +76,155 @@ mnemoforge --version
 ## Quick Start
 
 ```bash
-# 1. Initialize the vault (once per machine)
+# 1. Configure your vault + Resonance profile
 mnemoforge chronicle init
 
-# 2. Set up a Workspace (ecosystem / org)
-mnemoforge workspace init
-# → Workspace name: Mnemosyne-OS
+# 2. Configure Local AI (Ollama)
+mnemoforge config ollama
+# → Detects Ollama, lists models, saves your choice
 
-# 3. Create a Resonance Project (feature / component)
-mnemoforge project init
-# → Project: CLI
-# → Chronicles vault: ~/MnemoVault/Mnemosyne-OS/CLI/Antigravity/Anthropic/
+# 3. Open interactive REPL
+mnemoforge forge
 
-# 4. Check workspace rules before starting work (agent briefing)
-mnemoforge workspace show
+# 4. Write a chronicle (interactive)
+mnemoforge chronicle commit
 
-# 5. Archive a chronicle written by your agent
-mnemoforge chronicle archive --file "handbook/chronicles/CHRONICLE-2026-04-05-my-decision.md"
+# 5. Browse your vault
+mnemoforge chronicle open
 ```
-
----
-
-## Core Concepts
-
-### Chronicles
-
-Chronicles are structured Markdown files that capture key decisions, sessions, and architectural moments.
-
-```
-CHRONICLE-YYYY-MM-DD-short-slug.md
-```
-
-They are written by the AI agent at the moment a decision is made — not after. They are archived into a structured vault organized by Workspace → Project → IDE → Provider.
-
-**Chronicle styles:** `session` · `decision` · `reflection` · `sweep` · `narcissus`
-
-### Workspace & Resonance Project
-
-```
-MnemoVault/
-  Mnemosyne-OS/          ← Workspace (ecosystem)
-    CLI/                 ← Resonance Project (feature)
-      Antigravity/       ← IDE
-        Anthropic/       ← Provider
-          CHRONICLE-...md
-    Dashboard/
-      ...
-```
-
-The `WORKSPACE.json` file stores project-level rules readable by any agent at session start — independent of any IDE, cloud, or session state.
 
 ---
 
 ## Commands
 
-### Scaffold
+### 🔮 Resonance Bridge (Multi-Agent Protocol)
+
+> *Enable real-time coordination between AI agents in the same workspace.*
 
 ```bash
-mnemoforge init [module-name]   # scaffold a new Mnemosyne module
+# See all agents and their current status
+mnemoforge resonance agents
+
+# Read your inbox (messages from other agents)
+mnemoforge resonance inbox --agent cursor-ai
+mnemoforge resonance inbox --agent cursor-ai --unread-only --mark-read
+
+# Send a message to another agent
+mnemoforge resonance send \
+  --from antigravity \
+  --to cursor-ai \
+  --type task \
+  --priority high \
+  --message "Feature X ready, please write tests" \
+  --zone "packages/mnemoforge-cli/src/core/"
+
+# Update your agent pulse from the terminal
+mnemoforge resonance pulse --set-agent antigravity --status active --zone "src/" --intent "Coding feature X"
+
+# Read a specific agent's pulse
+mnemoforge resonance pulse --agent cursor-ai
 ```
 
-### Chronicle (Memory)
+**Message types:** `task` · `review` · `test` · `block` · `approve` · `info`  
+**Priorities:** `low` · `medium` · `high` · `critical`
+
+> The Resonance Bridge protocol is **file-based** — messages live in `apps/mnemosync/data/messages/*.md`, readable by any agent or human. No server required.
+
+---
+
+### 🧠 Chronicle (Memory Vault)
 
 ```bash
-mnemoforge chronicle init       # configure vault (IDE, provider, path)
-mnemoforge chronicle archive --file <path>   # archive an agent-written chronicle
-mnemoforge chronicle commit     # create a chronicle interactively or --auto
-mnemoforge chronicle list       # list chronicles in the vault
+mnemoforge chronicle init       # configure vault + Resonance profile
+mnemoforge chronicle switch     # change active profile (IDE / Provider)
+mnemoforge chronicle commit     # write a new chronicle interactively
+mnemoforge chronicle open       # interactive vault browser
+mnemoforge chronicle list       # list recent chronicles
 mnemoforge chronicle sweep      # generate a daily consolidation chronicle
 ```
 
-### Workspace
+### 🏗 Canvas (Project Scaffolding)
 
 ```bash
-mnemoforge workspace init       # create WORKSPACE.json in the current project
-mnemoforge workspace show       # display rules as an agent briefing
-mnemoforge workspace add-rule "<rule>" [--section <section>]
+mnemoforge canvas               # scaffold a new AI-native project
 ```
 
-### Resonance Project
+Templates included: `api` · `react-module` · `agent-service` (+ custom)
+
+### 💬 Prompt Engine
 
 ```bash
-mnemoforge project init         # link workspace + project + scaffold handbook/chronicles/
+mnemoforge prompt list          # browse & use prompt templates interactively
+mnemoforge prompt create        # create a custom reusable prompt template
 ```
+
+### ⚙️ Config & Local AI
+
+```bash
+mnemoforge config               # settings dashboard (vault, profile, AI)
+mnemoforge config ollama        # detect Ollama, select memory filter model
+mnemoforge config edit          # edit vault configuration
+```
+
+### 🔁 Forge (REPL Mode)
+
+```bash
+mnemoforge forge                # interactive REPL with all commands
+```
+
+### 🌐 MCP Server *(coming v1.4)*
+
+```bash
+mnemoforge serve                # start MCP server on port 3141
+mnemoforge serve --port 4000    # custom port
+```
+
+> The MCP server will expose `write_chronicle()` and `get_context()` tools, letting Antigravity, Cursor, and Claude Code write chronicles natively — with Ollama pre-filtering context to reduce token usage.
+
+---
+
+## Local AI Integration (Ollama)
+
+MnemoForge supports local AI via [Ollama](https://ollama.com) for **context compression** — filtering chronicle content before MCP injection to reduce token consumption.
+
+```bash
+# Setup
+mnemoforge config ollama
+
+# What it does:
+# → Pings Ollama at localhost:11434
+# → Lists available models (mistral, deepseek-r1, phi3, llama3...)
+# → Saves your choice to vault config
+# → Used as pre-filter when reading chronicles via MCP
+```
+
+**Recommended models for memory compression:**
+- `phi3:mini` — fastest, lightweight
+- `mistral:7b` — good balance  
+- `llama3.2:latest` — solid general purpose
+- `deepseek-r1:latest` — best reasoning (slower start)
+
+---
+
+## Resonance Profile Architecture
+
+```
+MnemoVault/
+  Mnemosyne-OS/            ← Workspace
+    CLI/                   ← Resonance Project
+      Antigravity/         ← IDE
+        Anthropic/         ← Provider
+          CHRONICLE-2026-04-05-session.md
+          CHRONICLE-2026-04-05-decision.md
+    Dashboard/
+      Cursor/
+        Claude/
+          ...
+```
+
+Each profile is completely independent. Switch between `Antigravity/Anthropic` and `Cursor/Claude` without losing any history.
+
+**Chronicle styles:** `session` · `decision` · `reflection` · `sweep` · `narcissus`
 
 ---
 
@@ -148,50 +232,33 @@ mnemoforge project init         # link workspace + project + scaffold handbook/c
 
 MnemoForge implements **Neural Coding** — a development methodology where:
 
-- The **human** holds the intention and understands the system
-- The **agent** understands the context and executes without mechanical re-explanations
-- The **memory** persists outside of any IDE, session, or conversation
+- The **human** holds the intention and understands the system  
+- The **agent** understands the context and executes without re-explaining everything  
+- The **memory** persists outside any IDE, session, or conversation
 
 The code follows the thought. Not the other way around.
 
-→ [Read the Neural Coding definition](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/cli/docs/04-neural-coding.md)
-
----
-
-## Documentation
-
-Full documentation available in the [cli/docs](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/cli/docs) folder:
-
-- [Getting Started](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/cli/docs/01-getting-started.md)
-- [Chronicle System](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/cli/docs/02-chronicle.md)
-- [Workspace Memory](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/cli/docs/03-workspace.md)
-- [Neural Coding Principles](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/cli/docs/04-neural-coding.md)
-- [Command Reference](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/cli/docs/05-command-reference.md)
+→ [Read the Neural Coding definition](https://mnemosyneos.gitbook.io/)
 
 ---
 
 ## Roadmap
 
-- [x] `mnemoforge init` — module scaffolding with AI governance injection
-- [x] `mnemoforge chronicle init/archive/commit/list/sweep` — agent memory vault
-- [x] `mnemoforge workspace init/show/add-rule` — project safety memory
-- [x] `mnemoforge project init` — Resonance Project hierarchy
-- [ ] `mnemoforge workspace watcher` — auto-archive chronicles on file creation
-- [ ] `mnemoforge canvas` — deploy pre-configured project templates
-- [ ] Chronicle certification — cryptographic signature (Neural Coding P5)
-
----
-
-## Development
-
-```bash
-git clone https://github.com/yaka0007/Mnemosyne-Neural-OS.git
-cd Mnemosyne-Neural-OS/cli
-npm install
-npm run build
-npm link
-mnemoforge --version
-```
+- [x] `chronicle init/commit/list/open/switch/sweep` — agent memory vault
+- [x] `workspace init/show/add-rule` — project safety memory
+- [x] `project init` — Resonance Project hierarchy
+- [x] `canvas` — AI-native project scaffolding
+- [x] `prompt list/create` — reusable prompt templates (interactive)
+- [x] `forge` — interactive REPL mode
+- [x] `config` — settings dashboard + Ollama detection + local AI selection
+- [x] `serve` stub — MCP server preview *(v1.3.8)*
+- [x] `resonance agents/inbox/send/pulse` — multi-agent Resonance Bridge protocol *(v1.4)*
+- [ ] `@mnemosync` VS Code Chat Participant — inbox in Cursor chat *(v1.4)*
+- [ ] `serve` — live MCP server with `write_chronicle` + `get_context` tools *(v1.5)*
+- [ ] Ollama context compression pipeline for MCP *(v1.5)*
+- [ ] `@resonance-bridge/sdk` — standalone protocol package *(v2.0)*
+- [x] `@mnemosyne_os/sdk` — official SDK for Layer 2 app development *(v1.0.0)*
+- [ ] Chronicle certification — cryptographic signature *(v2.0)*
 
 ---
 
@@ -203,7 +270,22 @@ mnemoforge --version
 | Language | TypeScript 5 (strict) |
 | CLI Framework | Commander.js v11 |
 | Prompts | Inquirer.js v8 |
-| Output Styling | Chalk v4 |
+| Styling | Chalk v4 |
+| Local AI | Ollama REST API |
+
+---
+
+## Documentation
+
+Full docs on GitBook: **[mnemosyneos.gitbook.io](https://mnemosyneos.gitbook.io)**
+
+- Getting Started
+- Chronicle System
+- Resonance Profiles
+- Local AI & Ollama
+- MCP Server (upcoming)
+- Neural Coding Principles
+- Command Reference
 
 ---
 
@@ -220,14 +302,14 @@ Miami, FL 33122, USA
 Founder & Lead Architect: [Tony Trochet](https://www.linkedin.com/in/tony-t-19544650/)
 
 Built as part of **Mnemosyne Neural OS** — a sovereign AI operating system.  
-Built through **Neural Coding** — human-architected, with Antigravity (Google DeepMind), Claude (Anthropic), and Cursor directed as instruments.
+Powered by **Antigravity (Google DeepMind)** · **Claude (Anthropic)** · **Cursor**
 
-> *"The model may not know who it is. The soul does."*
+> *"Memory is the architecture of intelligence."*
 
 ---
 
 <div align="center">
 
-**[⭐ Star on GitHub](https://github.com/yaka0007/Mnemosyne-Neural-OS)** · **[📖 Documentation](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/cli/docs)** · **[🐛 Report Issues](https://github.com/yaka0007/Mnemosyne-Neural-OS/issues)**
+**[⭐ Star on GitHub](https://github.com/yaka0007/Mnemosyne-Neural-OS)** · **[📖 GitBook Docs](https://mnemosyneos.gitbook.io)** · **[📦 npm](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[🐛 Issues](https://github.com/yaka0007/Mnemosyne-Neural-OS/issues)**
 
 </div>

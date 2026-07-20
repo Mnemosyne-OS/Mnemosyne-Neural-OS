@@ -4,11 +4,12 @@ import os from 'os';
 
 // ─────────────────────────────────────────────
 // Vault — MnemoVault path resolution
-// Structure: MnemoVault/.cli_resonance/<IDE>/<Provider>/
+// Structure: MnemoVault/<Workspace>/<ResonanceProject>/<IDE>/<Provider>/
 //
-// Provider = the company making the model (Anthropic, GoogleDeepMind…)
-// All model versions from the same provider go in the same folder.
-// The specific model ID is captured inside each chronicle.
+// Workspace        = the ecosystem / org (e.g. 'Mnemosyne-OS')
+// ResonanceProject = a feature / component (e.g. 'CLI', 'Dashboard')
+// IDE              = the AI assistant (e.g. 'Antigravity', 'Cursor')
+// Provider         = the model company (e.g. 'Anthropic', 'GoogleDeepMind')
 // ─────────────────────────────────────────────
 
 export const DEFAULT_VAULT = path.join(os.homedir(), 'Documents', 'MnemoVault');
@@ -26,27 +27,49 @@ export interface RegisteredModel {
 
 export interface VaultConfig {
   vaultPath: string;
-  ide: string;         // e.g. 'Antigravity', 'Cursor', 'ClaudeCode'
-  provider: string;    // e.g. 'Anthropic', 'GoogleDeepMind', 'OpenAI'
-  workspace?: string;  // e.g. 'mnemoforge-cli', 'desktop-dashboard' — project identifier
-  modelId?: string;    // optional — auto-signed per chronicle
+  ide: string;              // e.g. 'Antigravity', 'Cursor', 'ClaudeCode'
+  provider: string;         // e.g. 'Anthropic', 'GoogleDeepMind', 'OpenAI'
+  workspace?: string;       // e.g. 'Mnemosyne-OS'
+  resonanceProject?: string;
+  modelId?: string;
   displayName?: string;
   defaultChronicleStyle?: ChronicleStyle;
   registeredModels?: RegisteredModel[];
+  localAI?: {               // Ollama local model for memory compression
+    provider: 'ollama';
+    model: string;          // e.g. 'mistral:7b'
+    endpoint: string;       // e.g. 'http://localhost:11434'
+  };
+  soulProfile?: string;     // Active dev soul profile ID (architect, auditor, shipper, guardian, challenger)
+  lang?: string;            // UI language: 'en' | 'fr' | 'es' (auto-detected from OS if not set)
 }
 
 
 /**
- * Resolve the chronicle output directory: .cli_resonance/<IDE>/<Provider>/
- * Creates it if it doesn't exist.
+ * Resolve the chronicle output directory.
+ * New structure: <vault>/<Workspace>/<ResonanceProject>/<IDE>/<Provider>/
+ * Legacy fallback (no workspace/project): <vault>/.cli_resonance/<IDE>/<Provider>/
  */
 export function resolveChronicleDir(config: VaultConfig): string {
-  const dir = path.join(
-    config.vaultPath,
-    CLI_RESONANCE_DIR,
-    config.ide,
-    config.provider
-  );
+  let dir: string;
+  if (config.workspace && config.resonanceProject) {
+    // Full Resonance Project structure
+    dir = path.join(
+      config.vaultPath,
+      config.workspace,
+      config.resonanceProject,
+      config.ide,
+      config.provider
+    );
+  } else {
+    // Legacy: .cli_resonance/IDE/Provider
+    dir = path.join(
+      config.vaultPath,
+      CLI_RESONANCE_DIR,
+      config.ide,
+      config.provider
+    );
+  }
   fs.mkdirSync(dir, { recursive: true });
   return dir;
 }

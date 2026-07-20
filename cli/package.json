@@ -1,7 +1,13 @@
 {
   "name": "@mnemosyne_os/forge",
-  "version": "1.2.1",
-  "description": "MnemoForge CLI — The AI Inception Engine for the Mnemosyne Neural OS ecosystem. Scaffold sovereign, AI-governed modules in one command.",
+  "version": "1.4.7",
+  "description": "MnemoForge CLI - The AI Inception Engine for the Mnemosyne Neural OS ecosystem. Scaffold sovereign, AI-governed modules in one command.",
+  "files": [
+    "dist/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "main": "dist/cli.js",
   "bin": {
     "mnemoforge": "./dist/cli.js"
@@ -10,6 +16,8 @@
     "build": "tsc",
     "start": "node dist/cli.js",
     "dev": "tsc -w",
+    "test": "tsx --test src/__tests__/chronicle-parser.test.ts src/__tests__/renderer.test.ts src/__tests__/resonance.test.ts",
+    "test:watch": "tsx --test --watch src/__tests__/chronicle-parser.test.ts src/__tests__/renderer.test.ts src/__tests__/resonance.test.ts",
     "prepublishOnly": "npm run build"
   },
   "publishConfig": {
@@ -17,21 +25,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "keywords": [
-    "mnemosyne",
-    "cli",
-    "scaffold",
-    "ai",
-    "agent",
-    "mnemoforge",
-    "liquid-glass",
-    "react",
-    "tailwind",
-    "cursor",
-    "sovereign-ai",
-    "code-generator",
-    "boilerplate",
-    "chronicle",
-    "neural-coding"
+    "mnemosyne", "cli", "scaffold", "ai", "agent", "mnemoforge",
+    "liquid-glass", "react", "tailwind", "cursor", "sovereign-ai",
+    "code-generator", "boilerplate", "chronicle", "neural-coding"
   ],
   "author": {
     "name": "Tony Trochet",
@@ -40,17 +36,11 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS.git"
-  },
-  "bugs": {
-    "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS/issues"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
+  "repository": { "type": "git", "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS.git" },
+  "bugs": { "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS/issues" },
+  "engines": { "node": ">=18.0.0" },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "chalk": "^4.1.2",
     "commander": "^11.1.0",
     "inquirer": "^8.2.6"
@@ -58,6 +48,8 @@
   "devDependencies": {
     "@types/inquirer": "^8.2.10",
     "@types/node": "^20.10.0",
-    "typescript": "^5.3.3"
+    "tsx": "^4.21.0",
+    "typescript": "^5.3.3",
+    "vitest": "^2.1.9"
   }
 }

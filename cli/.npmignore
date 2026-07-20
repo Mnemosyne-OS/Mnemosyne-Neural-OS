@@ -1,6 +1,12 @@
-# Files to exclude from npm publish
-node_modules/
-dist/
+# Excluded from npm publish — files whitelist in package.json takes precedence
+src/
+docs/
+handbook/
+Mnemosyne-Neural-OS-public/
+MNO-gb/
+.cli_resonance/
 *.log
 .DS_Store
 Thumbs.db
+*.ps1
+tsconfig.json
