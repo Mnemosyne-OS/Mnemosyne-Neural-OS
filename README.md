@@ -24,7 +24,7 @@
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
-[![LongMemEval-M](https://img.shields.io/badge/LongMemEval--M-72.9%25-33ffd6?style=flat-square)](https://github.com/yaka0007/mnemosyne-benchmarks)
+[![Mnemosyne OS Benchmark](https://img.shields.io/badge/MnemosyneOS--Benchmark-72.9%25-33ffd6?style=flat-square)](https://github.com/yaka0007/mnemosyne-benchmarks)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 [![version](https://img.shields.io/github/v/release/yaka0007/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases)
 
