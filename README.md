@@ -121,7 +121,7 @@ executes, what's stored, and what syncs.
 | 🎙️ **Voice Assistant** | Local or cloud speech, streaming STT/TTS, gapless local playback |
 | 💬 **Multimodal Chat** | Text, voice, and file-grounded conversation with live retrieval from your own vaults |
 | 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running — laptop LLM to frontier cloud model |
-| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (NFT on Base), pseudonym claims, and cloud credits — no account, no password |
+| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits — no account, no password |
 | 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
 
 ### How memory works
@@ -197,14 +197,14 @@ flowchart TB
     end
 
     subgraph Chain["Base L2 — on-chain"]
-        NFT["Engramm License NFT"]
+        ENGRAMM["Engramm License"]
     end
 
     UI <--> CB
     CB <--> Main
     Main --> SDKWS
     Main --> MCP
-    Main -. verify via Gateway .-> NFT
+    Main -. verify via Gateway .-> ENGRAMM
 
     style Main fill:#1a1a2e,stroke:#7c3aed,color:#fff
     style Renderer fill:#0f172a,stroke:#38bdf8,color:#fff
@@ -226,7 +226,7 @@ sequenceDiagram
     Note over U,T: Cold boot (first launch / new machine)
     U->>W: launch the app
     W->>G: signed challenge
-    G->>C: verify Engramm NFT on-chain
+    G->>C: verify Engramm on-chain
     C-->>G: does this wallet hold the license?
     G-->>W: signed verdict
     W->>T: derive AES-256 key, store it
@@ -316,9 +316,9 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 - [x] **Public beta — Mnemosyne OS v1.1.0-beta.1** (Soul Studio · Resonance · First Contact)
 - [x] **MnemoForge CLI v1.3.18 published on npm** — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
 - [x] 🚀 **Mnemosyne OS Infinity Edition — public launch**, now at [**v1.3.2 · The Memory Covenant**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity)
+- [x] **MnemoHub — cartridge marketplace**, signed submission pipeline, community publishing live
 - [ ] Team features (shared vault, multi-agent coordination)
 - [ ] Self-hosted sync server
-- [ ] Plugin marketplace for community cartridges
 
 ---
 
