@@ -64,8 +64,6 @@ Neural Coding does not require the AI to be correct. It requires the practitione
 
 The methodology works not by producing correct outputs, but by giving the practitioner a structure within which incorrect outputs can be productively redirected.
 
-→ [Full Chronicle](./chronicles/CHRONICLE-2026-04-04-the-open-standard-session.md)
-
 ---
 
 *This page is updated after each significant session.*  
@@ -100,5 +98,3 @@ Continue, or restructure first?
 **Outcome:** cli.ts refactored into 3 focused modules. 759 → 678 lines. The chronicle init action: 202 → 40 lines.
 
 **Secondary case study:** Agent crash during session (cancelled file write → corrupted file → view_file tool failure → process deadlock → PC reboot). Recovery via git checkout HEAD. Demonstrated the real value of the pulse.json intent system.
-
-→ [Full Chronicle](./chronicles/CHRONICLE-2026-04-04-proactive-governance.md)

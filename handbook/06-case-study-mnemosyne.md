@@ -169,6 +169,6 @@ If you build something using this approach — even partially — document what 
 
 ---
 
-*Previous: [Tools & Setup ←](./05-tools-and-setup.md)*  
+*Previous: [Neural Coding — Live Sessions ←](./12-neural-coding-live.md)*  
 *Next: [Glossary →](./07-glossary.md)*  
 *Part of the [Neural Coding Handbook](./README.md)*
