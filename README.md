@@ -48,59 +48,6 @@
 
 ---
 
-## Build on Mnemosyne OS
-
-**Mnemosyne OS is a sovereign, local-first AI operating system — with an open
-developer surface to build on top of it.** Your apps, agents, and skins talk to a
-private AI memory runtime through a **public Gateway contract**. You build against a
-stable, documented surface; the Cognitive Core stays sealed and never exposed.
-
-Two ways in:
-
-- 🛠️ **Build on it** — scaffold an app and you're talking to the memory vault in minutes.
-- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity).
-
-```bash
-npm create @mnemosyne/app
-```
-
-| Package | What it does |
-|---|---|
-| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Connect an app to the local AI memory runtime (WebSocket / Electron IPC) |
-| [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | Shared types & Zod schemas — the integration contract |
-| [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | Build custom UI skins in pure JSON — zero TypeScript |
-| [`@mnemosyne_os/eval-sdk`](packages/eval-sdk) | Evaluate an integration without touching the core |
-| [`@mnemosyne/create-app`](packages/create-app) | Scaffold a new Mnemosyne app in one command |
-
-Start from the [cartridge boilerplate](examples/cartridge-boilerplate) and you're
-ingesting and querying the vault — under FGAC, scoped, and consent-gated — in minutes.
-
-> **🛡️ Zero-Trust by design.** Every SDK connection authenticates with a short-lived
-> JWT, listens on `127.0.0.1` only, and is bounded by the scopes your app manifest
-> declares. The OS sees your requests; you never see the core.
-
-### The cartridges are real — and readable
-
-The apps in MnemoHub aren't black boxes. Each ships its actual `src/` (React + the SDK),
-public and inspectable — read exactly what a cartridge does before you run it. A few live examples:
-
-| Cartridge | What it is | License |
-|---|---|---|
-| [MnemoArchipel](https://github.com/yaka0007/MnemoArchipel---Mnemosyne-OS) | The sovereign, offline-first personal CRM | Cartridge License · source-available |
-| [MnemoResto](https://github.com/yaka0007/MnemoResto---MnemosyneOS) | A full restaurant suite — POS, reservations, tips, per-product VAT, inventory | Cartridge License · source-available |
-| [BMAD 2.0](https://github.com/yaka0007/mnemosyne_OS-bmad) | A wizard that turns an idea into a structured project blueprint | Cartridge License · source-available |
-| [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) | A living PDF library that reads aloud with word-synced highlighting | **MIT** |
-| [Translator](https://github.com/yaka0007/mnemosyne_OS-translator) | Batch-translate text & Markdown with your own AI key | **MIT** |
-
-*MIT cartridges are yours to fork and ship anywhere. The **Cartridge License** is source-available —
-read it, learn from it, modify it — with one condition: it runs inside the Mnemosyne OS ecosystem.*
-
-> **🧩 Make your own.** Scaffold a cartridge from the [boilerplate](examples/cartridge-boilerplate),
-> build it against the SDK, and publish it to MnemoHub — exactly how these were made. From `npm create`
-> to a signed, installable cartridge, the whole path is yours.
-
----
-
 ## Why call it an "OS"?
 
 Not because it has a kernel or drivers — because it does what an OS does:
@@ -124,34 +71,6 @@ Berkeley, 2023, [arXiv:2310.08560](https://arxiv.org/abs/2310.08560)) proposed t
 OS memory hierarchies. Mnemosyne takes that same premise further: not a single-session
 context-paging technique, but a system that runs continuously, isolates multiple agents,
 and persists on the machine as a daemon — not a library you import and lose on exit.
-
----
-
-## The open ecosystem
-
-The open surface of Mnemosyne OS is **MIT-licensed** and free to build on:
-
-- **Layer-2 SDK** (`/packages`) — the integration surface above: connect apps, build
-  skins, scaffold projects, evaluate against the Gateway.
-- **MnemoForge CLI** (`/cli`) — the sovereign developer tool: give any AI agent
-  persistent memory, a behavioral identity, and an automated publish pipeline.
-
-```bash
-npm install -g @mnemosyne_os/forge
-mnemoforge
-```
-
-| Feature | Command |
-|---|---|
-| 🪬 Soul Protocol — a persistent personality profile for your agent (tone, values, behavioral rules as a structured system-prompt), injected straight into your IDE | `mnemoforge soul inject` |
-| 📋 Canvas Rules — living ruleset persisted across sessions | vault-based, auto-applied |
-| 🗂️ Chronicle System — structured AI memory files | `mnemoforge chronicle write` |
-| 🔌 MCP Server — expose vault tools to any agent | `mnemoforge serve` |
-| 🖥️ Responsive dashboard | `mnemoforge` |
-
-[![npm version](https://img.shields.io/npm/v/@mnemosyne_os/forge?color=8b5cf6&label=%40mnemosyne_os%2Fforge)](https://www.npmjs.com/package/@mnemosyne_os/forge)
-
-→ **[CLI Documentation](https://mnemosyne-os.gitbook.io/mnemosyne-os-cli)** · **[npm package](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[Release notes](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)**
 
 ---
 
@@ -277,6 +196,87 @@ public too:
   <em>Sovereign Notes: write in a local, classified vault — every note is embedded and retrievable, feeding the same memory your agent draws on</em>
   <br/><br/>
 </div>
+
+---
+
+## Build on Mnemosyne OS
+
+**Mnemosyne OS is a sovereign, local-first AI operating system — with an open
+developer surface to build on top of it.** Your apps, agents, and skins talk to a
+private AI memory runtime through a **public Gateway contract**. You build against a
+stable, documented surface; the Cognitive Core stays sealed and never exposed.
+
+Two ways in:
+
+- 🛠️ **Build on it** — scaffold an app and you're talking to the memory vault in minutes.
+- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity).
+
+```bash
+npm create @mnemosyne/app
+```
+
+| Package | What it does |
+|---|---|
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Connect an app to the local AI memory runtime (WebSocket / Electron IPC) |
+| [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | Shared types & Zod schemas — the integration contract |
+| [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | Build custom UI skins in pure JSON — zero TypeScript |
+| [`@mnemosyne_os/eval-sdk`](packages/eval-sdk) | Evaluate an integration without touching the core |
+| [`@mnemosyne/create-app`](packages/create-app) | Scaffold a new Mnemosyne app in one command |
+
+Start from the [cartridge boilerplate](examples/cartridge-boilerplate) and you're
+ingesting and querying the vault — under FGAC, scoped, and consent-gated — in minutes.
+
+> **🛡️ Zero-Trust by design.** Every SDK connection authenticates with a short-lived
+> JWT, listens on `127.0.0.1` only, and is bounded by the scopes your app manifest
+> declares. The OS sees your requests; you never see the core.
+
+### The cartridges are real — and readable
+
+The apps in MnemoHub aren't black boxes. Each ships its actual `src/` (React + the SDK),
+public and inspectable — read exactly what a cartridge does before you run it. A few live examples:
+
+| Cartridge | What it is | License |
+|---|---|---|
+| [MnemoArchipel](https://github.com/yaka0007/MnemoArchipel---Mnemosyne-OS) | The sovereign, offline-first personal CRM | Cartridge License · source-available |
+| [MnemoResto](https://github.com/yaka0007/MnemoResto---MnemosyneOS) | A full restaurant suite — POS, reservations, tips, per-product VAT, inventory | Cartridge License · source-available |
+| [BMAD 2.0](https://github.com/yaka0007/mnemosyne_OS-bmad) | A wizard that turns an idea into a structured project blueprint | Cartridge License · source-available |
+| [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) | A living PDF library that reads aloud with word-synced highlighting | **MIT** |
+| [Translator](https://github.com/yaka0007/mnemosyne_OS-translator) | Batch-translate text & Markdown with your own AI key | **MIT** |
+
+*MIT cartridges are yours to fork and ship anywhere. The **Cartridge License** is source-available —
+read it, learn from it, modify it — with one condition: it runs inside the Mnemosyne OS ecosystem.*
+
+> **🧩 Make your own.** Scaffold a cartridge from the [boilerplate](examples/cartridge-boilerplate),
+> build it against the SDK, and publish it to MnemoHub — exactly how these were made. From `npm create`
+> to a signed, installable cartridge, the whole path is yours.
+
+---
+
+## The open ecosystem
+
+The open surface of Mnemosyne OS is **MIT-licensed** and free to build on:
+
+- **Layer-2 SDK** (`/packages`) — the integration surface above: connect apps, build
+  skins, scaffold projects, evaluate against the Gateway.
+- **MnemoForge CLI** (`/cli`) — the sovereign developer tool: give any AI agent
+  persistent memory, a behavioral identity, and an automated publish pipeline.
+
+```bash
+npm install -g @mnemosyne_os/forge
+mnemoforge
+```
+
+| Feature | Command |
+|---|---|
+| 🪬 Soul Protocol — a persistent personality profile for your agent (tone, values, behavioral rules as a structured system-prompt), injected straight into your IDE | `mnemoforge soul inject` |
+| 📋 Canvas Rules — living ruleset persisted across sessions | vault-based, auto-applied |
+| 🗂️ Chronicle System — structured AI memory files | `mnemoforge chronicle write` |
+| 🔌 MCP Server — expose vault tools to any agent | `mnemoforge serve` |
+| 🖥️ Responsive dashboard | `mnemoforge` |
+
+[![npm version](https://img.shields.io/npm/v/@mnemosyne_os/forge?color=8b5cf6&label=%40mnemosyne_os%2Fforge)](https://www.npmjs.com/package/@mnemosyne_os/forge)
+
+→ **[CLI Documentation](https://mnemosyne-os.gitbook.io/mnemosyne-os-cli)** · **[npm package](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[Release notes](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)**
 
 ---
 
