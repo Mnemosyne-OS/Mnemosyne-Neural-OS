@@ -316,9 +316,9 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 - [x] **Public beta — Mnemosyne OS v1.1.0-beta.1** (Soul Studio · Resonance · First Contact)
 - [x] **MnemoForge CLI v1.3.18 published on npm** — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
 - [x] 🚀 **Mnemosyne OS Infinity Edition — public launch**, now at [**v1.3.2 · The Memory Covenant**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity)
+- [x] **MnemoHub — cartridge marketplace**, signed submission pipeline, community publishing live
 - [ ] Team features (shared vault, multi-agent coordination)
 - [ ] Self-hosted sync server
-- [ ] Plugin marketplace for community cartridges
 
 ---
 
