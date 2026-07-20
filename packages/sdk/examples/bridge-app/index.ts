@@ -1,5 +1,5 @@
 /**
- * bridge-app example — Mnemosyne SDK v2.0 Phase 58
+ * bridge-app example — Mnemosyne SDK Bridge API (Phase 58, shipped in 1.2.1)
  *
  * Minimal example showing how a third-party Layer 2 app can:
  * 1. Connect to Mnemosyne OS via WebSocket
@@ -21,19 +21,19 @@ async function main() {
   console.log('[BridgeApp] Connecting to Mnemosyne OS...');
   const client = await MnemoClientBrowser.connect();
 
-  // 2. Register with Phase 58 bridge:read scope
+  // 2. Register with the bridge:read scope
   const reg = await client.register({
     id: 'my-bridge-app',
     name: 'My Bridge App',
     version: '1.0.0',
-    mnemosyne_sdk: '^2.0.0',
+    mnemosyne_sdk: '^1.2.0',
     scopes: ['vault:read:DEV', 'bridge:read'],
     vaults: ['DEV'],
     intents: ['QUERY', 'BRIDGE_READ'],
   });
   console.log(`[BridgeApp] ✓ Registered — token expires: ${new Date(reg.expiresAt).toISOString()}`);
 
-  // 3. Fetch bridge history (Phase 58 SDK v2.0 API)
+  // 3. Fetch bridge history (bridge:read scope)
   const history = await client.getBridgeHistory({
     limit: 20,
     minCosine: 0.80,        // only high-confidence bridges

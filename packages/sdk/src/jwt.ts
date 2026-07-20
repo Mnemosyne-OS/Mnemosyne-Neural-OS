@@ -1,18 +1,18 @@
 /**
  * @mnemosyne/sdk — JWT HMAC-SHA256 Auth
  *
- * Génère et valide des tokens d'authentification pour les apps SDK.
- * Utilise `node:crypto` — zéro dépendance externe.
+ * Generates and validates authentication tokens for SDK apps.
+ * Uses `node:crypto` — zero external dependencies.
  *
- * Format : base64url(header).base64url(payload).base64url(signature)
- * Algorithme : HMAC-SHA256 (symétrique, secret partagé OS ↔ app)
+ * Format: base64url(header).base64url(payload).base64url(signature)
+ * Algorithm: HMAC-SHA256 (symmetric, shared secret OS ↔ app)
  *
- * ## Compat Browser (MN-005)
- * `Buffer.toString('base64url')` n'est pas supporté par le polyfill npm `buffer`.
- * Les helpers b64url() / parseB64url() utilisent une impl universelle :
- *   - Node.js  : Buffer natif (supporte base64url)
- *   - Browser  : btoa/atob + remplacement des caractères non-URL
- * Cela permet d'importer les CONSTANTES du SDK dans un renderer Electron sans crash.
+ * ## Browser Compat (MN-005)
+ * `Buffer.toString('base64url')` is not supported by the npm `buffer` polyfill.
+ * The b64url() / parseB64url() helpers use a universal impl:
+ *   - Node.js  : native Buffer (supports base64url)
+ *   - Browser  : btoa/atob + replacement of non-URL characters
+ * This allows importing the SDK CONSTANTS in an Electron renderer without a crash.
  *
  * [SDK][SECURITY][AUTH][MN-005]
  */
@@ -25,7 +25,7 @@ export interface JwtPayload {
   sub: string;        // appId
   iat: number;        // issued at (unix timestamp)
   exp: number;        // expiry (unix timestamp)
-  scopes: string[];   // scopes autorisés
+  scopes: string[];   // authorized scopes
   jti: string;        // JWT ID unique (anti-replay)
 }
 
@@ -37,22 +37,22 @@ export interface JwtVerifyResult {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-// ── Helpers universels base64url (Node + Browser) ─────────────────────────
+// ── Universal base64url helpers (Node + Browser) ──────────────────────────
 
 /**
- * Encode une string ou un Buffer en base64url.
- * Node.js  : Buffer.from().toString('base64url') — natif
- * Browser  : btoa() + remplacement char non-URL (RFC 4648 §5)
+ * Encodes a string or a Buffer to base64url.
+ * Node.js  : Buffer.from().toString('base64url') — native
+ * Browser  : btoa() + non-URL char replacement (RFC 4648 §5)
  */
 function b64url(input: string | Uint8Array): string {
   if (typeof Buffer !== 'undefined' && typeof (Buffer.alloc(0).toString as any)('base64url') === 'string') {
-    // Test si base64url est supporté (Node.js natif)
+    // Test whether base64url is supported (native Node.js)
     try {
       const buf = typeof input === 'string' ? Buffer.from(input, 'utf8') : Buffer.from(input);
       return buf.toString('base64url');
     } catch { /* fallback */ }
   }
-  // Fallback universel (Browser / polyfill sans base64url)
+  // Universal fallback (Browser / polyfill without base64url)
   const bytes = typeof input === 'string'
     ? new TextEncoder().encode(input)
     : input;
@@ -66,12 +66,12 @@ function b64url(input: string | Uint8Array): string {
 }
 
 /**
- * Décode une string base64url en string UTF-8.
- * Node.js  : Buffer.from(input, 'base64url').toString('utf8') — natif
- * Browser  : remplacement char + atob()
+ * Decodes a base64url string to a UTF-8 string.
+ * Node.js  : Buffer.from(input, 'base64url').toString('utf8') — native
+ * Browser  : char replacement + atob()
  */
 function parseB64url(input: string): string {
-  // Normalise base64url → base64 standard
+  // Normalize base64url → standard base64
   const base64 = input.replace(/-/g, '+').replace(/_/g, '/')
     + '='.repeat((4 - input.length % 4) % 4);
   if (typeof atob !== 'undefined') {
@@ -85,7 +85,7 @@ const HEADER = b64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
 // ── Core functions ────────────────────────────────────────────────────────────
 
 /**
- * Signe un payload et retourne le token JWT complet.
+ * Signs a payload and returns the complete JWT token.
  */
 export function signToken(payload: JwtPayload, secret: string): string {
   const payloadB64 = b64url(JSON.stringify(payload));
@@ -95,8 +95,8 @@ export function signToken(payload: JwtPayload, secret: string): string {
 }
 
 /**
- * Vérifie un token JWT.
- * Utilise `timingSafeEqual` pour éviter les timing attacks.
+ * Verifies a JWT token.
+ * Uses `timingSafeEqual` to avoid timing attacks.
  */
 export function verifyToken(token: string, secret: string): JwtVerifyResult {
   const parts = token.split('.');
@@ -109,7 +109,7 @@ export function verifyToken(token: string, secret: string): JwtVerifyResult {
   const expectedSig = createHmac('sha256', secret).update(data).digest();
   const actualSig   = Buffer.from(sigB64, 'base64url');
 
-  // Timing-safe comparison — même longueur requise
+  // Timing-safe comparison — same length required
   if (
     expectedSig.length !== actualSig.length ||
     !timingSafeEqual(expectedSig, actualSig)
@@ -133,11 +133,11 @@ export function verifyToken(token: string, secret: string): JwtVerifyResult {
 }
 
 /**
- * Génère un token pour une app SDK.
- * @param appId    Identifiant de l'app
- * @param scopes   Scopes autorisés
- * @param secret   Secret HMAC (32 bytes minimum)
- * @param ttlMs    Durée de vie en ms (défaut: 24h)
+ * Generates a token for an SDK app.
+ * @param appId    App identifier
+ * @param scopes   Authorized scopes
+ * @param secret   HMAC secret (32 bytes minimum)
+ * @param ttlMs    Time-to-live in ms (default: 24h)
  */
 export function generateAppToken(
   appId: string,
@@ -163,7 +163,7 @@ export function generateAppToken(
 }
 
 /**
- * Génère un secret HMAC aléatoire (à stocker dans le keychain OS).
+ * Generates a random HMAC secret (to store in the OS keychain).
  */
 export function generateSecret(): string {
   return randomBytes(32).toString('hex');

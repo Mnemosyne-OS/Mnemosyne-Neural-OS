@@ -1,10 +1,13 @@
-# `mnemoapp.json` — App Manifest Specification
+# `app.manifest.json` — App Manifest Specification
 
-Every Layer 2 application running on Mnemosyne OS must declare an `mnemoapp.json`
-at its root. This file is the **public contract** between your app and the OS.
+Every Layer 2 application declares an `app.manifest.json`. It is the **public
+contract** between your app and the OS: the OS validates it at `register()` and
+enforces the declared scopes/intents on every RPC — anything not declared is
+rejected (Zero-Trust).
 
-The OS validates this manifest at registration time and enforces it at every IPC call.
-Any operation not declared in the manifest will be rejected — Zero-Trust by design.
+> **Source of truth:** the Zod schema in [`src/manifest.ts`](../src/manifest.ts)
+> (`AppManifestSchema`). If this doc and that schema ever disagree, the schema
+> wins — it is what actually validates your manifest.
 
 ---
 
@@ -12,14 +15,17 @@ Any operation not declared in the manifest will be rejected — Zero-Trust by de
 
 ```json
 {
-  "id":          "com.example.my-app",
-  "name":        "My App",
-  "version":     "1.0.0",
-  "api_version": "2.0",
-  "author":      "Your Name",
-  "description": "Short description of what your app does.",
-  "scopes":      ["bridge:read", "vault:query"],
-  "entry":       "dist/app.js"
+  "id":            "my-app",
+  "name":          "My App",
+  "version":       "1.0.0",
+  "author":        "Your Name",
+  "mnemosyne_sdk": "^1.2.0",
+  "description":   "Short description of what your app does.",
+  "scopes":        ["vault:read:DEV", "bridge:read"],
+  "vaults":        ["DEV"],
+  "intents":       ["QUERY", "BRIDGE_READ"],
+  "max_chronicle_size_kb": 64,
+  "requires_consent": false
 }
 ```
 
@@ -27,114 +33,70 @@ Any operation not declared in the manifest will be rejected — Zero-Trust by de
 
 ## Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | `string` | ✅ | Unique reverse-domain app identifier (e.g. `com.example.my-app`) |
-| `name` | `string` | ✅ | Human-readable display name |
-| `version` | `string` | ✅ | Semver app version (e.g. `1.0.0`) |
-| `api_version` | `string` | ✅ | Mnemosyne SDK version your app targets (currently `"2.0"`) |
-| `author` | `string` | — | App author or organization name |
-| `description` | `string` | — | One-line description for MnemoStore display |
-| `scopes` | `string[]` | ✅ | Permissions your app requires (see below) |
-| `entry` | `string` | — | Main entry point relative to app root (used by MnemoStore launcher) |
+| Field | Type | Required | Rule |
+|-------|------|----------|------|
+| `id` | `string` | ✅ | `^[a-z0-9][a-z0-9_-]{1,63}$` — lowercase, hyphens/underscores, 2–64 chars. **Not** reverse-domain; dots are rejected. |
+| `name` | `string` | ✅ | 2–64 chars |
+| `version` | `string` | ✅ | SemVer (e.g. `1.0.0`) |
+| `mnemosyne_sdk` | `string` | ✅ | SemVer range of the SDK you target (e.g. `^1.2.0`) |
+| `scopes` | `string[]` | ✅ | ≥ 1 scope, each from the list below |
+| `vaults` | `string[]` | ✅ | ≥ 1 vault: a core id (`DEV`/`SOCIAL`/`PERSONAL`/`FINANCE`/`RESEARCH`) or a custom `UPPER_SNAKE_CASE` id |
+| `intents` | `string[]` | ✅ | ≥ 1 intent from the list below |
+| `author` | `string` | — | ≤ 64 chars |
+| `description` | `string` | — | ≤ 256 chars |
+| `max_chronicle_size_kb` | `number` | — | 1–1024, default `64` |
+| `requires_consent` | `boolean` | — | **Deprecated / no effect.** The OS decides whether to prompt from the declared scopes (`requiresOsGrant`), not from this flag. |
+
+> Unknown fields are allowed (the schema is not `.strict()`), so MnemoStore-specific
+> fields (`uiMode`, `uiEntryPoint`, …) pass through untouched.
 
 ---
 
-## Available Scopes (Phase 59)
+## Scopes
 
-### Bridge API
+| Scope | Unlocks |
+|-------|---------|
+| `vault:read:<VAULT>` / `vault:write:<VAULT>` | Read/write a vault. `<VAULT>` ∈ `DEV`, `SOCIAL`, `PERSONAL`, `FINANCE`, `RESEARCH` |
+| `vault:read:CUSTOM` / `vault:write:CUSTOM` | Wildcard for **any** user-created (non-core) vault |
+| `share:request` / `share:grant` | Cross-app sharing (`requestShare`) |
+| `monorepo:read` | `gitLog` + `readFile` (`.md` only) |
+| `agents:read` | `agentsList` |
+| `neural:graph:read` | `graphQuery` (NeuralGraph) |
+| `bridge:read` | `getBridgeHistory`, `computeResonance` (Perpetual Memory Bridges) |
+| `llm:query` | Direct LLM generation (premium) |
+| `nft:validate` | Reserved for MnemoStore NFT gating — **roadmap, not yet wired** |
 
-| Scope | Access | Unlocks |
-|-------|--------|---------|
-| `bridge:read` | READ | `computeResonance`, `getBridgeHistory`, `getBridgeSessions` |
+## Intents
 
-### Vault API
+`INGEST`, `QUERY`, `CORRELATE`, `FORGET`, `GIT_LOG`, `LIST_AGENTS`,
+`LIST_VAULTS`, `BRIDGE_READ`.
 
-| Scope | Access | Unlocks |
-|-------|--------|---------|
-| `vault:query` | READ | `sendPulse` with `QUERY` intent — semantic memory search |
-| `vault:read:DEV` | READ | Chronicle access for the DEV vault |
-| `vault:read:SOCIAL` | READ | Chronicle access for the SOCIAL vault |
-| `vault:write:DEV` | WRITE | `ingest()` into the DEV vault (requires explicit grant) |
-
-### System
-
-| Scope | Access | Unlocks |
-|-------|--------|---------|
-| `neural:graph:read` | READ | NeuralGraph topology (experimental) |
-| `monorepo:read` | READ | Git log + markdown file access |
-| `agents:read` | READ | List connected Layer 2 apps |
-| `llm:query` | READ | Direct LLM generation via `sendPulse` (premium) |
-| `nft:validate` | READ | MnemoStore NFT licence validation |
-
-> **Principle of least privilege** — only declare the scopes you actually need.
-> MnemoStore reviewers inspect scope declarations and may flag over-requested permissions.
+> **Least privilege** — declare only what you use. Any `vault:*`, `share:*`, or
+> `llm:query` scope always triggers the OS consent prompt (`requiresOsGrant`),
+> regardless of `requires_consent`.
 
 ---
 
-## Minimal Example — Resonance Filter App
-
-The minimum viable `mnemoapp.json` for an app that only reads bridge resonance:
+## Minimal example — bridge reader
 
 ```json
 {
-  "id":          "com.example.resonance-filter",
-  "name":        "Resonance Filter",
-  "version":     "1.0.0",
-  "api_version": "2.0",
-  "description": "Measures resonance of any text against your cognitive bridge graph.",
-  "scopes":      ["bridge:read"],
-  "entry":       "dist/app.js"
+  "id":            "resonance-filter",
+  "name":          "Resonance Filter",
+  "version":       "1.0.0",
+  "mnemosyne_sdk": "^1.2.0",
+  "description":   "Scores any text against your cognitive bridge graph.",
+  "scopes":        ["bridge:read"],
+  "vaults":        ["DEV"],
+  "intents":       ["BRIDGE_READ"]
 }
 ```
 
 ---
 
-## Full Example — Bridge Explorer
+## Note on the never-shipped `mnemoapp.json` v2
 
-```json
-{
-  "id":          "com.example.bridge-explorer",
-  "name":        "Bridge Explorer",
-  "version":     "1.2.0",
-  "api_version": "2.0",
-  "author":      "Jane Dev",
-  "description": "Explore your semantic bridge timeline with filters and resonance scoring.",
-  "scopes": [
-    "bridge:read",
-    "vault:query",
-    "vault:read:DEV",
-    "vault:read:SOCIAL"
-  ],
-  "entry": "dist/main.js"
-}
-```
-
----
-
-## Validation Rules
-
-The OS enforces the following at registration:
-
-1. **`id`** must match `[a-z][a-z0-9.-]+` — reverse-domain format.
-2. **`version`** must be a valid semver string.
-3. **`api_version`** must be `"2.0"` or higher.
-4. **`scopes`** must be a non-empty array of known scope strings.
-5. **Unknown fields** are silently ignored (forward-compatible).
-
----
-
-## Migration from `app.manifest.json` (SDK v1.x)
-
-If your app uses the old `app.manifest.json` format from SDK v1.x, rename the file
-to `mnemoapp.json` and update the following fields:
-
-| SDK v1.x | SDK v2.0 (`mnemoapp.json`) |
-|----------|---------------------------|
-| `mnemosyne_sdk: "^1.x"` | `api_version: "2.0"` |
-| `scopes: ["vault:read:DEV"]` | Same (unchanged) |
-| `intents: ["QUERY"]` | Removed — intents are inferred from scopes |
-| `vaults: ["DEV"]` | Removed — derived from vault scopes |
-
-> The `mnemosyne_sdk` field from v1.x is still accepted for backward compatibility
-> but is deprecated. Use `api_version` in all new apps.
+Earlier drafts of this doc described an `mnemoapp.json` with a reverse-domain
+`id`, an `api_version: "2.0"` field, an `entry` field, and a `vault:query` scope,
+and claimed `intents`/`vaults` were removed. **None of that shipped.** The SDK
+validator rejects every one of those. Use `app.manifest.json` exactly as above.

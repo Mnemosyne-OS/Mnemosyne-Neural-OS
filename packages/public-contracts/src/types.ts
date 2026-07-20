@@ -1,205 +1,205 @@
 /**
- * @mnemosyne-workspace/public-contracts — types.ts
+ * @mnemosyne_os/public-contracts — types.ts
  *
- * SURFACE PUBLIQUE OFFICIELLE DE MNEMOSYNE OS
- * ============================================
- * Ce fichier définit les types et interfaces partagés avec l'écosystème externe.
- * RÈGLE ABSOLUE : Aucune logique métier ici. Uniquement des types, enums et interfaces.
- * La logique cognitive reste dans le Core Engine (sealed).
+ * OFFICIAL PUBLIC SURFACE OF MNEMOSYNE OS
+ * ======================================
+ * This file defines the types and interfaces shared with the external ecosystem.
+ * ABSOLUTE RULE: No business logic here. Types, enums and interfaces only.
+ * The cognitive logic stays in the sealed Core Engine.
  *
- * @version 0.2.0
+ * @version 0.2.1
  * @phase 65 — Protected Architecture / Asymmetric Exposure
  */
 
 // ─── ENUMS ───────────────────────────────────────────────────────────────────
 
 /**
- * SpineType — La taxonomie cognitive de Mnemosyne.
+ * SpineType — Mnemosyne's cognitive taxonomy.
  *
- * Les Spines sont les "épines dorsales" sémantiques qui classifient
- * chaque Chronicle ingérée. Elles permettent le retrieval Intent-Aware.
+ * Spines are the semantic "backbones" that classify every ingested Chronicle.
+ * They power intent-aware retrieval.
  *
- * SPINES TECHNIQUES : Classifications d'ingénierie et de session.
- * SPINES COGNITIVES : Ce qui différencie Mnemosyne d'un simple RAG.
+ * TECHNICAL SPINES: engineering and session classifications.
+ * COGNITIVE SPINES: what sets Mnemosyne apart from a plain RAG.
  */
 export enum SpineType {
-  // ── Spines Techniques ──────────────────────────────────────────────────────
-  /** Décisions d'architecture, ADR, choix de design. */
+  // ── Technical Spines ───────────────────────────────────────────────────────
+  /** Architecture decisions, ADRs, design choices. */
   ARCHITECTURE  = 'ARCHITECTURE',
-  /** Résolutions de bugs, patches, correctifs. */
+  /** Bug resolutions, patches, fixes. */
   BUGFIX        = 'BUGFIX',
-  /** Changements de dépendances, mises à jour, migrations. */
+  /** Dependency changes, upgrades, migrations. */
   DEPENDENCY    = 'DEPENDENCY',
-  /** Surveillance de documentation, veille technique. */
+  /** Documentation watch, technical monitoring. */
   DOC_WATCH     = 'DOC_WATCH',
-  /** Sessions de travail, contexte de conversation. */
+  /** Work sessions, conversation context. */
   SESSION       = 'SESSION',
 
-  // ── Spines Cognitives & Affectives ────────────────────────────────────────
-  /** Révélation, eurêka, insight majeur. */
+  // ── Cognitive & Affective Spines ───────────────────────────────────────────
+  /** Revelation, eureka, major insight. */
   EPIPHANY      = 'EPIPHANY',
-  /** Idéation, spéculation, exploration de concepts. */
+  /** Ideation, speculation, concept exploration. */
   IDEATIONAL    = 'IDEATIONAL',
-  /** États émotionnels, valence, états de flow. */
+  /** Emotional states, valence, flow states. */
   EMOTIONAL     = 'EMOTIONAL',
-  /** Résonance entre chronicles, connexions sémantiques transversales. */
+  /** Resonance between chronicles, cross-cutting semantic connections. */
   RESONANCE     = 'RESONANCE',
-  /** Nœuds sociaux, interactions humaines, collaborateurs. */
+  /** Social nodes, human interactions, collaborators. */
   SOCIAL_NODE   = 'SOCIAL_NODE',
 }
 
 /**
- * VaultType — Les espaces résonants de Mnemosyne.
+ * VaultType — Mnemosyne's resonant spaces.
  *
- * Chaque Vault a son propre espace vectoriel MRL (Matryoshka Representation Learning).
- * La segmentation permet le retrieval ciblé et la gestion des permissions.
+ * Each Vault owns its own MRL (Matryoshka Representation Learning) vector space.
+ * Segmentation enables targeted retrieval and permission management.
  */
 export enum VaultType {
-  /** Codebase, décisions architecturales, logs de debug. */
+  /** Codebase, architecture decisions, debug logs. */
   DEV      = 'DEV',
-  /** Interactions sociales, collaborateurs, nœuds sociaux. */
+  /** Social interactions, collaborators, social nodes. */
   SOCIAL   = 'SOCIAL',
-  /** Réflexions privées, notes personnelles, idéation. */
+  /** Private reflections, personal notes, ideation. */
   PERSONAL = 'PERSONAL',
 }
 
-// ─── INTERFACES CORE ─────────────────────────────────────────────────────────
+// ─── CORE INTERFACES ─────────────────────────────────────────────────────────
 
 /**
- * Chronicle — L'unité fondamentale de mémoire de Mnemosyne.
+ * Chronicle — Mnemosyne's fundamental unit of memory.
  *
- * Une Chronicle n'est pas un simple document — c'est une mémoire taguée
- * sémantiquement, avec un vecteur d'embedding et une traçabilité temporelle.
+ * A Chronicle is not a plain document — it is a semantically tagged memory,
+ * with an embedding vector and temporal traceability.
  */
 export interface Chronicle {
-  /** Identifiant unique (UUID v4). */
+  /** Unique identifier (UUID v4). */
   id: string;
-  /** Vault de stockage. Détermine l'espace vectoriel utilisé. */
+  /** Storage vault. Determines the vector space used. */
   vaultId: VaultType;
-  /** Contenu textuel de la mémoire. */
+  /** Textual content of the memory. */
   content: string;
-  /** Classifications sémantiques (au moins une Spine requise). */
+  /** Semantic classifications (at least one Spine required). */
   spines: SpineType[];
-  /** Timestamp de création (Unix ms). */
+  /** Creation timestamp (Unix ms). */
   createdAt: number;
-  /** Timestamp de dernière mise à jour (Unix ms). */
+  /** Last-update timestamp (Unix ms). */
   updatedAt?: number;
-  /** Métadonnées arbitraires attachées (source, auteur, ref, etc.). */
+  /** Arbitrary attached metadata (source, author, ref, etc.). */
   metadata?: Record<string, unknown>;
 }
 
 /**
- * QueryResult — Résultat d'une requête Intent-Aware.
+ * QueryResult — Result of an intent-aware query.
  *
- * Le moteur de résonance retourne non seulement les Chronicles pertinentes,
- * mais aussi une réponse synthétisée par le LLM et un score global de résonance.
+ * The resonance engine returns not only the relevant Chronicles, but also a
+ * LLM-synthesized answer and an overall resonance score.
  */
 export interface QueryResult {
-  /** Chronicles pertinentes triées par score de résonance décroissant. */
+  /** Relevant chronicles sorted by descending resonance score. */
   chronicles: Chronicle[];
-  /** Réponse synthétisée par le Core cognitif. Vide si Core non connecté. */
+  /** Answer synthesized by the cognitive Core. Empty if the Core is not connected. */
   synthesizedAnswer: string;
-  /** Score global de résonance sémantique [0.0 – 1.0]. */
+  /** Overall semantic resonance score [0.0 – 1.0]. */
   resonanceScore: number;
-  /** Vaults interrogés pendant cette requête. */
+  /** Vaults queried during this request. */
   vaultsQueried?: VaultType[];
-  /** Spines ayant contribué au retrieval (debug/observabilité). */
+  /** Spines that contributed to retrieval (debug/observability). */
   spinesActivated?: SpineType[];
 }
 
 /**
- * IngestRequest — Paramètres d'une demande d'ingestion de mémoire.
+ * IngestRequest — Parameters of a memory-ingestion request.
  */
 export interface IngestRequest {
-  /** Contenu à ingérer. */
+  /** Content to ingest. */
   content: string;
-  /** Vault cible. */
+  /** Target vault. */
   vault: VaultType;
   /**
-   * Spines demandées. Si absent, le Core applique la classification automatique
-   * via le Intent Classifier (LLM-based).
+   * Requested spines. If omitted, the Core applies automatic classification
+   * via the (LLM-based) Intent Classifier.
    */
   requestedSpines?: SpineType[];
-  /** Métadonnées arbitraires à attacher à la Chronicle créée. */
+  /** Arbitrary metadata to attach to the created Chronicle. */
   metadata?: Record<string, unknown>;
 }
 
 /**
- * QueryRequest — Paramètres d'une requête Intent-Aware.
+ * QueryRequest — Parameters of an intent-aware query.
  */
 export interface QueryRequest {
-  /** L'intention ou question de l'utilisateur (langage naturel). */
+  /** The user's intent or question (natural language). */
   intent: string;
   /**
-   * Vaults à interroger. Si absent, tous les vaults autorisés sont interrogés.
+   * Vaults to query. If omitted, every authorized vault is queried.
    */
   targetVaults?: VaultType[];
   /**
-   * Spines à privilégier (boost de score). Permet le retrieval biaisé.
-   * Exemple : [SpineType.IDEATIONAL] pour une recherche de "meilleures idées".
+   * Spines to favor (score boost). Enables biased retrieval.
+   * Example: [SpineType.IDEATIONAL] to search for "best ideas".
    */
   boostSpines?: SpineType[];
-  /** Nombre maximum de Chronicles retournées (défaut: 10). */
+  /** Maximum number of Chronicles returned (default: 10). */
   limit?: number;
 }
 
-// ─── MANIFESTE DU SEALED CORE ────────────────────────────────────────────────
+// ─── SEALED CORE MANIFEST ────────────────────────────────────────────────────
 
 /**
- * SealedCoreManifest — Métadonnées d'une distribution Sealed Core.
+ * SealedCoreManifest — Metadata of a Sealed Core distribution.
  *
- * Inclus dans chaque archive mnemosyne-core-sealed.tgz sous BUILD_INFO.json.
- * Permet au distributaire de vérifier la compatibilité de version avant install.
+ * Included in every mnemosyne-core-sealed.tgz archive as BUILD_INFO.json.
+ * Lets the distributee verify version compatibility before installing.
  */
 export interface SealedCoreManifest {
-  /** Version du Core Engine scellé. */
+  /** Version of the sealed Core Engine. */
   sourceVersion: string;
-  /** Date ISO 8601 de la compilation. */
+  /** ISO 8601 build date. */
   sealedAt: string;
-  /** Version exacte de Node.js utilisée pour compiler le bytecode. */
+  /** Exact Node.js version used to compile the bytecode. */
   nodeVersion: string;
-  /** Version majeure de Node.js (pour vérification de compatibilité). */
+  /** Node.js major version (for compatibility checks). */
   nodeMajor: number;
-  /** Version Electron ciblée (ex: "v31.x (Electron 31)"). */
+  /** Target Electron version (e.g. "v31.x (Electron 31)"). */
   electronTarget: string;
-  /** Cibles de bytecode incluses dans l'archive. */
+  /** Bytecode targets included in the archive. */
   targets: Array<'node' | 'electron'>;
-  /** Nom du package npm de la distribution. */
+  /** npm package name of the distribution. */
   packageName: string;
-  /** Avertissement de compatibilité V8 à afficher à l'installateur. */
+  /** V8 compatibility warning to show the installer. */
   warning: string;
 }
 
-// ─── RÉPONSES D'API GATEWAY ──────────────────────────────────────────────────
+// ─── GATEWAY API RESPONSES ───────────────────────────────────────────────────
 
 /**
- * GatewayResponse<T> — Enveloppe standard des réponses de la Gateway Mnemosyne.
+ * GatewayResponse<T> — Standard envelope for Mnemosyne Gateway responses.
  *
- * Toutes les réponses HTTP de la Gateway suivent cette structure.
- * Les consommateurs de l'eval-sdk reçoivent toujours ce format.
+ * Every Gateway HTTP response follows this shape.
+ * eval-sdk consumers always receive this format.
  */
 export interface GatewayResponse<T = unknown> {
-  /** Succès ou échec de la requête. */
+  /** Whether the request succeeded. */
   ok: boolean;
-  /** Données retournées si ok === true. */
+  /** Returned data when ok === true. */
   data?: T;
-  /** Message d'erreur si ok === false. */
+  /** Error message when ok === false. */
   error?: string;
-  /** Code d'erreur machine (ex: "VAULT_NOT_FOUND", "RATE_LIMITED"). */
+  /** Machine-readable error code (e.g. "VAULT_NOT_FOUND", "RATE_LIMITED"). */
   code?: GatewayErrorCode;
-  /** Timestamp de la réponse (Unix ms). */
+  /** Response timestamp (Unix ms). */
   ts: number;
 }
 
 /**
- * GatewayErrorCode — Codes d'erreur standardisés de la Gateway.
+ * GatewayErrorCode — Standardized Gateway error codes.
  */
 export type GatewayErrorCode =
-  | 'UNAUTHORIZED'        // Token absent ou invalide
-  | 'RATE_LIMITED'        // Trop de requêtes
-  | 'VAULT_NOT_FOUND'     // Vault inexistant ou non autorisé
+  | 'UNAUTHORIZED'        // Token missing or invalid
+  | 'RATE_LIMITED'        // Too many requests
+  | 'VAULT_NOT_FOUND'     // Vault does not exist or is not authorized
   | 'CORE_UNAVAILABLE'    // Core Engine offline
-  | 'VALIDATION_ERROR'    // Payload invalide (Zod)
-  | 'INGEST_FAILED'       // Échec d'ingestion
-  | 'QUERY_FAILED'        // Échec de requête
-  | 'INTERNAL_ERROR';     // Erreur interne non classifiée
+  | 'VALIDATION_ERROR'    // Invalid payload (Zod)
+  | 'INGEST_FAILED'       // Ingestion failed
+  | 'QUERY_FAILED'        // Query failed
+  | 'INTERNAL_ERROR';     // Unclassified internal error

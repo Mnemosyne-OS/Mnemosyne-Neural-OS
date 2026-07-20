@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 /**
- * @mnemosyne/create-app — CLI Scaffolding
+ * @mnemosyne_os/create-app — CLI Scaffolding
  *
- * Usage :
- *   npx @mnemosyne/create-app my-awesome-app
+ * Scaffolds a **Layer 2 app** (a standalone Node process that talks to Mnemosyne
+ * OS over ws://127.0.0.1:7799 via @mnemosyne_os/sdk). This is NOT a cartridge —
+ * for an in-app UI/widget, copy apps/mnemo-cartridge-boilerplate instead. See
+ * docs/architecture/51 for the difference.
  *
- * Génère un projet Node.js prêt à l'emploi avec :
+ * Usage:
+ *   npx @mnemosyne_os/create-app my-awesome-app
+ *
+ * Generates a ready-to-run project with:
  *   - app.manifest.json
  *   - index.ts
- *   - package.json avec @mnemosyne/sdk
+ *   - package.json (with @mnemosyne_os/sdk)
  *   - tsconfig.json
  *   - README.md
  */
@@ -23,10 +28,10 @@ if (!appName || appName === '--help' || appName === '-h') {
   🧠 Mnemosyne OS — App Scaffolding CLI
 
   Usage:
-    npx @mnemosyne/create-app <app-name>
+    npx @mnemosyne_os/create-app <app-name>
 
   Example:
-    npx @mnemosyne/create-app my-reddit-curator
+    npx @mnemosyne_os/create-app my-reddit-curator
 
   This will create a new directory with a ready-to-use Mnemosyne SDK app.
   `);
@@ -69,16 +74,16 @@ writeFileSync(join(targetDir, 'app.manifest.json'), JSON.stringify({
 // ── index.ts ─────────────────────────────────────────────────────────────────
 writeFileSync(join(targetDir, 'index.ts'), `/**
  * ${appName} — Mnemosyne OS App
- * Built with @mnemosyne/sdk
+ * Built with @mnemosyne_os/sdk
  */
-import { MnemoClient } from '@mnemosyne/sdk';
+import { MnemoClient } from '@mnemosyne_os/sdk';
 
 async function main() {
   // Connect to Mnemosyne OS (make sure the app is running!)
   const client = await MnemoClient.connect({
     appId: '${appName}',
     manifest: './app.manifest.json',
-    transport: 'ws', // WebSocket — app Node.js externe
+    transport: 'ws', // WebSocket — external Node.js app
   });
 
   console.log('[App] Connected to Mnemosyne OS ✓');
@@ -112,7 +117,7 @@ writeFileSync(join(targetDir, 'package.json'), JSON.stringify({
     build: 'tsc',
   },
   dependencies: {
-    '@mnemosyne/sdk': '^1.0.0',
+    '@mnemosyne_os/sdk': '^1.0.0',
   },
   devDependencies: {
     tsx: '^4.0.0',
@@ -142,7 +147,7 @@ dist/
 // ── README.md ─────────────────────────────────────────────────────────────────
 writeFileSync(join(targetDir, 'README.md'), `# ${appName}
 
-A Mnemosyne OS app built with [@mnemosyne/sdk](https://github.com/mnemosyne-os/sdk).
+A Mnemosyne OS app built with [@mnemosyne_os/sdk](https://github.com/yaka0007/Mnemosyne-Neural-OS).
 
 ## Getting started
 
@@ -158,8 +163,8 @@ Mnemosyne OS will enforce these permissions at runtime — Zero-Trust by default
 
 ## Docs
 
-- [SDK Documentation](https://docs.mnemosyne.ai/sdk)
-- [Manifest Reference](https://docs.mnemosyne.ai/sdk/manifest)
+- [SDK Documentation](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/packages/sdk/README.md)
+- [Manifest Reference](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/packages/sdk/docs/MANIFEST.md)
 `);
 
 console.log(`  ✅ App created at: ${targetDir}`);
@@ -169,5 +174,5 @@ console.log(`
     npm install
     npm start
 
-  Make sure Mnemosyne OS Dev Edition is running before connecting!
+  Make sure the Mnemosyne OS app (Infinity Edition) is running before connecting!
 `);

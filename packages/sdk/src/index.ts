@@ -1,8 +1,10 @@
 /**
- * @mnemosyne_os/sdk v1.2.1 — Entry Point (version of record: package.json)
+ * @mnemosyne_os/sdk — Entry Point (version of record: package.json)
  *
- * SDK officiel pour construire des apps Layer 2 sur Mnemosyne OS.
- * [PHASE-58] v2.0 adds: getBridgeHistory(), computeResonance(), bridge:read scope.
+ * Official SDK for building Layer 2 apps on Mnemosyne OS.
+ * Bridge API (Phase 58-59, shipped in 1.2.1): getBridgeHistory(), computeResonance(), bridge:read scope.
+ * Read-only introspection (v1.4.0): dreamBridges() (Dream State connections),
+ * spineAssignments() (chronicle → spine classification + taxonomy).
  *
  * ## Quick Start (browser / Electron renderer)
  * ```typescript
@@ -35,14 +37,14 @@
 
 /**
  * Client Node.js (dual transport: WS + IPC Electron).
- * À utiliser dans les apps Node.js ou Electron main process.
+ * Use in Node.js apps or the Electron main process.
  */
 export { MnemoClient } from './client.js';
 
 /**
  * Client browser-native (WebSocket API standard).
- * À utiliser dans les apps React, Vite, Next.js, Electron renderer.
- * N'utilise PAS le package `ws` — 0 dépendance Node.
+ * Use in React, Vite, Next.js, or Electron renderer apps.
+ * Does NOT use the `ws` package — 0 Node dependencies.
  */
 export { MnemoClientBrowser } from './browser-client.js';
 
@@ -55,15 +57,15 @@ export {
   assertVault,
   AppManifestSchema,
   /**
-   * [MN-004] Détermine si l'OS doit afficher le popup Zero-Trust avant de lancer l'app.
-   * Basé sur les scopes — imperméable à tout flag que l'app contrôle.
+   * [MN-004] Determines whether the OS must show the Zero-Trust popup before launching the app.
+   * Based on the scopes — impervious to any flag the app controls.
    */
   requiresOsGrant,
   GRANT_REQUIRED_SCOPE_PREFIXES,
 } from './manifest.js';
 
 // ── Auth JWT ──────────────────────────────────────────────────────────────────
-// Utile côté serveur pour vérifier les tokens émis par le SDK WS Server.
+// Useful server-side to verify tokens issued by the SDK WS Server.
 
 export { verifyToken, generateAppToken, generateSecret } from './jwt.js';
 export type { JwtPayload, JwtVerifyResult } from './jwt.js';
@@ -99,6 +101,8 @@ export type {
   QueryOptions,
   QueryResult,
   QuerySemanticDebug,
+  AskResult,
+  AskOptions,
   Chronicle,
 
   // Cross-app
@@ -144,12 +148,23 @@ export type {
   DynamicSpineResult,
   DynamicSpineInfo,
 
-  // [PHASE-58] Perpetual Memory Bridges (v2.0.0)
+  // [PHASE-58] Perpetual Memory Bridges (shipped in 1.2.1)
   BridgeRecord,
   BridgeScanSession,
   BridgeHistoryOptions,
   BridgeHistoryResult,
   ResonanceScore,
+
+  // Read-only Introspection (v1.4.0) — Dream State + Spine assignments
+  DreamBridgeEndpoint,
+  DreamBridge,
+  DreamBridgesOptions,
+  DreamBridgesResult,
+  SpineAssignment,
+  SpineCount,
+  SpineTaxonNode,
+  SpineAssignmentsOptions,
+  SpineAssignmentsResult,
 
   // Events
   MnemoEvent,

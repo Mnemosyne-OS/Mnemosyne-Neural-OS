@@ -1,46 +1,46 @@
 /**
- * @mnemosyne-workspace/public-contracts — schemas.ts
+ * @mnemosyne_os/public-contracts — schemas.ts
  *
- * SCHÉMAS ZOD — VALIDATION RUNTIME
- * =================================
- * Contrairement aux types TypeScript (compile-time only), les schémas Zod
- * permettent la validation RUNTIME des données traversant la Gateway.
+ * ZOD SCHEMAS — RUNTIME VALIDATION
+ * ================================
+ * Unlike TypeScript types (compile-time only), Zod schemas validate data
+ * crossing the Gateway at RUNTIME.
  *
- * Usage typique :
- *   import { IngestRequestSchema } from '@mnemosyne-workspace/public-contracts/schemas';
- *   const validated = IngestRequestSchema.parse(rawBody); // lève ZodError si invalide
+ * Typical usage:
+ *   import { IngestRequestSchema } from '@mnemosyne_os/public-contracts/schemas';
+ *   const validated = IngestRequestSchema.parse(rawBody); // throws ZodError if invalid
  *
- * @version 0.2.0
+ * @version 0.2.1
  * @phase 65 — Protected Architecture / Trust Boundary
  */
 
 import { z } from 'zod';
 import { SpineType, VaultType } from './types.js';
 
-// ─── ENUMS ZOD ───────────────────────────────────────────────────────────────
+// ─── ZOD ENUMS ───────────────────────────────────────────────────────────────
 
 /**
- * Schéma Zod pour SpineType.
- * Utilisé pour valider les spines reçues via API avant toute exécution Core.
+ * Zod schema for SpineType.
+ * Validates spines received via the API before any Core execution.
  */
 export const SpineTypeSchema = z.nativeEnum(SpineType);
 
 /**
- * Schéma Zod pour VaultType.
+ * Zod schema for VaultType.
  */
 export const VaultTypeSchema = z.nativeEnum(VaultType);
 
-// ─── SCHÉMAS DE REQUÊTE ───────────────────────────────────────────────────────
+// ─── REQUEST SCHEMAS ─────────────────────────────────────────────────────────
 
 /**
- * Schéma Zod pour IngestRequest.
- * Valide le payload d'ingestion à la frontière Trust Boundary (Gateway).
+ * Zod schema for IngestRequest.
+ * Validates the ingestion payload at the Trust Boundary (Gateway).
  */
 export const IngestRequestSchema = z.object({
   content: z
     .string()
-    .min(1, 'Le contenu ne peut pas être vide.')
-    .max(100_000, 'Le contenu dépasse la limite de 100 000 caractères.'),
+    .min(1, 'Content cannot be empty.')
+    .max(100_000, 'Content exceeds the 100,000-character limit.'),
 
   vault: VaultTypeSchema,
 
@@ -58,18 +58,18 @@ export const IngestRequestSchema = z.object({
 export type IngestRequestInput = z.infer<typeof IngestRequestSchema>;
 
 /**
- * Schéma Zod pour QueryRequest.
- * Valide les requêtes Intent-Aware avant de les transmettre au Core cognitif.
+ * Zod schema for QueryRequest.
+ * Validates intent-aware queries before forwarding them to the cognitive Core.
  */
 export const QueryRequestSchema = z.object({
   intent: z
     .string()
-    .min(1, 'L\'intention ne peut pas être vide.')
-    .max(2000, 'L\'intention dépasse la limite de 2000 caractères.'),
+    .min(1, 'Intent cannot be empty.')
+    .max(2000, 'Intent exceeds the 2000-character limit.'),
 
   targetVaults: z
     .array(VaultTypeSchema)
-    .min(1, 'Au moins un vault doit être ciblé.')
+    .min(1, 'At least one vault must be targeted.')
     .optional(),
 
   boostSpines: z
@@ -86,16 +86,16 @@ export const QueryRequestSchema = z.object({
 
 export type QueryRequestInput = z.infer<typeof QueryRequestSchema>;
 
-// ─── SCHÉMAS DE RÉPONSE ───────────────────────────────────────────────────────
+// ─── RESPONSE SCHEMAS ────────────────────────────────────────────────────────
 
 /**
- * Schéma Zod pour Chronicle (réponse du Core).
+ * Zod schema for Chronicle (Core response).
  */
 export const ChronicleSchema = z.object({
   id:        z.string().uuid(),
   vaultId:   VaultTypeSchema,
   content:   z.string(),
-  spines:    z.array(SpineTypeSchema).min(1, 'Une Chronicle doit avoir au moins une Spine.'),
+  spines:    z.array(SpineTypeSchema).min(1, 'A Chronicle must have at least one Spine.'),
   createdAt: z.number().int().positive(),
   updatedAt: z.number().int().positive().optional(),
   metadata:  z.record(z.string(), z.unknown()).optional(),
@@ -104,7 +104,7 @@ export const ChronicleSchema = z.object({
 export type ChronicleOutput = z.infer<typeof ChronicleSchema>;
 
 /**
- * Schéma Zod pour QueryResult.
+ * Zod schema for QueryResult.
  */
 export const QueryResultSchema = z.object({
   chronicles:       z.array(ChronicleSchema),
@@ -117,8 +117,8 @@ export const QueryResultSchema = z.object({
 export type QueryResultOutput = z.infer<typeof QueryResultSchema>;
 
 /**
- * Schéma Zod pour GatewayResponse<T> générique.
- * Utilisé pour valider les réponses reçues côté client SDK.
+ * Generic Zod schema for GatewayResponse<T>.
+ * Used to validate responses on the client SDK side.
  */
 export const GatewayResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
   z.object({
@@ -129,21 +129,21 @@ export const GatewayResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
     ts:    z.number().int().positive(),
   });
 
-// ─── SCHÉMAS GATEWAY CONCRETS ────────────────────────────────────────────────
+// ─── CONCRETE GATEWAY SCHEMAS ────────────────────────────────────────────────
 
-/** Réponse Gateway pour une opération d'ingestion. */
+/** Gateway response for an ingestion operation. */
 export const IngestResponseSchema = GatewayResponseSchema(ChronicleSchema);
 export type IngestResponse = z.infer<typeof IngestResponseSchema>;
 
-/** Réponse Gateway pour une requête de mémoire. */
+/** Gateway response for a memory query. */
 export const QueryResponseSchema = GatewayResponseSchema(QueryResultSchema);
 export type QueryResponse = z.infer<typeof QueryResponseSchema>;
 
-// ─── HELPERS DE VALIDATION ───────────────────────────────────────────────────
+// ─── VALIDATION HELPERS ──────────────────────────────────────────────────────
 
 /**
- * Parse et valide un IngestRequest entrant.
- * Lève une ZodError avec détails si invalide.
+ * Parse and validate an incoming IngestRequest.
+ * Throws a ZodError with details if invalid.
  *
  * @example
  * const validated = parseIngestRequest(req.body); // throws ZodError if invalid
@@ -153,14 +153,14 @@ export function parseIngestRequest(raw: unknown): IngestRequestInput {
 }
 
 /**
- * Parse et valide un QueryRequest entrant.
+ * Parse and validate an incoming QueryRequest.
  */
 export function parseQueryRequest(raw: unknown): QueryRequestInput {
   return QueryRequestSchema.parse(raw);
 }
 
 /**
- * Valide sans exception (safe parse) — retourne success/error.
+ * Validate without throwing (safe parse) — returns success/error.
  */
 export function safeParseIngestRequest(raw: unknown) {
   return IngestRequestSchema.safeParse(raw);

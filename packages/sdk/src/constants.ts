@@ -1,8 +1,8 @@
 /**
  * @mnemosyne_os/sdk — Public Constants
  *
- * Expose les méthodes RPC disponibles sur le serveur SDK (ws://localhost:7799)
- * et les constantes de l'écosystème Mnemosyne OS.
+ * Exposes the RPC methods available on the SDK server (ws://localhost:7799)
+ * and the constants of the Mnemosyne OS ecosystem.
  *
  * [SDK][LAYER-2][ZERO-TRUST]
  */
@@ -10,75 +10,77 @@
 // ── RPC Methods ────────────────────────────────────────────────────────────────
 
 /**
- * Méthodes JSON-RPC exposées par le SDK WebSocket Server de Mnemosyne OS.
- * Le serveur écoute sur ws://127.0.0.1:7799 (localhost uniquement).
+ * JSON-RPC methods exposed by the Mnemosyne OS SDK WebSocket Server.
+ * The server listens on ws://127.0.0.1:7799 (localhost only).
  *
  * @example
  * ```typescript
  * import { MNEMOSYNE_METHODS } from '@mnemosyne_os/sdk';
- * // Utilisation directe (sans MnemoClient) :
+ * // Direct usage (without MnemoClient):
  * ws.send(JSON.stringify({ id: '1', method: MNEMOSYNE_METHODS.REGISTER, params: { manifest } }));
  * ```
  */
 export const MNEMOSYNE_METHODS = {
   // ── Auth ───────────────────────────────────────────────────────────────
-  /** Enregistre l'app, valide le manifest, retourne un JWT 24h */
+  /** Registers the app, validates the manifest, returns a 24h JWT */
   REGISTER: 'sdk.register',
 
   // ── Vault ───────────────────────────────────────────────────────────────
-  /** Ingère du contenu dans le vault (vectorisation incluse) */
+  /** Ingests content into the vault (vectorization included) */
   INGEST: 'sdk.ingest',
-  /** Requête sémantique — résultats filtrés par source_app_id */
+  /** Semantic query — results filtered by source_app_id */
   QUERY: 'sdk.query',
-  /** Trouve les connexions causales entre deux contenus */
+  /** Ask Mnemosyne a question — synthesized RAG+LLM prose answer + its sources */
+  ASK: 'sdk.ask',
+  /** Finds the causal connections between two contents */
   CORRELATE: 'sdk.correlate',
-  /** Supprime un chronicle par ID (scope vault:write requis) */
+  /** Deletes a chronicle by ID (vault:write scope required) */
   FORGET: 'sdk.forget',
 
   // ── Resonances ───────────────────────────────────────────────────────────
   /**
-   * Liste les Resonances actives (projets cognitifs) depuis le vault DEV.
-   * Requiert le scope `vault:read:DEV`.
+   * Lists the active Resonances (cognitive projects) from the DEV vault.
+   * Requires the `vault:read:DEV` scope.
    */
   RESONANCES_LIST: 'sdk.resonances.list',
   /**
-   * Met à jour la position courante d'une Resonance (phase, description).
-   * Persisté comme chronicle DECISION dans le vault DEV.
-   * Requiert le scope `vault:write:DEV`.
+   * Updates the current position of a Resonance (phase, description).
+   * Persisted as a DECISION chronicle in the DEV vault.
+   * Requires the `vault:write:DEV` scope.
    */
   UPDATE_POSITION: 'sdk.resonance.updatePosition',
 
   // ── Monorepo ───────────────────────────────────────────────────────────
   /**
-   * Lit le git log du monorepo Mnemosyne OS.
-   * Requiert le scope `monorepo:read` dans le manifest.
-   * Retourne les commits filtrés (hash, message, author, date).
-   * [SECURITY] Path hardcodé côté serveur — le client ne contrôle pas le repo.
+   * Reads the git log of the Mnemosyne OS monorepo.
+   * Requires the `monorepo:read` scope in the manifest.
+   * Returns the filtered commits (hash, message, author, date).
+   * [SECURITY] Path hardcoded server-side — the client does not control the repo.
    */
   GIT_LOG: 'sdk.git.log',
   /**
-   * Lit un fichier .md depuis le repo Mnemosyne OS (docs/, packages/).
-   * Requiert le scope `monorepo:read`.
-   * [SECURITY] Seuls les .md sont lisibles, path sanitizé côté serveur.
+   * Reads a .md file from the Mnemosyne OS repo (docs/, packages/).
+   * Requires the `monorepo:read` scope.
+   * [SECURITY] Only .md files are readable, path sanitized server-side.
    */
   READ_FILE: 'sdk.readFile',
 
   // ── Agents ───────────────────────────────────────────────────────────────
   /**
-   * Liste les agents actifs connectés au SDK WebSocket Server.
-   * Requiert le scope `agents:read` dans le manifest.
+   * Lists the active agents connected to the SDK WebSocket Server.
+   * Requires the `agents:read` scope in the manifest.
    */
   LIST_AGENTS: 'sdk.agents.list',
 
   // ── Cross-App ──────────────────────────────────────────────────────────
-  /** Demande d'accès aux chronicles d'une autre app (popup consentement) */
+  /** Requests access to another app's chronicles (consent popup) */
   SHARE: 'sdk.share',
 
   // ── NFT Licence ─────────────────────────────────────────────────────────
   /**
-   * Vérifie qu'un wallet possède le NFT de licence de cette app.
-   * Requiert le scope `nft:validate` dans le manifest.
-   * Cache TTL 5 min côté OS pour ne pas spam la blockchain.
+   * Verifies that a wallet holds the licence NFT for this app.
+   * Requires the `nft:validate` scope in the manifest.
+   * 5 min cache TTL on the OS side to avoid spamming the blockchain.
    */
   NFT_VALIDATE: 'sdk.nft.validate',
 
@@ -97,6 +99,16 @@ export const MNEMOSYNE_METHODS = {
    * Use the `id` field of each vault as the `vault` param in ingest/query.
    */
   LIST_VAULTS: 'sdk.vaults.list',
+
+  // ── App Sandbox Vault ────────────────────────────────────────────────────
+  /**
+   * Idempotently ensures the calling app's OWN sandbox vault exists — an
+   * isolated vault derived from the appId (`APP-<slug>`), walled off by
+   * default (no mixing, hidden from the neural map and the dream layer).
+   * The app writes freely there; only the HUMAN can unlock permanence, from
+   * the Vault Manager. Returns `SandboxVaultResult`.
+   */
+  SANDBOX_ENSURE: 'sdk.vault.sandbox.ensure',
 
   // ── Correlate ─────────────────────────────────────────────────────────
   // (CORRELATE and FORGET are already declared in the Vault section above)
@@ -124,22 +136,38 @@ export const MNEMOSYNE_METHODS = {
    * Returns an array of `DynamicSpineInfo` objects.
    */
   LIST_SPINES: 'sdk.spine.list',
+
+  // ── Read-only Introspection (v1.4.0) ─────────────────────────────────────
+  /**
+   * Lists the connections the nocturnal Dream State engine discovered between
+   * chronicles (dream bridges) — DBS + cosine scores plus both linked
+   * chronicles. "What did you dream about last night?"
+   * Requires scope `bridge:read` and intent `BRIDGE_READ`.
+   */
+  DREAM_BRIDGES: 'sdk.dream.bridges',
+
+  /**
+   * Lists chronicle → spine assignments for a vault ("how did you classify
+   * this memory?"), with per-spine counts and an optional taxonomy tree.
+   * Requires scope `vault:read:<vault>` and intent `QUERY`.
+   */
+  SPINE_ASSIGNMENTS: 'sdk.spine.assignments',
 } as const;
 
 export type MnemoMethod = typeof MNEMOSYNE_METHODS[keyof typeof MNEMOSYNE_METHODS];
 
 // ── Runtime constants ──────────────────────────────────────────────────────────
 
-/** Port par défaut du SDK WebSocket Server */
+/** Default port of the SDK WebSocket Server */
 export const MNEMOSYNE_WS_PORT = 7799;
 
-/** Host du SDK WebSocket Server (localhost uniquement — sécurité Zero-Trust) */
+/** Host of the SDK WebSocket Server (localhost only — Zero-Trust security) */
 export const MNEMOSYNE_WS_HOST = '127.0.0.1';
 
-/** Durée de validité d'un JWT SDK (en secondes) */
+/** Validity duration of an SDK JWT (in seconds) */
 export const MNEMOSYNE_TOKEN_TTL_S = 24 * 60 * 60; // 24h
 
-/** Durée du cache de validation NFT côté OS (en ms) */
+/** Duration of the NFT validation cache on the OS side (in ms) */
 export const MNEMOSYNE_NFT_CACHE_TTL_MS = 5 * 60 * 1000; // 5 min
 
 // ── Supported chains for NFT licences ─────────────────────────────────────────

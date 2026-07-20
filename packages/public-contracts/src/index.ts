@@ -1,12 +1,12 @@
 /**
- * @mnemosyne-workspace/public-contracts — index.ts
+ * @mnemosyne_os/public-contracts — index.ts
  *
- * Point d'entrée principal du package.
- * Exporte TOUS les types et schémas publics de Mnemosyne OS.
+ * Main entry point for the package.
+ * Re-exports every public type and schema of Mnemosyne OS.
  *
- * Import usage :
- *   import { SpineType, Chronicle, IngestRequestSchema } from '@mnemosyne-workspace/public-contracts';
- *   import { parseIngestRequest } from '@mnemosyne-workspace/public-contracts/schemas';
+ * Usage:
+ *   import { SpineType, Chronicle, IngestRequestSchema } from '@mnemosyne_os/public-contracts';
+ *   import { parseIngestRequest } from '@mnemosyne_os/public-contracts/schemas';
  */
 
 // ── Types & Interfaces ────────────────────────────────────────────────────────
@@ -20,10 +20,10 @@ export type {
   GatewayErrorCode,
 } from './types.js';
 
-// ── Enums (valeurs runtime nécessaires) ───────────────────────────────────────
+// ── Enums (runtime values required) ───────────────────────────────────────────
 export { SpineType, VaultType } from './types.js';
 
-// ── Schémas Zod & Helpers ────────────────────────────────────────────────────
+// ── Zod Schemas & Helpers ─────────────────────────────────────────────────────
 export {
   // Enum schemas
   SpineTypeSchema,
@@ -44,7 +44,7 @@ export {
   safeParseQueryRequest,
 } from './schemas.js';
 
-// ── Inferred Types from Zod ──────────────────────────────────────────────────
+// ── Inferred Types from Zod ───────────────────────────────────────────────────
 export type {
   IngestRequestInput,
   QueryRequestInput,
