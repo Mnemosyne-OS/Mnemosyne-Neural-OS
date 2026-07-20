@@ -313,12 +313,19 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 
 ## Roadmap
 
-- [x] **Public beta — Mnemosyne OS v1.1.0-beta.1** (Soul Studio · Resonance · First Contact)
-- [x] **MnemoForge CLI v1.3.18 published on npm** — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
-- [x] 🚀 **Mnemosyne OS Infinity Edition — public launch**, now at [**v1.3.2 · The Memory Covenant**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity)
-- [x] **MnemoHub — cartridge marketplace**, signed submission pipeline, community publishing live
-- [ ] Team features (shared vault, multi-agent coordination)
-- [ ] Self-hosted sync server
+### Shipped
+- [x] 🚀 **Infinity Edition — 5 public releases**, now at [**v1.3.2 · The Memory Covenant**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.2-infinity)
+- [x] 🧩 **MnemoHub** — signed cartridge marketplace, community submission pipeline, live publishing
+- [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
+- [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
+- [x] ⚡ **MnemoForge CLI v1.3.18** on npm — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
+- [x] 🌱 **Public beta — v1.1.0-beta.1** — where it started (Soul Studio · Resonance · First Contact)
+
+### What's next
+- [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so users can reach each other directly, peer to peer, with **no classic internet required**
+- [ ] 👥 Team features — shared vaults, multi-agent coordination
+- [ ] 🖥️ Self-hosted sync server
+- [ ] 💰 Creator economy — paid visibility for cartridges, revenue flowing back to builders
 
 ---
 
