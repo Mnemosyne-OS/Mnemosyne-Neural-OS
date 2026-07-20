@@ -296,6 +296,12 @@ The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current:
 
 ## 13. Future Directions
 
+- **Soul-weighted resonance** — Soul Profiles (personality configurations of reasoning
+  style and behavioral constraints) that color *how* memory resonates, not just what the
+  model is told: a profile tuned for strategic analysis weights recent, high-priority,
+  action-oriented fragments more heavily, while a creative profile relaxes scoring to let
+  lower-confidence associations surface. The profile system exists today (Soul Protocol);
+  wiring it into the retrieval-scoring path is designed and lands in a future update.
 - **Temporal weighting** — fragments from recent sessions weighted to reflect the user's
   current focus.
 - **Confidence decay** — consolidated summaries lose confidence as their source memories
