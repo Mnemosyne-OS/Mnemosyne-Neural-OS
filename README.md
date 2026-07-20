@@ -75,6 +75,22 @@ ingesting and querying the vault — under FGAC, scoped, and consent-gated — i
 > JWT, listens on `127.0.0.1` only, and is bounded by the scopes your app manifest
 > declares. The OS sees your requests; you never see the core.
 
+### The cartridges are real — and readable
+
+The apps in MnemoHub aren't black boxes. Each ships its actual `src/` (React + the SDK),
+public and inspectable — read exactly what a cartridge does before you run it. A few live examples:
+
+| Cartridge | What it is | License |
+|---|---|---|
+| [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) | A living PDF library that reads aloud with word-synced highlighting | **MIT** |
+| [Translator](https://github.com/yaka0007/mnemosyne_OS-translator) | Batch-translate text & Markdown with your own AI key | **MIT** |
+| [MnemoArchipel](https://github.com/yaka0007/MnemoArchipel---Mnemosyne-OS) | The sovereign, offline-first personal CRM | Cartridge License · source-available |
+| [MnemoResto](https://github.com/yaka0007/MnemoResto---MnemosyneOS) | A full restaurant suite — POS, reservations, tips, per-product VAT, inventory | Cartridge License · source-available |
+| [BMAD 2.0](https://github.com/yaka0007/mnemosyne_OS-bmad) | A wizard that turns an idea into a structured project blueprint | Cartridge License · source-available |
+
+*MIT cartridges are yours to fork and ship anywhere. The **Cartridge License** is source-available —
+read it, learn from it, modify it — with one condition: it runs inside the Mnemosyne OS ecosystem.*
+
 ---
 
 ## Why call it an "OS"?
