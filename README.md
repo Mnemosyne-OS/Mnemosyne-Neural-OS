@@ -50,6 +50,18 @@
 
 ---
 
+## Not another agent-memory library
+
+Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
+
+**Mnemosyne OS is a personal memory OS that runs on your machine** — your data never
+leaves it, a human governs it, and it scores **72.9% on LongMemEval-M** ([recompute it
+yourself](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)).
+
+The AI that remembers *you* — not infrastructure you plug into someone else's.
+
+---
+
 ## Why call it an "OS"?
 
 Not because it has a kernel or drivers — because it does what an OS does:
