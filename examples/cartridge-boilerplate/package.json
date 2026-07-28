@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "Copy-me starter for a Mnemosyne OS cartridge: sandbox vault, memory read/write, model inference, native dialogs.",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "dev:cartridge": "vite",
@@ -10,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mnemosyne_os/cartridge-sdk": "^0.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

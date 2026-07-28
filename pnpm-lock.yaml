@@ -10,6 +10,9 @@ importers:
 
   examples/cartridge-boilerplate:
     dependencies:
+      '@mnemosyne_os/cartridge-sdk':
+        specifier: ^0.1.0
+        version: 0.1.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -478,6 +481,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@mnemosyne_os/cartridge-sdk@0.1.0':
+    resolution: {integrity: sha512-TdSGoaJNIFXCFerhRyP+03hi/JwjmLT3VRTBrT65ArjxQPW6reSE+hrL07jsyoX6NPEVUI11B1zJMkXbQ0LvFw==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -1415,6 +1421,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@mnemosyne_os/cartridge-sdk@0.1.0': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
