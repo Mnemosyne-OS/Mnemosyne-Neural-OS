@@ -37,7 +37,7 @@
 <br/><br/>
 
 <!-- Download + MnemoForge badges: auto-updated by `.github/workflows/sync-readme-release-badges.yml` on Release (tags `v…` = OS setup, `cli-…` = CLI). -->
-[![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v1.3.4-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.4-infinity)
+[![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v1.3.5-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.5-infinity)
 [![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(Open_Source)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
 
 <br/>
