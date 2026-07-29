@@ -3,7 +3,7 @@
   "displayName": "Cartridge Boilerplate",
   "version": "1.0.0",
   "description": "Standard template for Mnemosyne OS Cartridges",
-  "permissions": ["vault:read", "model:infer", "dialog:open"],
+  "permissions": ["vault:read", "vault:write", "model:infer", "dialog:open"],
   "updateStrategy": "git",
   "entrypoints": {
     "renderer": "http://localhost:5185/index.html"

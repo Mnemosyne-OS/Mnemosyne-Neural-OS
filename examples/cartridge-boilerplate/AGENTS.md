@@ -1,36 +1,37 @@
-# Mnemosyne OS — build reference for LLMs & coding agents
+# Building a Mnemosyne OS cartridge — agent reference
 
-> Mnemosyne OS is a sovereign, local-first memory operating system — the
-> relationship layer for AI. This file is the *developer* entry point for an AI
-> agent building on it. Read it fully. **Do not guess APIs or invent actions** —
-> the action table below is generated from the host registry and drift-tested,
-> so it is authoritative and complete. If a capability is not here, it does not
-> exist.
->
-> Product positioning (for a general summary, not for building) lives at
-> https://mnemosyne-os.io/llms.txt. For repo orientation (reading order,
-> open-vs-sealed boundary, the only numbers to trust), read `AGENTS.md` at the
-> repo root first; the curated documentation map is at the end of this file.
+> For an AI coding agent (Cursor, Claude Code, Copilot, Antigravity, …). Read this
+> **fully** before writing code. It is the authoritative build surface — **do not
+> guess APIs or invent actions.** If a capability is not listed here or in the
+> linked docs, it does not exist. Follow the reference implementation's patterns;
+> do not improvise.
 
-## What you can build (pick ONE — they are not interchangeable)
+## 0. Pick the right surface first (they are NOT interchangeable)
+
+Mnemosyne OS exposes three ways to build on it. Choose before writing a line.
 
 | You are building… | Surface | Client library | Transport |
 |---|---|---|---|
-| A **UI panel inside the Mnemosyne window** (a cartridge on MnemoHub) | **Cartridge** | `MnemoCartridgeSDK` (`@mnemosyne_os/cartridge-sdk`) | `postMessage`, sandboxed iframe |
+| A **UI panel inside the Mnemosyne window** (a cartridge on MnemoHub) | **Cartridge** — *this guide* | `MnemoCartridgeSDK` (`@mnemosyne_os/cartridge-sdk`) | `postMessage`, sandboxed iframe |
 | A **separate program** (Node service, agent, standalone web/desktop app) that talks to the user's memory | **Layer 2 app** | `@mnemosyne_os/sdk` | WebSocket `ws://127.0.0.1:7799` |
 | Letting **an external AI assistant** read/write the vault | **MCP server** | `@mnemosyne_os/mcp` | MCP → 7799 |
 
-Rendering pixels *inside* Mnemosyne → **Cartridge** (most common; detailed below). A *separate process* → Layer 2 app. An *AI assistant caller* → MCP.
+Rendering pixels *inside* Mnemosyne → **Cartridge**. A *separate process* → Layer 2 app. An *AI assistant caller* → MCP.
 
-> ⚠️ `MnemoCartridgeSDK` is **not** `@mnemosyne_os/sdk`. Never `npm install @mnemosyne_os/sdk` in a cartridge — it is a different surface.
+> ⚠️ `MnemoCartridgeSDK` is **not** `@mnemosyne_os/sdk`. Never `npm install
+> @mnemosyne_os/sdk` in a cartridge — that is a different surface (Layer 2, §5).
 
-## Cartridge — the common case
+## 1. Cartridge quickstart
 
-Never start from a blank page: scaffold with `npm create @mnemosyne_os/app`, or copy `examples/cartridge-boilerplate` (in this repo). Read [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) (a real, shipped cartridge) and match its patterns. The full, self-contained build guide is **`examples/cartridge-boilerplate/AGENTS.md`** (ships in every scaffold, auto-loaded by IDE agents).
+Never start from a blank page:
 
-A cartridge is a React/Vite web app in a **sandboxed iframe** — no Node, Electron, filesystem, or direct host access. It reaches the host only through the SDK.
+- **Scaffold:** `npm create @mnemosyne_os/app` — or copy this boilerplate (`examples/cartridge-boilerplate`, the folder this file lives in).
+- **Reference implementation to read first:** [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) (a real, shipped cartridge). Match its patterns.
 
-**Manifest — `mnemo-plugin.json`:**
+A cartridge is a React/Vite web app loaded in a **sandboxed iframe** inside the host. It has **no** Node, Electron, filesystem, or network-to-host access. It reaches the host **only** through the SDK's `postMessage` bridge.
+
+### Manifest — `mnemo-plugin.json`
+
 ```json
 {
   "name": "@you/my-cartridge",
@@ -42,24 +43,33 @@ A cartridge is a React/Vite web app in a **sandboxed iframe** — no Node, Elect
 }
 ```
 
-**Client:**
+- `name` — must match the id you pass to the SDK (below).
+- `permissions[]` — declare **only** what you call (§2). The user grants them at install.
+- `entrypoints.renderer` — a **relative** path (`index.html`), never a dev `localhost` URL.
+
+### Client
+
 ```ts
 import { MnemoCartridgeSDK } from './sdk/mnemo-sdk'; // re-exports @mnemosyne_os/cartridge-sdk
 const sdk = new MnemoCartridgeSDK('@you/my-cartridge'); // must equal manifest "name"
 const text = await sdk.invoke('model.infer', { prompt: 'Summarize my week.' });
 ```
 
-## Permissions (fine-grained access control)
+Every host call is `await sdk.invoke('<action>', payload)`. The complete, authoritative action list is §3.
 
-Declared in the manifest, granted by the user at install. Each action's required permission is the middle column of the table below. Vocabulary:
+## 2. Permissions (fine-grained access control)
+
+Permissions are declared in the manifest and granted by the user at install. Each action's required permission is the middle column of the §3 table. Vocabulary:
 
 `vault:read` · `vault:write` · `model:infer` · `dialog:open` · `metrics:read` · `settings:read` · `settings:write` · `scout:run` · `license:admin`
 
-Request the minimum. `license:admin` is founder-only — do not build against it.
+- Request the **minimum**. Over-declaring gets a cartridge rejected at review.
+- `license:admin` is founder-only — you will not have it; do not build against it.
+- Some actions are **ungated** (no permission) — they are still listed in §3.
 
-## Every action that exists
+## 3. Action reference — the only actions that exist
 
-`await sdk.invoke(action, payload)`. Generated from the host registry, guarded by a drift test — it cannot lie or lag. If an action is not listed, it does not exist; do not invent `vault.search`, `memory.add`, `chat.send`, etc. Payload shapes follow the MnemoReader reference implementation.
+`await sdk.invoke(action, payload)`. This table is generated from the host registry and guarded by a drift test — it cannot lie or lag.
 
 <!-- GENERATED:CARTRIDGE-ACTIONS:START -->
 _103 actions. Generated by `pnpm actions` — do not edit by hand._
@@ -173,31 +183,40 @@ _103 actions. Generated by `pnpm actions` — do not edit by hand._
 **Ungated actions (no permission gate — run on any loaded cartridge):** `getStatus`, `irinaHealthCheck`, `sendPulse`, `shell.openExternal`, `vault.memoryStats`.
 <!-- GENERATED:CARTRIDGE-ACTIONS:END -->
 
-## Build & ship gotchas (each silently breaks a cartridge)
+**Rules:**
 
-- `vite base: './'` + **relative** entrypoint — absolute asset paths 404.
-- **Commit `dist/`** — the published cartridge serves the built `dist/`, not your source.
-- No `window.confirm` / `alert` / `prompt()` — blocked in the iframe; use a `dialog:*` action or in-app UI.
-- No Node / Electron / `fs` / `process` — sandbox only.
-- `vault:write` is real and permanent — writes land in the user's memory. The human governs: never write without explicit user intent.
+- If an action is **not** in this table, it does not exist. Do not invent `vault.search`, `memory.add`, `chat.send`, etc. Use the exact names above.
+- Payload shapes follow the reference cartridge ([MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS)). When unsure, read the reference — do not guess a field name.
 
-## Layer 2 app (separate process, not a cartridge)
+## 4. Build & ship gotchas (each of these silently breaks a cartridge)
+
+- **`vite base: './'` + relative entrypoint.** The cartridge is served from a local path, not a server root. Absolute asset paths 404.
+- **Commit `dist/`.** The published cartridge serves the built `dist/`, not your source.
+- **No `window.confirm` / `window.alert` / `prompt()`.** They are blocked in the sandboxed iframe and return silently. Use a `dialog:*` action or your own in-app UI.
+- **No Node / Electron / `fs` / `process`.** Sandbox only. Everything host-side goes through `sdk.invoke`.
+- **`vault:write` is real and permanent.** Writes land in the user's memory and are shared with every future agent. The human governs: never write without the user's explicit intent, and write self-contained content.
+
+## 5. Layer 2 app (only if you are a separate process — not a cartridge)
 
 ```ts
 import { MnemoClientBrowser } from '@mnemosyne_os/sdk';
 const client = await MnemoClientBrowser.connect(); // ws://127.0.0.1:7799 — the OS must be running
 ```
-`MnemoClientBrowser` for browser/renderer; `MnemoClient` for Node. Per-app JWT, local origins only.
 
-## MCP server (plug an external AI assistant into memory)
+- `MnemoClientBrowser` for browser / renderer / Electron-renderer (native WebSocket, zero Node deps).
+- `MnemoClient` for Node.js / Electron-main.
+- Each call is authenticated with a per-app JWT; only local / first-party origins are accepted.
 
-Package `@mnemosyne_os/mcp`; requires the Mnemosyne app running (7799 up). Legacy `@mnemosyne-workspace/mcp-server` — do not use.
+## 6. MCP server (only to plug an external AI assistant into memory)
+
+- Package: `@mnemosyne_os/mcp`. Requires the Mnemosyne app (Infinity Edition) running so the `7799` server is up.
+- Legacy `@mnemosyne-workspace/mcp-server` — **do not use.**
 
 ## Packages
 
 | Package | Use it for | Version |
 |---|---|---|
-| `@mnemosyne_os/cartridge-sdk` | Cartridge | 0.1.0 |
+| `@mnemosyne_os/cartridge-sdk` | Cartridge (this guide) | 0.1.0 |
 | `@mnemosyne_os/sdk` | Layer 2 app | 1.4.1 |
 | `@mnemosyne_os/mcp` | MCP server | 1.2.0 |
 | `@mnemosyne_os/create-app` | Scaffold (`npm create @mnemosyne_os/app`) | 1.0.0 |
@@ -205,47 +224,12 @@ Package `@mnemosyne_os/mcp`; requires the Mnemosyne app running (7799 up). Legac
 
 ## Hard rules for the agent
 
-1. Use only the actions in the table above. Never invent an API name or payload field.
-2. Declare only the permissions you actually call.
-3. The core engine is sealed — describe capabilities conceptually; never assume an internal implementation detail.
-4. Copy the boilerplate and read [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) before writing from scratch.
-5. When a fact is not in this file, `examples/cartridge-boilerplate/AGENTS.md`, or the reference cartridge — stop and ask, do not guess.
+1. Use **only** the actions in §3. Never invent an API name or a payload field.
+2. Declare **only** the permissions you actually call.
+3. The core engine is **sealed** — describe its capabilities conceptually; never assume an internal implementation detail.
+4. Copy the boilerplate and read the [MnemoReader reference](https://github.com/yaka0007/MnemoReader---MnemosyneOS) before writing from scratch.
+5. When a fact is not in this file, the reference cartridge, or the repo root `llms.txt` — stop and ask, do not guess.
 
-## Documentation map (fetch only if needed)
+---
 
-Repo orientation first: `AGENTS.md` (root) carries the reading order, the open-vs-sealed boundary, and the ground rules — shipped vs. future features, and the only numbers to trust (72.9% on LongMemEval-M as a stated lower bound; 242 Zod-validated IPC channels). Treat `archive/` as historical beta narrative, not current fact.
-
-### Orientation
-- [AGENTS.md — AI orientation primer](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/AGENTS.md): read this first — reading order, open-vs-sealed, ground rules
-- [README](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/README.md): the product overview
-
-### Vision & concepts
-- [Why Mnemosyne exists — the relationship layer](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/WHY.md): the thesis behind the project
-- [Concepts & Glossary](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/CONCEPTS.md): the mental model + every product/architecture term
-
-### Architecture
-- [Architecture Overview](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/ARCHITECTURE.md): process model, engines, the life of a memory
-- [The Resonance Engine — Whitepaper](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/RESONANCE_ENGINE_WHITEPAPER.md): the memory engine in depth (living document)
-- [IPC Security Bridge](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/IPC_SECURITY_BRIDGE.md): the Zod-validated main↔renderer boundary
-
-### Governance & security
-- [Governance & Sovereignty](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/GOVERNANCE.md): what the human controls, what never leaves your machine
-- [Security Policy](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/SECURITY.md): reporting, hardening, supported versions
-- [Privacy & Telemetry](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/PRIVACY_TELEMETRY.md): the no-telemetry-without-consent stance
-
-### Design & method
-- [Design Decisions](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/DESIGN_DECISIONS.md): the *why* behind the architecture (ADR-style)
-- [The Neural Coding Handbook](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/handbook): the human-directed method the project was built with
-
-### Build on it
-- [Cartridge boilerplate + AGENTS.md build contract](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/examples/cartridge-boilerplate): copy this to start a cartridge
-- [SDK packages](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/packages): the MIT integration surface (`@mnemosyne_os/sdk` and friends)
-- [MnemoForge CLI docs](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/cli/docs): give any agent persistent memory, an identity, and a publish pipeline
-- [MnemoReader — reference cartridge](https://github.com/yaka0007/MnemoReader---MnemosyneOS): the shipped implementation to pattern-match
-
-### Proof
-- [LongMemEval benchmark — recomputable](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/): re-derive 72.9% yourself in one command, no engine, no network
-
-### Optional
-- [Documentation index](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/README.md): the full documentation map
-- [CONTRIBUTING_AI.md](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/CONTRIBUTING_AI.md): for AI agents contributing code
+*Further reading: the repo root `llms.txt` (developer entry point: surfaces + this same action table). The action table between the GENERATED markers is produced from the host registry in the source monorepo and synced here — do not edit it by hand.*

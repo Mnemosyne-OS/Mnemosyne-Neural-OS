@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { MnemoCartridgeSDK } from './sdk/mnemo-sdk';
 
-// Initialize the SDK with the unique cartridge ID defined in mnemo-plugin.json
+// Must match "name" in mnemo-plugin.json — the host keys your sandbox vault on
+// it. Rename it later and the old vault is orphaned, with no migration path.
 const sdk = new MnemoCartridgeSDK('@mnemosyne-plugins/boilerplate');
+
+// Spine type for everything this cartridge writes. Host rule: ^[A-Z0-9_]{1,32}$
+const SPINE = 'BOILERPLATE_NOTE';
 
 export default function App() {
   const [modelConfig, setModelConfig] = useState<any>(null);
@@ -11,6 +15,13 @@ export default function App() {
   const [inferring, setInferring] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  // ── The sandbox vault: this cartridge's own memory ──────────────────────
+  const [vault, setVault] = useState<string | null>(null);
+  const [unlocked, setUnlocked] = useState(false);
+  const [note, setNote] = useState('');
+  const [notes, setNotes] = useState<any[]>([]);
+  const [busy, setBusy] = useState(false);
 
   // Auto-fetch host model config on mount
   useEffect(() => {
@@ -22,6 +33,56 @@ export default function App() {
       });
   }, []);
 
+  /**
+   * The canonical boot sequence. Call ensureSandbox ONCE, before any write:
+   * it creates+mounts this app's own walled-off vault and hands back its name,
+   * which every socialIngest/socialQuery must target.
+   *
+   * If this silently does nothing, check that mnemo-plugin.json declares
+   * "vault:write" — without it the host denies the call with no visible error
+   * and you simply never get a vault.
+   */
+  useEffect(() => {
+    sdk.ensureSandbox()
+      .then(async ({ vault, unlocked }) => {
+        setVault(vault);
+        setUnlocked(unlocked);
+        // Tell the host how to draw this vault's tile. The HOST counts the
+        // metric from spine stats, so the tile stays alive with the app closed.
+        await sdk.describeVaultTile({
+          icon: '⚙️',
+          metrics: [{ label: 'Notes', spine: SPINE }],
+        });
+        await refreshNotes(vault);
+      })
+      .catch((err) => setErrorMsg(`Sandbox unavailable: ${err.message}`));
+  }, []);
+
+  const refreshNotes = async (target: string) => {
+    try {
+      const res = await sdk.socialQuery(target, 20);
+      setNotes(Array.isArray(res?.chronicles) ? res.chronicles : Array.isArray(res) ? res : []);
+    } catch (err: any) {
+      setErrorMsg(err.message);
+    }
+  };
+
+  const handleSaveNote = async () => {
+    if (!note.trim() || !vault) return;
+    setBusy(true);
+    setErrorMsg('');
+    try {
+      // Always target the sandbox vault by name — never a vault you don't own.
+      await sdk.socialIngest(vault, note.trim(), SPINE);
+      setNote('');
+      await refreshNotes(vault);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Could not write to the sandbox');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const handleInference = async () => {
     if (!prompt.trim()) return;
     setInferring(true);
@@ -32,7 +93,7 @@ export default function App() {
         prompt: prompt.trim(),
         temperature: 0.7
       });
-      setInferResult(response.text || JSON.stringify(response, null, 2));
+      setInferResult(response.text || response.response || JSON.stringify(response, null, 2));
     } catch (err: any) {
       setErrorMsg(err.message || 'Inference failed');
     } finally {
@@ -43,9 +104,10 @@ export default function App() {
   const handleSelectFolder = async () => {
     setErrorMsg('');
     try {
-      const res = await sdk.selectFolder();
-      if (res.success && res.path) {
-        setSelectedFolder(res.path);
+      // dialog.selectFolder resolves a bare path string, or null on cancel.
+      const path = await sdk.selectFolder();
+      if (path) {
+        setSelectedFolder(path);
       }
     } catch (err: any) {
       setErrorMsg(err.message);
@@ -68,6 +130,53 @@ export default function App() {
             <span style={{ fontWeight: 600 }}>⚠️ Security/API Alert:</span> {errorMsg}
           </div>
         )}
+
+        {/* ── The sandbox vault: the reason this platform exists ─────────── */}
+        <section style={styles.card}>
+          <h2 style={styles.cardTitle}>Your Sandbox Vault</h2>
+          <p style={styles.cardDesc}>
+            This cartridge owns exactly one vault. It is isolated from federated search,
+            invisible to the Neural Map and to the Dream State, until the human unlocks
+            permanence from the host&apos;s Vault Pad. You can propose. You cannot engrave.
+          </p>
+
+          <div style={styles.statsRow}>
+            <div style={styles.stat}>
+              <span style={styles.statLabel}>Vault</span>
+              <span style={styles.statValue}>{vault ?? 'connecting…'}</span>
+            </div>
+            <div style={styles.stat}>
+              <span style={styles.statLabel}>Permanence</span>
+              <span style={styles.statValue}>{unlocked ? 'unlocked by user' : 'sandboxed'}</span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSaveNote()}
+              style={{ ...styles.textarea, flex: 1 }}
+              placeholder="Write a note into this cartridge's memory…"
+            />
+            <button
+              onClick={handleSaveNote}
+              disabled={busy || !vault || !note.trim()}
+              style={busy || !vault || !note.trim() ? { ...styles.btnPrimary, opacity: 0.5 } : styles.btnPrimary}
+            >
+              Remember
+            </button>
+          </div>
+
+          {notes.length > 0 && (
+            <div style={styles.resultBox}>
+              <h3 style={styles.resultHeader}>{notes.length} chronicle(s) in {vault}</h3>
+              {notes.slice(0, 5).map((c, i) => (
+                <p key={c.id ?? i} style={styles.resultText}>· {c.content ?? String(c)}</p>
+              ))}
+            </div>
+          )}
+        </section>
 
         {/* Model Config Section */}
         <section style={styles.card}>
@@ -104,7 +213,7 @@ export default function App() {
 
         {/* AI Playground Section */}
         <section style={styles.card}>
-          <h2 style={styles.cardTitle}>AI Playground Playground</h2>
+          <h2 style={styles.cardTitle}>AI Playground</h2>
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
