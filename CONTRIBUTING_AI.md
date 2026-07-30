@@ -470,7 +470,7 @@ Read the architecture docs. They contain the design decisions behind every patte
 If something is unclear: describe your intent precisely (see [Intention Articulation](./handbook/02-the-three-pillars/01-intention-articulation.md)) and ask.
 
 **Contact:** [dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com)  
-**Repository:** [github.com/yaka0007/Mnemosyne-Neural-OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)
+**Repository:** [github.com/Mnemosyne-OS/Mnemosyne-Neural-OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 
 ---
 

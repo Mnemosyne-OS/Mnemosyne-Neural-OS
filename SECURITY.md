@@ -21,7 +21,7 @@ We take security seriously. If you discover a vulnerability, please report it **
 ### How to Report
 
 1. **Do NOT** open a public GitHub issue for security vulnerabilities
-2. Use **[GitHub Security Advisories](https://github.com/yaka0007/Mnemosyne-Neural-OS/security/advisories/new)** (preferred)
+2. Use **[GitHub Security Advisories](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/security/advisories/new)** (preferred)
 3. Or email directly: **[dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com)**
 
 Please include:
@@ -152,7 +152,7 @@ All **High** and **Critical** findings are resolved before any public release.
 
 | Channel | Contact |
 |---------|---------|
-| GitHub Security Advisories | [Report privately](https://github.com/yaka0007/Mnemosyne-Neural-OS/security/advisories/new) |
+| GitHub Security Advisories | [Report privately](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/security/advisories/new) |
 | Email | [dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com) |
 | Response SLA | < 48 hours for acknowledgment |
 

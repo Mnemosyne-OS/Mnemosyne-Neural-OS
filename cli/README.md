@@ -17,7 +17,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
 [![Ollama](https://img.shields.io/badge/Ollama-local%20AI-black?style=flat-square)](https://ollama.com)
-[![Part of Mnemosyne](https://img.shields.io/badge/ecosystem-Mnemosyne%20Neural%20OS-8B5CF6?style=flat-square)](https://github.com/yaka0007/Mnemosyne-Neural-OS)
+[![Part of Mnemosyne](https://img.shields.io/badge/ecosystem-Mnemosyne%20Neural%20OS-8B5CF6?style=flat-square)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 
 </div>
 
@@ -39,7 +39,7 @@
 
 ## What is MnemoForge?
 
-**MnemoForge** is the official CLI for the [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS) — a sovereign AI operating system built for the next generation of developer-agent collaboration.
+**MnemoForge** is the official CLI for the [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS) — a sovereign AI operating system built for the next generation of developer-agent collaboration.
 
 It gives AI agents something they fundamentally lack: **persistent, versionable, IDE-agnostic memory**.
 
@@ -310,6 +310,6 @@ Powered by **Antigravity (Google DeepMind)** · **Claude (Anthropic)** · **Curs
 
 <div align="center">
 
-**[⭐ Star on GitHub](https://github.com/yaka0007/Mnemosyne-Neural-OS)** · **[📖 GitBook Docs](https://mnemosyneos.gitbook.io)** · **[📦 npm](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[🐛 Issues](https://github.com/yaka0007/Mnemosyne-Neural-OS/issues)**
+**[⭐ Star on GitHub](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)** · **[📖 GitBook Docs](https://mnemosyneos.gitbook.io)** · **[📦 npm](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[🐛 Issues](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues)**
 
 </div>

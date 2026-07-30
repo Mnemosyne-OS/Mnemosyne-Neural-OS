@@ -159,7 +159,7 @@ The architecture documentation, methodology, and tooling are published openly. T
 If Neural Coding is a methodology worth naming, it should be practiced in the open.
 
 **Contact:** [dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com)  
-**Repository:** [github.com/yaka0007/Mnemosyne-Neural-OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)
+**Repository:** [github.com/Mnemosyne-OS/Mnemosyne-Neural-OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 
 ---
 

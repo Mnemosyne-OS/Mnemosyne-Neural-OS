@@ -26,7 +26,7 @@ The Mnemosyne Neural OS platform itself is proprietary — contributions to the 
 ### Setup
 
 ```bash
-git clone https://github.com/yaka0007/Mnemosyne-Neural-OS.git
+git clone https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git
 cd Mnemosyne-Neural-OS/cli
 npm install
 npm run build
@@ -69,9 +69,9 @@ npm run dev
 
 ## Reporting Bugs
 
-Use [GitHub Issues](https://github.com/yaka0007/Mnemosyne-Neural-OS/issues) with the `bug` label.
+Use [GitHub Issues](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues) with the `bug` label.
 
-For **security vulnerabilities**, use [GitHub Security Advisories](https://github.com/yaka0007/Mnemosyne-Neural-OS/security/advisories/new) — never a public issue.
+For **security vulnerabilities**, use [GitHub Security Advisories](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/security/advisories/new) — never a public issue.
 
 ---
 

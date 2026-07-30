@@ -8,7 +8,7 @@
 You have been initialized by the **MnemoForge Inception Engine** to build the module **{{MODULE_NAME}}**.
 
 This module is part of the **Mnemosyne Neural OS** — a production-grade sovereign AI operating system.  
-Repository: https://github.com/yaka0007/Mnemosyne-Neural-OS
+Repository: https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS
 
 ---
 

@@ -17,7 +17,7 @@
 Standard Retrieval-Augmented Generation (RAG) retrieves documents by keyword or vector
 similarity — a one-dimensional operation that treats memory as a static lookup table.
 The **Resonance Engine** is the cognitive memory architecture of the
-[Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS). Its name is its
+[Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS). Its name is its
 thesis: memory should not be *looked up*, it should **resonate** — the context that
 matters vibrates into focus against the intent of the question, while the rest stays
 quiet.
@@ -342,7 +342,7 @@ Miami, FL 33122, USA
 **Tony Trochet** — Founder & Lead Architect
 [LinkedIn](https://www.linkedin.com/in/tony-t-19544650/) · [GitHub @yaka0007](https://github.com/yaka0007)
 
-**Part of:** [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)
+**Part of:** [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 **Built through Neural Coding:** human-architected, with Claude (Anthropic), Antigravity (Google DeepMind), and Cursor directed as instruments.
 
 ---

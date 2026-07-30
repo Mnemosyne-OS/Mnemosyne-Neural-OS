@@ -2,7 +2,7 @@
 
 > **Create custom UI skins for Mnemosyne OS using only JSON — Zero TypeScript required.**
 
-[![Phase 62](https://img.shields.io/badge/Mnemosyne-Phase%2062-00cc6a?style=flat-square)](https://github.com/yaka0007/Mnemosyne-Neural-OS)
+[![Phase 62](https://img.shields.io/badge/Mnemosyne-Phase%2062-00cc6a?style=flat-square)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
 
 ---
@@ -207,4 +207,4 @@ node scripts/skin-validate.mjs --help
 
 ## License
 
-MIT — [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)
+MIT — [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/yaka0007/Mnemosyne-Neural-OS/packages/design-sdk/skin-schema.json",
+  "$id": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/packages/design-sdk/skin-schema.json",
   "title": "MnemosyneSkinManifest",
   "description": "Schema for a Mnemosyne OS skin manifest JSON file. Defines CSS variable overrides for the UI. See DR-011→014.",
   "type": "object",

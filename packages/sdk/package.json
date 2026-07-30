@@ -19,13 +19,13 @@
     "url": "https://www.linkedin.com/in/tony-t-19544650/"
   },
   "license": "MIT",
-  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "homepage": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS.git"
+    "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git"
   },
   "bugs": {
-    "url": "https://github.com/yaka0007/Mnemosyne-Neural-OS/issues"
+    "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues"
   },
   "publishConfig": {
     "access": "public",

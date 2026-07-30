@@ -157,6 +157,6 @@ your-project/
 
 ## Support
 
-- Repository: [github.com/yaka0007/Mnemosyne-Neural-OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)
-- Issues: [github.com/yaka0007/Mnemosyne-Neural-OS/issues](https://github.com/yaka0007/Mnemosyne-Neural-OS/issues)
+- Repository: [github.com/Mnemosyne-OS/Mnemosyne-Neural-OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
+- Issues: [github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues)
 - Package: [@mnemosyne_os/forge on npm](https://www.npmjs.com/package/@mnemosyne_os/forge)

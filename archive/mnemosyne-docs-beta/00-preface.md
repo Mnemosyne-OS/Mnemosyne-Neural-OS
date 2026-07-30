@@ -88,7 +88,7 @@ Mnemosyne OS is one answer.
 
 ---
 
-*Built on [Neural Coding](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/handbook). Architecture fully documented. Available now.*
+*Built on [Neural Coding](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/handbook). Architecture fully documented. Available now.*
 
 ---
 

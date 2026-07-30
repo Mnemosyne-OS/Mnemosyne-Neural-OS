@@ -216,36 +216,36 @@ Package `@mnemosyne_os/mcp`; requires the Mnemosyne app running (7799 up). Legac
 Repo orientation first: `AGENTS.md` (root) carries the reading order, the open-vs-sealed boundary, and the ground rules — shipped vs. future features, and the only numbers to trust (72.9% on LongMemEval-M as a stated lower bound; 242 Zod-validated IPC channels). Treat `archive/` as historical beta narrative, not current fact.
 
 ### Orientation
-- [AGENTS.md — AI orientation primer](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/AGENTS.md): read this first — reading order, open-vs-sealed, ground rules
-- [README](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/README.md): the product overview
+- [AGENTS.md — AI orientation primer](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/AGENTS.md): read this first — reading order, open-vs-sealed, ground rules
+- [README](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/README.md): the product overview
 
 ### Vision & concepts
-- [Why Mnemosyne exists — the relationship layer](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/WHY.md): the thesis behind the project
-- [Concepts & Glossary](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/CONCEPTS.md): the mental model + every product/architecture term
+- [Why Mnemosyne exists — the relationship layer](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/WHY.md): the thesis behind the project
+- [Concepts & Glossary](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/CONCEPTS.md): the mental model + every product/architecture term
 
 ### Architecture
-- [Architecture Overview](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/ARCHITECTURE.md): process model, engines, the life of a memory
-- [The Resonance Engine — Whitepaper](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/RESONANCE_ENGINE_WHITEPAPER.md): the memory engine in depth (living document)
-- [IPC Security Bridge](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/IPC_SECURITY_BRIDGE.md): the Zod-validated main↔renderer boundary
+- [Architecture Overview](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/ARCHITECTURE.md): process model, engines, the life of a memory
+- [The Resonance Engine — Whitepaper](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/RESONANCE_ENGINE_WHITEPAPER.md): the memory engine in depth (living document)
+- [IPC Security Bridge](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/IPC_SECURITY_BRIDGE.md): the Zod-validated main↔renderer boundary
 
 ### Governance & security
-- [Governance & Sovereignty](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/GOVERNANCE.md): what the human controls, what never leaves your machine
-- [Security Policy](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/SECURITY.md): reporting, hardening, supported versions
-- [Privacy & Telemetry](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/PRIVACY_TELEMETRY.md): the no-telemetry-without-consent stance
+- [Governance & Sovereignty](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/GOVERNANCE.md): what the human controls, what never leaves your machine
+- [Security Policy](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/SECURITY.md): reporting, hardening, supported versions
+- [Privacy & Telemetry](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/PRIVACY_TELEMETRY.md): the no-telemetry-without-consent stance
 
 ### Design & method
-- [Design Decisions](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/DESIGN_DECISIONS.md): the *why* behind the architecture (ADR-style)
-- [The Neural Coding Handbook](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/handbook): the human-directed method the project was built with
+- [Design Decisions](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/DESIGN_DECISIONS.md): the *why* behind the architecture (ADR-style)
+- [The Neural Coding Handbook](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/handbook): the human-directed method the project was built with
 
 ### Build on it
-- [Cartridge boilerplate + AGENTS.md build contract](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/examples/cartridge-boilerplate): copy this to start a cartridge
-- [SDK packages](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/packages): the MIT integration surface (`@mnemosyne_os/sdk` and friends)
-- [MnemoForge CLI docs](https://github.com/yaka0007/Mnemosyne-Neural-OS/tree/main/cli/docs): give any agent persistent memory, an identity, and a publish pipeline
+- [Cartridge boilerplate + AGENTS.md build contract](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/examples/cartridge-boilerplate): copy this to start a cartridge
+- [SDK packages](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/packages): the MIT integration surface (`@mnemosyne_os/sdk` and friends)
+- [MnemoForge CLI docs](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/cli/docs): give any agent persistent memory, an identity, and a publish pipeline
 - [MnemoReader — reference cartridge](https://github.com/yaka0007/MnemoReader---MnemosyneOS): the shipped implementation to pattern-match
 
 ### Proof
 - [LongMemEval benchmark — recomputable](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/): re-derive 72.9% yourself in one command, no engine, no network
 
 ### Optional
-- [Documentation index](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/doc/README.md): the full documentation map
-- [CONTRIBUTING_AI.md](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/CONTRIBUTING_AI.md): for AI agents contributing code
+- [Documentation index](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/README.md): the full documentation map
+- [CONTRIBUTING_AI.md](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/CONTRIBUTING_AI.md): for AI agents contributing code

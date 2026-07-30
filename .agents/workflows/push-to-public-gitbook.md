@@ -6,7 +6,7 @@ description: Push handbook files to the public GitBook repo safely
 
 There are two repos:
 - **Private monorepo**: `github.com/yaka0007/mnemosyne` — the full codebase
-- **Public repo**: `github.com/yaka0007/Mnemosyne-Neural-OS` — connected to GitBook
+- **Public repo**: `github.com/Mnemosyne-OS/Mnemosyne-Neural-OS` — connected to GitBook
 
 The handbook files live in:
 `packages/mnemoforge-cli/Mnemosyne-Neural-OS-public/handbook/`
@@ -25,7 +25,7 @@ This will cause the Electron app to crash as its working files disappear.
 ```powershell
 $temp = "c:\Users\crypt\AppData\Local\Temp\mno-public-push"
 if (Test-Path $temp) { Remove-Item $temp -Recurse -Force }
-git clone https://github.com/yaka0007/Mnemosyne-Neural-OS.git $temp
+git clone https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git $temp
 ```
 
 ### 2. Copy the new/updated handbook files to the temp clone

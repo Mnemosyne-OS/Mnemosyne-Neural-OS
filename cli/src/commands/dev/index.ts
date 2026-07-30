@@ -109,7 +109,7 @@ devCommand
     console.log(chalk.gray('  ├── Git Chronicles (commit messages + context)\n'))
     console.log(chalk.gray('  ├── Git Spine entries (branches, tags, authors)\n'))
     console.log(chalk.gray('  └── Architecture Spine (ADR auto-detection in commit messages)\n'))
-    console.log(chalk.hex('#22d3ee')('  Star the repo to be notified: github.com/yaka0007/Mnemosyne-Neural-OS\n'))
+    console.log(chalk.hex('#22d3ee')('  Star the repo to be notified: github.com/Mnemosyne-OS/Mnemosyne-Neural-OS\n'))
   })
 
 // ── github-import (stub — Sprint 9) ───────────────────────────────────────────

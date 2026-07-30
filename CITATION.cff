@@ -15,8 +15,8 @@ authors:
     email: dev@mnemosyne-os.com
     affiliation: XPACEGEMS LLC
     orcid: ""
-repository-code: "https://github.com/yaka0007/Mnemosyne-Neural-OS"
-url: "https://github.com/yaka0007/Mnemosyne-Neural-OS"
+repository-code: "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS"
+url: "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS"
 license: "Proprietary (platform) / MIT (MnemoForge CLI)"
 version: "1.0.0-beta.8"
 date-released: "2026-04-03"

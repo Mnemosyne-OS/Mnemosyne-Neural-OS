@@ -10,7 +10,7 @@
 
 > 📖 **Documentation & Public Resources**
 > The full architecture documentation and public resources are on GitHub:
-> [**github.com/yaka0007/Mnemosyne-Neural-OS**](https://github.com/yaka0007/Mnemosyne-Neural-OS)
+> [**github.com/Mnemosyne-OS/Mnemosyne-Neural-OS**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 > — Docs · Handbook · Contribute
 
 ---
@@ -83,4 +83,4 @@ This is a real session. Real timestamps. Real code.
 
 ---
 
-*Mnemosyne OS is open-core, built by one practitioner using the Neural Coding method. — [github.com/yaka0007/Mnemosyne-Neural-OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)*
+*Mnemosyne OS is open-core, built by one practitioner using the Neural Coding method. — [github.com/Mnemosyne-OS/Mnemosyne-Neural-OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)*

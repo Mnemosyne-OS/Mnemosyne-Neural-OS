@@ -4,10 +4,10 @@
   "private": true,
   "description": "Mnemosyne OS — open developer ecosystem (SDK, CLI, examples)",
   "license": "MIT",
-  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "homepage": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yaka0007/Mnemosyne-Neural-OS.git"
+    "url": "git+https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git"
   },
   "packageManager": "pnpm@10.25.0",
   "scripts": {

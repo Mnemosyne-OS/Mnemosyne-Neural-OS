@@ -153,5 +153,5 @@ gate (typecheck · lint · i18n · tests).
 
 ---
 
-*Part of the [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS) documentation.*
+*Part of the [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS) documentation.*
 *Questions: [dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com)*

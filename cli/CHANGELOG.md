@@ -9,7 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🎉 Initial Public Release
 
-**MnemoForge CLI** is now publicly available as part of the [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS) ecosystem.
+**MnemoForge CLI** is now publicly available as part of the [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS) ecosystem.
 
 #### Added
 - `mnemoforge init <module-name>` — Scaffold a Mnemosyne-grade module with AI governance DNA

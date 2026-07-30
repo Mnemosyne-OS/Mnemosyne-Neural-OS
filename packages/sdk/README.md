@@ -1,6 +1,6 @@
 # @mnemosyne_os/sdk
 
-> **Official SDK for building Layer 2 apps on [Mnemosyne OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)**  
+> **Official SDK for building Layer 2 apps on [Mnemosyne OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)**  
 > Connect your app to a local sovereign AI memory runtime — no cloud dependency.
 
 [![npm version](https://img.shields.io/npm/v/@mnemosyne_os/sdk)](https://www.npmjs.com/package/@mnemosyne_os/sdk)

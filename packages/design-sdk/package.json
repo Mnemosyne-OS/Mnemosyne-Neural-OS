@@ -9,8 +9,8 @@
     "url": "https://github.com/yaka0007"
   },
   "license": "MIT",
-  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
-  "repository": { "type": "git", "url": "git+https://github.com/yaka0007/Mnemosyne-Neural-OS.git" },
+  "homepage": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
+  "repository": { "type": "git", "url": "git+https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git" },
   "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
   "type": "module",
   "main": "./dist/index.cjs",

@@ -9,7 +9,7 @@
 
 | Milestone | When | Notes |
 |-----------|------|-------|
-| Infinity Edition — 6 public releases | 2026 | Flagship desktop app, now at [**v1.3.3 · The Sovereign Ledger**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity) |
+| Infinity Edition — 6 public releases | 2026 | Flagship desktop app, now at [**v1.3.3 · The Sovereign Ledger**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity) |
 | MnemoHub | 2026 | Signed cartridge marketplace — community submission pipeline + live publishing |
 | Sovereign identity | 2026 | Claim a public pseudonym bound to your wallet — no account, no password |
 | Dream State | 2026 | Idle-time consolidation engine — replays and links memories across sessions |

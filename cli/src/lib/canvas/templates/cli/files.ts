@@ -107,7 +107,7 @@ You are working on **{{PROJECT_NAME}}**, a CLI tool built within the Mnemosyne N
 
 ## Mnemosyne Neural OS
 This project is part of the Mnemosyne ecosystem.
-Repository: https://github.com/yaka0007/Mnemosyne-Neural-OS
+Repository: https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS
 `,
   },
 

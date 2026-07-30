@@ -5,10 +5,10 @@
   "keywords": ["mnemosyne", "ai", "sdk", "scaffold", "create-app"],
   "license": "MIT",
   "author": "Tony Trochet <tony@xpacegems.com> (https://xpacegems.com)",
-  "homepage": "https://github.com/yaka0007/Mnemosyne-Neural-OS",
+  "homepage": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yaka0007/Mnemosyne-Neural-OS.git",
+    "url": "git+https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git",
     "directory": "packages/create-app"
   },
   "publishConfig": {

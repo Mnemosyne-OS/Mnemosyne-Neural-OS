@@ -8,7 +8,7 @@
 
 This handbook documents a methodology called **Neural Coding** — a way of building software where the practitioner's primary skill is not programming, but the ability to articulate intent, evaluate proposals, and make architectural decisions.
 
-It emerged from a concrete project: [Mnemosyne Neural OS](https://github.com/yaka0007/Mnemosyne-Neural-OS), a 290,000-line production desktop application built by a single person with no prior coding background.
+It emerged from a concrete project: [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS), a 290,000-line production desktop application built by a single person with no prior coding background.
 
 That is one case. This handbook is the attempt to extract what can be generalized from it.
 
@@ -121,7 +121,7 @@ If yes — document it. Even informally. Even just a short write-up of what work
 
 **To share a case or start a conversation:**
 
-→ Open an issue on [github.com/yaka0007/Mnemosyne-Neural-OS](https://github.com/yaka0007/Mnemosyne-Neural-OS)  
+→ Open an issue on [github.com/Mnemosyne-OS/Mnemosyne-Neural-OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)  
 → Or write directly to [dev@mnemosyne-os.com](mailto:dev@mnemosyne-os.com)
 
 The methodology will be as strong as the cases that test it. One is just the beginning.

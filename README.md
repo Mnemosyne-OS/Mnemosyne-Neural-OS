@@ -25,20 +25,20 @@
 
 <br/>
 
-[![CI](https://github.com/yaka0007/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/yaka0007/Mnemosyne-Neural-OS/actions)
+[![CI](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
 [![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-72.9%25_·_verifiable-33ffd6?style=flat-square)](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
-[![version](https://img.shields.io/github/v/release/yaka0007/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases)
+[![version](https://img.shields.io/github/v/release/Mnemosyne-OS/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
 
 <br/><br/>
 
 <!-- Download + MnemoForge badges: auto-updated by `.github/workflows/sync-readme-release-badges.yml` on Release (tags `v…` = OS setup, `cli-…` = CLI). -->
-[![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v1.3.5-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.5-infinity)
-[![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(Open_Source)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
+[![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v1.3.5-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.5-infinity)
+[![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(Open_Source)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
 
 <br/>
 
@@ -229,7 +229,7 @@ and never exposed.
 Two ways in:
 
 - 🛠️ **Build on it** — scaffold an app and you're talking to the memory vault in minutes.
-- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity).
+- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity).
 
 ```bash
 npm create @mnemosyne_os/app
@@ -297,7 +297,7 @@ mnemoforge
 
 [![npm version](https://img.shields.io/npm/v/@mnemosyne_os/forge?color=8b5cf6&label=%40mnemosyne_os%2Fforge)](https://www.npmjs.com/package/@mnemosyne_os/forge)
 
-→ **[CLI Documentation](https://mnemosyne-os.gitbook.io/mnemosyne-os-cli)** · **[npm package](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[Release notes](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)**
+→ **[CLI Documentation](https://mnemosyne-os.gitbook.io/mnemosyne-os-cli)** · **[npm package](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[Release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)**
 
 ---
 
@@ -472,7 +472,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition — 6 public releases**, now at [**v1.3.3 · The Sovereign Ledger**](https://github.com/yaka0007/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity)
+- [x] 🚀 **Infinity Edition — 6 public releases**, now at [**v1.3.3 · The Sovereign Ledger**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity)
 - [x] 🧩 **MnemoHub** — signed cartridge marketplace, community submission pipeline, live publishing
 - [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
@@ -506,7 +506,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 
 <br/>
 
-[![last commit](https://img.shields.io/github/last-commit/yaka0007/Mnemosyne-Neural-OS/main?label=last%20commit)](https://github.com/yaka0007/Mnemosyne-Neural-OS/commits/main/)
-[![commit activity](https://img.shields.io/github/commit-activity/m/yaka0007/Mnemosyne-Neural-OS?label=commit%20activity)](https://github.com/yaka0007/Mnemosyne-Neural-OS/graphs/commit-activity)
+[![last commit](https://img.shields.io/github/last-commit/Mnemosyne-OS/Mnemosyne-Neural-OS/main?label=last%20commit)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/commits/main/)
+[![commit activity](https://img.shields.io/github/commit-activity/m/Mnemosyne-OS/Mnemosyne-Neural-OS?label=commit%20activity)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/graphs/commit-activity)
 
 </div>

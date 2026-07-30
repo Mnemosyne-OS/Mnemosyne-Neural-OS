@@ -147,7 +147,7 @@ dist/
 // ── README.md ─────────────────────────────────────────────────────────────────
 writeFileSync(join(targetDir, 'README.md'), `# ${appName}
 
-A Mnemosyne OS app built with [@mnemosyne_os/sdk](https://github.com/yaka0007/Mnemosyne-Neural-OS).
+A Mnemosyne OS app built with [@mnemosyne_os/sdk](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS).
 
 ## Getting started
 
@@ -163,8 +163,8 @@ Mnemosyne OS will enforce these permissions at runtime — Zero-Trust by default
 
 ## Docs
 
-- [SDK Documentation](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/packages/sdk/README.md)
-- [Manifest Reference](https://github.com/yaka0007/Mnemosyne-Neural-OS/blob/main/packages/sdk/docs/MANIFEST.md)
+- [SDK Documentation](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/packages/sdk/README.md)
+- [Manifest Reference](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/packages/sdk/docs/MANIFEST.md)
 `);
 
 console.log(`  ✅ App created at: ${targetDir}`);
