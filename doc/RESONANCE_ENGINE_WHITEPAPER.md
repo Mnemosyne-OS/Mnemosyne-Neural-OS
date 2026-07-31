@@ -209,12 +209,16 @@ numbers use.
 
 **72.9 % is a stated lower bound** — only the multi-session category was re-run with the
 full engine; other categories weren't retried yet. And the number is not asked for on faith:
-the published grader and per-question verdicts let anyone **re-derive the score in one
+the published grader and per-question verdicts let anyone **audit the score in one
 command, no engine and no network.** Every counted HIT was replayed and reproduced before
 being counted — no cherry-picked runs.
 
+The evidence is archived and citable, not just linked: the per-question ledgers, the
+scoring scripts and the raw run logs are deposited under
+**[DOI 10.5281/zenodo.21727140](https://doi.org/10.5281/zenodo.21727140)** (CC BY 4.0).
+
 **→ [Audit it yourself — live results](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
-&nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
+&nbsp;·&nbsp; [raw logs & methodology](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks)
 
 The jump from 1/8 to 5/8 on multi-session recall is the point: it is precisely the category
 that a memory *engine* — consolidation plus cross-session linking — exists to fix.
