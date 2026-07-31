@@ -244,7 +244,7 @@ Repo orientation first: `AGENTS.md` (root) carries the reading order, the open-v
 - [MnemoReader — reference cartridge](https://github.com/yaka0007/MnemoReader---MnemosyneOS): the shipped implementation to pattern-match
 
 ### Proof
-- [LongMemEval benchmark — recomputable](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/): re-derive 72.9% yourself in one command, no engine, no network
+- [LongMemEval benchmark — auditable](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/): re-derive 72.9% yourself in one command, no engine, no network
 
 ### Optional
 - [Documentation index](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/README.md): the full documentation map

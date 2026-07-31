@@ -42,7 +42,7 @@
 
 <br/>
 
-[![Recompute our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Recompute_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)
+[![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)
 
 <br/>
 
@@ -55,7 +55,7 @@
 Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
 
 **Mnemosyne OS is a personal memory OS that runs on your machine** — your data never
-leaves it, a human governs it, and it scores **72.9% on LongMemEval-M** ([recompute it
+leaves it, a human governs it, and it scores **72.9% on LongMemEval-M** ([audit it
 yourself](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)).
 
 The AI that remembers *you* — not infrastructure you plug into someone else's.
@@ -178,12 +178,12 @@ reported numbers use.
 72.9 % is a stated **lower bound** — only the multi-session category was
 re-run with the full engine; other categories weren't retried yet.
 
-**Don't take the number on faith — recompute it.** The published grader and
+**Don't take the number on faith — audit it.** The published grader and
 per-question verdicts let you re-derive the score in one command, no engine and
 no network. Full methodology, root-cause analysis, and all 16 raw run logs are
 public too:
 
-**🔍 [Recompute it yourself — live results page →](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+**🔍 [Audit it yourself — live results page →](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
 
 ### Interface Gallery

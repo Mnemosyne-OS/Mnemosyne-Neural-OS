@@ -115,7 +115,7 @@ with persistent context. It is, in a sense, the first thing the relationship lay
 to build. See the [Neural Coding Handbook](../handbook).
 
 It is not a demo and not a prototype. It's a working system — with a
-[public, recomputable benchmark](../README.md#proven-on-longmemeval-m--not-just-a-pitch) —
+[public, auditable benchmark](../README.md#proven-on-longmemeval-m--not-just-a-pitch) —
 that makes the continuity between a human and an AI genuinely persistent.
 
 ---

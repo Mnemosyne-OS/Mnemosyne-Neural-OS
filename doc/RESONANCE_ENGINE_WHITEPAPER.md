@@ -213,7 +213,7 @@ the published grader and per-question verdicts let anyone **re-derive the score 
 command, no engine and no network.** Every counted HIT was replayed and reproduced before
 being counted — no cherry-picked runs.
 
-**→ [Recompute it yourself — live results](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+**→ [Audit it yourself — live results](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
 
 The jump from 1/8 to 5/8 on multi-session recall is the point: it is precisely the category
@@ -274,7 +274,7 @@ not silently miscompared — returning honest results instead of wrong ones.
 | Provider resilience | Single provider | Priority chain, fails loud (never a null vector) |
 | Model-switch safety | Undefined behavior | Dimension-aware routing, refuses cross-space compares |
 | Storage | Plaintext index | AES-256 at rest when armed, decrypted in-RAM (int8) only when open |
-| Verification | Vibes | Public LongMemEval result, recomputable in one command |
+| Verification | Vibes | Public LongMemEval result, auditable in one command |
 
 ---
 
@@ -329,7 +329,7 @@ The result is a memory architecture that is more intelligent (it understands wha
 mean), more capable (it retrieves by intent and consolidates across time), more sovereign
 (the user controls every node, offline if they choose), more resilient (it degrades
 gracefully and never corrupts on a model switch), and — uniquely — **measured**, on a
-public benchmark anyone can recompute.
+public benchmark anyone can audit.
 
 Resonance is not a feature. It is the cognitive substrate on which Mnemosyne Neural OS is
 built — the reason context *resonates* into the right answer instead of being looked up.

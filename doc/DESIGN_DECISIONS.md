@@ -19,7 +19,7 @@ anyone who would re-skin it. The boundary is the **Gateway**: apps speak a stabl
 contract, the core stays behind it.
 
 **Trade-off.** You cannot read the engine's source. In exchange you get a stable surface
-that won't break under you, and a benchmark you can [recompute yourself](../README.md#proven-on-longmemeval-m--not-just-a-pitch).
+that won't break under you, and a benchmark you can [audit yourself](../README.md#proven-on-longmemeval-m--not-just-a-pitch).
 
 ---
 
