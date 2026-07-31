@@ -30,7 +30,7 @@
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
-[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-72.9%25_·_verifiable-33ffd6?style=flat-square)](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)
+[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-72.9%25_·_verifiable-33ffd6?style=flat-square)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 [![version](https://img.shields.io/github/v/release/Mnemosyne-OS/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
 
@@ -42,7 +42,7 @@
 
 <br/>
 
-[![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)
+[![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 
 <br/>
 
@@ -56,7 +56,7 @@ Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
 
 **Mnemosyne OS is a personal memory OS that runs on your machine** — your data never
 leaves it, a human governs it, and it scores **72.9% on LongMemEval-M** ([audit it
-yourself](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)).
+yourself](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)).
 
 The AI that remembers *you* — not infrastructure you plug into someone else's.
 
@@ -183,7 +183,7 @@ per-question verdicts let you re-derive the score in one command, no engine and
 no network. Full methodology, root-cause analysis, and all 16 raw run logs are
 public too:
 
-**🔍 [Audit it yourself — live results page →](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+**🔍 [Audit it yourself — live results page →](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
 
 ### Interface Gallery

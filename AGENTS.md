@@ -51,7 +51,7 @@ not assume you can read or modify the core from this repository** — you cannot
   credits. **Not yet shipped** (teased as future): **Soul Studio**, **Narcissus**, and
   **soul-weighted retrieval**. Never describe a future capability as if it ships today.
 - **Numbers you can trust** (don't invent others): **72.9 %** on LongMemEval-M (a *stated
-  lower bound*, full-haystack, [auditable](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/));
+  lower bound*, full-haystack, [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/));
   **242** Zod-validated IPC channels. If you see other figures in old/archived text, treat
   them as potentially stale.
 - **Archived material is archived.** `archive/mnemosyne-docs-beta/` is historical beta

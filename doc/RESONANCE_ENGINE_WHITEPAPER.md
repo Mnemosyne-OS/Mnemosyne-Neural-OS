@@ -213,7 +213,7 @@ the published grader and per-question verdicts let anyone **re-derive the score 
 command, no engine and no network.** Every counted HIT was replayed and reproduced before
 being counted — no cherry-picked runs.
 
-**→ [Audit it yourself — live results](https://yaka0007.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+**→ [Audit it yourself — live results](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
 
 The jump from 1/8 to 5/8 on multi-session recall is the point: it is precisely the category
