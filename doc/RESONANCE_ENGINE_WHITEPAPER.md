@@ -296,11 +296,23 @@ architecture is Mnemosyne [2], an unsupervised long-term memory for edge-based
 LLMs built on graph-structured storage, redundancy filters, pruning, and
 probabilistic recall with temporal decay. It shares this project's name, and
 several of its intuitions: decay, consolidation and pruning appear here as Dream
-State (§6) and as the confidence-decay direction (§14). The shared name is not a
-shared system. Mnemosyne [2] is an unsupervised memory *architecture*, evaluated
-as such; the Resonance Engine is a *deployed* system whose defining constraint is
-governance — a human decides, per node, what may be remembered — and whose
-retrieval quality is published with an auditable ledger rather than asserted.
+State (§6) and as the confidence-decay direction (§14).
+
+The shared name is not a shared system, and the two are not measured on the same
+ground. Mnemosyne [2] is an unsupervised memory *architecture*, evaluated on
+longitudinal healthcare dialogue and on LoCoMo, where it reports strong results
+against RAG and other baselines. The Resonance Engine is a *deployed* system whose
+defining constraint is governance — a human decides, per node, what may be
+remembered — and it is evaluated on LongMemEval-M, full-haystack. **The benchmarks
+differ, so no comparison between the two reported figures is implied or supported
+by either work.**
+
+Where this work does make a claim of its own is on the reporting side. The figure
+in §8 is not offered as a result to be taken on trust: the grader, the
+per-question verdicts and the raw run logs are deposited [5] under a permanent
+identifier, so a third party can recompute the published number without the
+engine and without the network. That is a claim about *auditability*, not about
+superiority.
 
 **Benchmarking long-term memory.** LongMemEval [3] provides the evaluation used
 in §8. This work reports the full-haystack variant, which surrounds each
