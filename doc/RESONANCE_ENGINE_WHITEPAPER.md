@@ -3,8 +3,9 @@
 **Technical Whitepaper — v2.0 · Living document**
 **Current as of Mnemosyne Neural OS v1.3.3 · Revised July 2026**
 **XPACEGEMS LLC** · Miami, FL 33122, USA
-**Author:** Tony Trochet, Founder & Lead Architect
+**Author:** Tony Trochet, Founder & Lead Architect · [ORCID 0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917)
 **Status:** Production-deployed · Part of Mnemosyne Neural OS
+**Cite as:** [10.5281/zenodo.21728284](https://doi.org/10.5281/zenodo.21728284) — v2.0, CC BY 4.0
 
 > This is a living document. It tracks the architecture as it ships, not a frozen
 > snapshot — it is revised as the engine evolves. Prior editions described the earlier

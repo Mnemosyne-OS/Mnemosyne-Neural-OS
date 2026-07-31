@@ -184,7 +184,16 @@ no network. Full methodology, root-cause analysis, and all 16 raw run logs are
 public too:
 
 **🔍 [Audit it yourself — live results page →](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
-&nbsp;·&nbsp; [raw logs & methodology](https://github.com/yaka0007/MnemosyneOS---benchmarks)
+&nbsp;·&nbsp; [raw logs & methodology](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks)
+
+**Citing this work.** Both the evidence and the architecture are archived under
+permanent identifiers, so they can be cited rather than merely linked:
+
+| | |
+|---|---|
+| Verification kit — ledgers, grader, raw logs | [10.5281/zenodo.21727140](https://doi.org/10.5281/zenodo.21727140) |
+| The Resonance Engine — technical whitepaper | [10.5281/zenodo.21728284](https://doi.org/10.5281/zenodo.21728284) |
+| Author | Tony Trochet · [ORCID 0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917) |
 
 ### Interface Gallery
 
