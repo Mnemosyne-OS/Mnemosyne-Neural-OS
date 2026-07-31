@@ -61,8 +61,8 @@ An agent asked to "handle everything" still only touches what its scope was gran
 
 | Data | Where it lives |
 |---|---|
-| Vault content (Chronicles, documents) | Your disk only — **encrypted at rest** |
-| Embedding vectors | Your disk (encrypted); decrypted into RAM only while a Vault is open |
+| Vault content (Chronicles, documents) | Your disk only — **AES-256 encrypted at rest once you arm it** |
+| Embedding vectors | Your disk (same key); decrypted into RAM only while a Vault is open |
 | Neural Map, exclusions, ledgers | Your disk |
 | Telemetry | **None without consent** |
 
@@ -82,12 +82,17 @@ content. Verifying costs you nothing (no gas, no token to manage).
 A local wallet is the only credential. There is **no account and no server-side password**
 to breach.
 
-- On first launch, a signed challenge verifies your **Engramm** license on-chain; the
-  runtime then derives an AES-256 vault key and stores it in the machine's **TPM / OS
-  Keychain**.
-- On every launch after, a local unlock (Windows Hello / Touch ID) releases the key.
-- Physical theft yields a mathematical vault: encrypted SQLite that is unreadable, with the
-  key held by the TPM.
+- On first launch, a signed challenge verifies your **Engramm** license on-chain. Licensing
+  and encryption are separate concerns: verifying a license does not arm a key.
+- **Encryption at rest is something you switch on** (Settings → Backup & Restore, shipped
+  in v1.3.5). Activating mints a 32-byte AES-256 key, shows you a **24-word recovery
+  phrase** and makes you confirm it, and only then seals the key into the machine's **OS
+  keystore**. Abandon the flow and nothing is written — no vault is touched.
+- **Until you arm it, vaults sit on your disk in cleartext.** They are still local, still
+  yours, still never uploaded — but they are not encrypted, and we would rather say so
+  than let you assume otherwise.
+- Once armed, physical theft yields encrypted SQLite. The recovery phrase is what restores
+  it on a new machine; nobody else holds a copy.
 
 ---
 

@@ -139,7 +139,8 @@ When the user asks a question, the Retrieval engine is what makes the relevant c
 resonate. Its pipeline is a substantial departure from a brute-force cosine scan.
 
 1. **In-RAM, quantized cache.** Vectors are decrypted once into memory when a vault opens;
-   the data on disk stays encrypted at rest. The in-RAM cache is **int8-quantized** so it
+   the data on disk stays encrypted at rest, on installs where encryption is armed. The
+   in-RAM cache is **int8-quantized** so it
    stays small enough to scale to a lived-in vault.
 
 2. **ANN ∪ exact-term.** Candidate generation runs an **approximate-nearest-neighbor**
@@ -226,7 +227,7 @@ A memory engine that the user cannot govern is a liability, not a feature. Reson
 the human in control at two levels.
 
 **Vaults.** Memory is partitioned by life domain — code, notes, research, journal, social —
-each an encrypted store (SQLite + vector data, encrypted at rest) with its own protection
+each its own store (SQLite + vector data, AES-256 encrypted at rest once armed) with its own protection
 level and consent boundary. Retrieval for a given context is scoped to the vaults the user
 has allowed; domain isolation is enforced, not advisory.
 
@@ -272,7 +273,7 @@ not silently miscompared — returning honest results instead of wrong ones.
 | Memory scope | Single flat space | Domain-isolated vaults with consent boundaries + FGAC |
 | Provider resilience | Single provider | Priority chain, fails loud (never a null vector) |
 | Model-switch safety | Undefined behavior | Dimension-aware routing, refuses cross-space compares |
-| Storage | Plaintext index | Encrypted at rest, decrypted in-RAM (int8) only when open |
+| Storage | Plaintext index | AES-256 at rest when armed, decrypted in-RAM (int8) only when open |
 | Verification | Vibes | Public LongMemEval result, recomputable in one command |
 
 ---
@@ -289,7 +290,8 @@ The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current:
 | Dream State (two-speed consolidation, augment-never-replace) | ✅ Production |
 | Adaptive RAG / gearbox (model- & mode-aware selection) | ✅ Production |
 | Neural Map (topology + per-node governance) | ✅ Production |
-| Vaults (domain isolation, encrypted at rest, FGAC) | ✅ Production |
+| Vaults (domain isolation, FGAC) | ✅ Production |
+| Encryption at rest (AES-256 / SQLCipher, user-armed, 24-word recovery) | ✅ Production — v1.3.5, off until armed |
 | Local-only mode (Ollama, zero cloud) | ✅ Production |
 
 ---

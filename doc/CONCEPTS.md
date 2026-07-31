@@ -13,7 +13,7 @@ architecture** terms.
 ## The mental model in one breath
 
 A piece of information enters a **Vault**, becomes a **Chronicle**, is classified by the
-**Spine engine**, embedded into a vector, and stored — encrypted at rest. When you ask a
+**Spine engine**, embedded into a vector, and stored — encrypted at rest once you arm it. When you ask a
 question, the **Resonance Engine** makes the relevant Chronicles *resonate* into focus,
 the **Adaptive RAG** gearbox shapes how much of that context the model receives, and the
 **Neural Map** lets you govern — per memory — what the AI is ever allowed to use.
@@ -30,7 +30,7 @@ the **Adaptive RAG** gearbox shapes how much of that context the model receives,
         │   CHRONICLE    │
         └───────┬───────┘
                 ▼
-   Spine classifies · Embedding vectorizes · stored encrypted at rest
+   Spine classifies · Embedding vectorizes · stored (encrypted once armed)
                 │
                 ▼
         ┌───────────────┐
@@ -134,7 +134,7 @@ wallet and verified client-side before anything renders.
 to your wallet — not to a machine or an email. No account, no password, no gas fees.
 
 **Sovereign Wallet** — The local wallet that is your only credential: it drives licensing,
-your pseudonym, and cloud credits, with the key derived and held in TPM / OS Keychain.
+your pseudonym, and cloud credits, with its key sealed into the machine's OS keystore.
 
 **Soul Protocol** — A persistent personality profile (tone, values, behavioral rules) for
 an agent, injected as a structured system prompt via the MnemoForge CLI.

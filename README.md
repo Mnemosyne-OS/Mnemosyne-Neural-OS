@@ -71,7 +71,7 @@ the same thing for **AI agents**, and the resources are just different:
 
 | An agent needs | Mnemosyne manages it via |
 |---|---|
-| **Memory** | Vaults — SQLite + vector stores, partitioned by domain, encrypted at rest |
+| **Memory** | Vaults — SQLite + vector stores, partitioned by domain, with AES-256 encryption at rest you arm |
 | **Context** | Chronicles + semantic retrieval — the agent never rebuilds its past by hand |
 | **Compute** | Routing across model tiers (budget/standard/premium, local/cloud) by task complexity |
 | **Hardware** | Real GPU/CPU dispatch for local speech (CUDA detection, isolated sidecars) so a heavy model never blocks the app |
@@ -366,7 +366,7 @@ sequenceDiagram
     participant W as "Sovereign wallet (local)"
     participant G as "Gateway"
     participant C as "Base L2 (chain)"
-    participant T as "TPM / OS Keychain"
+    participant T as "OS keystore"
 
     Note over U,T: Cold boot (first launch / new machine)
     U->>W: launch the app
@@ -374,13 +374,18 @@ sequenceDiagram
     G->>C: verify Engramm on-chain
     C-->>G: does this wallet hold the license?
     G-->>W: signed verdict
-    W->>T: derive AES-256 key, store it
 
-    Note over U,T: Warm boot (every launch after)
-    U->>T: Windows Hello / Touch ID
-    T-->>U: releases the key → the runtime wakes up
+    Note over U,T: Arming encryption at rest — separate, and up to you
+    U->>W: turn on encryption at rest
+    W-->>U: 24-word recovery phrase — confirm it
+    U->>W: confirmed
+    W->>T: seal the AES-256 key
 
-    Note over W,T: Physical theft = a mathematical vault<br/>encrypted SQLite unreadable + TPM locked
+    Note over U,T: Every launch after
+    W->>T: read the sealed key
+    T-->>W: key → vaults open encrypted
+
+    Note over W,T: Once armed, physical theft = encrypted SQLite.<br/>Until armed, vaults are local but in cleartext.
 ```
 
 **Security-first Electron architecture**
