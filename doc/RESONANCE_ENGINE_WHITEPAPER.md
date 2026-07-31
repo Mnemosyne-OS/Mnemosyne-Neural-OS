@@ -282,7 +282,41 @@ not silently miscompared — returning honest results instead of wrong ones.
 
 ---
 
-## 12. Implementation Status
+## 12. Related Work
+
+**LLMs as operating systems.** Framing an LLM runtime as an operating system —
+paged context, self-managed memory tiers — was set out in MemGPT [1]. Resonance
+shares that lineage but moves the boundary. MemGPT manages a model's context
+window; here the control plane is the *user's* consent: what the assistant may
+recall is a governed property of the vault (§9), not an optimisation internal to
+the runtime.
+
+**Human-inspired memory on constrained devices.** The closest published
+architecture is Mnemosyne [2], an unsupervised long-term memory for edge-based
+LLMs built on graph-structured storage, redundancy filters, pruning, and
+probabilistic recall with temporal decay. It shares this project's name, and
+several of its intuitions: decay, consolidation and pruning appear here as Dream
+State (§6) and as the confidence-decay direction (§14). The shared name is not a
+shared system. Mnemosyne [2] is an unsupervised memory *architecture*, evaluated
+as such; the Resonance Engine is a *deployed* system whose defining constraint is
+governance — a human decides, per node, what may be remembered — and whose
+retrieval quality is published with an auditable ledger rather than asserted.
+
+**Benchmarking long-term memory.** LongMemEval [3] provides the evaluation used
+in §8. This work reports the full-haystack variant, which surrounds each
+question's evidence with ~480 distractor sessions, rather than the smaller slice
+more commonly quoted.
+
+**Auditable evaluation.** The requirement that an evaluation or improvement loop
+be replayable rather than trusted is developed in Regimes [4], which makes gates
+and promotions first-class, replayable events on LongMemEval. This work pursues
+the same requirement from the reporting side: the grader, the per-question
+verdicts and the raw logs are deposited [5] so a reader can recompute the
+published figure without the engine and without the network.
+
+---
+
+## 13. Implementation Status
 
 The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current: v1.3.3).
 
@@ -300,7 +334,7 @@ The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current:
 
 ---
 
-## 13. Future Directions
+## 14. Future Directions
 
 - **Soul-weighted resonance** — Soul Profiles (personality configurations of reasoning
   style and behavioral constraints) that color *how* memory resonates, not just what the
@@ -320,7 +354,7 @@ The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current:
 
 ---
 
-## 14. Conclusion
+## 15. Conclusion
 
 The Resonance Engine is a departure from the prevailing RAG paradigm. Where standard
 retrieval is a one-dimensional lookup, Resonance is a cooperative system of engines:
@@ -337,6 +371,27 @@ public benchmark anyone can audit.
 
 Resonance is not a feature. It is the cognitive substrate on which Mnemosyne Neural OS is
 built — the reason context *resonates* into the right answer instead of being looked up.
+
+---
+
+## References
+
+[1] *MemGPT: Towards LLMs as Operating Systems.* arXiv:2310.08560 (2023).
+    https://arxiv.org/abs/2310.08560
+
+[2] *Mnemosyne: An Unsupervised, Human-Inspired Long-Term Memory Architecture for
+    Edge-Based LLMs.* arXiv:2510.08601 (2025). https://arxiv.org/abs/2510.08601
+
+[3] *LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory.*
+    arXiv:2410.10813 (2024). https://arxiv.org/abs/2410.10813
+
+[4] *Regimes: An Auditable, Held-Out-Gated Improvement Loop Demonstrated on
+    LongMemEval with ActiveGraph.* arXiv:2606.10241 (2026).
+    https://arxiv.org/abs/2606.10241
+
+[5] *Mnemosyne OS — LongMemEval-M full-haystack verification kit: per-question
+    ledgers and audit scripts.* Zenodo (2026).
+    https://doi.org/10.5281/zenodo.21727140
 
 ---
 
