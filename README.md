@@ -486,7 +486,7 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition — 6 public releases**, now at [**v1.3.3 · The Sovereign Ledger**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity)
+- [x] 🚀 **Infinity Edition — 9 public releases**, now at [**v1.3.6 · The Persona**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.6-infinity)
 - [x] 🧩 **MnemoHub** — signed cartridge marketplace, community submission pipeline, live publishing
 - [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
@@ -511,6 +511,23 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 **GitHub:** [@yaka0007](https://github.com/yaka0007)
 
 > Built through **Neural Coding** — human-architected, with Claude (Anthropic), Antigravity (Google DeepMind), and Cursor directed as instruments.
+
+---
+
+## 📰 What's new
+
+A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC-3161 timestamped) and auto-update once installed.
+
+| Date | Release | In one line |
+|------|---------|-------------|
+| **Aug 3, 2026** | [**v1.3.6 · The Persona**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.6-infinity) | The OS takes your shape: four new shell languages (Deutsch, Português, Русский, 中文), abstract voice-orb skins with a full-screen mode, a user-chosen accent that cartridges inherit live, a sixteen-archetype cognitive lens that styles the voice without ever touching retrieval — and web search rebuilt. |
+| **Jul 29, 2026** | [**v1.3.5 · The Sealed Vault**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.5-infinity) | Opt-in **AES-256 encryption at rest** with a 24-word recovery phrase, backups decided by an allow-list of what is genuinely yours, and ~10 GB of machine-bound toolchain moved out of the data folder. |
+| **Jul 22, 2026** | [v1.3.4](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.4-infinity) | The first **code-signed** Windows build — no more "unknown publisher". |
+| **Jul 20, 2026** | [**v1.3.3 · The Sovereign Ledger**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity) | The credit economy: in-app credit and license flow, a creator cockpit for cartridge builders, sovereign pseudonyms backed by a real install counter. |
+| **Jul 19, 2026** | [**v1.3.0 · The Memory Covenant**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.0-infinity) | The sealed core, app-sandbox vaults with human-gated permanence, and memory-purge governance. |
+| **Jul 7, 2026** | [**v1.2.0 · The Reading Engine**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.2.0-infinity) | A PDF library that reads to you — deferred local OCR, voice reading, and the spine memory engine underneath. |
+
+**[→ All releases](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)**
 
 ---
 
