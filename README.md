@@ -6,6 +6,8 @@
 
 **Open to build on · Private at the core**
 
+🇬🇧 English · 🇫🇷 Français · 🇪🇸 Español · 🇩🇪 Deutsch · 🇧🇷 Português · 🇷🇺 Русский · 🇨🇳 中文
+
 <br/>
 
 *Everyone is building the intelligence. Mnemosyne builds the **relationship** — the memory that makes an AI truly know you, across sessions and across time. On your machine. Yours to see.*
@@ -21,6 +23,7 @@
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
 [![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-72.9%25_·_verifiable-33ffd6?style=flat-square)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
+![Interface languages](https://img.shields.io/badge/interface-7_languages-a98bff)
 [![version](https://img.shields.io/github/v/release/Mnemosyne-OS/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
 
 <br/><br/>
@@ -38,6 +41,31 @@
 <img src="assets/strip-specs.png" width="100%" alt="100% local — your memory never leaves your machine · 16 GB, i5 — everyday hardware is enough · 7 languages — EN FR ES DE PT RU ZH · Windows, macOS, Linux — code-signed builds, auto-update" />
 
 </div>
+
+---
+
+## 🌍 Fully multilingual — the OS speaks your language
+
+The **entire interface is localized in seven languages** — onboarding, settings,
+chat, the voice assistant, every dialog. Switching language even re-selects the
+★ recommended embedding model for it, so **retrieval quality follows your
+language**, not just the labels. Open windows pick the change up instantly.
+
+| | Language | | Status |
+|---|---|---|---|
+| 🇬🇧 | **English** | Your memory. Your machine. Your rules. | Stable |
+| 🇫🇷 | **Français** | Ta mémoire. Ta machine. Tes règles. | Stable |
+| 🇪🇸 | **Español** | Tu memoria. Tu máquina. Tus reglas. | Stable |
+| 🇩🇪 | **Deutsch** | Dein Gedächtnis. Deine Maschine. Deine Regeln. | Beta |
+| 🇧🇷 | **Português** | Sua memória. Sua máquina. Suas regras. | Beta |
+| 🇷🇺 | **Русский** | Твоя память. Твоя машина. Твои правила. | Beta |
+| 🇨🇳 | **中文** | 你的记忆。你的机器。你的规则。 | Beta |
+
+*Sovereign, local-first memory — in your language: un système d'exploitation de
+mémoire souverain et local · un sistema operativo de memoria soberano y local ·
+ein souveränes, lokales Gedächtnis-Betriebssystem · um sistema operacional de
+memória soberano e local · суверенная локальная операционная система памяти ·
+主权的本地优先记忆操作系统.*
 
 ---
 
