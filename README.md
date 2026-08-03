@@ -33,7 +33,9 @@
 
 [![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 
-<br/>
+<br/><br/>
+
+<img src="assets/strip-specs.png" width="100%" alt="100% local — your memory never leaves your machine · 16 GB, i5 — everyday hardware is enough · 7 languages — EN FR ES DE PT RU ZH · Windows, macOS, Linux — code-signed builds, auto-update" />
 
 </div>
 
@@ -104,6 +106,8 @@ executes, what's stored, and what syncs.
 | 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
 
 ### Under the hood — the engines
+
+<img src="assets/strip-engines.png" width="100%" alt="Spine engine — memory, semantically classified · Adaptive RAG — retrieval that shifts gears · Dream State — consolidation while you sleep · Voice engines — local STT and TTS, GPU or CPU · Embeddings — cloud, local ONNX or Ollama" />
 
 Not one big "AI" black box — several independent, purpose-built engines:
 
