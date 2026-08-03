@@ -1,17 +1,6 @@
 <div align="center">
 
-<br/>
-
-<img src="assets/infinity-animated.svg" width="200" alt="Mnemosyne OS — the infinity sigil, living memory made visible" />
-
-```
-███╗   ███╗███╗   ██╗███████╗███╗   ███╗ ██████╗ ███████╗██╗   ██╗███╗   ██╗███████╗     ██████╗ ███████╗
-████╗ ████║████╗  ██║██╔════╝████╗ ████║██╔═══██╗██╔════╝╚██╗ ██╔╝████╗  ██║██╔════╝    ██╔═══██╗██╔════╝
-██╔████╔██║██╔██╗ ██║█████╗  ██╔████╔██║██║   ██║███████╗ ╚████╔╝ ██╔██╗ ██║█████╗      ██║   ██║███████╗
-██║╚██╔╝██║██║╚██╗██║██╔══╝  ██║╚██╔╝██║██║   ██║╚════██║  ╚██╔╝  ██║╚██╗██║██╔══╝      ██║   ██║╚════██║
-██║ ╚═╝ ██║██║ ╚████║███████╗██║ ╚═╝ ██║╚██████╔╝███████║   ██║   ██║ ╚████║███████╗    ╚██████╔╝███████║
-╚═╝     ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝     ╚═════╝ ╚══════╝
-```
+<img src="assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Infinity Edition. Your memory. Your machine. Your rules. A sovereign, local-first memory OS — the relationship layer between you and every AI." />
 
 ### The sovereign AI Operating System
 
