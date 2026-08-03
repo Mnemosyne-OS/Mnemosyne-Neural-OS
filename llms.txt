@@ -26,7 +26,7 @@ Rendering pixels *inside* Mnemosyne → **Cartridge** (most common; detailed bel
 
 ## Cartridge — the common case
 
-Never start from a blank page: scaffold with `npm create @mnemosyne_os/app`, or copy `examples/cartridge-boilerplate` (in this repo). Read [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) (a real, shipped cartridge) and match its patterns. The full, self-contained build guide is **`examples/cartridge-boilerplate/AGENTS.md`** (ships in every scaffold, auto-loaded by IDE agents).
+Never start from a blank page: copy `examples/cartridge-boilerplate` (in this repo) — that IS the cartridge scaffold. Do NOT use `npm create @mnemosyne_os/app` for a cartridge: it scaffolds the other surface (a Layer 2 WebSocket app, no mnemo-plugin.json) and MnemoHub will refuse to link it. Read [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) (a real, shipped cartridge) and match its patterns. The full, self-contained build guide is **`examples/cartridge-boilerplate/AGENTS.md`** (ships in every scaffold, auto-loaded by IDE agents).
 
 A cartridge is a React/Vite web app in a **sandboxed iframe** — no Node, Electron, filesystem, or direct host access. It reaches the host only through the SDK.
 
