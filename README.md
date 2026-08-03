@@ -36,7 +36,11 @@
 
 [![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 
-<br/><br/>
+<br/>
+
+🌐 **[mnemosyne-os.io](https://mnemosyne-os.io)** — the product, for builders&ensp;·&ensp;**[mnemosyne-os.com](https://mnemosyne-os.com)** — the company, press & labs
+
+<br/>
 
 <img src="assets/strip-specs.png" width="100%" alt="100% local — your memory never leaves your machine · 16 GB, i5 — everyday hardware is enough · 7 languages — EN FR ES DE PT RU ZH · Windows, macOS, Linux — code-signed builds, auto-update" />
 
@@ -551,6 +555,8 @@ bound to the founder's research identity — ORCID
 **XPACEGEMS LLC** — Independent AI software lab  
 **Headquarters:** 2932 NW 72 AVE, Miami, FL 33122, USA  
 **Founder & Lead Architect:** Tony Trochet  
+**Product:** [mnemosyne-os.io](https://mnemosyne-os.io) — downloads, docs, build on it  
+**Company:** [mnemosyne-os.com](https://mnemosyne-os.com) — press, research, [Labs](https://mnemosyne-os.com/labs)  
 **LinkedIn:** [Tony Trochet](https://www.linkedin.com/in/tony-t-19544650/)  
 **GitHub:** [@yaka0007](https://github.com/yaka0007)
 
