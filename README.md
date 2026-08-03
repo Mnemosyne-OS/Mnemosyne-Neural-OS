@@ -6,7 +6,7 @@
 
 **Open to build on · Private at the core**
 
-🇬🇧 English · 🇫🇷 Français · 🇪🇸 Español · 🇩🇪 Deutsch · 🇧🇷 Português · 🇷🇺 Русский · 🇨🇳 中文
+<img src="assets/flags/en.svg" height="14" alt="English" /> English&ensp;·&ensp;<img src="assets/flags/fr.svg" height="14" alt="Français" /> Français&ensp;·&ensp;<img src="assets/flags/es.svg" height="14" alt="Español" /> Español&ensp;·&ensp;<img src="assets/flags/de.svg" height="14" alt="Deutsch" /> Deutsch&ensp;·&ensp;<img src="assets/flags/br.svg" height="14" alt="Português" /> Português&ensp;·&ensp;<img src="assets/flags/ru.svg" height="14" alt="Русский" /> Русский&ensp;·&ensp;<img src="assets/flags/zh.svg" height="14" alt="中文" /> 中文
 
 <br/>
 
@@ -53,13 +53,13 @@ language**, not just the labels. Open windows pick the change up instantly.
 
 | | Language | | Status |
 |---|---|---|---|
-| 🇬🇧 | **English** | Your memory. Your machine. Your rules. | Stable |
-| 🇫🇷 | **Français** | Ta mémoire. Ta machine. Tes règles. | Stable |
-| 🇪🇸 | **Español** | Tu memoria. Tu máquina. Tus reglas. | Stable |
-| 🇩🇪 | **Deutsch** | Dein Gedächtnis. Deine Maschine. Deine Regeln. | Beta |
-| 🇧🇷 | **Português** | Sua memória. Sua máquina. Suas regras. | Beta |
-| 🇷🇺 | **Русский** | Твоя память. Твоя машина. Твои правила. | Beta |
-| 🇨🇳 | **中文** | 你的记忆。你的机器。你的规则。 | Beta |
+| <img src="assets/flags/en.svg" width="24" height="16" alt="English flag" /> | **English** | Your memory. Your machine. Your rules. | Stable |
+| <img src="assets/flags/fr.svg" width="24" height="16" alt="Drapeau français" /> | **Français** | Ta mémoire. Ta machine. Tes règles. | Stable |
+| <img src="assets/flags/es.svg" width="24" height="16" alt="Bandera de España" /> | **Español** | Tu memoria. Tu máquina. Tus reglas. | Stable |
+| <img src="assets/flags/de.svg" width="24" height="16" alt="Deutsche Flagge" /> | **Deutsch** | Dein Gedächtnis. Deine Maschine. Deine Regeln. | Beta |
+| <img src="assets/flags/br.svg" width="24" height="16" alt="Bandeira do Brasil" /> | **Português** | Sua memória. Sua máquina. Suas regras. | Beta |
+| <img src="assets/flags/ru.svg" width="24" height="16" alt="Флаг России" /> | **Русский** | Твоя память. Твоя машина. Твои правила. | Beta |
+| <img src="assets/flags/zh.svg" width="24" height="16" alt="中国国旗" /> | **中文** | 你的记忆。你的机器。你的规则。 | Beta |
 
 *Sovereign, local-first memory — in your language: un système d'exploitation de
 mémoire souverain et local · un sistema operativo de memoria soberano y local ·
