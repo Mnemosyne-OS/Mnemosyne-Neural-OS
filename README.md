@@ -514,8 +514,8 @@ the open, benchmarks anyone can audit, artifacts archived with a DOI.
 
 | Artifact | DOI |
 |---|---|
-| 📄 **The Resonance Engine** — technical whitepaper v2.0: the architecture behind the engines, consolidation, adaptive selection, and the LongMemEval results | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21728284.svg)](https://doi.org/10.5281/zenodo.21728284) |
-| 🔍 **LongMemEval-M audit kit** — the scorer, per-question verdicts and honest methodology behind the 72.9%, packaged so you can audit the claim yourself | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21727140.svg)](https://doi.org/10.5281/zenodo.21727140) |
+| 📄 **The Resonance Engine** — technical whitepaper v2.0: the architecture behind the engines, consolidation, adaptive selection, and the LongMemEval results | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21728284-1682D4)](https://doi.org/10.5281/zenodo.21728284) |
+| 🔍 **LongMemEval-M audit kit** — the scorer, per-question verdicts and honest methodology behind the 72.9%, packaged so you can audit the claim yourself | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21727140-1682D4)](https://doi.org/10.5281/zenodo.21727140) |
 
 Both records are open access (CC BY 4.0), cite each other on Zenodo, and are
 bound to the founder's research identity — ORCID
