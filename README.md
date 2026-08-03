@@ -504,6 +504,29 @@ layer where multiple AI agents coordinate, with policy enforcement and audit tra
 
 ---
 
+## 🔬 Mnemosyne Labs — research, activated
+
+<img src="assets/labs-activated.png" width="100%" alt="Mnemosyne Labs — open research program. Research, activated. Open methodology, auditable benchmarks, artifacts archived with a DOI — cite the work, audit the claims." />
+
+The numbers above are not marketing copy — they are **published, citable research
+artifacts**. Mnemosyne Labs is the research arm of the project: methodology in
+the open, benchmarks anyone can audit, artifacts archived with a DOI.
+
+| Artifact | DOI |
+|---|---|
+| 📄 **The Resonance Engine** — technical whitepaper v2.0: the architecture behind the engines, consolidation, adaptive selection, and the LongMemEval results | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21728284.svg)](https://doi.org/10.5281/zenodo.21728284) |
+| 🔍 **LongMemEval-M audit kit** — the scorer, per-question verdicts and honest methodology behind the 72.9%, packaged so you can audit the claim yourself | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21727140.svg)](https://doi.org/10.5281/zenodo.21727140) |
+
+Both records are open access (CC BY 4.0), cite each other on Zenodo, and are
+bound to the founder's research identity — ORCID
+[0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917).
+
+**[→ Mnemosyne Labs](https://mnemosyne-os.com/labs)** ·
+**[→ How to cite this work](https://mnemosyne-os.com/research)** ·
+**[→ Live audit page](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+
+---
+
 ## Roadmap
 
 ### Shipped
