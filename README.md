@@ -42,7 +42,7 @@
 
 <br/>
 
-<img src="assets/strip-specs.png" width="100%" alt="100% local — your memory never leaves your machine · 16 GB, i5 — everyday hardware is enough · 7 languages — EN FR ES DE PT RU ZH · Windows, macOS, Linux — code-signed builds, auto-update" />
+<img src="assets/strip-specs.png" width="100%" alt="100% local — your memory never leaves your machine · 8 GB RAM — enough to start, fully local from 16 GB · 7 languages — EN FR ES DE PT RU ZH · Windows, macOS, Linux — code-signed builds, auto-update" />
 
 </div>
 
