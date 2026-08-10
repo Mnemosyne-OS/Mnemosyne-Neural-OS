@@ -534,7 +534,7 @@ bound to the founder's research identity — ORCID
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition — 9 public releases**, now at [**v1.3.6 · The Persona**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.6-infinity)
+- [x] 🚀 **Infinity Edition — 10 public releases**, now at [**v1.3.7 · The Kept Promise**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.7-infinity)
 - [x] 🧩 **MnemoHub** — signed cartridge marketplace, community submission pipeline, live publishing
 - [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
@@ -570,6 +570,7 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 
 | Date | Release | In one line |
 |------|---------|-------------|
+| **Aug 10, 2026** | [**v1.3.7 · The Kept Promise**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.7-infinity) | The whole loop runs on your machine — model, memory and retrieval, with no key and no account. A refreshed local catalogue with **262k-token context windows** (the entry-level model shipped with 4k), your own `.gguf` files welcome, bring-your-own-key providers that hand you *their* real model list, a local journal of what every call costs at **your** prices — and vault protection the routing now honours end to end. |
 | **Aug 3, 2026** | [**v1.3.6 · The Persona**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.6-infinity) | The OS takes your shape: four new shell languages (Deutsch, Português, Русский, 中文), abstract voice-orb skins with a full-screen mode, a user-chosen accent that cartridges inherit live, a sixteen-archetype cognitive lens that styles the voice without ever touching retrieval — and web search rebuilt. |
 | **Jul 29, 2026** | [**v1.3.5 · The Sealed Vault**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.5-infinity) | Opt-in **AES-256 encryption at rest** with a 24-word recovery phrase, backups decided by an allow-list of what is genuinely yours, and ~10 GB of machine-bound toolchain moved out of the data folder. |
 | **Jul 22, 2026** | [v1.3.4](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.4-infinity) | The first **code-signed** Windows build — no more "unknown publisher". |
