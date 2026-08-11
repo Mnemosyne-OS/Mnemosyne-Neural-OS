@@ -17,25 +17,21 @@ semantic retrieval (`mnemosyne_query`, `mnemosyne_ask`) and persistence (`mnemos
 
 You are a **guest in someone's memory**. That framing decides everything below.
 
-## Setup (if the MCP is not connected yet)
+## Setup (if the `mnemosyne_*` tools are not available)
 
-Requires [Mnemosyne OS Infinity](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
-running locally. Add the MCP server to your agent's config — for Hermes Agent,
-`~/.hermes/config.yaml`:
+This skill relies on MCP tools (`mnemosyne_query`, `mnemosyne_ask`, `mnemosyne_vaults`,
+`mnemosyne_ingest`, …) provided by the `@mnemosyne_os/mcp` server, which bridges to a
+locally running [Mnemosyne OS Infinity](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS).
 
-```yaml
-mcp_servers:
-  mnemosyne:
-    command: "npx"
-    args: ["-y", "@mnemosyne_os/mcp"]
-    env:
-      MNEMO_DEFAULT_VAULT: "DEV"
-      MNEMO_VAULTS: "DEV,NOTES"
-```
+If those tools are not present in your session, **do not install or configure anything
+yourself**. Ask the human to add the server to their agent's MCP configuration — the
+recipe for every major client is in the
+[package README](https://www.npmjs.com/package/@mnemosyne_os/mcp).
 
-`MNEMO_VAULTS` is the scope grant: vaults outside it return `SCOPE_DENIED`. Keep the
-list narrow — ask the human which vaults this agent genuinely needs, and prefer a vault
-dedicated to agent work as the default write target.
+Configuration is deliberately the human's gesture, because it *is* the scope grant:
+the `MNEMO_VAULTS` list decides which vaults this agent may reach (vaults outside it
+return `SCOPE_DENIED`). Suggest keeping the grant narrow and pointing the default
+write vault at a vault dedicated to agent work.
 
 ## The covenant — non-negotiable rules
 
@@ -94,9 +90,9 @@ Session end     → mnemosyne_update_position(project)  — leave the trail
 
 ## Troubleshooting
 
-- **"Cannot connect to ws://127.0.0.1:7799"** — Mnemosyne OS Infinity is not running.
-  Ask the human to launch it; the MCP reconnects on the next tool call.
-- **`SCOPE_DENIED`** — the vault is not in `MNEMO_VAULTS`. Report it to the human;
+- **"Cannot connect to Mnemosyne OS"** — the Infinity app is not running. Ask the
+  human to launch it; the MCP reconnects on the next tool call.
+- **`SCOPE_DENIED`** — the vault is not in the granted scope. Report it to the human;
   only they should widen the grant.
 - **Results too large** — lower `max_content_chars` (200 for browsing) or filter by
   `spine_type_filter`.
