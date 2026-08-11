@@ -580,6 +580,17 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 
 **[→ All releases](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)**
 
+### ✍️ From the blog
+
+The longer stories behind the releases and the campaigns, on the product site:
+
+- **[72.9% — and the three questions we miss](https://mnemosyne-os.io/blog/full-haystack-72-9)** — LongMemEval on the full-haystack variant, the one nobody shows: the number, the protocol, the levers we refuted, and the misses we own.
+- **[We gave personality control of memory. It cost 31 points.](https://mnemosyne-os.io/blog/personality-lens-31-points)** — the most seductive feature we built this year made retrieval measurably worse; the ablation, and why personality shipped as a costume.
+- **[Present is not the same as loadable](https://mnemosyne-os.io/blog/a-release-that-could-not-load-a-model)** — a package can be there, at the right version, and still be unreachable to the code that imports it.
+- **[La mémoire que mon cerveau réclamait](https://mnemosyne-os.io/fr/blog/la-memoire-que-mon-cerveau-reclamait)** *(in French)* — why this OS exists: not a product, a prosthesis for a brain that ran faster than the world.
+
+**[→ All posts](https://mnemosyne-os.io/blog)**
+
 ---
 
 <div align="center">
