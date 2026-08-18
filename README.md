@@ -585,6 +585,7 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 
 The longer stories behind the releases and the campaigns, on the product site:
 
+- **[A multiplier cannot rescue a zero](https://mnemosyne-os.io/blog/a-multiplier-cannot-rescue-a-zero)** — dense embeddings can't hear a rare proper noun. What worked: a second, fully local ranking fused by rank — with two reproduced runs, a 48-question holdout, and every number auditable.
 - **[72.9% — and the three questions we miss](https://mnemosyne-os.io/blog/full-haystack-72-9)** — LongMemEval on the full-haystack variant, the one nobody shows: the number, the protocol, the levers we refuted, and the misses we own.
 - **[We gave personality control of memory. It cost 31 points.](https://mnemosyne-os.io/blog/personality-lens-31-points)** — the most seductive feature we built this year made retrieval measurably worse; the ablation, and why personality shipped as a costume.
 - **[Present is not the same as loadable](https://mnemosyne-os.io/blog/a-release-that-could-not-load-a-model)** — a package can be there, at the right version, and still be unreachable to the code that imports it.
