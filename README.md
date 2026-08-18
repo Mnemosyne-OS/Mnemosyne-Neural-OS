@@ -217,7 +217,7 @@ permanent identifiers, so they can be cited rather than merely linked:
 | | |
 |---|---|
 | Verification kit — ledgers, grader, raw logs | [10.5281/zenodo.21727140](https://doi.org/10.5281/zenodo.21727140) |
-| The Resonance Engine — technical whitepaper | [10.5281/zenodo.21728284](https://doi.org/10.5281/zenodo.21728284) |
+| The Resonance Engine — technical whitepaper | [10.5281/zenodo.21728283](https://doi.org/10.5281/zenodo.21728283) |
 | Author | Tony Trochet · [ORCID 0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917) |
 
 ### Interface Gallery
@@ -518,7 +518,7 @@ the open, benchmarks anyone can audit, artifacts archived with a DOI.
 
 | Artifact | DOI |
 |---|---|
-| 📄 **The Resonance Engine** — technical whitepaper v2.0: the architecture behind the engines, consolidation, adaptive selection, and the LongMemEval results | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21728284-1682D4)](https://doi.org/10.5281/zenodo.21728284) |
+| 📄 **The Resonance Engine** — technical whitepaper v2.1: the architecture behind the engines, consolidation, adaptive selection, the hybrid lexical channel, and the LongMemEval results | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21728283-1682D4)](https://doi.org/10.5281/zenodo.21728283) |
 | 🔍 **LongMemEval-M audit kit** — the scorer, per-question verdicts and honest methodology behind the 72.9%, packaged so you can audit the claim yourself | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21727140-1682D4)](https://doi.org/10.5281/zenodo.21727140) |
 
 Both records are open access (CC BY 4.0), cite each other on Zenodo, and are

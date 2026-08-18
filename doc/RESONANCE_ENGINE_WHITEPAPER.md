@@ -1,11 +1,12 @@
 # The Resonance Engine: A Multi-Engine Cognitive Memory Architecture for Sovereign AI Systems
 
-**Technical Whitepaper — v2.0 · Living document**
-**Current as of Mnemosyne Neural OS v1.3.3 · Revised July 2026**
+**Technical Whitepaper — v2.1 · Living document**
+**Current as of Mnemosyne Neural OS v1.3.8 · core-engine 1.1.0 · Revised August 2026**
 **XPACEGEMS LLC** · Miami, FL 33122, USA
 **Author:** Tony Trochet, Founder & Lead Architect · [ORCID 0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917)
 **Status:** Production-deployed · Part of Mnemosyne Neural OS
-**Cite as:** [10.5281/zenodo.21728284](https://doi.org/10.5281/zenodo.21728284) — v2.0, CC BY 4.0
+**Cite as:** [10.5281/zenodo.21728283](https://doi.org/10.5281/zenodo.21728283) — v2.1, CC BY 4.0
+*(concept DOI — always resolves to the current edition; each edition also carries its own version DOI)*
 
 > This is a living document. It tracks the architecture as it ships, not a frozen
 > snapshot — it is revised as the engine evolves. Prior editions described the earlier
@@ -144,10 +145,23 @@ resonate. Its pipeline is a substantial departure from a brute-force cosine scan
    in-RAM cache is **int8-quantized** so it
    stays small enough to scale to a lived-in vault.
 
-2. **ANN ∪ exact-term.** Candidate generation runs an **approximate-nearest-neighbor**
-   vector search **unioned with an exact-term match set.** Vector search finds what a
-   query *means*; exact-term matching guarantees that rare identifiers, codenames, and
-   proper nouns a pure-vector search would miss are never lost.
+2. **Two independent channels, merged by rank.** Candidate generation runs an
+   **approximate-nearest-neighbor** vector search *and*, independently, an **Okapi BM25
+   ranking** over the same vault; the two rankings are merged by **Reciprocal Rank
+   Fusion**. Vector search finds what a query *means*; the lexical channel finds the
+   rare identifiers, codenames and proper nouns that a dense embedder maps close to
+   noise. Because RRF combines **ranks and never scores**, the two channels need no
+   calibration against each other — the classic failure mode of hybrid search. Both
+   run locally: no API, no index service.
+
+   This replaced an earlier attempt worth recording, because the measurement is the
+   argument. The engine previously *multiplied* a chunk's cosine when it contained a
+   rare query term — and **a multiplier cannot rescue what the embedder scores near
+   zero**: 0.30 doubled still loses to 0.80. It could reorder the candidate pool; it
+   could never enlarge it, and it measured neutral end to end. A second ranking that
+   does not consult the vectors at all is what enlarges the pool. The retrieval budget
+   is unchanged, so the channel changes *which* chunks are served, never how many
+   (§8.2).
 
 3. **Dimension-aware routing.** A query is only ever compared against vectors from its own
    embedding space. Mismatched spaces are refused rather than silently — and wrongly —
@@ -197,32 +211,70 @@ frontier cloud model receive context shaped to what each can actually use.
 ## 8. Proven on LongMemEval-M
 
 Resonance is measured against a public, independent benchmark rather than asserted.
+[LongMemEval](https://github.com/xiaowu0162/LongMemEval)&rsquo;s **full-haystack** variant
+surrounds every question&rsquo;s evidence with ~480 distractor sessions — the closest published
+setup to a real, lived-in memory vault, and harder than the `-S` slice most reported
+numbers use.
+
+Two campaigns are published below. **They are graded by two different judges — a lenient
+one and a strict one — so their figures must not be chained into a single progression.**
+
+### 8.1 July 2026 — the consolidation engine (lenient grader)
 
 |  |  |
 |---|---|
 | **64.6 % → 72.9 %** | overall accuracy, full-haystack (hard) variant |
 | **1/8 → 5/8** | multi-session recall — the category that actually needs a memory engine |
 
-[LongMemEval](https://github.com/xiaowu0162/LongMemEval)'s **full-haystack** variant
-surrounds every question's evidence with ~480 distractor sessions — the closest published
-setup to a real, lived-in memory vault, and harder than the `-S` slice most reported
-numbers use.
+**72.9 % is a stated lower bound**, not a measured 48-question result: only the
+multi-session category was re-run with the full engine, so the 40 carried questions can
+only improve on a full re-run. Every counted HIT was replayed and reproduced before being
+counted — no cherry-picked runs. The jump from 1/8 to 5/8 is the point: it is precisely the
+category that a memory *engine* — consolidation plus cross-session linking — exists to fix.
 
-**72.9 % is a stated lower bound** — only the multi-session category was re-run with the
-full engine; other categories weren't retried yet. And the number is not asked for on faith:
-the published grader and per-question verdicts let anyone **audit the score in one
-command, no engine and no network.** Every counted HIT was replayed and reproduced before
-being counted — no cherry-picked runs.
+### 8.2 August 2026 — the lexical channel (strict grader)
 
-The evidence is archived and citable, not just linked: the per-question ledgers, the
-scoring scripts and the raw run logs are deposited under
-**[DOI 10.5281/zenodo.21727140](https://doi.org/10.5281/zenodo.21727140)** (CC BY 4.0).
+The second retrieval channel of §5 was measured with two deliberately separated
+instruments, and they are not interchangeable.
+
+**The instrument — deterministic retrieval, no LLM in the loop.** Byte-identical inputs
+give byte-identical outputs, so this measurement carries no grader noise at all. On the
+development sample, evidence sessions found rose **38/48 → 41/48** and the answer-bearing
+chunk **25/35 → 30/35**. On a **48-question holdout never seen during development**:
+**+4/−0 sessions and +2/−0 answer chunks — zero regressions**, with the gain landing in the
+same category as on the development sample. What replicated is the mechanism, not a number.
+
+**The confirmation — end to end, strict grader.** **29/48 → 37/48** under the replay rule: a
+HIT counts only if two independent runs agree, and they agreed on all 48 verdicts. Paired
+per question, +9 gained / −1 regressed; an exact binomial on 9-vs-1 flips gives
+**p = 0.0215**. The retrieval budget was frozen throughout, so the channel changed *which*
+chunks were served, never how many.
+
+**Read with these limits, which are published beside the numbers rather than in a
+footnote.** The 48-question development sample runs about 13 points easier than its parent
+set and was used during development — which is exactly why the holdout exists. The grader
+has a measured noise floor of roughly 2.6 verdicts per 48 on byte-identical replays, so this
+bench cannot resolve a gap under about five questions: the +8 clears that floor, and smaller
+deltas in the published files must not be quoted as findings. Fusion parameters are the
+literature defaults (BM25 k1 = 1.5, b = 0.75; RRF k = 60) and were deliberately left
+untuned — fitting them on a sample this size would manufacture a gain that does not
+transfer. One category (single-session-preference, n = 8) is too noisy to resolve a
+two-question difference and is reported as such. **No comparison to any other product is
+claimed or supported:** both arms are this project&rsquo;s own montages under its own protocol.
+
+### 8.3 Audit it
+
+Neither figure is asked for on faith. The published grader and per-question verdicts let
+anyone **recompute every headline in one command, with no engine and no network** —
+including the composed 72.9 %, whose two replay-discarded questions are kept visible rather
+than deleted. The evidence is archived and citable, not merely linked: the per-question
+ledgers, the scoring scripts and the raw run logs are deposited under
+**[DOI 10.5281/zenodo.21727139](https://doi.org/10.5281/zenodo.21727139)** [5] (CC BY 4.0).
+That is the *concept* identifier; each campaign also carries its own version DOI, and a
+figure should be cited against the snapshot that produced it.
 
 **→ [Audit it yourself — live results](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks)
-
-The jump from 1/8 to 5/8 on multi-session recall is the point: it is precisely the category
-that a memory *engine* — consolidation plus cross-session linking — exists to fix.
 
 ---
 
@@ -320,6 +372,18 @@ in §8. This work reports the full-haystack variant, which surrounds each
 question's evidence with ~480 distractor sessions, rather than the smaller slice
 more commonly quoted.
 
+**Hybrid retrieval.** Combining a lexical ranking with a dense one is long-settled
+information retrieval, not a novelty of this work: BM25 is the reference sparse
+ranker [7], and Reciprocal Rank Fusion [6] is the standard way to merge rankings
+without calibrating incomparable scores. Managed hybrid search services rest on the
+same two ideas. What §5 and §8.2 contribute is neither the ranker nor the fusion
+rule but their placement — the lexical channel runs **entirely on the user&rsquo;s
+machine**, over an encrypted-at-rest vault, with no index service and no API call —
+and the measurement discipline applied to it: a frozen retrieval budget, a
+deterministic retrieval metric kept separate from the LLM grader, a stated noise
+floor, untuned literature defaults, and a held-out sample that the improvement was
+not developed against.
+
 **Auditable evaluation.** The requirement that an evaluation or improvement loop
 be replayable rather than trusted is developed in Regimes [4], which makes gates
 and promotions first-class, replayable events on LongMemEval. This work pursues
@@ -331,13 +395,14 @@ published figure without the engine and without the network.
 
 ## 13. Implementation Status
 
-The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current: v1.3.3).
+The Resonance Engine is **production-deployed** in Mnemosyne Neural OS (current: v1.3.8).
 
 | Engine / component | Status |
 |---|---|
 | Embedding engine (provider chain, fail-loud) | ✅ Production |
 | Spine engine (taxonomy-as-data classification) | ✅ Production |
-| Retrieval engine (in-RAM int8 cache, ANN ∪ exact-term, re-rank) | ✅ Production |
+| Retrieval engine (in-RAM int8 cache, ANN candidate generation, re-rank) | ✅ Production |
+| Hybrid retrieval — lexical channel (BM25 + Reciprocal Rank Fusion, local) | ✅ Production — core-engine 1.1.0, on by default |
 | Dream State (two-speed consolidation, augment-never-replace) | ✅ Production |
 | Adaptive RAG / gearbox (model- & mode-aware selection) | ✅ Production |
 | Neural Map (topology + per-node governance) | ✅ Production |
@@ -403,8 +468,17 @@ built — the reason context *resonates* into the right answer instead of being 
     https://arxiv.org/abs/2606.10241
 
 [5] *Mnemosyne OS — LongMemEval-M full-haystack verification kit: per-question
-    ledgers and audit scripts.* Zenodo (2026).
-    https://doi.org/10.5281/zenodo.21727140
+    ledgers and audit scripts.* Zenodo (2026). Concept DOI, resolving to the current
+    version: https://doi.org/10.5281/zenodo.21727139
+    — 2026-07 edition (§8.1): https://doi.org/10.5281/zenodo.21727140
+
+[6] Cormack, G. V., Clarke, C. L. A., & Buettcher, S. *Reciprocal rank fusion
+    outperforms Condorcet and individual rank learning methods.* SIGIR 2009,
+    pp. 758–759.
+
+[7] Robertson, S., & Zaragoza, H. *The Probabilistic Relevance Framework: BM25 and
+    Beyond.* Foundations and Trends in Information Retrieval 3(4):333–389 (2009).
+    https://doi.org/10.1561/1500000019
 
 ---
 
