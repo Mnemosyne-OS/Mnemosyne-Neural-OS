@@ -21,7 +21,7 @@
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
-[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-72.9%25_·_verifiable-33ffd6?style=flat-square)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
+[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_strict_·_verifiable-33ffd6?style=flat-square)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 ![Interface languages](https://img.shields.io/badge/interface-7_languages-a98bff)
 [![version](https://img.shields.io/github/v/release/Mnemosyne-OS/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
@@ -34,7 +34,7 @@
 
 <br/>
 
-[![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_72.9%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
+[![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_77.1%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 
 <br/>
 
@@ -78,7 +78,7 @@ memória soberano e local · суверенная локальная опера�
 Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
 
 **Mnemosyne OS is a personal memory OS that runs on your machine** — your data never
-leaves it, a human governs it, and it scores **72.9% on LongMemEval-M** ([audit it
+leaves it, a human governs it, and it scores **77.1% on LongMemEval-M** ([audit it
 yourself](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)).
 
 The AI that remembers *you* — not infrastructure you plug into someone else's.
@@ -190,8 +190,9 @@ flowchart LR
 
 | | |
 |---|---|
-| **64.6 % → 72.9 %** | overall accuracy, full-haystack (hard) variant |
-| **1/8 → 5/8** | multi-session recall — the category that actually needs a memory engine |
+| **77.1 %** (37/48) | overall accuracy, full-haystack (hard) variant, **strict** judge — August 2026 |
+| **29/48 → 37/48** | what the second, fully local retrieval channel bought, under that strict judge |
+| **+4/−0 · +2/−0** | evidence sessions and answer-bearing chunks on 48 **held-out** questions — zero regressions |
 | Every HIT above | **replayed and reproduced** before being counted — no cherry-picked runs |
 
 [LongMemEval](https://github.com/xiaowu0162/LongMemEval) is a public,
@@ -200,13 +201,22 @@ every question's evidence with ~480 distractor sessions — the closest publishe
 setup to a real, lived-in memory vault, and harder than the `-S` slice most
 reported numbers use.
 
-72.9 % is a stated **lower bound** — only the multi-session category was
-re-run with the full engine; other categories weren't retried yet.
+**Which judge graded a number changes what it means, so we publish both.** Under
+July's *flexible* judge the same build measures **81.3 %**; under the *strict* one,
+77.1 %. Both ledgers ship, and the channel's gain is honestly smaller under the
+flexible reading (+7/−2) than under the strict one (+9/−1).
 
-**Don't take the number on faith — audit it.** The published grader and
-per-question verdicts let you re-derive the score in one command, no engine and
-no network. Full methodology, root-cause analysis, and all 16 raw run logs are
-public too:
+July's **72.9 %** stays on the record as what it was: a *lower bound* under the
+flexible judge, and a **composed** one — only the multi-session category had been
+re-run with the full engine, the other 40 rows carried from the baseline. It is
+archived and DOI-pinned rather than withdrawn. It is **not** the same instrument as
+77.1 %, so the two are published side by side and never chained into a single
+progression.
+
+**Don't take any of it on faith — audit it.** The published grader and
+per-question verdicts let you re-derive every score in one command, no engine and
+no network. Full methodology, root-cause analysis, and the raw run logs of both
+campaigns are public too:
 
 **🔍 [Audit it yourself — live results page →](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks)
@@ -519,7 +529,7 @@ the open, benchmarks anyone can audit, artifacts archived with a DOI.
 | Artifact | DOI |
 |---|---|
 | 📄 **The Resonance Engine** — technical whitepaper v2.1: the architecture behind the engines, consolidation, adaptive selection, the hybrid lexical channel, and the LongMemEval results | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21728283-1682D4)](https://doi.org/10.5281/zenodo.21728283) |
-| 🔍 **LongMemEval-M audit kit** — the scorer, per-question verdicts and honest methodology behind the 72.9%, packaged so you can audit the claim yourself | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21727140-1682D4)](https://doi.org/10.5281/zenodo.21727140) |
+| 🔍 **LongMemEval-M audit kit** — the scorer, per-question verdicts and honest methodology, packaged so you can audit the claims yourself. This DOI pins the **July** deposit (the 72.9% campaign); the [live kit](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) also recomputes the August one | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21727140-1682D4)](https://doi.org/10.5281/zenodo.21727140) |
 
 Both records are open access (CC BY 4.0), cite each other on Zenodo, and are
 bound to the founder's research identity — ORCID

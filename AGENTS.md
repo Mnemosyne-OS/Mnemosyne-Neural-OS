@@ -50,10 +50,15 @@ not assume you can read or modify the core from this repository** — you cannot
   Multimodal Chat, Voice, the **Soul Protocol** (CLI), the **Engramm** license, cloud
   credits. **Not yet shipped** (teased as future): **Soul Studio**, **Narcissus**, and
   **soul-weighted retrieval**. Never describe a future capability as if it ships today.
-- **Numbers you can trust** (don't invent others): **72.9 %** on LongMemEval-M (a *stated
-  lower bound*, full-haystack, [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/));
-  **242** Zod-validated IPC channels. If you see other figures in old/archived text, treat
-  them as potentially stale.
+- **Numbers you can trust** (don't invent others), all full-haystack LongMemEval-M and all
+  [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/):
+  **77.1 %** (37/48) under the **strict** judge — the current headline, August 2026;
+  **81.3 %** (39/48) — the same answers under July's **flexible** judge;
+  **72.9 %** (35/48) — July's *composed lower bound* under that flexible judge, still
+  DOI-pinned. Plus **242** Zod-validated IPC channels.
+  🚨 **Always name the judge, and never chain 72.9 → 77.1 as a progression** — they are
+  two different graders, so the arrow would be meaningless. If you see other figures in
+  old/archived text, treat them as potentially stale.
 - **Archived material is archived.** `archive/mnemosyne-docs-beta/` is historical beta
   narrative — good ideas, but stale names/numbers. Don't cite it as current.
 - **Package versions track npm**, enforced by a CI drift check

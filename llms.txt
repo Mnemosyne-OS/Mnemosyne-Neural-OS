@@ -213,7 +213,7 @@ Package `@mnemosyne_os/mcp`; requires the Mnemosyne app running (7799 up). Legac
 
 ## Documentation map (fetch only if needed)
 
-Repo orientation first: `AGENTS.md` (root) carries the reading order, the open-vs-sealed boundary, and the ground rules — shipped vs. future features, and the only numbers to trust (72.9% on LongMemEval-M as a stated lower bound; 242 Zod-validated IPC channels). Treat `archive/` as historical beta narrative, not current fact.
+Repo orientation first: `AGENTS.md` (root) carries the reading order, the open-vs-sealed boundary, and the ground rules — shipped vs. future features, and the only numbers to trust (77.1% on LongMemEval-M under a strict judge, 81.3% under the flexible one, and July’s composed 72.9% lower bound — always name the judge, never chain them; 242 Zod-validated IPC channels). Treat `archive/` as historical beta narrative, not current fact.
 
 ### Orientation
 - [AGENTS.md — AI orientation primer](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/AGENTS.md): read this first — reading order, open-vs-sealed, ground rules
@@ -244,7 +244,7 @@ Repo orientation first: `AGENTS.md` (root) carries the reading order, the open-v
 - [MnemoReader — reference cartridge](https://github.com/yaka0007/MnemoReader---MnemosyneOS): the shipped implementation to pattern-match
 
 ### Proof
-- [LongMemEval benchmark — auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/): re-derive 72.9% yourself in one command, no engine, no network
+- [LongMemEval benchmark — auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/): re-derive every score yourself in one command, no engine, no network — 77.1% strict, 81.3% flexible, and July’s composed 72.9%
 
 ### Optional
 - [Documentation index](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/doc/README.md): the full documentation map

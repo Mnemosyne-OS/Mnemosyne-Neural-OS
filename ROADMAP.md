@@ -13,7 +13,8 @@
 | MnemoHub | 2026 | Signed cartridge marketplace — community submission pipeline + live publishing |
 | Sovereign identity | 2026 | Claim a public pseudonym bound to your wallet — no account, no password |
 | Dream State | 2026 | Idle-time consolidation engine — replays and links memories across sessions |
-| LongMemEval-M — verifiable benchmark | Jul 2026 | 72.9% on the full-haystack (hard) variant — [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) from the published grader + logs |
+| LongMemEval-M — verifiable benchmark | Jul 2026 | 72.9% on the full-haystack (hard) variant, a composed lower bound under a flexible judge — [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) from the published grader + logs |
+| Hybrid retrieval — the lexical channel | Aug 2026 | A second, fully local ranking channel (BM25 + rank fusion) takes the same benchmark to **77.1% under a strict judge** (37/48, reproduced twice, confirmed on a 48-question holdout with zero regressions) — [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) |
 | MnemoForge CLI v1.3.18 | 2026 | [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) — Soul Protocol · Canvas Rules · Chronicle System · MCP Server |
 | Layer-2 Developer SDK | Jun 2026 | `@mnemosyne_os/sdk` · `design-sdk` · `eval-sdk` · `public-contracts` |
 | Public beta — v1.1.0-beta.1 | Jun 2026 | Soul Studio · Resonance · First Contact |
