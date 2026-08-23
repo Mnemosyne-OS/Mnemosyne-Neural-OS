@@ -15,6 +15,7 @@
 | Dream State | 2026 | Idle-time consolidation engine — replays and links memories across sessions |
 | LongMemEval-M — verifiable benchmark | Jul 2026 | 72.9% on the full-haystack (hard) variant, a composed lower bound under a flexible judge — [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) from the published grader + logs |
 | Hybrid retrieval — the lexical channel | Aug 2026 | A second, fully local ranking channel (BM25 + rank fusion) takes the same benchmark to **77.1% under a strict judge** (37/48, reproduced twice, confirmed on a 48-question holdout with zero regressions) — [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) |
+| Octave — multi-resolution memory compression | Aug 2026 | The compression milestone's engine, aboard since v1.3.8: consolidation prepares each memory at several resolutions while the machine is idle; strictly extractive (every compressed line is a verbatim, offset-provable excerpt — never a paraphrase); derivatives inherit their source vault's protection. Answer-path serving stays off by default until the full benchmark campaign clears it |
 | MnemoForge CLI v1.3.18 | 2026 | [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) — Soul Protocol · Canvas Rules · Chronicle System · MCP Server |
 | Layer-2 Developer SDK | Jun 2026 | `@mnemosyne_os/sdk` · `design-sdk` · `eval-sdk` · `public-contracts` |
 | Public beta — v1.1.0-beta.1 | Jun 2026 | Soul Studio · Resonance · First Contact |
@@ -30,7 +31,7 @@
 | Milestone | Notes |
 |-----------|-------|
 | Signed installers (Windows + macOS) | Code-signing so installs pass OS reputation checks out of the box |
-| Context compression protocols | Keep a growing lifetime of memory cheap to carry on modest, on-device hardware |
+| Compression on by default | Octave's remaining resolution tiers + the full measurement campaign, so a growing lifetime of memory stays cheap to carry on modest, on-device hardware |
 | Creator economy | Paid visibility for cartridges, revenue flowing back to builders (plumbing pre-wired) |
 
 ---
@@ -73,4 +74,4 @@ behavioral identity, and an automated publish pipeline.
 
 ---
 
-*Last updated: July 2026 · XPACEGEMS LLC*
+*Last updated: August 2026 · XPACEGEMS LLC*
