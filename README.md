@@ -35,10 +35,11 @@
 <br/>
 
 [![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_77.1%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
+[![Documentation](https://img.shields.io/badge/📖_Documentation-docs.mnemosyne--os.io-8b5cf6?style=for-the-badge&labelColor=0b1120)](https://docs.mnemosyne-os.io)
 
 <br/>
 
-🌐 **[mnemosyne-os.io](https://mnemosyne-os.io)** — the product, for builders&ensp;·&ensp;**[mnemosyne-os.com](https://mnemosyne-os.com)** — the company, press & labs
+🌐 **[mnemosyne-os.io](https://mnemosyne-os.io)** — the product, for builders&ensp;·&ensp;**[mnemosyne-os.com](https://mnemosyne-os.com)** — the company, press & labs&ensp;·&ensp;📖 **[docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)** — the user guide
 
 <br/>
 
@@ -47,6 +48,10 @@
 </div>
 
 ---
+
+> [!TIP]
+> **📖 The user documentation is live: [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)** — every engine explained step by step, in
+> [English](https://docs.mnemosyne-os.io/) · [Français](https://docs.mnemosyne-os.io/fr/) · [Español](https://docs.mnemosyne-os.io/es/).
 
 ## 🌍 Fully multilingual — the OS speaks your language
 
@@ -178,7 +183,7 @@ Not one big "AI" black box — several independent, purpose-built engines:
 > The full architecture behind these engines: why memory should *resonate* rather than be looked
 > up, how consolidation and adaptive selection work, and the LongMemEval results — kept current as the engine ships.
 >
-> 📚 **Full documentation** — concepts, architecture, governance, and design decisions live in [`doc/`](doc/).
+> 📚 **Full documentation** — the user guide lives at [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io); concepts, architecture, governance, and design decisions live in [`doc/`](doc/).
 
 ### How memory works
 
