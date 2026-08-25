@@ -158,12 +158,20 @@ Not one big "AI" black box — several independent, purpose-built engines:
 - **Adaptive RAG (the "gearbox")** — rather than injecting every retrieved candidate,
   context selection (top-k / MMR / low-discrepancy sampling) scales to both the model
   tier you're running and the thinking mode you pick.
+- **Theia — the vision engine** — named for the Titaness of sight, who in the myth is
+  Mnemosyne's sister. A complete image-memory engine: your images are embedded **100%
+  locally** (SigLIP 2, in an isolated sidecar) into their own vector space, recalled in
+  chat as thumbnails through three rank-fused channels — semantic, pixel-color palette,
+  and emergent categories the engine discovers on its own — and browsed in a living
+  gallery. **The human always outranks the model**: rate, pin, describe, teach, rename
+  or merge its categories. Honest by construction: a cold or still-indexing engine says
+  so, instead of inventing "no matches". Off by default — one Settings toggle.
 - **Voice engines, STT and TTS, fully independent** — speech-to-text runs small models
   in-process and large models in an **isolated GPU/CPU sidecar** (a big STT model loaded
   in-process can crash the whole app); text-to-speech runs system, cloud, or local
   (offline binary or GPU voice cloning), scheduled sample-accurately for gapless
   playback. No NVIDIA GPU → automatic CPU fallback, never a hard block.
-- **306 Zod-validated IPC channels** connect all of the above to the UI — auto-generated
+- **399 Zod-validated IPC channels** connect all of the above to the UI — auto-generated
   and checked by a drift test on every build.
 
 > 📄 **Deep dive:** [**The Resonance Engine** — technical whitepaper](doc/RESONANCE_ENGINE_WHITEPAPER.md).
