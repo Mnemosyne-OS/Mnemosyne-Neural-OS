@@ -240,9 +240,9 @@ permanent identifiers, so they can be cited rather than merely linked:
   <em>The infinite canvas (v1.4.0): pan the void, zoom 10%–100%, and make the plane yours — the image gallery, MnemoHub, diagnostics, world clocks, weather and stickers, all living on one endless surface</em>
   <br/><br/>
 
-https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/raw/main/assets/infinite-canvas.mp4
-
-  <em>Thirteen seconds of the real thing — the canvas panned, zoomed and decorated live</em>
+  <img src="assets/infinite-canvas.gif" alt="Thirteen seconds of the infinite canvas — panned, zoomed and decorated live" width="820" />
+  <br/>
+  <em>Thirteen seconds of the real thing — the canvas panned, zoomed and decorated live · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/infinite-canvas.mp4">watch in higher quality</a></em>
   <br/><br/><br/>
 
   <img src="assets/neural-map.jpg" alt="Neural Map — topology-driven memory graph" width="820" />
