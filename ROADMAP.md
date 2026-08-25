@@ -9,7 +9,8 @@
 
 | Milestone | When | Notes |
 |-----------|------|-------|
-| Infinity Edition — 11 public releases | 2026 | Flagship desktop app, now at [**v1.3.8 · The Second Channel**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.8-infinity) |
+| Infinity Edition — 12 public releases | 2026 | Flagship desktop app, now at [**v1.4.0 · The Infinite Vision**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.0-infinity) |
+| Theia — image memory & visual recall | Aug 2026 | Mnemosyne's sister engine gives every vault an eye: images embedded 100% locally (SigLIP 2), recalled in chat as thumbnails, organized in a living gallery with categories the engine discovers and the human can correct or teach. Off by default; aboard since v1.4.0 |
 | Signed Windows installers | Jul 2026 | Code-signed builds (Certum OV, RFC-3161 timestamped) since [v1.3.4](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.4-infinity) — no more "unknown publisher", auto-update once installed |
 | MnemoHub | 2026 | Signed cartridge marketplace — community submission pipeline + live publishing |
 | Sovereign identity | 2026 | Claim a public pseudonym bound to your wallet — no account, no password |
@@ -32,7 +33,7 @@
 | Milestone | Notes |
 |-----------|-------|
 | Signed macOS installers | Extending code-signing to macOS builds so installs pass OS reputation checks out of the box (Windows shipped since v1.3.4) |
-| Compression on by default | Octave's remaining resolution tiers + the full measurement campaign, so a growing lifetime of memory stays cheap to carry on modest, on-device hardware |
+| Context compression on by default | The Octave engine is aboard (see Shipped); what remains is serving the compressed forms on the answer path, gated behind the full measurement campaign — so a growing lifetime of memory stays cheap to carry into the context windows of modest, on-device hardware |
 | Creator economy | Paid visibility for cartridges, revenue flowing back to builders (plumbing pre-wired) |
 
 ---

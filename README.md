@@ -570,7 +570,7 @@ bound to the founder's research identity — ORCID
 - [x] 🌱 **Public beta — v1.1.0-beta.1** — where it started (personality-profile builder, semantic memory graph, first-contact onboarding)
 
 ### What's next
-- [ ] 🗜️ **Compression on by default** — Octave's remaining resolution tiers and the full measurement campaign that lets compression turn on for everyone, so a lifetime of accumulated memory never saturates the context window of small local models. Memory that keeps growing must stay cheap to carry — this is what keeps Mnemosyne sovereign on modest, on-device hardware.
+- [ ] 🗜️ **Context compression, on by default** — the Octave engine is already aboard (see *Shipped*): while your machine is idle, every memory is prepared at several resolutions — strictly extractive, offset-provable, never a paraphrase. What remains is serving those compressed forms on the answer path for everyone, gated behind the full measurement campaign, so a lifetime of accumulated memory stays cheap to carry into the small **context windows** of on-device models. Memory that keeps growing must stay cheap to carry — this is what keeps Mnemosyne sovereign on modest hardware.
 - [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so users can reach each other directly, peer to peer, with **no classic internet required**
 - [ ] 👥 Team features — shared vaults, multi-agent coordination
 - [ ] 🖥️ Self-hosted sync server
