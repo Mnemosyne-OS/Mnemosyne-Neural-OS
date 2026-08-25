@@ -120,7 +120,7 @@ speak over a **libp2p** transport (`@mnemosyne-workspace/mnemosync-p2p`).
 
 Unlike fragmented AI wrappers, Mnemosyne never exposes your knowledge vault
 indiscriminately. Every agentic connection is governed by **FGAC (Fine-Grained Access
-Control)** and 306 Zod-validated IPC channels, ensuring total sovereignty over what
+Control)** and 400 Zod-validated IPC channels, ensuring total sovereignty over what
 executes, what's stored, and what syncs.
 
 ### Core Modules
@@ -171,7 +171,7 @@ Not one big "AI" black box — several independent, purpose-built engines:
   in-process can crash the whole app); text-to-speech runs system, cloud, or local
   (offline binary or GPU voice cloning), scheduled sample-accurately for gapless
   playback. No NVIDIA GPU → automatic CPU fallback, never a hard block.
-- **399 Zod-validated IPC channels** connect all of the above to the UI — auto-generated
+- **400 Zod-validated IPC channels** connect all of the above to the UI — auto-generated
   and checked by a drift test on every build.
 
 > 📄 **Deep dive:** [**The Resonance Engine** — technical whitepaper](doc/RESONANCE_ENGINE_WHITEPAPER.md).
@@ -382,7 +382,7 @@ flowchart TB
     end
 
     subgraph Bridge["contextIsolation: true · nodeIntegration: false"]
-        CB["Context Bridge<br/>306 Zod-validated IPC channels"]
+        CB["Context Bridge<br/>400 Zod-validated IPC channels"]
     end
 
     subgraph Main["Main Process (Electron)"]
