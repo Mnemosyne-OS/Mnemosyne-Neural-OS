@@ -243,6 +243,12 @@ permanent identifiers, so they can be cited rather than merely linked:
   <img src="assets/infinite-canvas.gif" alt="Thirteen seconds of the infinite canvas — panned, zoomed and decorated live" width="820" />
   <br/>
   <em>Thirteen seconds of the real thing — the canvas panned, zoomed and decorated live · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/infinite-canvas.mp4">watch in higher quality</a></em>
+  <br/><br/>
+
+  <strong>Turn memory on for your images.</strong> One Settings toggle gives your vaults an eye:
+  drop in a folder of photos and <strong>Mnemosyne OS remembers every image you add</strong> —
+  indexed 100% locally, organized in a living gallery you can rate, pin and teach,
+  and recalled in chat: ask for <em>"the pieces that look like a blue cup"</em> and your own photos answer.
   <br/><br/><br/>
 
   <img src="assets/neural-map.jpg" alt="Neural Map — topology-driven memory graph" width="820" />
