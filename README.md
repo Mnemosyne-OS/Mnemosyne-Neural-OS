@@ -235,6 +235,16 @@ permanent identifiers, so they can be cited rather than merely linked:
 <br/>
 
 <div align="center">
+  <img src="assets/infinite-canvas.jpg" alt="The infinite canvas — an endless plane with the gallery, MnemoHub, chat, world clocks, weather and stickers, zoomed to 26%" width="820" />
+  <br/>
+  <em>The infinite canvas (v1.4.0): pan the void, zoom 10%–100%, and make the plane yours — the image gallery, MnemoHub, diagnostics, world clocks, weather and stickers, all living on one endless surface</em>
+  <br/><br/>
+
+https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/raw/main/assets/infinite-canvas.mp4
+
+  <em>Thirteen seconds of the real thing — the canvas panned, zoomed and decorated live</em>
+  <br/><br/><br/>
+
   <img src="assets/neural-map.jpg" alt="Neural Map — topology-driven memory graph" width="820" />
   <br/>
   <em>Neural Map: your vault rendered as a living mathematical topology — Enneper surface, Klein bottle, Lorenz attractor, Clifford torus… the equation <strong>is</strong> the shape</em>
