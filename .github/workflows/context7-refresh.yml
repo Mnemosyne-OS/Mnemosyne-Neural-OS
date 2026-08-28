@@ -1,0 +1,73 @@
+name: Refresh Context7
+
+# Context7 serves this repository's documentation to coding agents (Claude Code,
+# Cursor, Codex). It re-indexes on its own schedule, driven by popularity, which
+# means a young library can sit on a stale snapshot for a while. This asks for a
+# refresh as soon as the documentation it actually reads has changed.
+#
+# Scoped to those paths on purpose: pinging on every push would ask for a
+# re-index when nothing it indexes moved, and that is how a source gets
+# throttled rather than served.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'README.md'
+      - 'CONTRIBUTING_AI.md'
+      - 'context7.json'
+      - 'doc/**'
+      - 'packages/**'
+      - 'cli/**'
+      - 'handbook/**'
+      - 'examples/**'
+      - 'standards/**'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    name: Ask Context7 to re-index
+    runs-on: ubuntu-latest
+    steps:
+      # The key is a repository secret, added by a human in Settings → Secrets.
+      # Until it exists this job reports and stops rather than failing: a
+      # workflow that is red for a missing optional credential teaches everyone
+      # to ignore red workflows.
+      - name: Check the API key is configured
+        id: key
+        env:
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        run: |
+          if [ -z "$CONTEXT7_API_KEY" ]; then
+            echo "::notice::CONTEXT7_API_KEY is not set — skipping. Add it in Settings → Secrets and variables → Actions to enable this."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger the refresh
+        if: steps.key.outputs.present == 'true'
+        env:
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        run: |
+          # Context7 lowercases the library id it stores, and github.repository
+          # keeps the owner's casing, so it is lowercased here to match what the
+          # index actually holds (/mnemosyne-os/mnemosyne-neural-os).
+          LIB="/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
+          echo "Requesting a refresh for $LIB"
+
+          CODE=$(curl -s -o /tmp/c7.out -w '%{http_code}' \
+            -X POST https://context7.com/api/v1/refresh \
+            -H 'Content-Type: application/json' \
+            -H "Authorization: Bearer $CONTEXT7_API_KEY" \
+            -d "{\"libraryName\": \"$LIB\"}")
+
+          echo "HTTP $CODE"
+          cat /tmp/c7.out || true
+
+          # A refresh is a nicety, not a gate: a rate limit or a passing outage
+          # on their side must not fail a push that was otherwise fine.
+          if [ "$CODE" != "200" ] && [ "$CODE" != "202" ]; then
+            echo "::warning::Context7 refresh returned HTTP $CODE — the push is unaffected."
+          fi
