@@ -88,6 +88,22 @@ yourself](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-k
 
 The AI that remembers *you* — not infrastructure you plug into someone else's.
 
+### And not the flashcard app either
+
+"Mnemosyne" is a crowded name. A spaced-repetition flashcard program has carried it
+since 2003, and several unrelated agent-memory projects use it too — among them the
+`mnemosyne-oss` GitHub organization. None of them is this project.
+
+This one is published by **XPACEGEMS LLC**, and these are its only official addresses:
+
+| | |
+|---|---|
+| **Product** | [mnemosyne-os.io](https://mnemosyne-os.io) |
+| **Organizations** | [mnemosyne-os.com](https://mnemosyne-os.com) |
+| **Documentation** | [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io) |
+| **Source** | this repository |
+| **Packages** | the npm scope `@mnemosyne_os` — [the list](https://mnemosyne-os.io/packages) |
+
 ---
 
 ## Why call it an "OS"?
@@ -598,6 +614,7 @@ bound to the founder's research identity — ORCID
 **Founder & Lead Architect:** Tony Trochet  
 **Product:** [mnemosyne-os.io](https://mnemosyne-os.io) — downloads, docs, build on it  
 **Company:** [mnemosyne-os.com](https://mnemosyne-os.com) — press, research, [Labs](https://mnemosyne-os.com/labs)  
+**Documentation:** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io) — every engine, step by step  
 **LinkedIn:** [Tony Trochet](https://www.linkedin.com/in/tony-t-19544650/)  
 **GitHub:** [@yaka0007](https://github.com/yaka0007)
 
