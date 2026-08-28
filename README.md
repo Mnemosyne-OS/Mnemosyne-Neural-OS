@@ -88,13 +88,9 @@ yourself](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-k
 
 The AI that remembers *you* — not infrastructure you plug into someone else's.
 
-### And not the flashcard app either
+### Where the project lives
 
-"Mnemosyne" is a crowded name. A spaced-repetition flashcard program has carried it
-since 2003, and several unrelated agent-memory projects use it too — among them the
-`mnemosyne-oss` GitHub organization. None of them is this project.
-
-This one is published by **XPACEGEMS LLC**, and these are its only official addresses:
+Published by **XPACEGEMS LLC**. These are its official addresses:
 
 | | |
 |---|---|
