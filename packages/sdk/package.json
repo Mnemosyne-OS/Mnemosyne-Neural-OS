@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/sdk",
-  "version": "1.4.1",
+  "version": "1.5.3",
   "description": "Official SDK for building Layer 2 apps on Mnemosyne OS — connects to the local AI memory runtime via WebSocket or Electron IPC.",
   "keywords": [
     "mnemosyne",

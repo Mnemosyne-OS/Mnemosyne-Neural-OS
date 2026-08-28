@@ -97,6 +97,31 @@ if (!/npm create @mnemosyne_os\/app/.test(readme)) {
   warnings.push('README: no `npm create @mnemosyne_os/app` quickstart found')
 }
 
+// ── AGENTS.md ↔ generated counts ──────────────────────────────────────────
+//
+// AGENTS.md tells agents its figures can be trusted, which is what makes a
+// stale one worse than none: the IPC count sat at 242 from July 2026 while the
+// real number climbed past 400, and nothing complained. metrics.json is written
+// by the monorepo's inventory generator, so the prose is checked against
+// something generated rather than against somebody's memory.
+try {
+  const metrics = JSON.parse(readFileSync(resolve(root, 'tools/metrics.json'), 'utf8'))
+  const agents = readFileSync(resolve(root, 'AGENTS.md'), 'utf8')
+  const claimed = agents.match(/\*\*([\d\s,]+)\*\*\s+IPC channels/)
+  if (!claimed) {
+    warnings.push('AGENTS.md: no "**N** IPC channels" claim found — nothing to compare')
+  } else {
+    const n = Number(claimed[1].replace(/[\s,]/g, ''))
+    if (n !== metrics.ipcChannels) {
+      errors.push(
+        'AGENTS.md claims ' + n + ' IPC channels, tools/metrics.json says ' + metrics.ipcChannels + '. ' +
+          'Run the monorepo inventory command (it rewrites both) and commit the result.',
+      )
+    }
+  }
+} catch (e) {
+  warnings.push('AGENTS.md/metrics.json check skipped: ' + e.message)
+}
 // Report.
 const icon = (s) => (s === 'ok' ? '✔' : s === 'BEHIND' ? '✖' : '…')
 console.log('\nPublic ↔ npm sync check\n')
