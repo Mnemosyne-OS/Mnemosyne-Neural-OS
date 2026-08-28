@@ -22,6 +22,68 @@ runtime:
 - `package.json` — with [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) already in place
 - `tsconfig.json` + a project README
 
+## What you actually get
+
+The manifest declares who your app is and what it may touch. Nothing outside
+these scopes is reachable, which is the point:
+
+```json
+{
+  "id": "my-awesome-app",
+  "name": "My Awesome App",
+  "version": "1.0.0",
+  "author": "your-name",
+  "mnemosyne_sdk": "^1.0.0",
+  "description": "My Mnemosyne OS app",
+  "scopes": ["vault:read:SOCIAL", "vault:write:SOCIAL"],
+  "vaults": ["SOCIAL"],
+  "intents": ["INGEST", "QUERY"],
+  "max_chronicle_size_kb": 64,
+  "requires_consent": false
+}
+```
+
+And `index.ts` is a running program, not a stub. Connect, write, read, close:
+
+```ts
+import { MnemoClient } from '@mnemosyne_os/sdk';
+
+async function main() {
+  // The desktop app has to be running: it owns the memory, this is a client.
+  const client = await MnemoClient.connect({
+    appId: 'my-awesome-app',
+    manifest: './app.manifest.json',
+    transport: 'ws', // WebSocket — external Node.js app
+  });
+
+  const result = await client.ingest({
+    content: 'Hello from my-awesome-app! This is my first chronicle.',
+    spineType: 'NOTE',
+    vault: 'SOCIAL',
+  });
+  console.log('[App] Ingested:', result.chronicleId);
+
+  const results = await client.query('hello world', { limit: 5 });
+  console.log('[App] Query results:', results.chronicles.length);
+
+  await client.disconnect();
+}
+
+main().catch(console.error);
+```
+
+Run it:
+
+```bash
+cd my-awesome-app
+npm install
+npm start
+```
+
+`query()` returns the most recent chronicles by default, which is fast and right
+for a "what changed lately" view. Pass `semantic: true` when you want relevance
+ranking instead of recency.
+
 ## What is a Layer 2 app?
 
 A **standalone Node process** that talks to a running Mnemosyne OS instance
