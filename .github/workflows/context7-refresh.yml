@@ -2,27 +2,21 @@ name: Refresh Context7
 
 # Context7 serves this repository's documentation to coding agents (Claude Code,
 # Cursor, Codex). It re-indexes on its own schedule, driven by popularity, which
-# means a young library can sit on a stale snapshot for a while. This asks for a
-# refresh as soon as the documentation it actually reads has changed.
+# means a young library can sit on a stale snapshot for a while. This asks for
+# one on a fixed cadence so the entry does not go quietly stale.
 #
-# Scoped to those paths on purpose: pinging on every push would ask for a
-# re-index when nothing it indexes moved, and that is how a source gets
-# throttled rather than served.
+# Runs on the 1st and the 15th. Their limit is one refresh per 10 days, and
+# a push-triggered version simply hit it on every commit: measured live,
+# HTTP 400 too-early, "Last update was 0 days ago". Twice a month always
+# clears the window, and workflow_dispatch covers the case where something
+# needs indexing sooner.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'AGENTS.md'
-      - 'README.md'
-      - 'CONTRIBUTING_AI.md'
-      - 'context7.json'
-      - 'doc/**'
-      - 'packages/**'
-      - 'cli/**'
-      - 'handbook/**'
-      - 'examples/**'
-      - 'standards/**'
+  # Context7 refuses a refresh less than 10 days after the last one, so a
+  # push trigger spends most of its life logging a warning nobody wants to
+  # read. Twice a month always clears that window and makes no noise.
+  schedule:
+    - cron: "0 4 1,15 * *"
   workflow_dispatch:
 
 jobs:
