@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.mnemosyne-os/mcp",
+  "name": "io.github.Mnemosyne-OS/mcp",
   "title": "Mnemosyne OS",
   "description": "Persistent memory for AI agents, governed by the human and stored on their own machine.",
   "repository": {
@@ -8,12 +8,12 @@
     "source": "github"
   },
   "websiteUrl": "https://mnemosyne-os.io",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@mnemosyne_os/mcp",
-      "version": "1.4.4",
+      "version": "1.4.5",
       "transport": {
         "type": "stdio"
       },
