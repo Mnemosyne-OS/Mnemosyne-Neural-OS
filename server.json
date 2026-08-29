@@ -8,12 +8,12 @@
     "source": "github"
   },
   "websiteUrl": "https://mnemosyne-os.io",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@mnemosyne_os/mcp",
-      "version": "1.4.3",
+      "version": "1.4.4",
       "transport": {
         "type": "stdio"
       },
