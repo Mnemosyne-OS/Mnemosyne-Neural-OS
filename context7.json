@@ -1,12 +1,15 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
+  "url": "https://context7.com/mnemosyne-os/mnemosyne-neural-os",
+  "public_key": "pk_UYaSu1Wphnu2ahljkEMfC",
   "projectTitle": "Mnemosyne OS",
   "description": "A sovereign, local-first memory operating system for AI agents and applications. Runs as a desktop app on the user's own machine and exposes an open MIT surface: an SDK to read and write the local memory, a Model Context Protocol server so Claude, Cursor and other agents can reach it, and a cartridge SDK for apps that run inside it.",
   "excludeFolders": [
+    ".github",
     "archive",
     "assets",
-    "node_modules",
-    ".github"
+    "cli",
+    "node_modules"
   ],
   "rules": [
     "The desktop application must be running. Every package here is a client: the app owns the data and none of them store anything on their own.",
