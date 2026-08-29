@@ -17,6 +17,8 @@
 
 ---
 
+> 🍳 **In a hurry?** [**RECIPES.md**](./RECIPES.md) gives your coding agent a persistent memory in one copy-paste block — Claude Code, Cursor, Claude Desktop, and the TypeScript SDK.
+
 ## What this is
 
 `@mnemosyne_os/mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server that

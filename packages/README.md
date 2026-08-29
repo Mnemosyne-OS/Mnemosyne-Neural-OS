@@ -24,7 +24,9 @@ npm run dev
 ```
 
 If you are giving an existing coding agent access to your own memory, the MCP
-server is the shortest path and needs no code:
+server is the shortest path and needs no code. The copy-paste blocks for Claude
+Code, Cursor and Claude Desktop are in
+[**mcp/RECIPES.md**](./mcp/RECIPES.md):
 
 ```bash
 npx -y @mnemosyne_os/mcp
