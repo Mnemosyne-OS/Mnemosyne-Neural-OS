@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mnemosyne-os/mcp",
+  "title": "Mnemosyne OS",
+  "description": "Give an AI agent a persistent, human-governed memory that lives on the user's own machine. Semantic recall across isolated vaults, resonances between memories, and git context — served from a local desktop app, not a cloud service.",
+  "repository": {
+    "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
+    "source": "github"
+  },
+  "websiteUrl": "https://mnemosyne-os.io",
+  "version": "1.4.3",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@mnemosyne_os/mcp",
+      "version": "1.4.3",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "MNEMO_DEFAULT_VAULT",
+          "description": "Vault used when a call does not name one. The vaults are the user's own domains of memory (code, notes, journal); nothing outside the granted list is reachable.",
+          "isRequired": false,
+          "default": "DEV"
+        },
+        {
+          "name": "MNEMO_VAULTS",
+          "description": "Comma-separated list of vaults this server may reach. Narrow it: a vault left out here cannot be read even by mistake.",
+          "isRequired": false,
+          "default": "DEV,PERSONAL,SOCIAL"
+        }
+      ]
+    }
+  ]
+}
