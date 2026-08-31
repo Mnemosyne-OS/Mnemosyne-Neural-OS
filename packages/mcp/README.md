@@ -38,10 +38,11 @@ Once configured, your agent can:
 
 ## Requirements
 
-Two things must be running locally:
+**Node.js ≥ 18** is the only hard requirement.
 
-1. **[Mnemosyne OS Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)** — the runtime that owns your vaults and exposes the WebSocket gateway on `ws://127.0.0.1:7799`. Get it from the project repo's releases page.
-2. **Node.js ≥ 18** — to run the MCP itself.
+The **memory** tools additionally need **[Mnemosyne OS Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)** running — it owns your vaults and exposes the WebSocket gateway on `ws://127.0.0.1:7799`. Get it from the project repo's releases page.
+
+The three **agent-awareness** tools (`mnemosyne_agents`, `mnemosyne_agent_collisions`, `mnemosyne_agent_files`) need neither. They read transcript files your coding-agent harness already writes to disk, so they answer with the app closed, with no vault, and without spending a token. They read **every** harness they find, so a Claude Code session can see an Antigravity session running in the same repository.
 
 > **The MCP is a thin bridge.** It does not store anything itself. All data lives in Mnemosyne OS Infinity (`%APPDATA%\@mnemosyne-workspace\infinity-edition\vaults\*.db` on Windows, `~/Library/Application Support/...` on macOS).
 
@@ -210,7 +211,7 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 
 ---
 
-## The 8 tools your agent gets
+## The 11 tools your agent gets
 
 | Tool | What it does |
 |---|---|
@@ -222,6 +223,38 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 | **`mnemosyne_get_position`** | Get the last saved position of a Resonance — phase, what was done. |
 | **`mnemosyne_update_position`** | Save current position — persisted as a `DECISION` chronicle. |
 | **`mnemosyne_git_log`** | Recent commits from the active monorepo (requires `monorepo:read` scope). |
+
+### Seeing the other agents on this machine
+
+These three read the transcripts coding-agent harnesses already write to disk. **No app, no vault, no tokens** — which is what makes "check before you commit" cheap enough to actually do.
+
+| Tool | What it does |
+|---|---|
+| **`mnemosyne_agent_collisions`** | **Are two agent sessions live on the same project and branch right now?** Call it before `git add -A`, before a commit and before a rebase: the git index is shared by every process in one working tree, so a commit from one session picks up whatever the other has staged. |
+| **`mnemosyne_agents`** | The sessions on this machine — conversation name, project, branch, model, last tool, file count, and when a line was last written. |
+| **`mnemosyne_agent_files`** | Which files other sessions recently wrote, newest first, with the session each came from. Paths and timestamps only. |
+
+**No configuration needed.** Every shipped connector whose folder exists on this machine is read, and each answer names the folders it actually opened. Override only if your agent writes somewhere unusual:
+
+```jsonc
+"env": {
+  // Per harness. Absent means "where that agent writes by default".
+  "MNEMO_AGENT_SESSIONS": "C:/Users/you/.claude/projects",
+  "MNEMO_AGENT_SESSIONS_ANTIGRAVITY": "…",
+  "MNEMO_AGENT_SESSIONS_ANTIGRAVITY_IDE": "…",
+  // Restrict to a subset. Absent means all of them.
+  "MNEMO_AGENT_SOURCES": "claude-code,antigravity"
+}
+```
+
+**Three things these tools will not do**, because a tool that overstates its evidence is worse than no tool:
+
+- **They never say an agent is "working".** A crashed agent and an idle one fall equally silent. They report when a line was last *seen*; you conclude.
+- **They never return content** — no message text, no file contents, no tool output. A transcript holds everything that passed in front of an agent for a month. What crosses is metadata.
+- **A clean answer is not proof the machine is quiet.** It covers the folders it names, and it says which known harnesses were not present. A session whose transcripts live elsewhere does not appear at all.
+- **A session it cannot place is reported, not dropped.** Some harnesses record no working directory at all (Antigravity is one), and 91 of 288 sessions measured on one machine carry neither a project nor a branch. Grouping those together would announce collisions that nothing supports, so they are listed separately with the reason.
+
+A file is marked `recorded` when the harness logged a file-writing tool call, and `from a command` when a redirection was read out of a shell command that may never have completed. Those are different kinds of fact and are never merged.
 
 ### `mnemosyne_query` — full parameter reference
 
@@ -300,6 +333,7 @@ DocWatch ingests on file save with a small delay. Check the spine: if you wrote 
 - Embedding (when enabled) is done by Mnemosyne OS Infinity using **your** Vertex AI / local model — never the MCP's.
 - No telemetry. No usage tracking. The MCP itself is a 16 KB stateless bridge.
 - Your AI agent (Claude / Cursor / Copilot) sees only the chronicles you allow via tool calls — never your raw vault file or vector store.
+- The agent-awareness tools read transcript files locally and return **metadata only**. They never open a network connection at all.
 
 ---
 
