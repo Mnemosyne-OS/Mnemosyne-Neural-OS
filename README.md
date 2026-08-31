@@ -304,6 +304,45 @@ permanent identifiers, so they can be cited rather than merely linked:
 
 ---
 
+## Two doors between your IDE and your memory
+
+You already run an agent next to your editor. It opens every session without the history
+of the project it is working in, so it reasons its way back to conclusions you reached
+weeks ago, and it will do that again tomorrow. Part of that history is not lost: the
+agent wrote it down itself. It is sitting in a dot-directory beside the code, usually
+gitignored, read by nothing.
+
+Mnemosyne OS opens two doors onto it, and they run in opposite directions.
+
+**Door one, memory reads the agent.** DocWatch watches a folder you deliberately point
+at, whatever its name, so `.claude/…/memory` is treated like any other source and what
+your agent noted becomes retrievable next to your documents and your code. Shipped in
+**v1.4.3**: before that a blanket ignore rule dropped every dot-directory, in silence.
+
+→ **[Connect your coding agent's memory](https://docs.mnemosyne-os.io/developers/agent-memory)**
+
+**Door two, the agent reads memory.** [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp)
+is a Model Context Protocol server: one entry in your client config, and the agent can
+search a vault, ask it a question in prose, and write back what it worked out.
+
+```bash
+npx -y @mnemosyne_os/mcp
+```
+
+→ **[Connect Claude to Mnemosyne OS (MCP)](https://docs.mnemosyne-os.io/connect-claude-mcp)**
+
+Three of those tools need neither the app, nor a vault, nor a single token: they read the
+transcripts your harness already writes to disk. That is what makes *"is another session
+live on this branch before I commit?"* cheap enough to actually ask.
+
+> **The mechanism is the whole claim.** We publish no measurement of what this saves in
+> tokens or in minutes, so we assert none. Retrieval is not reasoning: a decision a model
+> can look up is a decision it does not derive a second time, and the context it would
+> have spent reconstructing where it is goes to the task instead. Watch it in your own
+> sessions rather than taking a number for it.
+
+---
+
 ## Build on Mnemosyne OS
 
 You've seen what it is and that it works — now build on it. Your apps, agents, and
