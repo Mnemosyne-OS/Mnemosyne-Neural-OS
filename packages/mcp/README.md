@@ -211,10 +211,14 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 
 ---
 
-## The 11 tools your agent gets
+## The 14 tools your agent gets
+
+Eleven below, plus the three that read the other agents on this machine. Setting
+`MNEMO_VOICE=1` adds the three voice tools documented further up, for 17 in all.
 
 | Tool | What it does |
 |---|---|
+| **`mnemosyne_about`** | Re-read the briefing you were handed on connect: the governance tenet, the vault protection model (NORMAL / MAXIMUM, `mixableWith`, isolated sandbox vaults), the spine model, and what an agent working on someone's memory must and must not do. Call it if your client did not surface the server instructions, or any time you want them again. |
 | **`mnemosyne_query`** | Semantic search — returns raw chronicles ranked by cosine × spineType weight (SOURCE_CODE scope by default). Supports `spine_type_filter`, `max_content_chars`, `limit` (≤ 50). |
 | **`mnemosyne_ask`** | **Ask Mnemosyne a question, get a synthesized prose answer** grounded in the vault (RAG+LLM), plus its source chronicles. Use for "why / who / how" questions that need reasoning across many memories. Slower than `query` (runs the LLM). |
 | **`mnemosyne_vaults`** | List the vaults Mnemosyne OS exposes (id, name, chronicle count) — call it to discover valid `vault` targets. |
@@ -223,6 +227,8 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 | **`mnemosyne_get_position`** | Get the last saved position of a Resonance — phase, what was done. |
 | **`mnemosyne_update_position`** | Save current position — persisted as a `DECISION` chronicle. |
 | **`mnemosyne_git_log`** | Recent commits from the active monorepo (requires `monorepo:read` scope). |
+| **`mnemosyne_spine_assignments`** | How the memories were actually classified: chronicle-to-spine assignments for a vault, newest first, with whole-vault counts per spine and, on request, the taxonomy tree. It is also where the taxon ids come from, so read it instead of guessing a `spine_type_filter`. |
+| **`mnemosyne_dream_bridges`** | The links the Dream State engine found on its own while the machine sat idle, each with its score and an excerpt of both sides, sometimes across two vaults. An empty list is the normal answer and means it has produced none yet, never that the query failed. |
 
 ### Seeing the other agents on this machine
 
