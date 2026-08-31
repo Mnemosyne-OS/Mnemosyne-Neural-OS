@@ -26,7 +26,7 @@ Rendering pixels *inside* Mnemosyne → **Cartridge** (most common; detailed bel
 
 ## Cartridge — the common case
 
-Never start from a blank page: copy `examples/cartridge-boilerplate` (in this repo) — that IS the cartridge scaffold. Do NOT use `npm create @mnemosyne_os/app` for a cartridge: it scaffolds the other surface (a Layer 2 WebSocket app, no mnemo-plugin.json) and MnemoHub will refuse to link it. Read [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) (a real, shipped cartridge) and match its patterns. The full, self-contained build guide is **`examples/cartridge-boilerplate/AGENTS.md`** (ships in every scaffold, auto-loaded by IDE agents).
+Never start from a blank page: copy `examples/cartridge-boilerplate` (in this repo) — that IS the cartridge scaffold. Do NOT use `npm create @mnemosyne_os/app` for a cartridge: it scaffolds the other surface (a Layer 2 WebSocket app, no mnemo-plugin.json) and MnemoHub will refuse to link it. Read [MnemoReader](https://github.com/Mnemosyne-OS/MnemoReader---MnemosyneOS) (a real, shipped cartridge) and match its patterns. The full, self-contained build guide is **`examples/cartridge-boilerplate/AGENTS.md`** (ships in every scaffold, auto-loaded by IDE agents).
 
 A cartridge is a React/Vite web app in a **sandboxed iframe** — no Node, Electron, filesystem, or direct host access. It reaches the host only through the SDK.
 
@@ -263,7 +263,7 @@ Package `@mnemosyne_os/mcp`; requires the Mnemosyne app running (7799 up). Legac
 1. Use only the actions in the table above. Never invent an API name or payload field.
 2. Declare only the permissions you actually call.
 3. The core engine is sealed — describe capabilities conceptually; never assume an internal implementation detail.
-4. Copy the boilerplate and read [MnemoReader](https://github.com/yaka0007/MnemoReader---MnemosyneOS) before writing from scratch.
+4. Copy the boilerplate and read [MnemoReader](https://github.com/Mnemosyne-OS/MnemoReader---MnemosyneOS) before writing from scratch.
 5. When a fact is not in this file, `examples/cartridge-boilerplate/AGENTS.md`, or the reference cartridge — stop and ask, do not guess.
 
 ## Documentation map (fetch only if needed)
@@ -296,7 +296,7 @@ Repo orientation first: `AGENTS.md` (root) carries the reading order, the open-v
 - [Cartridge boilerplate + AGENTS.md build contract](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/examples/cartridge-boilerplate): copy this to start a cartridge
 - [SDK packages](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/packages): the MIT integration surface (`@mnemosyne_os/sdk` and friends)
 - [MnemoForge CLI docs](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/tree/main/cli/docs): give any agent persistent memory, an identity, and a publish pipeline
-- [MnemoReader — reference cartridge](https://github.com/yaka0007/MnemoReader---MnemosyneOS): the shipped implementation to pattern-match
+- [MnemoReader — reference cartridge](https://github.com/Mnemosyne-OS/MnemoReader---MnemosyneOS): the shipped implementation to pattern-match
 
 ### Proof
 - [LongMemEval benchmark — auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/): re-derive every score yourself in one command, no engine, no network — 77.1% strict, 81.3% flexible, and July’s composed 72.9%
