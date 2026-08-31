@@ -9,18 +9,24 @@
     "dev": "vite",
     "dev:cartridge": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.eslint.json",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@mnemosyne_os/cartridge-sdk": "^0.1.0",
+    "@mnemosyne_os/cartridge-sdk": "^0.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/react": "^16.0.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "jsdom": "^29.1.1",
     "typescript": "^5.5.3",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vitest": "^1.6.1"
   }
 }

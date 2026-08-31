@@ -11,6 +11,7 @@
   "widgets": [
     {
       "id": "boilerplate-main",
+      "icon": "🧩",
       "name": "Boilerplate Widget",
       "route": "index.html",
       "defaultWidth": 500,

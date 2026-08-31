@@ -20,6 +20,8 @@ installs your app at all.
 ```bash
 pnpm install
 pnpm dev          # vite on 127.0.0.1:5185 (strictPort)
+pnpm test         # vitest, jsdom — one example test ships with the template
+pnpm typecheck    # types the tests too, which the build deliberately does not
 ```
 
 Then, in Mnemosyne: **MnemoHub → My dev apps → link this folder**.
@@ -109,4 +111,7 @@ want your app in front of people, not because it will pay this month.
 | `vite.config.ts` | `base: './'` and port 5185 — both load-bearing, see above. |
 | `src/sdk/mnemo-sdk.ts` | A one-line re-export of the shared package. **Do not add methods**; the transport lives in `@mnemosyne_os/cartridge-sdk`. |
 | `src/App.tsx` | The demo: sandbox vault, memory write/read, inference, native dialog. |
+| `src/App.test.tsx` | The example test. Read it before replacing it: it encodes why the file is `.tsx`, why it awaits the settled state, and what "honest degradation" means here. |
+| `src/test-setup.ts` | Registers the DOM matchers. Carries a trap comment worth reading before you touch the import. |
+| `tsconfig.eslint.json` | The lint-and-typecheck project. `tsconfig.json` excludes the tests so shipping does not need vitest; this one includes them so something types them. |
 | `AGENTS.md` | The full build contract for AI coding agents — surfaces, permissions, the authoritative action table. |

@@ -1,0 +1,21 @@
+{
+  /* Lint-and-typecheck project — everything, tests included.
+   *
+   * tsconfig.json deliberately EXCLUDES the tests so shipping does not depend
+   * on vitest being installed. That leaves them typed by nothing, which is how
+   * a `.endsWith()` on a `string | null` sits in a test for months. This file
+   * is what `pnpm typecheck` runs, and what ESLint should point its
+   * `project:` at the day this cartridge gains an eslint.config.js — one
+   * config beats a per-file `allowDefaultProject` allowlist, which has a
+   * match-count ceiling and quietly stops covering files past it.
+   *
+   * `types` is needed because the suite runs with `globals: true`, so
+   * describe/it/expect are ambient. Naming any type at all switches off the
+   * automatic @types pickup, so anything else the tests need goes here too. */
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": ["src", "vite.config.ts"],
+  "exclude": []
+}

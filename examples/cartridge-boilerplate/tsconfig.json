@@ -20,5 +20,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  /* Tests are out of the app build on purpose: shipping must not depend on the
+     test runner being installed. BOTH extensions must be listed, or a
+     .test.tsx rides into the shipping build. `pnpm typecheck` types them via
+     tsconfig.eslint.json, which is the only thing that does — `tsc` here
+     cannot see them, and lint rules are not a type checker. */
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test-setup.ts"]
 }

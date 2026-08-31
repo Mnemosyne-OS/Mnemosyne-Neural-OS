@@ -38,11 +38,22 @@ export default function App() {
    * it creates+mounts this app's own walled-off vault and hands back its name,
    * which every socialIngest/socialQuery must target.
    *
-   * If this silently does nothing, check that mnemo-plugin.json declares
-   * "vault:write" — without it the host denies the call with no visible error
-   * and you simply never get a vault.
+   * Two first-run realities to design for:
+   *  - The FIRST permission-gated call opens the host's native "Security
+   *    Authorization Required" dialog and waits for the human's click. The
+   *    SDK's default timeout is human-paced (5 min) precisely for this — do
+   *    not shorten it on boot calls.
+   *  - The human can still answer too late, or click Deny. Grants persist
+   *    host-side, so the recovery is always a plain retry: keep boot callable
+   *    and offer a retry button next to the error (below).
+   *
+   * If the call is denied INSTANTLY, check that mnemo-plugin.json declares
+   * "vault:write" — an undeclared permission is refused without a dialog.
    */
-  useEffect(() => {
+  const [bootFailed, setBootFailed] = useState(false);
+  const bootSandbox = () => {
+    setBootFailed(false);
+    setErrorMsg('');
     sdk.ensureSandbox()
       .then(async ({ vault, unlocked }) => {
         setVault(vault);
@@ -55,8 +66,12 @@ export default function App() {
         });
         await refreshNotes(vault);
       })
-      .catch((err) => setErrorMsg(`Sandbox unavailable: ${err.message}`));
-  }, []);
+      .catch((err) => {
+        setBootFailed(true);
+        setErrorMsg(`Sandbox unavailable: ${err.message}`);
+      });
+  };
+  useEffect(() => { bootSandbox(); }, []);
 
   const refreshNotes = async (target: string) => {
     try {
@@ -128,6 +143,9 @@ export default function App() {
         {errorMsg && (
           <div style={styles.errorBox}>
             <span style={{ fontWeight: 600 }}>⚠️ Security/API Alert:</span> {errorMsg}
+            {bootFailed && (
+              <button style={{ marginLeft: 10 }} onClick={bootSandbox}>↻ Retry</button>
+            )}
           </div>
         )}
 
