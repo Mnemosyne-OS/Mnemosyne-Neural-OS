@@ -115,7 +115,7 @@ try {
     if (n !== metrics.ipcChannels) {
       errors.push(
         'AGENTS.md claims ' + n + ' IPC channels, tools/metrics.json says ' + metrics.ipcChannels + '. ' +
-          'Run the monorepo inventory command (it rewrites both) and commit the result.',
+          'Run `pnpm inventory` in the monorepo to refresh tools/metrics.json, then edit the "N IPC channels" figure in AGENTS.md BY HAND to match it. The inventory script writes the data, never the prose — that is the point: prose goes stale silently, so this check is what makes it loud.',
       )
     }
   }

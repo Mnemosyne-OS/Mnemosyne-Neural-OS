@@ -1,3 +1,11 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />
+
+🌐 [**mnemosyne-os.io**](https://mnemosyne-os.io) — the product, for builders · [**mnemosyne-os.com**](https://mnemosyne-os.com) — the company, press & labs · [**docs.mnemosyne-os.io**](https://docs.mnemosyne-os.io) — the documentation
+
+</div>
+
 # @mnemosyne_os/sdk
 
 > **Official SDK for building Layer 2 apps on [Mnemosyne OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)**  
@@ -243,7 +251,7 @@ type MnemoScope =
   | 'agents:read'          // list connected agents
   | 'neural:graph:read'    // NeuralGraph access
   | 'bridge:read'          // Perpetual Memory Bridges (getBridgeHistory / computeResonance)
-  | 'nft:validate'         // reserved for MnemoStore NFT gating (roadmap — see NFT Licence below)
+  | 'nft:validate'         // reserved for Engramm licence gating on MnemoHub (roadmap — see below)
   | 'llm:query';           // Direct LLM queries (premium)
 ```
 
@@ -299,17 +307,18 @@ More event types coming in future releases (agent:connected, tamper-alert, nft-r
 
 ---
 
-## NFT Licence (MnemoStore) — roadmap
+## Engramm licence (MnemoHub) — roadmap
 
-> **Not yet available.** The `nft:validate` scope and the `NFTLicenseParams` /
-> `NFTValidation` types are reserved for on-chain licence gating, but no client
-> method (`validateNFTLicense`) is implemented and the OS does not yet answer
-> `sdk.nft.validate`. Declaring the scope is harmless; do not build against it
+> **Not yet available.** The `nft:validate` scope and its associated types are
+> reserved for gating an app behind the user's **Engramm licence** — the
+> lifetime licence of Mnemosyne OS. No client method is implemented and the OS
+> does not yet answer `sdk.nft.validate` (the scope keeps its historical
+> internal name). Declaring the scope is harmless; do not build against it
 > until this section documents a live API.
 
-When shipped, apps distributed on MnemoStore will be able to gate access with an
-NFT licence by declaring `"scopes": ["nft:validate"]` and calling a validation
-method that resolves on-chain (cached to avoid RPC spam).
+When shipped, apps distributed on **MnemoHub** will be able to check that the
+running user holds a valid Engramm licence with one call — resolved by the OS
+and cached; your app never touches the licence plumbing.
 
 ---
 
@@ -381,6 +390,26 @@ This SDK is open source (MIT). The Mnemosyne OS core runtime is proprietary.
 
 ---
 
+## Where Mnemosyne OS lives
+
+Published by XPACEGEMS LLC. Its official addresses:
+
+- Product site: <https://mnemosyne-os.io>
+- Organizations: <https://mnemosyne-os.com>
+- Documentation: <https://docs.mnemosyne-os.io>
+- Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
+- Packages: the npm scope `@mnemosyne_os`
+
+---
+
 ## License
 
 MIT © [Tony Trochet / XPACEGEMS LLC](https://xpacegems.com)
+
+---
+
+## The OS your code talks to
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
+
+*Mnemosyne OS — Infinity Edition v1.4.0 · The Infinite Vision — [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*

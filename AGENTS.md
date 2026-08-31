@@ -142,7 +142,7 @@ anything you remember about it.
   **77.1 %** (37/48) under the **strict** judge — the current headline, August 2026;
   **81.3 %** (39/48) — the same answers under July's **flexible** judge;
   **72.9 %** (35/48) — July's *composed lower bound* under that flexible judge, still
-  DOI-pinned. Plus **429** IPC channels between the sealed engine and the
+  DOI-pinned. Plus **436** IPC channels between the sealed engine and the
     interface. That one is generated, not typed: the monorepo tooling writes it
     into [`tools/metrics.json`](tools/metrics.json), and
     [`tools/check-public-sync.mjs`](tools/check-public-sync.mjs) fails when this

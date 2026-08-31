@@ -50,7 +50,18 @@ export type MnemoScope =
    * Allows a Layer 2 app to call getBridgeHistory() and computeResonance().
    * Write access (saveBridges) is CORE-ONLY and not exposed to Layer 2.
    */
-  | 'bridge:read';
+  | 'bridge:read'
+  /**
+   * [v1.6.0] Render speech with the local engines, including the human's own
+   * cloned voice, and write audio files.
+   *
+   * ⚠️ A **sensitive** scope on the host: unlike every other scope here, its
+   * subject is the PERSON rather than their data — a voice print can be used to
+   * make someone appear to say something they never said. It is therefore never
+   * auto-granted, not even to a first-party app; the human is asked once, by
+   * name, and the dialog spells out what it means.
+   */
+  | 'voice:speak';
 
 /**
  * Allowed IPC intents for a Layer 2 application.
@@ -65,7 +76,8 @@ export type MnemoIntent =
   | 'GIT_LOG'     /** Read the monorepo git commit log. */
   | 'LIST_AGENTS' /** List active SDK agents connected to the WS server. */
   | 'LIST_VAULTS' /** Discover available vaults (core + custom). */
-  | 'BRIDGE_READ';/** [PHASE-58] Read bridge history and compute resonance scores. */
+  | 'BRIDGE_READ' /** [PHASE-58] Read bridge history and compute resonance scores. */
+  | 'VOICE_SPEAK';/** [v1.6.0] Render a script to an audio file with a local voice. */
 
 /**
  * Target vault identifier.
@@ -799,5 +811,102 @@ export interface SpineAssignmentsResult {
   unvectorized?: number;
   /** Global taxonomy tree — present only when `includeTaxonomy: true`. */
   taxonomy?: SpineTaxonNode[];
+  error?: string;
+}
+
+// ── Voice rendering (v1.6.0) ────────────────────────────────────────────────────
+
+/** Local engines that can speak. Only the cloning ones accept a reference voice. */
+export type VoiceEngineId = 'piper' | 'xtts' | 'chatterbox' | 'zonos';
+
+/** A reference clip the cloning engines can speak with. */
+export interface VoiceClone {
+  /** Pass this back as `clone`. `'default'` is the sample recorded in the app. */
+  name: string;
+  /**
+   * Playing time of the reference clip, or **null** when the WAV could not be
+   * read — which is NOT the same fact as a zero-second clip, and must not be
+   * rendered as one.
+   */
+  seconds: number | null;
+  isDefault: boolean;
+  /**
+   * `'REFERENCE_TOO_SHORT'` | `'NOT_MONO'` | `'UNREADABLE_WAV'`, or null when
+   * nothing is known to be wrong. Presence is the signal — never a reassuring
+   * string.
+   */
+  warning: string | null;
+}
+
+/** Result of voiceEngines(). */
+export interface VoiceEnginesResult {
+  success: boolean;
+  /** Every known engine, INCLUDING the ones that are not installed. */
+  engines?: Array<{ id: VoiceEngineId; installed: boolean; clones: boolean }>;
+  clones?: VoiceClone[];
+  piperVoices?: string[];
+  /** Where rendered files are written. */
+  outputDir?: string;
+  maxScriptChars?: number;
+  error?: string;
+}
+
+export type VoiceJobState = 'rendering' | 'done' | 'failed' | 'cancelled';
+
+/**
+ * A render in flight or finished.
+ *
+ * `path` is present only once `state === 'done'`. A job still rendering with no
+ * path is not a job that produced nothing — restarting it would double a wait on
+ * an engine that synthesizes one thing at a time.
+ */
+export interface VoiceJob {
+  id: string;
+  state: VoiceJobState;
+  engine: VoiceEngineId;
+  language: string;
+  /** Clone used, or null when the engine spoke with its own built-in voice. */
+  clone: string | null;
+  cloneWarning: string | null;
+  segments: number;
+  segmentsDone: number;
+  path: string | null;
+  seconds: number | null;
+  bytes: number | null;
+  startedAt: string;
+  finishedAt: string | null;
+  error: string | null;
+  /** Synthesis time / audio produced. Null until a segment has completed. */
+  realtimeFactor: number | null;
+  etaSeconds: number | null;
+}
+
+export interface VoiceSpeakOptions {
+  /** The script, written for the EAR (no markdown — it is read literally). */
+  text: string;
+  /** Reference voice name from voiceEngines(). An unknown name is REFUSED. */
+  clone?: string;
+  /** Omit to let the host pick — it prefers a cloning engine when one is set up. */
+  engine?: VoiceEngineId;
+  /** `'fr'` | `'en'` | … for the cloning engines, or a Piper voice id. */
+  language?: string;
+  /** Names the output file. Make it recognizable a week later. */
+  title?: string;
+  /** Pacing multiplier, 1 = natural. */
+  speed?: number;
+  /** Chatterbox expressivity. */
+  exaggeration?: number;
+  /** Silence between segments, in seconds. */
+  gapSeconds?: number;
+}
+
+/** Result of voiceSpeak() / voiceStatus() / voiceCancel(). */
+export interface VoiceJobResult {
+  success: boolean;
+  job?: VoiceJob;
+  /** Present when voiceStatus() was called with no job id. */
+  jobs?: VoiceJob[];
+  /** voiceCancel(): false when there was nothing running to stop. */
+  stopped?: boolean;
   error?: string;
 }

@@ -4,8 +4,8 @@
  * These types are the single source of truth for the Design SDK contract.
  * Synchronized with skin-registry.ts inside apps/dev-edition.
  *
- * DR-011: Un skin = un fichier JSON + zéro TypeScript pour le designer
- * DR-012: Les skins ne remplacent que des CSS variables
+ * DR-011: A skin = one JSON file + zero TypeScript for the designer
+ * DR-012: Skins only override CSS variables, never structure
  */
 
 /**

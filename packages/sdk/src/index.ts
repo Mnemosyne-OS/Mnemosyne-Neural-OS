@@ -105,6 +105,15 @@ export type {
   AskOptions,
   Chronicle,
 
+  // Voice rendering (v1.6.0)
+  VoiceEngineId,
+  VoiceClone,
+  VoiceEnginesResult,
+  VoiceJob,
+  VoiceJobState,
+  VoiceJobResult,
+  VoiceSpeakOptions,
+
   // Cross-app
   ShareRequest,
   ShareResult,

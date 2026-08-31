@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/sdk",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Official SDK for building Layer 2 apps on Mnemosyne OS — connects to the local AI memory runtime via WebSocket or Electron IPC.",
   "keywords": [
     "mnemosyne",
@@ -19,7 +19,7 @@
     "url": "https://www.linkedin.com/in/tony-t-19544650/"
   },
   "license": "MIT",
-  "homepage": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
+  "homepage": "https://mnemosyne-os.io",
   "repository": {
     "type": "git",
     "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git"

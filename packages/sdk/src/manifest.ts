@@ -38,6 +38,9 @@ const VALID_SCOPES = [
   'llm:query',
   // [PHASE-58] Read-only access to Perpetual Memory Bridges
   'bridge:read',
+  // [v1.6.0] Render speech with the local engines, including the human's own
+  // cloned voice. Sensitive on the host: never auto-granted, asked once by name.
+  'voice:speak',
 ] as const;
 
 /**
@@ -49,9 +52,17 @@ export const GRANT_REQUIRED_SCOPE_PREFIXES = [
   'vault:read:', 'vault:write:',
   'share:request', 'share:grant',
   'llm:query',
+  // [v1.6.0] The human's cloned voice. On the host this one goes further still:
+  // it is in SENSITIVE_SCOPES, so it skips even the first-party shortcut.
+  'voice:speak',
 ] as const;
 
-const VALID_INTENTS  = ['INGEST', 'QUERY', 'CORRELATE', 'FORGET', 'GIT_LOG', 'LIST_AGENTS', 'LIST_VAULTS', 'BRIDGE_READ'] as const;
+const VALID_INTENTS  = [
+  'INGEST', 'QUERY', 'CORRELATE', 'FORGET', 'GIT_LOG', 'LIST_AGENTS', 'LIST_VAULTS', 'BRIDGE_READ',
+  // Missing here, a manifest declaring VOICE_SPEAK fails Zod validation at LOAD
+  // time — before any scope check runs — and the app cannot even start.
+  'VOICE_SPEAK',
+] as const;
 /**
  * Core vault identifiers used for Zod validation.
  * Custom vaults are allowed via a passthrough — they are validated at

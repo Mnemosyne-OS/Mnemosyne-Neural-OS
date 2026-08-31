@@ -152,6 +152,29 @@ export const MNEMOSYNE_METHODS = {
    * Requires scope `vault:read:<vault>` and intent `QUERY`.
    */
   SPINE_ASSIGNMENTS: 'sdk.spine.assignments',
+
+  // ── Voice rendering (v1.6.0) ─────────────────────────────────────────────
+  /**
+   * Lists the local TTS engines (installed or not) and the reference voices
+   * available for cloning. Call it before speaking: it is the only source of
+   * valid clone names, and an invented one is refused, never substituted.
+   * Requires scope `voice:speak` and intent `VOICE_SPEAK`.
+   */
+  VOICE_ENGINES: 'sdk.voice.engines',
+
+  /**
+   * Starts rendering a script to a WAV file. Returns a JOB, never audio —
+   * synthesis runs at roughly real time, so a five-minute script is minutes of
+   * work, well past any RPC timeout. Poll with `sdk.voice.status`.
+   * Requires scope `voice:speak` and intent `VOICE_SPEAK`.
+   */
+  VOICE_SPEAK: 'sdk.voice.speak',
+
+  /** State of one render, or every render of the session when no id is given. */
+  VOICE_STATUS: 'sdk.voice.status',
+
+  /** Stops a render at its next segment boundary. No file is written. */
+  VOICE_CANCEL: 'sdk.voice.cancel',
 } as const;
 
 export type MnemoMethod = typeof MNEMOSYNE_METHODS[keyof typeof MNEMOSYNE_METHODS];

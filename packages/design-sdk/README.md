@@ -1,3 +1,11 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />
+
+🌐 [**mnemosyne-os.io**](https://mnemosyne-os.io) — the product, for builders · [**mnemosyne-os.com**](https://mnemosyne-os.com) — the company, press & labs · [**docs.mnemosyne-os.io**](https://docs.mnemosyne-os.io) — the documentation
+
+</div>
+
 # @mnemosyne_os/design-sdk
 
 > **Create custom UI skins for Mnemosyne OS using only JSON — Zero TypeScript required.**
@@ -205,6 +213,26 @@ node scripts/skin-validate.mjs --help
 
 ---
 
+## Where Mnemosyne OS lives
+
+Published by XPACEGEMS LLC. Its official addresses:
+
+- Product site: <https://mnemosyne-os.io>
+- Organizations: <https://mnemosyne-os.com>
+- Documentation: <https://docs.mnemosyne-os.io>
+- Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
+- Packages: the npm scope `@mnemosyne_os`
+
+---
+
 ## License
 
 MIT — [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
+
+---
+
+## The OS your code talks to
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
+
+*Mnemosyne OS — Infinity Edition v1.4.0 · The Infinite Vision — [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*

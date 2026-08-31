@@ -1,17 +1,30 @@
 {
   "name": "@mnemosyne_os/design-sdk",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Mnemosyne Design SDK — Create custom UI skins for Mnemosyne OS using only JSON. Zero TypeScript required.",
-  "keywords": ["mnemosyne", "design-sdk", "skin", "theme", "css-variables", "layer2"],
+  "keywords": [
+    "mnemosyne",
+    "design-sdk",
+    "skin",
+    "theme",
+    "css-variables",
+    "layer2"
+  ],
   "author": {
     "name": "Tony Trochet",
     "email": "tony@xpacegems.com",
     "url": "https://github.com/yaka0007"
   },
   "license": "MIT",
-  "homepage": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
-  "repository": { "type": "git", "url": "git+https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git" },
-  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
+  "homepage": "https://mnemosyne-os.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -24,7 +37,11 @@
     },
     "./schema": "./skin-schema.json"
   },
-  "files": ["dist", "skin-schema.json", "README.md"],
+  "files": [
+    "dist",
+    "skin-schema.json",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
@@ -36,5 +53,7 @@
     "tsup": "^8.0.0",
     "typescript": "^5.3.0"
   },
-  "engines": { "node": ">=18.0.0" }
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

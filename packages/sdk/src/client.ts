@@ -35,6 +35,9 @@ import type {
   DreamBridgesResult,
   SpineAssignmentsOptions,
   SpineAssignmentsResult,
+  VoiceEnginesResult,
+  VoiceSpeakOptions,
+  VoiceJobResult,
   VaultInfo,
   VaultListResult,
   SandboxVaultResult,
@@ -454,6 +457,117 @@ export class MnemoClient {
       throw new Error('[MnemoSDK] Intent "QUERY" not declared in manifest');
     }
     return this._rpc<SpineAssignmentsResult>('sdk.spine.assignments', { appId: this.manifest.id, ...options, vault });
+  }
+
+  // ── Voice rendering (v1.6.0) ─────────────────────────────────────────────────
+
+  /**
+   * Lists what can SPEAK on this machine and the reference voices available for
+   * cloning, plus where files are written and the per-render character cap.
+   *
+   * Call it before {@link voiceSpeak}: it is the only source of valid clone
+   * names, and it reports engines that are NOT installed as such rather than
+   * omitting them — an absent engine listed as absent is an answer, an omitted
+   * one reads as "does not exist" when it is one download away.
+   *
+   * Requires scope `voice:speak` and intent `VOICE_SPEAK`.
+   */
+  async voiceEngines(): Promise<VoiceEnginesResult> {
+    assertScope(this.manifest, 'voice:speak');
+    this._assertVoiceIntent();
+    return this._rpc<VoiceEnginesResult>('sdk.voice.engines', { appId: this.manifest.id });
+  }
+
+  /**
+   * Starts rendering a script to a WAV file in a local voice.
+   *
+   * Returns a JOB, never audio. Synthesis runs at roughly real time, so a
+   * five-minute script is minutes of work — well past any RPC timeout. Poll with
+   * {@link voiceStatus}, or use {@link renderVoice} which does it for you.
+   *
+   * Refusals arrive as `{ success: false, error }` and every one of them names
+   * itself: `UNKNOWN_CLONE`, `CLONE_NOT_SUPPORTED`, `ENGINE_NOT_INSTALLED`,
+   * `SCRIPT_TOO_LONG`. None of them degrade into "rendered something anyway" —
+   * ⛔ on `UNKNOWN_CLONE`, ask the human which voice they meant; do NOT retry
+   * with another name, because a voice-over in the wrong voice sounds perfect
+   * and is worthless.
+   *
+   * Requires scope `voice:speak` and intent `VOICE_SPEAK`.
+   */
+  async voiceSpeak(options: VoiceSpeakOptions): Promise<VoiceJobResult> {
+    assertScope(this.manifest, 'voice:speak');
+    this._assertVoiceIntent();
+    // Only what the caller chose is sent: absence means "the host decides", and
+    // a value invented here would be indistinguishable from a deliberate one.
+    const params: Record<string, unknown> = { appId: this.manifest.id, text: options.text };
+    for (const key of ['clone', 'engine', 'language', 'title', 'speed', 'exaggeration', 'gapSeconds'] as const) {
+      if (options[key] !== undefined) params[key] = options[key];
+    }
+    return this._rpc<VoiceJobResult>('sdk.voice.speak', params);
+  }
+
+  /** State of one render, or every render of this session when no id is given. */
+  async voiceStatus(jobId?: string): Promise<VoiceJobResult> {
+    assertScope(this.manifest, 'voice:speak');
+    this._assertVoiceIntent();
+    const params: Record<string, unknown> = { appId: this.manifest.id };
+    if (jobId) params['jobId'] = jobId;
+    return this._rpc<VoiceJobResult>('sdk.voice.status', params);
+  }
+
+  /**
+   * Asks a render to stop.
+   *
+   * ⚠️ It stops at the next SEGMENT boundary, not immediately — the sidecars
+   * have no cancel, and killing one mid-synthesis costs everyone else a ~30 s
+   * cold start. Expect up to one segment of delay, and no file at the end.
+   * `stopped: false` means there was nothing running — a stale button, not a
+   * failure.
+   */
+  async voiceCancel(jobId: string): Promise<VoiceJobResult> {
+    assertScope(this.manifest, 'voice:speak');
+    this._assertVoiceIntent();
+    return this._rpc<VoiceJobResult>('sdk.voice.cancel', { appId: this.manifest.id, jobId });
+  }
+
+  /**
+   * Render a script and wait for the file — the one-call path.
+   *
+   * It exists so that every caller does not rewrite the same polling loop, and
+   * rewrite it wrong: the tempting version throws on timeout, and the natural
+   * recovery from a timeout is to start again, which doubles a wait on an engine
+   * that synthesizes one thing at a time. So this **never throws on time**. It
+   * returns the job in whatever state it is actually in, and a caller that finds
+   * `state === 'rendering'` polls {@link voiceStatus} with the id rather than
+   * re-issuing the render.
+   *
+   * @param options - What to say, and in which voice.
+   * @param waitMs - How long to wait before handing the job back unfinished
+   *                 (default 5 min). The poll interval widens as the wait grows.
+   */
+  async renderVoice(options: VoiceSpeakOptions, waitMs = 300_000): Promise<VoiceJobResult> {
+    const started = await this.voiceSpeak(options);
+    if (!started.success || !started.job) return started;
+
+    const deadline = Date.now() + waitMs;
+    let job = started.job;
+    let interval = 1_000;
+    while (job.state === 'rendering' && Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, Math.min(interval, Math.max(0, deadline - Date.now()))));
+      interval = Math.min(interval * 1.4, 8_000);
+      const polled = await this.voiceStatus(job.id);
+      // A status call that fails mid-wait must not erase what we already know.
+      if (!polled.success || !polled.job) break;
+      job = polled.job;
+    }
+    return { success: true, job };
+  }
+
+  /** VOICE_SPEAK is declared per-manifest like every other intent. */
+  private _assertVoiceIntent(): void {
+    if (!this.manifest.intents.includes('VOICE_SPEAK')) {
+      throw new Error('[MnemoSDK] Intent "VOICE_SPEAK" not declared in manifest');
+    }
   }
 
   /**
