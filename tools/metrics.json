@@ -1,5 +1,5 @@
 {
   "generatedBy": "pnpm inventory (scripts/generate-inventory.mjs)",
-  "ipcChannels": 436,
+  "ipcChannels": 437,
   "pushEvents": 25
 }
