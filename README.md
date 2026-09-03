@@ -647,7 +647,7 @@ bound to the founder's research identity — ORCID
 ### What's next
 - [ ] 🗜️ **Context compression, on by default** — the Octave engine is already aboard (see *Shipped*): while your machine is idle, every memory is prepared at several resolutions — strictly extractive, offset-provable, never a paraphrase. What remains is serving those compressed forms on the answer path for everyone, gated behind the full measurement campaign, so a lifetime of accumulated memory stays cheap to carry into the small **context windows** of on-device models. Memory that keeps growing must stay cheap to carry — this is what keeps Mnemosyne sovereign on modest hardware.
 - [ ] 📱 **Mobile companion app** — take notes and reach Mnemosyne OS running on your desktop remotely: capture on the go, sync back into your local vault, chat with your own memory away from the machine
-- [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so users can reach each other directly, peer to peer, with **no classic internet required**
+- [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so your Mnemosyne can reach a trusted peer's directly: no cloud relay, no VPS, no account. Built for teams who want to share a deliberate slice of memory (an architecture decision, an API contract, a chronicle) without exposing the rest — and, eventually, direct messages between instances. Authentication reuses your existing sovereign wallet; nothing leaves your vault unless you explicitly publish it.
 - [ ] 👥 Team features — shared vaults, multi-agent coordination
 - [ ] 🖥️ Self-hosted sync server
 - [ ] 💰 Creator economy — paid visibility for cartridges, revenue flowing back to builders
