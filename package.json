@@ -14,5 +14,11 @@
     "build": "pnpm -r build",
     "build:packages": "pnpm -r --filter \"./packages/*\" build",
     "check:sync": "node tools/check-public-sync.mjs"
+  },
+  "pnpm": {
+    "overrides": {
+      "browserslist": ">=4.28.7 <5.0.0",
+      "brace-expansion": ">=2.1.4 <3.0.0"
+    }
   }
 }
