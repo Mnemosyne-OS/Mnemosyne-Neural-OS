@@ -650,6 +650,7 @@ bound to the founder's research identity — ORCID
 - [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so your Mnemosyne can reach a trusted peer's directly: no cloud relay, no VPS, no account. Built for teams who want to share a deliberate slice of memory (an architecture decision, an API contract, a chronicle) without exposing the rest — and, eventually, direct messages between instances. Authentication reuses your existing sovereign wallet; nothing leaves your vault unless you explicitly publish it.
 - [ ] 👥 Team features — shared vaults, multi-agent coordination
 - [ ] 🖥️ Self-hosted sync server
+- [ ] 🕸️ **Permaweb archival** — pay-once, permanent memory storage on Arweave, no subscription and no server that can disappear. [Psyche](https://psyche.mnemosyne-os.io) (souls for any AI agent) is the vehicle; bringing it into Mnemosyne OS as a cartridge is the path to making permanent archival a native option for chronicles, and eventually vault backups
 - [ ] 💰 Creator economy — paid visibility for cartridges, revenue flowing back to builders
 
 ---
