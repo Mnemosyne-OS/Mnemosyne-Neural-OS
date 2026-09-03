@@ -34,6 +34,16 @@
 
 <br/>
 
+🔏 Every installer above is **cryptographically attested** to this exact repo, workflow
+and commit — via [GitHub Artifact Attestations](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/attestations)
+(Sigstore-backed build provenance). Don't take the download on faith — verify the file
+you got matches what our CI actually built:
+```bash
+gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemosyne-Neural-OS
+```
+
+<br/>
+
 [![Audit our benchmark yourself](https://img.shields.io/badge/🔍_Don't_trust_it%3F_Audit_the_77.1%25-live_results-33ffd6?style=for-the-badge&labelColor=0b1120)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 [![Documentation](https://img.shields.io/badge/📖_Documentation-docs.mnemosyne--os.io-8b5cf6?style=for-the-badge&labelColor=0b1120)](https://docs.mnemosyne-os.io)
 
@@ -517,6 +527,7 @@ sequenceDiagram
 - `sandbox: true` for web content — relaxed only for the local-AI worker threads, mitigated by context isolation + Zod-validated IPC
 - Explicitly declared IPC methods via Context Bridge, validated with Zod + audit logging
 - Strict Content Security Policy
+- Windows builds code-signed (Certum OV, RFC-3161 timestamped); every release binary carries a [Sigstore build-provenance attestation](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/attestations) tying it to the exact CI run and commit that produced it
 
 **Sovereignty enforced in code**
 - FGAC governs exactly what an agent — or a third-party app — can read, write, or sync

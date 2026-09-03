@@ -1,0 +1,56 @@
+name: Attest Release Provenance
+
+# Runs IN THIS repo (Mnemosyne-OS/Mnemosyne-Neural-OS) — the one users
+# actually download installers from — so the attestation is recorded here
+# and verifiable with:
+#   gh attestation verify <downloaded-file> -R Mnemosyne-OS/Mnemosyne-Neural-OS
+#
+# The release itself is created as a DRAFT by the private Mnemosyne-OS repo's
+# release-infinity.yml (via PUBLIC_RELEASE_TOKEN) — a human reviews it and
+# clicks Publish, which is the `release: published` event that fires this.
+# Attesting from the private repo's workflow instead would record the
+# provenance against the PRIVATE repo, which a public downloader cannot query.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to attest retroactively (e.g. v1.4.4-infinity)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+jobs:
+  attest:
+    name: "🔏 Attest build provenance"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag || github.event.release.tag_name }}"
+          echo "Attesting release: $TAG"
+          mkdir -p assets
+          gh release download "$TAG" \
+            --repo "${{ github.repository }}" \
+            --dir assets \
+            --pattern "*.exe" \
+            --pattern "*.dmg" \
+            --pattern "*.AppImage" \
+            --pattern "*.deb" \
+            --pattern "*.zip" \
+            --skip-existing
+          echo "Downloaded:"
+          ls -la assets
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: assets/*
