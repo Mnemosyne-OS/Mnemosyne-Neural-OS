@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    // CommonJS + classic resolution on purpose. The Electron main process is a CJS
+    // bundle, and yjs ships an ESM-typed entry with a CJS `require` condition: under
+    // Node16 resolution TypeScript refuses the require even though it resolves at
+    // runtime. Classic resolution matches what Rollup actually does when it bundles
+    // this package into the main process.
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2023"],
+    "declaration": true,
+    "sourceMap": false,
+    "strict": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*"]
+}
