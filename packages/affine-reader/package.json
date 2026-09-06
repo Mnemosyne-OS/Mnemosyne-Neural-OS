@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/affine-reader",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Read a local AFFiNE workspace (SQLite + Yjs) and render its documents to Markdown. No BlockSuite at runtime, no native module, read-only.",
   "license": "MIT",
   "author": "Tony Trochet <tony@xpacegems.com> (https://xpacegems.com)",

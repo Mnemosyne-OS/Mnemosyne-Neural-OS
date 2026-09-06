@@ -169,6 +169,7 @@ export function readWorkspace(db: SqliteDatabase, options: ReadOptions = {}): Wo
         doc: loaded.doc,
         buildBlobUrl: (key) => options.blobUrl?.(key) ?? `affine-blob:${key}`,
         buildDocUrl: (docId) => options.docUrl?.(docId) ?? `affine-doc:${docId}`,
+        renderDocTitle: options.docTitle,
       };
       const parsed = parsePageDoc(ctx);
       docs.push({

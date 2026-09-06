@@ -85,4 +85,12 @@ export interface ReadOptions {
   blobUrl?: (key: string) => string | null;
   /** How a link to another AFFiNE doc is rendered. */
   docUrl?: (docId: string) => string;
+  /**
+   * The visible label for a link to another doc.
+   *
+   * An inline reference carries no title of its own, so without this the parser
+   * writes `[](target.md)`: a link with an empty label, which most Markdown
+   * readers render as nothing at all.
+   */
+  docTitle?: (docId: string) => string;
 }

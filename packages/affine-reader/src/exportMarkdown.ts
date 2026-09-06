@@ -4,7 +4,15 @@
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { detectSchema, forEachBlob, readBlobIndex, readWorkspace } from './read';
+import {
+  detectSchema,
+  forEachBlob,
+  loadDoc,
+  readBlobIndex,
+  readDocIndex,
+  readWorkspace,
+  readWorkspaceId,
+} from './read';
 import type { ReadOptions, SqliteDatabase, WorkspaceContent } from './types';
 
 export interface ExportResult extends WorkspaceContent {
@@ -91,12 +99,33 @@ export function exportWorkspace(
   for (const blob of readBlobIndex(db, schema))
     blobNames.set(blob.key, blobFileName(blob.key, blob.mime));
 
+  // A link from one document to another becomes a relative link to the file that
+  // document was written to, so the export is browsable on its own and in any
+  // editor that reads a folder of Markdown. Rendering it as an `affine-doc:` id
+  // would make every internal link dead the moment it leaves the app.
+  //
+  // The index has to be read BEFORE the documents are rendered, because a link
+  // can point at a document that has not been written yet.
+  const workspaceId = readWorkspaceId(db, schema) ?? '';
+  const docNames = new Map<string, string>();
+  const docTitles = new Map<string, string>();
+  for (const entry of readDocIndex(loadDoc(db, schema, schema === 'v2' ? workspaceId : null).doc)) {
+    docNames.set(entry.id, fileNameFor(entry.title, entry.id));
+    if (entry.title) docTitles.set(entry.id, entry.title);
+  }
+
   const rendered = readWorkspace(db, {
     ...options,
     blobUrl: (key) => {
       const name = blobNames.get(key);
       return name ? `blobs/${name}` : (options.blobUrl?.(key) ?? null);
     },
+    // A doc in the trash, or one the index does not carry, has no file to point
+    // at. It keeps the caller's answer rather than a link that goes nowhere.
+    docUrl: (docId) => docNames.get(docId) ?? options.docUrl?.(docId) ?? `affine-doc:${docId}`,
+    // The label the reader sees. An inline reference carries no title, so
+    // without this the link comes out as `[](target.md)` and shows as nothing.
+    docTitle: (docId) => docTitles.get(docId) ?? options.docTitle?.(docId) ?? docId,
   });
 
   let blobsWritten = 0;
