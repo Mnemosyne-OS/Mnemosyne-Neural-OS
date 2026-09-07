@@ -22,6 +22,8 @@ const PACKAGES = {
   '@mnemosyne_os/public-contracts': 'packages/public-contracts/package.json',
   '@mnemosyne_os/create-app': 'packages/create-app/package.json',
   '@mnemosyne_os/design-sdk': 'packages/design-sdk/package.json',
+  '@mnemosyne_os/affine-reader': 'packages/affine-reader/package.json',
+  '@mnemosyne_os/agent-transcripts': 'packages/agent-transcripts/package.json',
   '@mnemosyne_os/forge': 'cli/package.json',
 }
 
