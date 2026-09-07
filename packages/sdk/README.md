@@ -23,7 +23,9 @@ Mnemosyne OS is a sovereign, local-first AI memory runtime built on Electron.
 It runs on your machine, stores everything locally (SQLite + vector embeddings),  
 and exposes a WebSocket API for Layer 2 apps to tap into its cognitive engine.
 
-**No cloud. No telemetry. Your data stays on your machine.**
+**Your vaults are files on your disk.** This SDK speaks only to `127.0.0.1:7799`, it’s never a
+network client. What the OS itself does with a request depends on the route you picked: a local
+model answers on the machine, a cloud model is a call you configured.
 
 ---
 
@@ -40,7 +42,7 @@ and exposes a WebSocket API for Layer 2 apps to tap into its cognitive engine.
 
 ## Requirements
 
-- **Mnemosyne OS Dev Edition** running on your machine (SDK WS Server on port 7799)
+- **[Mnemosyne OS — Infinity Edition](https://mnemosyne-os.io/download)** running on your machine (it exposes the SDK WebSocket surface on `ws://127.0.0.1:7799`)
 - Node.js ≥ 18 (for `MnemoClient`) OR any modern browser / Electron renderer (for `MnemoClientBrowser`)
 
 ---
@@ -251,7 +253,7 @@ type MnemoScope =
   | 'agents:read'          // list connected agents
   | 'neural:graph:read'    // NeuralGraph access
   | 'bridge:read'          // Perpetual Memory Bridges (getBridgeHistory / computeResonance)
-  | 'nft:validate'         // reserved for Engramm licence gating on MnemoHub (roadmap — see below)
+  | 'nft:validate'         // reserved, not answered yet — see ‘Engramm licence’ below
   | 'llm:query';           // Direct LLM queries (premium)
 ```
 
@@ -303,7 +305,7 @@ The OS pushes real-time events to all connected clients. Handle them with `onPus
 |---|---|---|
 | `chronicle:new` | `{ vault, spineType, sourceApp, ts }` | Any client calls `ingest()` |
 
-More event types coming in future releases (agent:connected, tamper-alert, nft-revoked…).
+More event types are planned. None of them is live — this table is the whole list today.
 
 ---
 
@@ -323,6 +325,34 @@ and cached; your app never touches the licence plumbing.
 ---
 
 ## Changelog
+
+### 1.5.5 — the crash npm was still serving
+
+- **FIX** `jwt.ts` no longer throws at module load. The probe for `'base64url'`
+  support ran unguarded, so a browser `buffer` polyfill that rejects that
+  encoding name crashed the import — in exactly the polyfilled-browser
+  environment the dual path exists to support. It now degrades to the universal
+  `btoa`/`atob` fallback. The fix had been in the tree since 30/08 while npm
+  kept serving the crashing build.
+- The tarball now carries its own `LICENSE`.
+
+### 1.5.0 — Voice
+
+- **NEW** `sdk.voice.engines` / `sdk.voice.speak` / `sdk.voice.status` /
+  `sdk.voice.cancel` — render a script to a WAV file. Scope `voice:speak`,
+  intent `VOICE_SPEAK`. It is a **sensitive scope**: the OS never auto-grants
+  it, the human is asked. A render runs long past any RPC timeout, so `speak`
+  returns a job and you poll `status`.
+
+### 1.4.0 — Read-only introspection
+
+- **NEW** `dreamBridges()` (`sdk.dream.bridges`) and `spineAssignments()`
+  (`sdk.spine.assignments`) on both clients — read the consolidation layer
+  without writing to it.
+- **NEW** `ensureSandboxVault()` — an app gets its own writable vault without
+  asking for someone else's.
+- Vault discovery now carries the governance permissions of each vault, so a
+  client can tell a vault it may read from one it may not.
 
 ### 1.3.0 — Ask Mnemosyne
 
@@ -383,10 +413,30 @@ and cached; your app never touches the licence plumbing.
 
 ## Contributing & Core Access
 
-This SDK is open source (MIT). The Mnemosyne OS core runtime is proprietary.
+This SDK is open source (MIT). Mnemosyne OS itself is **open core**: the memory core is sealed, the application around it reads.
 
 - **Layer 2 apps**: build freely using this SDK — no core access needed.
 - **Core Contributors**: contact `tony@xpacegems.com` for NDA + scoped repo access.
+
+---
+
+## The `@mnemosyne_os` packages
+
+All of them live under one npm organization:
+**[npmjs.com/org/mnemosyne_os](https://www.npmjs.com/org/mnemosyne_os)**
+
+| Package | What it is |
+|---|---|
+| **`@mnemosyne_os/sdk`** *(you are here)* | Build a **Layer 2 app** — a Node or browser process talking to the local WebSocket surface |
+| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` — scaffolds that Layer 2 app in one command |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge** — a sandboxed iframe widget rendered on the canvas |
+| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server** — plug Claude, Cursor or any MCP agent into the vaults |
+| [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | **Skin the OS** with JSON alone, no TypeScript |
+| [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | The shared **types and Zod schemas**. No business logic |
+| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk** — connector format + interpreter |
+| [`@mnemosyne_os/affine-reader`](https://www.npmjs.com/package/@mnemosyne_os/affine-reader) | Read a local **AFFiNE workspace** and render its documents to Markdown |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI** — scaffold, list chronicles, import / export |
+| [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
 
 ---
 
@@ -398,7 +448,7 @@ Published by XPACEGEMS LLC. Its official addresses:
 - Organizations: <https://mnemosyne-os.com>
 - Documentation: <https://docs.mnemosyne-os.io>
 - Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
-- Packages: the npm scope `@mnemosyne_os`
+- Packages: <https://www.npmjs.com/org/mnemosyne_os>
 
 ---
 
@@ -412,4 +462,4 @@ MIT © [Tony Trochet / XPACEGEMS LLC](https://xpacegems.com)
 
 <img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
 
-*Mnemosyne OS — Infinity Edition v1.4.0 · The Infinite Vision — [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*
+*Mnemosyne OS — Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*

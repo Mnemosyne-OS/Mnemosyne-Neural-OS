@@ -1,0 +1,56 @@
+{
+  "name": "@mnemosyne_os/agent-transcripts",
+  "version": "0.1.1",
+  "description": "Read what coding agents already write on disk: a declarative connector format, an interpreter that never evaluates it, and the liveness rules that keep \"last seen\" from becoming \"working\".",
+  "keywords": [
+    "mnemosyne",
+    "agent",
+    "transcript",
+    "connector",
+    "claude-code",
+    "antigravity",
+    "openclaw",
+    "observability"
+  ],
+  "license": "MIT",
+  "author": "Tony Trochet <tony@xpacegems.com> (https://xpacegems.com)",
+  "homepage": "https://mnemosyne-os.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git",
+    "directory": "packages/agent-transcripts"
+  },
+  "bugs": {
+    "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues"
+  },
+  "_access": "A SCOPED package publishes as restricted by default. Without this, the publish succeeds and the package is invisible to everyone but this account — a 404 for every reader.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "_exports": "Source, deliberately. Both consumers compile TypeScript already (vite for the cartridge, tsup for the MCP), and a dist to keep in step is a dist that goes stale between them — the failure this repo has already paid for. The `/node` entry is separate so a browser build never pulls node:fs.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts",
+    "./connectors/*.json": "./src/connectors/*.json"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.3",
+    "vitest": "^1.6.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

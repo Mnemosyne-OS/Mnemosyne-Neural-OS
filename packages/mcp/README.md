@@ -32,7 +32,7 @@ Once configured, your agent can:
 - 🎯 **Resume** projects exactly where you left off via Resonance positions.
 - 📡 **Filter** results by spineType (`ARCHITECTURE`, `GIT`, `SOURCE_CODE`, `BUGFIX`, …).
 
-**Everything stays on your machine.** No telemetry. No cloud. Your `claude.ai` conversation never sees your code — only the chronicles you allow.
+**The MCP itself opens exactly one socket: `127.0.0.1:7799`.** It sends nothing anywhere else and keeps no state. Your `claude.ai` conversation sees only the chronicles you allow. What Mnemosyne OS does behind that socket follows the route you configured — `mnemosyne_ask` runs whichever model you picked, local or cloud.
 
 ---
 
@@ -353,6 +353,26 @@ DocWatch ingests on file save with a small delay. Check the spine: if you wrote 
 
 ---
 
+## The `@mnemosyne_os` packages
+
+All of them live under one npm organization:
+**[npmjs.com/org/mnemosyne_os](https://www.npmjs.com/org/mnemosyne_os)**
+
+| Package | What it is |
+|---|---|
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app** — a Node or browser process talking to the local WebSocket surface |
+| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` — scaffolds that Layer 2 app in one command |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge** — a sandboxed iframe widget rendered on the canvas |
+| **`@mnemosyne_os/mcp`** *(you are here)* | **MCP server** — plug Claude, Cursor or any MCP agent into the vaults |
+| [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | **Skin the OS** with JSON alone, no TypeScript |
+| [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | The shared **types and Zod schemas**. No business logic |
+| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk** — connector format + interpreter |
+| [`@mnemosyne_os/affine-reader`](https://www.npmjs.com/package/@mnemosyne_os/affine-reader) | Read a local **AFFiNE workspace** and render its documents to Markdown |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI** — scaffold, list chronicles, import / export |
+| [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
+
+---
+
 ## Where Mnemosyne OS lives
 
 Published by XPACEGEMS LLC. Its official addresses:
@@ -361,7 +381,7 @@ Published by XPACEGEMS LLC. Its official addresses:
 - Organizations: <https://mnemosyne-os.com>
 - Documentation: <https://docs.mnemosyne-os.io>
 - Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
-- Packages: the npm scope `@mnemosyne_os`
+- Packages: <https://www.npmjs.com/org/mnemosyne_os>
 
 ---
 
@@ -375,4 +395,4 @@ MIT © [Tony Trochet / XPACEGEMS LLC](https://xpacegems.com)
 
 <img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
 
-*Mnemosyne OS — Infinity Edition v1.4.0 · The Infinite Vision — [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*
+*Mnemosyne OS — Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*

@@ -1,0 +1,18 @@
+{
+  "_comment": "What claude-code.json must produce from claude-code.fixture.jsonl. This is the red test that makes 'repair this connector' a closed task: an agent has the declaration, a sample, and a way to know it is done. The fixture ends on a deliberately truncated line — a transcript is appended to while it is read, and the parser must drop that fragment rather than treat it as format drift.",
+
+  "_artifacts": "Two files, from the two kinds of evidence. a.ts was recorded by a Write tool call (origin 'tool'); draft.md was read out of a redirection in a Bash command (origin 'shell'). Measured 2026-08-29: 98 of 211 real sessions wrote files the second way and no other, so a fixture that only exercised the first would prove the wrong thing. Newest first, because the walk runs backwards.",
+
+  "sessionId": "11111111-2222-3333-4444-555555555555",
+  "model": "claude-opus-5",
+  "projectPath": "C:\\work\\demo",
+  "branch": "main",
+  "isSidechain": false,
+  "lastEventAt": "2026-08-27T19:00:04.000Z",
+  "tool": "Read",
+  "artifactsCapped": false,
+  "artifacts": [
+    { "path": "C:\\work\\demo\\a.ts", "origin": "tool", "at": "2026-08-27T19:00:03.000Z" },
+    { "path": "C:/work/demo/draft.md", "origin": "shell", "at": "2026-08-27T19:00:01.000Z" }
+  ]
+}

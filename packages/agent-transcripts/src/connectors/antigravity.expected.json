@@ -1,0 +1,20 @@
+{
+  "_comment": "What antigravity.json must produce from antigravity.fixture.jsonl. The fixture ends on a deliberately truncated line: a transcript is appended to while it is read, and the parser must drop that fragment rather than treat it as format drift. Note what is NOT asserted here — model, projectPath and branch are absent from this format, and the expected values say so rather than being guessed from a tool argument.",
+
+  "sessionId": "11111111-2222",
+  "title": null,
+  "model": null,
+  "projectPath": null,
+  "branch": null,
+  "isSidechain": false,
+  "lastEventAt": "2026-08-28T05:07:52Z",
+  "firstEventAt": "2026-08-28T05:07:49Z",
+  "tool": "replace_file_content",
+  "artifactsCapped": false,
+  "artifacts": [
+    { "path": "C:\\work\\demo\\a.ts", "origin": "tool", "at": "2026-08-28T05:07:52Z" }
+  ],
+  "humanTurns": [
+    { "at": "2026-08-28T05:07:49Z", "text": "redacted human turn" }
+  ]
+}

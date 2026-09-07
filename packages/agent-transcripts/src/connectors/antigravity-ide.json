@@ -1,0 +1,55 @@
+{
+  "id": "antigravity-ide",
+  "displayName": "Antigravity IDE",
+  "version": "1.1.0",
+  "format": "jsonl",
+  "kind": "session",
+
+  "_comment": "Antigravity IDE session connector, reading sessions from .gemini/antigravity-ide/brain.",
+
+  "_mark": "Same traced asset as antigravity.json - the IDE and the standalone app are the same product, so the same mark. See that file for its provenance.",
+  "mark": { "label": "IDE", "tint": "#8ab4f8", "svg": "M11.57 1.86 L13.86 2.29 L14.94 3.15 L16.01 4.72 L19.67 15.98 L20.89 18.49 L22.90 21.00 L22.90 21.93 L21.39 22.00 L19.74 20.78 L18.02 18.77 L15.37 14.47 L14.01 13.25 L12.29 12.75 L10.92 12.90 L9.63 13.54 L8.49 14.76 L5.69 19.28 L3.83 21.21 L2.25 22.14 L1.03 21.86 L1.10 21.07 L2.61 19.35 L4.19 16.48 L8.13 4.58 L9.78 2.57 L11.57 1.86 Z" },
+
+  "folderHint": ".gemini/antigravity-ide/brain",
+
+  "tree": { "subPath": ".system_generated/logs", "idFrom": "dir" },
+
+  "filePattern": "transcript.jsonl",
+
+  "fields": {
+    "timestamp": "created_at"
+  },
+
+  "action": {
+    "path": "tool_calls[]",
+    "where": {},
+    "take": "name"
+  },
+
+  "artifact": {
+    "path": "tool_calls[]",
+    "where": {},
+    "tools": [
+      "write_to_file",
+      "replace_file_content",
+      "multi_replace_file_content"
+    ],
+    "take": "args.TargetFile"
+  },
+
+  "_shellWrite": "run_command is 3300 of the tool calls in the real transcripts on this machine, against 1366 write_to_file. The command string sits in args.CommandLine, stored wrapped in its own quote pair. The PATTERNS live in the app (lib/shellWrites), never here: a connector is data and may not carry a regex.",
+  "shellWrite": {
+    "path": "tool_calls[]",
+    "where": {},
+    "tools": [
+      "run_command"
+    ],
+    "take": "args.CommandLine"
+  },
+
+  "humanTurn": {
+    "where": { "type": "USER_INPUT" },
+    "text": "content",
+    "between": { "start": "<USER_REQUEST>", "end": "</USER_REQUEST>" }
+  }
+}

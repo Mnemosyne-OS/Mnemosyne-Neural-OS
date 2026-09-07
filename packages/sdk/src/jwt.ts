@@ -40,13 +40,30 @@ export interface JwtVerifyResult {
 // ── Universal base64url helpers (Node + Browser) ──────────────────────────
 
 /**
+ * Whether the current `Buffer` supports the 'base64url' encoding. Probed with
+ * a real call (not a feature list) because that is the only reliable signal —
+ * but the probe itself must never throw: the npm `buffer` polyfill some
+ * bundlers substitute for browser builds validates the encoding name and
+ * THROWS for one it doesn't recognize, same as it would for a typo. Without
+ * this try/catch that throw would happen at module load (computing `HEADER`
+ * below) and crash the import in exactly the polyfilled-browser environment
+ * this dual-path exists to support — the opposite of "fallback".
+ */
+function supportsBase64Url(): boolean {
+  try {
+    return typeof Buffer !== 'undefined' && typeof Buffer.alloc(0).toString('base64url') === 'string';
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Encodes a string or a Buffer to base64url.
  * Node.js  : Buffer.from().toString('base64url') — native
  * Browser  : btoa() + non-URL char replacement (RFC 4648 §5)
  */
 function b64url(input: string | Uint8Array): string {
-  if (typeof Buffer !== 'undefined' && typeof (Buffer.alloc(0).toString as any)('base64url') === 'string') {
-    // Test whether base64url is supported (native Node.js)
+  if (supportsBase64Url()) {
     try {
       const buf = typeof input === 'string' ? Buffer.from(input, 'utf8') : Buffer.from(input);
       return buf.toString('base64url');

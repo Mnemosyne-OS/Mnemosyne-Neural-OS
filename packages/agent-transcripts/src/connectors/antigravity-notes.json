@@ -1,0 +1,25 @@
+{
+  "id": "antigravity-notes",
+  "displayName": "Antigravity documents",
+  "version": "1.0.0",
+  "format": "markdown",
+  "kind": "document",
+
+  "_comment": "Antigravity writes documents per session, not only a transcript: task.md, implementation_plan.md, walkthrough.md, plus freely-named ones. Measured on 78 sessions: 51 task, 49 plan, 40 walkthrough. The claim that it keeps no notes was wrong.",
+
+  "folderHint": ".gemini/antigravity/brain",
+
+  "_tree": "An empty subPath means the documents sit in the session directory itself, beside the .system_generated folder that holds the transcript.",
+  "tree": { "subPath": "" },
+
+  "filePattern": ".md",
+
+  "_frontmatter": "There is none. task.md opens straight on a checklist. The name of the file is the name of the document.",
+  "fields": {},
+
+  "_sidecar": "The description lives NEXT TO the file, in <name>.md.metadata.json, carrying {summary, updatedAt, userFacing}. One extra read per document; they are small, and `summary` is exactly the one-line description the list needs.",
+  "sidecar": {
+    "suffix": ".metadata.json",
+    "fields": { "description": "summary" }
+  }
+}

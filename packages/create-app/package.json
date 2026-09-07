@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/create-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Scaffold a new Mnemosyne OS app with one command",
   "keywords": ["mnemosyne", "ai", "sdk", "scaffold", "create-app"],
   "license": "MIT",

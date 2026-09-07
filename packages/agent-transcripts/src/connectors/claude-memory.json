@@ -1,0 +1,20 @@
+{
+  "id": "claude-memory",
+  "displayName": "Claude memory notes",
+  "version": "1.1.0",
+  "format": "markdown",
+  "kind": "document",
+  "_comment": "Markdown notes with frontmatter. Same rule as every connector: it says HOW to read, never WHERE. The human designates the folder.",
+  "folderHint": ".claude/projects",
+  "filePattern": ".md",
+  "fields": {},
+  "frontmatter": {
+    "name": "name",
+    "description": "description",
+    "type": "metadata.type"
+  },
+  "tree": {
+    "subPath": "memory"
+  },
+  "_tree": "The notes sit in a memory/ subdirectory of each project. Declared here because the walk reads it from the connector rather than knowing the name itself."
+}

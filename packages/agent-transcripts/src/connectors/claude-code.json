@@ -1,0 +1,73 @@
+{
+  "id": "claude-code",
+  "displayName": "Claude Code",
+  "version": "1.5.0",
+  "format": "jsonl",
+  "kind": "session",
+  "_comment": "A connector is DATA, never code. It says how to read what is inside a folder, never WHERE that folder is - the human picks the folder. Paths use dots for object keys and [] to walk an array. Nothing here is evaluated.",
+  "folderHint": ".claude/projects",
+  "filePattern": ".jsonl",
+  "fields": {
+    "timestamp": "timestamp",
+    "model": "message.model",
+    "projectPath": "cwd",
+    "branch": "gitBranch",
+    "sessionId": "sessionId",
+    "isSidechain": "isSidechain",
+    "harnessVersion": "version"
+  },
+  "action": {
+    "path": "message.content[]",
+    "where": {
+      "type": "tool_use"
+    },
+    "take": "name"
+  },
+  "title": {
+    "where": {
+      "type": "custom-title"
+    },
+    "take": "customTitle"
+  },
+  "artifact": {
+    "path": "message.content[]",
+    "where": {
+      "type": "tool_use"
+    },
+    "tools": [
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "MultiEdit"
+    ],
+    "take": "input.file_path"
+  },
+  "_shellWrite_comment": "Where the command string of a shell tool sits. The PATTERNS are not here and never will be: a connector is data a stranger can ship, so it says WHERE to look and the app decides HOW. Measured 2026-08-29: 98 of 211 sessions wrote files this way and no other.",
+  "shellWrite": {
+    "path": "message.content[]",
+    "where": {
+      "type": "tool_use"
+    },
+    "tools": [
+      "Bash",
+      "PowerShell"
+    ],
+    "take": "input.command"
+  },
+  "humanTurn": {
+    "where": {
+      "type": "user"
+    },
+    "notWhen": {
+      "path": "message.content[]",
+      "has": "tool_result"
+    },
+    "text": "message.content"
+  },
+  "_mark": "DRAWN, not traced: no Anthropic asset ships on this machine to vectorise, so this is a rendering of the Claude burst from its published form - twelve tapered rays meeting at the centre. Tony authorised approximate marks on 2026-09-06 after the risk was named, and this field says plainly that it is an approximation. The day an official path exists it replaces this one, with no code change.",
+  "mark": {
+    "label": "CC",
+    "tint": "#c96442",
+    "svg": "M12.20 12.00 L12.95 1.10 L11.05 1.10 L11.80 12.00 Z M12.17 12.10 L18.27 3.04 L16.63 2.09 L11.83 11.90 Z M12.10 12.17 L21.91 7.37 L20.96 5.73 L11.90 11.83 Z M12.00 12.20 L22.90 12.95 L22.90 11.05 L12.00 11.80 Z M11.90 12.17 L20.96 18.27 L21.91 16.63 L12.10 11.83 Z M11.83 12.10 L16.63 21.91 L18.27 20.96 L12.17 11.90 Z M11.80 12.00 L11.05 22.90 L12.95 22.90 L12.20 12.00 Z M11.83 11.90 L5.73 20.96 L7.37 21.91 L12.17 12.10 Z M11.90 11.83 L2.09 16.63 L3.04 18.27 L12.10 12.17 Z M12.00 11.80 L1.10 11.05 L1.10 12.95 L12.00 12.20 Z M12.10 11.83 L3.04 5.73 L2.09 7.37 L11.90 12.17 Z M12.17 11.90 L7.37 2.09 L5.73 3.04 L11.83 12.10 Z"
+  }
+}

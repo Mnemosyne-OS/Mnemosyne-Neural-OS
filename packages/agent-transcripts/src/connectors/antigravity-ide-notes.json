@@ -1,0 +1,22 @@
+{
+  "id": "antigravity-ide-notes",
+  "displayName": "Antigravity IDE documents",
+  "version": "1.0.0",
+  "format": "markdown",
+  "kind": "document",
+
+  "_comment": "Antigravity IDE document connector, reading documents from .gemini/antigravity-ide/brain.",
+
+  "folderHint": ".gemini/antigravity-ide/brain",
+
+  "tree": { "subPath": "" },
+
+  "filePattern": ".md",
+
+  "fields": {},
+
+  "sidecar": {
+    "suffix": ".metadata.json",
+    "fields": { "description": "summary" }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "openclaw",
+  "displayName": "OpenClaw",
+  "version": "1.0.0",
+  "format": "jsonl",
+  "kind": "session",
+
+  "_comment": "Measured 2026-09-06 against a REAL session run on this machine (openclaw 2026.9.2), not against the vendor's documentation. OpenClaw 2 keeps its live sessions in SQLite ONLY — there is no per-session file to watch. What this connector reads is the bundle a HUMAN exports with `openclaw sessions export-trajectory`, which writes `events.jsonl` beside seven other files. So this source never fills on its own: one command, one session, on purpose.",
+
+  "_mark": "The path is OpenClaw's OWN mascot, not a lookalike drawn from memory. It comes from `dist/control-ui/favicon.svg` inside the openclaw npm package (MIT, © 2026 OpenClaw Foundation), which is what makes it usable here: the house rule is that an official mark has to come from whoever owns it. Their file is a 120-unit viewBox and ours is 24, so the three fill paths — body, left claw, right claw — are scaled by exactly 24/120. A uniform scale, never a redraw. The animated antennae and eyes are dropped because they are strokes and circles, which a single `d` cannot carry; the tint is their own gradient start, #ff4d4d. 🪤 The right claw is WOUND BACKWARDS relative to their file: three subpaths inside ONE `<path>` are filled `nonzero`, and their mirrored claw wound the opposite way, so where it overlapped the body it SUBTRACTED — the badge rendered with a bite taken out of it. Only visible by looking at it; every test was green.",
+  "mark": {
+    "label": "OC",
+    "tint": "#ff4d4d",
+    "svg": "M12 2 C6 2 3 7 3 11 C3 15 6 19 9 20 L9 22 L11 22 L11 20 C11 20 12 20.4 13 20 L13 22 L15 22 L15 20 C18 19 21 15 21 11 C21 7 18 2 12 2Z M4 9 C1 8 0 10 1 12 C2 14 4 13 5 11 C5.6 9.6 5 9 4 9Z M20 9 C19 9 18.4 9.6 19 11 C20 13 22 14 23 12 C24 10 23 8 20 9Z"
+  },
+
+  "_folderHint": "DELIBERATELY ABSENT, and this is the one field that had to be removed after seeing the screen. A hint is HOME-RELATIVE — the host resolves it against the home directory to open the picker. Every other agent has a usual place under `~`. OpenClaw does not: an export lands under whatever WORKSPACE the human passed to `export-trajectory`, so `<workspace>/.openclaw/trajectory-exports/openclaw-trajectory-<session>-<timestamp>/events.jsonl` can be anywhere on the disk. A hint here would have pointed at `~/.openclaw/trajectory-exports`, which is not where exports go — a suggestion aimed somewhere the file will never be. Absent, the picker opens neutrally and the hub says there is no usual place.",
+
+  "_tree": "One directory per export, the transcript sitting directly inside it. `idFrom: dir` is NOT used: every line carries a real `sessionId`, so the directory name never has to stand in for one.",
+  "tree": { "subPath": "" },
+
+  "filePattern": "events.jsonl",
+
+  "_fields": "Measured on the real bundle: every line carries ts, sessionId, sessionKey, modelId, provider and workspaceDir. projectPath is deliberately UNMAPPED — the exporter redacts the workspace root to the literal string `$WORKSPACE_DIR`, and mapping it would paint a placeholder in a column that is supposed to name a directory. Absent reads as unknown; `$WORKSPACE_DIR` would read as a path that does not exist. There is no branch field at all.",
+  "fields": {
+    "timestamp": "ts",
+    "model": "modelId",
+    "sessionId": "sessionId"
+  },
+
+  "_action": "Each event line is ONE tool call, so `data[]` iterates a single object rather than a list. Measured across all 24 events of a real session: `data.name` is present on `tool.call` lines and on NO other type, so presence of the name is itself the filter.",
+  "action": {
+    "path": "data[]",
+    "where": {},
+    "take": "name"
+  },
+
+  "_artifact": "`write` is the file-writing tool. The path arrives RELATIVE (`notes.md`), which is why redaction does not destroy it: the exporter rewrites the absolute workspace root, and a relative path never contained one. Reading the code alone would have predicted the opposite.",
+  "artifact": {
+    "path": "data[]",
+    "where": {},
+    "tools": ["write"],
+    "take": "arguments.path"
+  },
+
+  "_shellWrite": "`exec` is the shell. Measured: `printf 'beta\\n' > second.txt` survives the export intact, redirection included. This is the half that decides whether a connector is worth anything — a session can write every one of its files this way and a tool-only connector would report zero. The PATTERNS stay in the app (lib/shellWrites); a connector is data a stranger ships and may never carry a regex.",
+  "shellWrite": {
+    "path": "data[]",
+    "where": {},
+    "tools": ["exec"],
+    "take": "arguments.command"
+  },
+
+  "_humanTurn": "`user.message` is the person. Tool results are their own `tool.result` type rather than user lines, so no notWhen clause is needed.",
+  "humanTurn": {
+    "where": { "type": "user.message" },
+    "text": "data.message.content"
+  }
+}

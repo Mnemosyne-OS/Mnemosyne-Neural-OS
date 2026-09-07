@@ -1,0 +1,22 @@
+{
+  "_comment": "What openclaw.json must produce from openclaw.fixture.jsonl. The fixture is a REAL session run on this machine on 2026-09-06 (openclaw 2026.9.2, gemini-3.5-flash), redacted: values replaced, structure untouched. Its last line is deliberately cut — a transcript is appended to while it is read, and the parser must drop that fragment rather than call it format drift.",
+
+  "_traceId": "The real export wrote `traceId` and `sessionId` with the SAME value. The fixture deliberately separates them, because a fixture exists to discriminate: with both equal, a connector reading the wrong field passed every assertion. That mutant survived until they were split.",
+
+  "_projectPath": "null ON PURPOSE, and this is the finding that cost the most to establish. The trajectory exporter redacts the workspace root to the literal string `$WORKSPACE_DIR`. Mapping it would paint a placeholder into a column meant to name a directory; absent reads as unknown, which is true. There is no branch field at all in the format.",
+
+  "_artifacts": "Two files, from the two kinds of evidence, and getting BOTH is the whole point. notes.md was recorded by a `write` tool call (origin 'tool'); second.txt was read out of a redirection inside an `exec` command (origin 'shell'). Reading the exporter's code had predicted these paths would be destroyed by redaction — measurement says otherwise, because OpenClaw's tools address files RELATIVELY and a relative path never carried the workspace root that gets rewritten. Newest first, because the walk runs backwards: the exec came after the write.",
+
+  "sessionId": "11111111-2222-3333-4444-555555555555",
+  "model": "gemini-3.5-flash",
+  "projectPath": null,
+  "branch": null,
+  "isSidechain": false,
+  "lastEventAt": "2026-09-06T22:59:16.000Z",
+  "tool": "read",
+  "artifactsCapped": false,
+  "artifacts": [
+    { "path": "second.txt", "origin": "shell", "at": "2026-09-06T22:59:07.000Z" },
+    { "path": "notes.md", "origin": "tool", "at": "2026-09-06T22:59:04.000Z" }
+  ]
+}

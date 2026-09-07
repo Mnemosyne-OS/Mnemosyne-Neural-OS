@@ -213,6 +213,26 @@ node scripts/skin-validate.mjs --help
 
 ---
 
+## The `@mnemosyne_os` packages
+
+All of them live under one npm organization:
+**[npmjs.com/org/mnemosyne_os](https://www.npmjs.com/org/mnemosyne_os)**
+
+| Package | What it is |
+|---|---|
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app** — a Node or browser process talking to the local WebSocket surface |
+| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` — scaffolds that Layer 2 app in one command |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge** — a sandboxed iframe widget rendered on the canvas |
+| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server** — plug Claude, Cursor or any MCP agent into the vaults |
+| **`@mnemosyne_os/design-sdk`** *(you are here)* | **Skin the OS** with JSON alone, no TypeScript |
+| [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | The shared **types and Zod schemas**. No business logic |
+| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk** — connector format + interpreter |
+| [`@mnemosyne_os/affine-reader`](https://www.npmjs.com/package/@mnemosyne_os/affine-reader) | Read a local **AFFiNE workspace** and render its documents to Markdown |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI** — scaffold, list chronicles, import / export |
+| [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
+
+---
+
 ## Where Mnemosyne OS lives
 
 Published by XPACEGEMS LLC. Its official addresses:
@@ -221,7 +241,7 @@ Published by XPACEGEMS LLC. Its official addresses:
 - Organizations: <https://mnemosyne-os.com>
 - Documentation: <https://docs.mnemosyne-os.io>
 - Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
-- Packages: the npm scope `@mnemosyne_os`
+- Packages: <https://www.npmjs.com/org/mnemosyne_os>
 
 ---
 
@@ -235,4 +255,4 @@ MIT — [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-O
 
 <img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
 
-*Mnemosyne OS — Infinity Edition v1.4.0 · The Infinite Vision — [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*
+*Mnemosyne OS — Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*

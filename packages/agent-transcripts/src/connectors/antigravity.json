@@ -1,0 +1,59 @@
+{
+  "id": "antigravity",
+  "displayName": "Antigravity",
+  "version": "1.1.0",
+  "format": "jsonl",
+  "kind": "session",
+
+  "_comment": "Derived from what Antigravity reported about itself, then corrected against the real files on disk. Three things it proposed did not survive: `action.where` tested the ARRAY ENTRIES of tool_calls, which carry only {name,args} and no type; `title` mapped to USER_INPUT content, but the walk runs backwards so that yields the LAST message, not a name; and `content` is wrapped in <USER_REQUEST> with metadata appended.",
+
+  "_mark": "TRACED from the real asset, never drawn: icon.png inside Antigravity's own app.asar (Programs/Antigravity/resources), vectorised by following the contour of its alpha channel, simplified to 27 points and inset to 92% so the badge breathes like the others. Compared side by side with the source PNG at 24px and 80px before shipping; a hand-drawn arch was tried first, was visibly fatter with stubby legs, and was discarded.",
+  "mark": { "label": "AG", "tint": "#4285f4", "svg": "M11.57 1.86 L13.86 2.29 L14.94 3.15 L16.01 4.72 L19.67 15.98 L20.89 18.49 L22.90 21.00 L22.90 21.93 L21.39 22.00 L19.74 20.78 L18.02 18.77 L15.37 14.47 L14.01 13.25 L12.29 12.75 L10.92 12.90 L9.63 13.54 L8.49 14.76 L5.69 19.28 L3.83 21.21 L2.25 22.14 L1.03 21.86 L1.10 21.07 L2.61 19.35 L4.19 16.48 L8.13 4.58 L9.78 2.57 L11.57 1.86 Z" },
+
+  "folderHint": ".gemini/antigravity/brain",
+
+  "_tree": "Transcripts are buried three levels down: <root>/<sessionId>/.system_generated/logs/. One listing per session directory rather than a crawl. `idFrom: dir` because no line carries a session id — the directory name IS the id.",
+  "tree": { "subPath": ".system_generated/logs", "idFrom": "dir" },
+
+  "_filePattern": "transcript.jsonl, not .jsonl: transcript_full.jsonl sits beside it with untruncated tool output. Only tool NAMES and human turns are read here, so the truncated file carries everything needed at half the bytes.",
+  "filePattern": "transcript.jsonl",
+
+  "_fields": "Measured on a real transcript: every line carries step_index, source, type, status, created_at. There is no model, no cwd and no branch at line level — a working directory shows up only inside some tool arguments, which is not the session's project. Absent stays absent rather than being guessed from an argument.",
+  "fields": {
+    "timestamp": "created_at"
+  },
+
+  "action": {
+    "path": "tool_calls[]",
+    "where": {},
+    "take": "name"
+  },
+
+  "artifact": {
+    "path": "tool_calls[]",
+    "where": {},
+    "tools": [
+      "write_to_file",
+      "replace_file_content",
+      "multi_replace_file_content"
+    ],
+    "take": "args.TargetFile"
+  },
+
+  "_shellWrite": "run_command is 3300 of the tool calls in the real transcripts on this machine, against 1366 write_to_file. The command string sits in args.CommandLine, stored wrapped in its own quote pair. The PATTERNS live in the app (lib/shellWrites), never here: a connector is data and may not carry a regex.",
+  "shellWrite": {
+    "path": "tool_calls[]",
+    "where": {},
+    "tools": [
+      "run_command"
+    ],
+    "take": "args.CommandLine"
+  },
+
+  "_humanTurn": "USER_INPUT lines are the person. Tool results are their own line types (LIST_DIRECTORY, VIEW_FILE, RUN_COMMAND), so no notWhen clause is needed. The text is clipped to what sits inside <USER_REQUEST>, which drops the appended local-time and settings-change metadata.",
+  "humanTurn": {
+    "where": { "type": "USER_INPUT" },
+    "text": "content",
+    "between": { "start": "<USER_REQUEST>", "end": "</USER_REQUEST>" }
+  }
+}
