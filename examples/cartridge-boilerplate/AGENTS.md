@@ -283,10 +283,10 @@ const client = await MnemoClientBrowser.connect(); // ws://127.0.0.1:7799 — th
 
 | Package | Use it for | Version |
 |---|---|---|
-| `@mnemosyne_os/cartridge-sdk` | Cartridge (this guide) | 0.1.0 |
-| `@mnemosyne_os/sdk` | Layer 2 app | 1.4.1 |
-| `@mnemosyne_os/mcp` | MCP server | 1.2.0 |
-| `@mnemosyne_os/create-app` | Scaffold (`npm create @mnemosyne_os/app`) | 1.0.0 |
+| `@mnemosyne_os/cartridge-sdk` | Cartridge (this guide) | 0.4.1 |
+| `@mnemosyne_os/sdk` | Layer 2 app | 1.5.5 |
+| `@mnemosyne_os/mcp` | MCP server | 1.9.0 |
+| `@mnemosyne_os/create-app` | Scaffold (`npm create @mnemosyne_os/app`) | 1.0.4 |
 | `@mnemosyne_os/forge` (CLI) | Publish / tooling | 1.4.7 |
 
 ## Hard rules for the agent
