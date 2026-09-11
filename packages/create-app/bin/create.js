@@ -33,7 +33,12 @@ if (!appName || appName === '--help' || appName === '-h') {
   Example:
     npx @mnemosyne_os/create-app my-reddit-curator
 
-  This will create a new directory with a ready-to-use Mnemosyne SDK app.
+  This creates a **Layer 2 app**: a standalone Node process that talks to
+  Mnemosyne OS over WebSocket (ws://127.0.0.1:7799).
+
+  ⚠️  Building an in-window CARTRIDGE for MnemoHub instead? This is the wrong
+  tool — a cartridge needs a mnemo-plugin.json and lives in an iframe.
+  Copy examples/cartridge-boilerplate from the Mnemosyne-Neural-OS repo.
   `);
   process.exit(0);
 }
@@ -175,4 +180,8 @@ console.log(`
     npm start
 
   Make sure the Mnemosyne OS app (Infinity Edition) is running before connecting!
+
+  Note: this is a Layer 2 app (WebSocket, runs beside the OS). It is NOT a
+  MnemoHub cartridge — do not try to link this folder in MnemoHub. For an
+  in-window cartridge, copy examples/cartridge-boilerplate instead.
 `);

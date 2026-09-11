@@ -1,3 +1,5 @@
+**@mnemosyne_os/mcp** — MCP server for Mnemosyne OS — gives AI agents access to vault memory, resonances, git context, and to what the OTHER coding agents on this machine are doing.
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />
@@ -211,10 +213,10 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 
 ---
 
-## The 14 tools your agent gets
+## The 23 tools your agent gets
 
-Eleven below, plus the three that read the other agents on this machine. Setting
-`MNEMO_VOICE=1` adds the three voice tools documented further up, for 17 in all.
+Twenty below, plus the three that read the other agents on this machine. Setting
+`MNEMO_VOICE=1` adds the three voice tools documented further up, for 26 in all.
 
 | Tool | What it does |
 |---|---|
@@ -223,6 +225,15 @@ Eleven below, plus the three that read the other agents on this machine. Setting
 | **`mnemosyne_ask`** | **Ask Mnemosyne a question, get a synthesized prose answer** grounded in the vault (RAG+LLM), plus its source chronicles. Use for "why / who / how" questions that need reasoning across many memories. Slower than `query` (runs the LLM). |
 | **`mnemosyne_vaults`** | List the vaults Mnemosyne OS exposes (id, name, chronicle count) — call it to discover valid `vault` targets. |
 | **`mnemosyne_ingest`** | Persist a memory — pick a `spine_type` (ARCHITECTURE / DECISION / BUGFIX / FEATURE / NOTE / SESSION / RESONANCE / CUSTOM). |
+| **`mnemosyne_todo_add`** | Put tasks into the human's **To-do backlog** (the widget on their canvas), in order, optionally under named steps — "make tasks out of everything we said we would do". Name the `list` or pass `create_list: true`; an unknown name is refused with the lists that exist, never filed under a default. With a window the write goes through the widget's own store; on macOS with the window closed the host writes the file directly. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:write`. |
+| **`mnemosyne_cockpit_update`** | Your own **status card** on the human's canvas (the cockpit): `state` working / waiting / done / blocked / closed, a `title`, one `status` line, up to 4 `detail` lines. Declared, never inferred — the host prints your state next to the time since your last call, so call at real milestones. "waiting" and "blocked" make the card pulse and the taskbar flash. The answer carries the messages the human left on your card (its mailbox) — read and act on them. Needs the app window open (the card lives on the canvas). Scope `cockpit:write`. |
+| **`mnemosyne_agenda_add`** | Put appointments or deadlines into the human's **calendar** (the Agenda widget on their canvas) — "add this to my calendar", a deadline, a meeting. `start` (and optional `end`) are ISO 8601; no timezone offset is read as the human's own machine local time. Supports `all_day`, `recurrence` (daily/weekly/monthly/yearly), and `alarm_minutes_before` for a reminder. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. To CHANGE or REMOVE one, see `mnemosyne_agenda_update` and `mnemosyne_agenda_remove` below. Scope `agenda:write`. |
+| **`mnemosyne_todo_list`** | **Read the backlog back** — the lists, and every task with the **id** you need to change it. Call it before `mnemosyne_todo_update`: that tool names tasks by id and never by text, because "delete the task about the invoice" is how the wrong task goes, in a sentence that reads perfectly either way. Filters by `list`, `include_done`, `limit`; the archive is counted, never listed. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:read`. |
+| **`mnemosyne_todo_update`** | **Change tasks**: `edit`, `complete`, `move`, `remove`. Every op names an id from `mnemosyne_todo_list`. `remove` **archives** by default (recoverable); `permanent: true` deletes outright and must be asked for. The batch applies in order as one save, and each op reports its own outcome, so a stale id does not sink the ones around it. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:write`. |
+| **`mnemosyne_todo_lists`** | **Manage the lists themselves**: `list.create`, `list.edit` (rename / recolour), `list.remove`. A list that still holds tasks is never removed — you are told how many are in the way, because picking a destination on someone's behalf is how a tidy-up becomes a loss. The three original lists can be renamed but not removed. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:write`. |
+| **`mnemosyne_agenda_list`** | **Read the calendar back** — appointments in a time window, each with the **id** the two tools below require. A repeating event appears once, with its cadence and its next occurrence. An event with nothing left to happen says so rather than showing its original start as a future date. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `agenda:read`. |
+| **`mnemosyne_agenda_update`** | **Change an appointment**: move it, rename it, add or drop a reminder, start or stop it repeating. A field left out is left alone; `null` clears it. An unreadable date **refuses** the change rather than leaving the old one silently in place, and an unknown cadence is refused rather than quietly made a one-off. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `agenda:write`. |
+| **`mnemosyne_agenda_remove`** | **Remove appointments, by id only** — never by title, never by date range. ⚠️ The calendar has **no archive**: unlike a To-do task, a removed appointment is gone, so the answer names each one by title and start time for the human to check. A repeating appointment goes as the whole series; the calendar cannot cancel one occurrence. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `agenda:write`. |
 | **`mnemosyne_resonances`** | List active Resonances (cognitive workspaces / ongoing projects). |
 | **`mnemosyne_get_position`** | Get the last saved position of a Resonance — phase, what was done. |
 | **`mnemosyne_update_position`** | Save current position — persisted as a `DECISION` chronicle. |
@@ -252,6 +263,24 @@ These three read the transcripts coding-agent harnesses already write to disk. *
   "MNEMO_AGENT_SOURCES": "claude-code,antigravity"
 }
 ```
+
+**One line you do want, though — `← you`.** A stdio MCP server is launched with the
+`env` its config declares, so the caller's own session id does not arrive on its
+own. Without it the report cannot mark which line is yours, and it counts one
+session too many — the exact miscount these tools exist to prevent. Pass it
+through:
+
+```jsonc
+"env": {
+  "CLAUDE_CODE_SESSION_ID": "${CLAUDE_CODE_SESSION_ID}"
+}
+```
+
+If you skip it, or if the variable is not set where Claude Code runs (it then
+arrives as the literal `${CLAUDE_CODE_SESSION_ID}`), the answer says so in one
+sentence and tells you which of the two happened. It never guesses: an id it
+cannot place stays neutral rather than becoming "none of these is you", because
+that would add a phantom session to every warning.
 
 **Three things these tools will not do**, because a tool that overstates its evidence is worse than no tool:
 
