@@ -49,6 +49,8 @@ export const TOOL_RPC: Readonly<Record<string, readonly string[]>> = {
   mnemosyne_agenda_update:     ['sdk.agenda.read', 'sdk.agenda.apply'],
   mnemosyne_agenda_remove:     ['sdk.agenda.read', 'sdk.agenda.apply'],
   mnemosyne_cockpit_update:    ['sdk.cockpit.update'],
+  mnemosyne_pheme_watch:       ['sdk.pheme.watch'],
+  mnemosyne_pheme_radar:       ['sdk.pheme.radar'],
 };
 
 /** Tools that read files on disk and never open a socket. */
@@ -119,5 +121,9 @@ export const FILE_PATH_CAVEAT =
   'Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running.';
 
 /** What the agent reads when the app is not there for an app-only tool. */
+// Says WHY this tool in particular needs the app, and stops there: the action
+// (start it, or install it) is installHint's, which is the only thing that
+// knows whether the app was ever run on this machine. Two sources of action
+// produced 'start the app' next to 'it may never have run here'.
 export const APP_NOT_RUNNING_MESSAGE =
-  'Cannot reach Mnemosyne OS on ws://127.0.0.1:7799, and this tool needs the app itself: the headless daemon serves only query, ingest, git log, the To-do and the calendar (no ask, vaults, dream bridges, spine assignments, voice or cockpit). Start the Mnemosyne OS app (Infinity Edition) and call again.';
+  'Cannot reach Mnemosyne OS on ws://127.0.0.1:7799, and this tool needs the app itself: the headless daemon serves only query, ingest, git log, the To-do and the calendar (no ask, vaults, dream bridges, spine assignments, voice or cockpit).';

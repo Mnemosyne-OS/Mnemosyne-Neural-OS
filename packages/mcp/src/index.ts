@@ -48,6 +48,8 @@ import { handleTodoApply, handleTodoList } from './todo-edit-tool.js';
 import { handleAgendaList, handleAgendaRemove, handleAgendaUpdate } from './agenda-edit-tool.js';
 import { handleCockpitUpdate } from './cockpit-tool.js';
 import { handleAgendaAdd } from './agenda-tool.js';
+import { handlePhemeRadar, handlePhemeWatch } from './pheme-tool.js';
+import { installHint } from './install-hint.js';
 import { needsRunningApp, FILE_PATH_CAVEAT, APP_NOT_RUNNING_MESSAGE } from './app-only-tools.js';
 import { spawn }         from 'node:child_process';
 import { existsSync }    from 'node:fs';
@@ -214,8 +216,19 @@ async function waitForRender(
 }
 
 const MCP_MANIFEST = {
+  // 🚨 THE ID IS THE GRANT KEY, never a display string. The host stores the
+  // approved scopes against it (`sdk-ws-server`'s registry, persisted), so
+  // renaming it would present this server to every existing install as an app
+  // nobody has ever authorised. It stays `mnemosyne-mcp` whatever the name says.
   id:              'mnemosyne-mcp',
-  name:            'Mnemosyne MCP Server',
+  // 🚨 THE "OS" IS LOAD-BEARING. This is a user-facing identity: it is what the
+  // consent dialog asks about and what the arrival card prints when this server
+  // writes to the human's calendar or backlog ("by Mnemosyne OS MCP"). The
+  // product is Mnemosyne OS — "an operating system for memory", not an app
+  // called Mnemosyne — and it is also what tells it apart from the homonyms.
+  // This literal read "Mnemosyne MCP Server" and had been dropping the OS on
+  // every one of those surfaces.
+  name:            'Mnemosyne OS MCP',
   version:         PKG_VERSION,
   mnemosyne_sdk:   '^1.4.0',
   author:          'Mnemosyne Labs',
@@ -244,6 +257,12 @@ const MCP_MANIFEST = {
     // [v1.8] The agent's own status card on the human's canvas (doc 110 §9).
     // Presence on the shell, not a read: its own scope, first-party auto-grant.
     'cockpit:write',
+    // [v1.10] Pheme, the human's reputation radar (doc 75 §14). Two scopes:
+    // changing the WATCHED LISTS is not the same act as reading what the
+    // radar found, and neither is a vault write or a backlog write. Not
+    // sensitive — first-party auto-grant applies. There is no posting scope.
+    'pheme:profile',
+    'pheme:read',
     // [v1.6] Voice rendering. A SENSITIVE scope on the host: even though this
     // MCP is first-party, the human is asked for it once, by name, and the
     // dialog says what it means. Declaring it here is a REQUEST, and a denial
@@ -253,6 +272,7 @@ const MCP_MANIFEST = {
   vaults:          DECLARED_VAULTS,
   intents:         [
     'QUERY', 'INGEST', 'GIT_LOG', 'LIST_AGENTS', 'LIST_VAULTS', 'BRIDGE_READ', 'TODO_WRITE', 'TODO_READ', 'AGENDA_WRITE', 'AGENDA_READ', 'COCKPIT_WRITE',
+    'PHEME_PROFILE', 'PHEME_READ',
     ...(VOICE_ENABLED ? ['VOICE_SPEAK'] : []),
   ],
 } as any;
@@ -571,6 +591,40 @@ const TOOLS = [
         },
       },
       required: ['state'],
+    },
+  },
+  {
+    name:        'mnemosyne_pheme_watch',
+    description: 'Put a subreddit, a Hacker News search query or a topic on the human\'s Pheme radar (their reputation cartridge, which finds fresh threads worth a genuine reply), or take one off. The lists are THEIRS: an op that would empty a list is refused, every op reports its own outcome (done / already there / not there / refused), and the human sees a receipt in Pheme naming this agent and what changed. Use it when a conversation has found a community worth watching ("we answered a thread in r/hermesagent, keep an eye on it"). It does not scan and it does not post — nothing here posts anywhere; the human posts. Needs the app running (Pheme\'s settings mirror lives in it); Pheme itself may be closed.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        ops: {
+          type:        'array',
+          description: 'The changes, in order. Up to 50.',
+          items: {
+            type: 'object',
+            properties: {
+              op:    { type: 'string', enum: ['add', 'remove'] },
+              kind:  { type: 'string', enum: ['sub', 'topic', 'hnQuery'], description: '"sub" = a subreddit (with or without r/); "topic" = an expertise topic that scores every network\'s radar; "hnQuery" = a Hacker News search query.' },
+              value: { type: 'string', description: 'The subreddit name, topic or query. 120 characters max.' },
+            },
+            required: ['op', 'kind', 'value'],
+          },
+        },
+      },
+      required: ['ops'],
+    },
+  },
+  {
+    name:        'mnemosyne_pheme_radar',
+    description: 'Read what the human\'s Pheme radar last found: fresh threads in the subreddits and Hacker News queries they watch, each with a topic score and, when the human has run the Mnemosyne pass, a tier (high / mid / low = how much substance THEY can bring to that thread). The answer leads with WHEN the scan ran — it is as fresh as the last time the human opened Pheme and pressed Scan, never fresher. Use it to find threads to draft a reply for; the human posts the reply. "No radar" means no scan has been projected yet, not that nothing was found: ask the human to open Pheme and scan. Needs the app running; Pheme itself may be closed.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        limit: { type: 'number', description: 'How many threads at most (default 30, max 100).', default: 30 },
+        tier:  { type: 'string', enum: ['high', 'mid', 'low'], description: 'Only threads of this tier. Omit for all (unranked ones included, last).' },
+      },
     },
   },
   {
@@ -923,13 +977,13 @@ class MnemoMcpServer {
       // (this socket stays open, its idle exit never fires) — and the app,
       // started afterwards, could not bind its own port (2026-09-06).
       if (needsRunningApp(tool)) {
-        throw new McpError(ErrorCode.InternalError, APP_NOT_RUNNING_MESSAGE);
+        throw new McpError(ErrorCode.InternalError, `${APP_NOT_RUNNING_MESSAGE} ${installHint()}`);
       }
       // No backend yet. Unless disabled, boot the headless daemon once and retry.
       if (process.env['MNEMO_AUTOLAUNCH'] === '0') {
         throw new McpError(
           ErrorCode.InternalError,
-          'Cannot connect to Mnemosyne OS (ws://127.0.0.1:7799) and auto-launch is disabled.'
+          `Nothing is listening on ws://127.0.0.1:7799, and auto-launch is off. ${installHint()}`
         );
       }
     }
@@ -942,7 +996,7 @@ class MnemoMcpServer {
     if (!this._spawnDaemon()) {
       throw new McpError(
         ErrorCode.InternalError,
-        'Cannot reach Mnemosyne OS on ws://127.0.0.1:7799. Start the Mnemosyne OS app (Infinity Edition) and try again.'
+        `Nothing is listening on ws://127.0.0.1:7799. ${installHint()}`
       );
     }
 
@@ -1287,6 +1341,14 @@ class MnemoMcpServer {
       // ── mnemosyne_cockpit_update ─────────────────────────────────────────────
       case 'mnemosyne_cockpit_update': {
         return text(await handleCockpitUpdate(client, MCP_MANIFEST.id as string, args));
+      }
+
+      // ── mnemosyne_pheme_watch / mnemosyne_pheme_radar (doc 75 §14) ──────────
+      case 'mnemosyne_pheme_watch': {
+        return text(await handlePhemeWatch(client, MCP_MANIFEST.id as string, args));
+      }
+      case 'mnemosyne_pheme_radar': {
+        return text(await handlePhemeRadar(client, MCP_MANIFEST.id as string, args));
       }
 
       // ── mnemosyne_agenda_add ─────────────────────────────────────────────────

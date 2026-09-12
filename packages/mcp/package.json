@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/mcp",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "mcpName": "io.github.Mnemosyne-OS/mcp",
   "description": "MCP server for Mnemosyne OS — gives AI agents access to vault memory, resonances, git context, and to what the OTHER coding agents on this machine are doing.",
   "keywords": [
