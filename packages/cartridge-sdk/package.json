@@ -1,0 +1,62 @@
+{
+  "name": "@mnemosyne_os/cartridge-sdk",
+  "version": "0.4.1",
+  "description": "Official Cartridge SDK for Mnemosyne OS — secure postMessage bridge for sandboxed in-app cartridges (iframe widgets). The ONE canonical MnemoCartridgeSDK.",
+  "keywords": [
+    "mnemosyne",
+    "cartridge",
+    "plugin",
+    "sdk",
+    "postmessage",
+    "iframe",
+    "local-ai",
+    "memory"
+  ],
+  "author": {
+    "name": "Tony Trochet",
+    "email": "tony@xpacegems.com",
+    "url": "https://www.linkedin.com/in/tony-t-19544650/"
+  },
+  "license": "MIT",
+  "homepage": "https://mnemosyne-os.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "prepublishOnly": "npm run typecheck && npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "release": "npm run typecheck && npm run build && npm publish --access public"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.6.0"
+  }
+}

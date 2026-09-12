@@ -24,6 +24,8 @@ const PACKAGES = {
   '@mnemosyne_os/design-sdk': 'packages/design-sdk/package.json',
   '@mnemosyne_os/affine-reader': 'packages/affine-reader/package.json',
   '@mnemosyne_os/agent-transcripts': 'packages/agent-transcripts/package.json',
+  '@mnemosyne_os/mcp': 'packages/mcp/package.json',
+  '@mnemosyne_os/cartridge-sdk': 'packages/cartridge-sdk/package.json',
   '@mnemosyne_os/forge': 'cli/package.json',
 }
 
