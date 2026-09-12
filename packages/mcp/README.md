@@ -414,7 +414,6 @@ Published by XPACEGEMS LLC. Its official addresses:
 - Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
 - Packages: <https://www.npmjs.com/org/mnemosyne_os>
 - MCP registry: `io.github.Mnemosyne-OS/mcp` on <https://registry.modelcontextprotocol.io>
-- Smithery: <https://smithery.ai/servers/mnemosyne-os/mnemosyne-os>
 
 ---
 
