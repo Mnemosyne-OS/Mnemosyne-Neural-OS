@@ -1,0 +1,11 @@
+.git
+.github
+**/node_modules
+**/dist
+**/.turbo
+archive
+assets
+doc
+docs
+handbook
+standards
