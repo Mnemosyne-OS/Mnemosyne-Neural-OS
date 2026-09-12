@@ -14,14 +14,96 @@
 
 import { shellWriteTargets } from './shellWrites';
 
-export type ConnectorFormat = 'jsonl' | 'markdown';
+export type ConnectorFormat = 'jsonl' | 'markdown' | 'json';
+
+/**
+ * How a provider's export is laid out. Declared, never inferred.
+ *
+ * ⚠️ Two of the three shipped connectors are written against DOCUMENTED shape
+ * and have never been run over a real export (see each file's `_verified`).
+ * That field is not decoration: it is the difference between "this works" and
+ * "this is what we believe the format to be", and the app has to be able to
+ * say which it is holding.
+ */
+export interface ArchiveSpec {
+  /** Path to the array of records. Empty string means the document itself. */
+  root: string;
+  /**
+   * Which reading strategy applies. Closed set, implemented in `archive.ts`:
+   *
+   *  `openai-mapping` — conversations hold a node MAP with parent pointers and
+   *                     a `current_node`. Regenerations are siblings, so the
+   *                     kept path is the one walked back from `current_node`.
+   *  `flat-turns`     — conversations hold an ordered array of turns.
+   *  `none`           — no conversations at all: a flat activity stream where
+   *                     each record is one exchange. Not a defect to paper
+   *                     over; the reader reports `turnsOnly` and the app says
+   *                     so rather than inventing threads.
+   */
+  grouping: 'openai-mapping' | 'flat-turns' | 'none';
+  conversation?: {
+    id?: string;
+    title?: string;
+    createdAt?: string;
+    /** flat-turns: where the ordered turns sit. */
+    turns?: string;
+    /** openai-mapping: the node map, and the pointer to the live leaf. */
+    nodes?: string;
+    current?: string;
+  };
+  /** flat-turns and openai-mapping: how to read one turn. */
+  turn?: {
+    parent?: string;
+    role?: string;
+    /** A plain string field. */
+    text?: string;
+    /** An array of content parts; strings are kept, other parts counted. */
+    parts?: string;
+    time?: string;
+  };
+  /** `none`: how to read one activity record. */
+  record?: {
+    time?: string;
+    humanText?: string;
+    /** Escaped HTML of the model's reply. Converted to text by the reader. */
+    assistantHtml?: string;
+    assistantText?: string;
+    attachments?: string;
+  };
+  /**
+   * Which literal role values mean what. Declared because `human`/`user`/
+   * `USER` are three spellings of one idea and guessing is how a connector
+   * silently files the model's words as the person's.
+   */
+  roles?: { human: string[]; assistant: string[] };
+  /**
+   * Literal prefixes to strip off a record's human text, longest first.
+   *
+   * Literals, never a regex — the rule `between` already follows. 🪤 MEASURED
+   * on a real French Takeout: the prefix is `"Prompt : "` with a
+   * NON-BREAKING space, and `"Prompt: "` matched 0 of 2 084 entries. A
+   * connector written against an English export finds nothing in a French one,
+   * which is why this is a LIST and why `requirePrefix` exists.
+   */
+  humanPrefixes?: string[];
+  /**
+   * When true, a record whose text carries none of the declared prefixes is
+   * SKIPPED and counted, never kept raw.
+   *
+   * Google's activity log mixes Gemini turns with other rows; keeping the
+   * unprefixed ones would file Google's own labels as things the human typed.
+   * The count is what makes the choice reviewable: a connector that has gone
+   * stale shows up as a large skip, not as a quiet loss.
+   */
+  requirePrefix?: boolean;
+}
 
 export interface Connector {
   id: string;
   displayName: string;
   version: string;
   format: ConnectorFormat;
-  kind: 'session' | 'document';
+  kind: 'session' | 'document' | 'archive';
   folderHint?: string;
   /**
    * How this source is shown. `label` is a short code; `tint` a CSS colour.
@@ -44,7 +126,15 @@ export interface Connector {
    */
   tree?: { subPath: string; idFrom?: 'dir' };
   filePattern: string;
-  fields: Record<string, string>;
+  /**
+   * jsonl only: which vendor field carries which normalised one.
+   *
+   * Optional because it is as format-specific as `frontmatter` is to
+   * markdown and `archive` is to json. An archive connector declaring an
+   * empty `fields` would be stating that it has session metadata and that
+   * all of it is missing, which is a different claim from not applying.
+   */
+  fields?: Record<string, string>;
   action?: { path: string; where: Record<string, unknown>; take: string };
   /** The conversation's own name, written on its own line kind by the harness.
    *  Walking backwards means the LAST one written wins, so a rename shows. */
@@ -72,6 +162,21 @@ export interface Connector {
      */
     between?: { start: string; end: string };
   };
+  /**
+   * json only: how to read a provider's data-export archive (doc 118).
+   *
+   * A chat export is a different animal from an agent transcript: ONE file
+   * holds MANY conversations, there are no tools and no artifacts, and the
+   * turn list is the whole content. It gets its own declaration rather than
+   * bending `fields`, because reusing a shape that does not fit is how a
+   * connector ends up carrying a lie in a field name.
+   *
+   * `grouping` names a STRATEGY from a closed set the interpreter implements.
+   * That is the same split `shellWrite` already uses: the connector says which
+   * one applies, the code owns how it works. A connector may never carry an
+   * algorithm, only the name of one this package already ships.
+   */
+  archive?: ArchiveSpec;
   /** markdown only: which frontmatter keys map to which normalised field. */
   frontmatter?: Record<string, string>;
   /**
@@ -152,7 +257,7 @@ export interface DocState {
  * from a newer harness may simply not carry the field yet, and a missing field
  * must degrade one column, never the whole row.
  */
-function pick(obj: unknown, path: string | undefined): unknown {
+export function pick(obj: unknown, path: string | undefined): unknown {
   // A connector is told to OMIT a field its agent does not have, so an absent
   // path is the normal case, not a mistake. Crashing here would punish the
   // honest connector and reward one that invents a mapping.
@@ -211,7 +316,7 @@ function sessionDirOf(conn: Connector, path: string): string | null {
 
 /** Never coerce: `String(null)` would turn an absent field into the text
  *  "null", which reads on screen as a real value. Absent stays absent. */
-function asString(v: unknown): string | null {
+export function asString(v: unknown): string | null {
   return typeof v === 'string' && v.length > 0 ? v : null;
 }
 
@@ -311,21 +416,21 @@ export function readSession(conn: Connector, file: string, path: string, text: s
     }
 
     if (!st.lastEventAt) {
-      const ts = pick(o, conn.fields.timestamp);
+      const ts = pick(o, conn.fields?.timestamp);
       if (typeof ts === 'string') {
         st.lastEventAt = ts;
-        st.sessionId = asString(pick(o, conn.fields.sessionId));
-        st.projectPath = asString(pick(o, conn.fields.projectPath));
-        st.branch = asString(pick(o, conn.fields.branch));
-        st.isSidechain = pick(o, conn.fields.isSidechain) === true;
+        st.sessionId = asString(pick(o, conn.fields?.sessionId));
+        st.projectPath = asString(pick(o, conn.fields?.projectPath));
+        st.branch = asString(pick(o, conn.fields?.branch));
+        st.isSidechain = pick(o, conn.fields?.isSidechain) === true;
       }
     }
     // Walking backwards, every timestamped line overwrites this, so the last
     // one written is the earliest line in the file.
-    const ts = asString(pick(o, conn.fields.timestamp));
+    const ts = asString(pick(o, conn.fields?.timestamp));
     if (ts) st.firstEventAt = ts;
 
-    if (!st.model) st.model = asString(pick(o, conn.fields.model));
+    if (!st.model) st.model = asString(pick(o, conn.fields?.model));
 
     // First hit walking backwards is the most recent title line, so a renamed
     // conversation shows its new name rather than its first one.
@@ -392,7 +497,7 @@ export function readSession(conn: Connector, file: string, path: string, text: s
       if (!isToolResult) {
         const text = clipBetween(turnText(pick(o, conn.humanTurn.text)), conn.humanTurn.between);
         if (text.trim()) {
-          st.humanTurns.push({ at: asString(pick(o, conn.fields.timestamp)), text: text.trim() });
+          st.humanTurns.push({ at: asString(pick(o, conn.fields?.timestamp)), text: text.trim() });
         }
       }
     }
@@ -496,7 +601,7 @@ function parseFrontmatter(block: string): Record<string, string> {
  * what it will read — something no code-based plugin can honestly offer.
  */
 export function describeConnector(conn: Connector): string[] {
-  const fields = Object.keys(conn.format === 'markdown' ? (conn.frontmatter ?? {}) : conn.fields);
+  const fields = Object.keys(conn.format === 'markdown' ? (conn.frontmatter ?? {}) : (conn.fields ?? {}));
   if (conn.artifact) fields.push('files written');
   // Named separately: it is a different READ (the text of the commands the
   // agent ran), and consent to "which files it edited" is not consent to that.

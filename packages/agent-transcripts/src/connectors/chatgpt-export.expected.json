@@ -1,0 +1,48 @@
+{
+  "_comment": "Written from the fixture by reading it, BEFORE the reader was run over it. A file filled in from whatever the code printed pins the bug as the specification.",
+  "source": "chatgpt-export",
+  "turnsOnly": false,
+  "recordsSeen": 2,
+  "conversations": [
+    {
+      "id": "conv-aaaa-1111",
+      "title": "Altitude and boiling",
+      "startedAt": "2026-01-04T09:12:00.123Z",
+      "endedAt": "2026-01-04T09:20:00.000Z",
+      "abandonedTurns": 1,
+      "attachments": [],
+      "turns": [
+        {
+          "role": "human",
+          "text": "Why does water boil colder up a mountain?",
+          "at": "2026-01-04T09:12:00.500Z"
+        },
+        {
+          "role": "assistant",
+          "text": "Lower air pressure. The liquid reaches vapour pressure sooner, so it boils at a lower temperature.",
+          "at": "2026-01-04T09:13:10.000Z"
+        },
+        {
+          "role": "human",
+          "text": "So what temperature at 2000 m?",
+          "at": "2026-01-04T09:15:00.000Z"
+        },
+        {
+          "role": "assistant",
+          "text": "About 93 degrees Celsius.",
+          "at": "2026-01-04T09:20:00.000Z"
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "reason": "no-live-path",
+      "count": 1
+    },
+    {
+      "reason": "non-text-part",
+      "count": 1
+    }
+  ]
+}

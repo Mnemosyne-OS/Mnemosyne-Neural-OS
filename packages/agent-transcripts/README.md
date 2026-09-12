@@ -1,3 +1,5 @@
+**@mnemosyne_os/agent-transcripts** — Read what coding agents already write on disk: a declarative connector format, an interpreter that never evaluates it, and the liveness rules that keep "last seen" from becoming "working".
+
 # @mnemosyne_os/agent-transcripts
 
 Coding agents already write a transcript of everything they do, on your disk, in
@@ -28,6 +30,34 @@ is when a line was last written, and the reader draws its own conclusion.
 | `antigravity`, `antigravity-notes` | Antigravity sessions and notes |
 | `antigravity-ide`, `antigravity-ide-notes` | the IDE variant of both |
 | `openclaw` | an OpenClaw 2 trajectory export |
+
+### Data exports, read with `readArchive`
+
+Every major assistant has to hand your conversations back (GDPR art. 20 asks for
+a structured, machine-readable format). Almost nobody ships a tool that does
+anything with the result, so the zip sits in Downloads. These connectors read it.
+
+| id | reads | run over a real export? |
+| --- | --- | --- |
+| `gemini-takeout` | Google Takeout > Gemini Apps activity | **yes**, 2 084 entries |
+| `chatgpt-export` | ChatGPT > Settings > Data controls > Export | no |
+| `claude-ai-export` | Claude.ai > Settings > Privacy > Export | no |
+
+`archiveConnectorIsVerified(conn)` reads that last column off the connector's own
+`_verified` note, so an app can tell a measured mapping from a believed one
+instead of presenting both as facts.
+
+Three things this reader does that a loop over JSON does not:
+
+- **It follows the live path of a branching export.** OpenAI's `mapping` is a
+  tree: every regeneration is a sibling of the answer it replaced. Flattened, one
+  conversation puts three contradictory answers into your memory. The reader
+  walks `parent` up from `current_node` and reports `abandonedTurns`.
+- **Nothing leaves in silence.** Every dropped row carries a reason, and
+  `accountedFor(state) === state.recordsSeen` when the reader has accounted for
+  everything it was handed.
+- **Absent is not zero.** A file the connector does not fit comes back with
+  `rootFound: false`, not with "0 conversations".
 
 ⚠️ `openclaw` is unlike the others: OpenClaw 2 keeps live sessions in SQLite
 only, so `events.jsonl` exists only where a human ran

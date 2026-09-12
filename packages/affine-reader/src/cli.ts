@@ -14,7 +14,7 @@
  * that contradicts itself on 22.11: "needs >= 22.5, this is v22.11".
  */
 
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { exportWorkspace, workspaceFolderName } from './exportMarkdown';
@@ -53,8 +53,18 @@ export function runCli(argv: string[] = process.argv.slice(2)): number {
 
   let failures = 0;
   for (const ref of workspaces) {
-    const staged = stageDatabase(ref.dbPath, mkdtempSync(join(tmpdir(), 'affine-read-')));
+    // 🚨 One workspace that cannot even be opened (a table missing, a root doc
+    // that is not there, the v1 layout the exporter refuses) must not take the
+    // others with it. Before the catch below, a throw ahead of the doc loop
+    // aborted EVERY workspace and the tool died with a stack trace — the
+    // per-doc `skipped` list only covers failures inside the loop.
+    // The temp dir exists before `stageDatabase` can refuse, so the refusal path
+    // must remove it too — otherwise every failed attempt leaves an empty
+    // `affine-read-*` behind in temp.
+    const stagingDir = mkdtempSync(join(tmpdir(), 'affine-read-'));
+    let staged: ReturnType<typeof stageDatabase> | null = null;
     try {
+      staged = stageDatabase(ref.dbPath, stagingDir);
       const db = openNodeSqlite(staged.path);
       try {
         const result = exportWorkspace(db, join(outDir, workspaceFolderName(ref)));
@@ -74,6 +84,11 @@ export function runCli(argv: string[] = process.argv.slice(2)): number {
           failures++;
           console.log(`  SKIPPED ${skip.id} — ${skip.reason}`);
         }
+        // A blob left out is named like a doc left out: an image that is not in
+        // the folder and one that never existed look the same on disk.
+        for (const skip of result.skippedBlobs)
+          console.log(`  SKIPPED blob ${skip.key} — ${skip.reason}`);
+        for (const path of result.removed) console.log(`  REMOVED ${path}`);
         console.log(
           `  → ${result.files.length} file(s), ${result.blobsWritten} image(s)` +
             (result.trashed ? `, ${result.trashed} left in AFFiNE's trash` : ''),
@@ -81,8 +96,15 @@ export function runCli(argv: string[] = process.argv.slice(2)): number {
       } finally {
         db.close();
       }
+    } catch (error) {
+      failures++;
+      console.log(
+        `\nSKIPPED workspace ${ref.id} (${ref.layout}) — ` +
+          (error instanceof Error ? error.message : String(error)),
+      );
     } finally {
-      staged.dispose();
+      if (staged) staged.dispose();
+      else rmSync(stagingDir, { recursive: true, force: true });
     }
   }
   return failures > 0 ? 1 : 0;

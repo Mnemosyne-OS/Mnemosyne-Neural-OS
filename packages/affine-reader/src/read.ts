@@ -19,6 +19,7 @@ import type {
   AffineSchema,
   BlobRef,
   ReadOptions,
+  SkippedBlob,
   SkippedDoc,
   SqliteDatabase,
   WorkspaceContent,
@@ -127,30 +128,90 @@ export function readBlobIndex(db: SqliteDatabase, schema: AffineSchema): BlobRef
   }));
 }
 
-/** Streams blob bytes one row at a time so a large workspace never lands in memory at once. */
+/**
+ * The largest blob the reader will pull into memory, in bytes.
+ *
+ * Blobs are read on the Electron MAIN process, and a workspace can hold a video
+ * dropped into a page. One such row is a hundred MB held in the process that
+ * owns every window. Anything over the cap is NAMED in the result, never
+ * fetched — the index already carries the size, so the decision costs nothing.
+ */
+export const BLOB_CAP_BYTES = 25 * 1024 * 1024;
+
+/**
+ * Why `ref` will not be fetched, or null when it fits under `maxBytes`.
+ *
+ * One rule for the two places that need it: the writer that skips the bytes and
+ * the exporter that decides whether a link may point at the file. Decided twice,
+ * a link would point at a file the writer never produced.
+ */
+export function blobOverCap(ref: BlobRef, maxBytes: number = BLOB_CAP_BYTES): SkippedBlob | null {
+  // An unknown size is not a size over the cap. It is fetched: the alternative
+  // is dropping an image on a guess, which the reader would then report as a
+  // blob that was too large when nobody measured it.
+  if (ref.size === null || ref.size <= maxBytes) return null;
+  return {
+    key: ref.key,
+    size: ref.size,
+    reason: `blob is ${ref.size} bytes, over the ${maxBytes} byte cap`,
+  };
+}
+
+/**
+ * Visits blob bytes one row at a time, so a large workspace never lands in
+ * memory at once. Each blob is fetched by key from the index, and a blob over
+ * the cap is skipped WITHOUT touching its bytes; the skipped ones are returned.
+ */
 export function forEachBlob(
   db: SqliteDatabase,
   schema: AffineSchema,
   visit: (blob: { key: string; mime: string; data: Uint8Array }) => void,
-): void {
-  const rows =
+  options: { maxBytes?: number } = {},
+): SkippedBlob[] {
+  const maxBytes = options.maxBytes ?? BLOB_CAP_BYTES;
+  const skipped: SkippedBlob[] = [];
+  const byKey = db.prepare(
     schema === 'v2'
-      ? db.prepare('SELECT key, mime, data FROM blobs WHERE deleted_at IS NULL').all()
-      : db.prepare('SELECT key, data FROM blobs').all();
-  for (const row of rows) {
-    visit({
-      key: String(row.key),
-      mime: typeof row.mime === 'string' && row.mime ? row.mime : 'application/octet-stream',
-      data: toBytes(row.data, `blob ${String(row.key)}`),
-    });
+      ? 'SELECT data FROM blobs WHERE key = ? AND deleted_at IS NULL'
+      : 'SELECT data FROM blobs WHERE key = ?',
+  );
+  for (const ref of readBlobIndex(db, schema)) {
+    const over = blobOverCap(ref, maxBytes);
+    if (over) {
+      skipped.push(over);
+      continue;
+    }
+    const row = byKey.get(ref.key);
+    // Listed a moment ago and gone now: the copy is a snapshot, so this can only
+    // be a row the index and the fetch disagree on. Named, not silently absent.
+    if (!row) {
+      skipped.push({ key: ref.key, size: ref.size, reason: 'blob row not found by key' });
+      continue;
+    }
+    visit({ key: ref.key, mime: ref.mime, data: toBytes(row.data, `blob ${ref.key}`) });
   }
+  return skipped;
 }
 
 /** Every doc of one workspace, rendered. Docs that fail are NAMED, never dropped. */
 export function readWorkspace(db: SqliteDatabase, options: ReadOptions = {}): WorkspaceContent {
   const schema = detectSchema(db);
-  const workspaceId = readWorkspaceId(db, schema) ?? '';
-  const root = loadDoc(db, schema, schema === 'v2' ? workspaceId : null).doc;
+  const workspaceId = readWorkspaceId(db, schema);
+  // 🚨 A missing space_id used to become the doc id '' — an empty root doc, and
+  // a workspace that reads as "no documents" while it holds plenty. That answer
+  // is indistinguishable from a genuinely empty workspace, so it is refused.
+  if (schema === 'v2' && workspaceId === null)
+    throw new Error('AFFiNE database has no space_id in `meta`: cannot find the root document');
+  const rootId = schema === 'v2' ? workspaceId : null;
+  const rootLoad = loadDoc(db, schema, rootId);
+  // Same fabrication from the other side: meta names a root doc that no
+  // snapshot and no update carry (a cloud workspace never synced down). Zero
+  // rows replayed is not an empty index, it is a document that is not here.
+  if (!rootLoad.hadSnapshot && rootLoad.updatesReplayed === 0)
+    throw new Error(`root document ${rootId ?? '(v1 root)'} is not in this database`);
+  const root = rootLoad.doc;
+  // v1 has no meta and no workspace id to report; '' is that absence, not a name.
+  const spaceId = workspaceId ?? '';
 
   const index = readDocIndex(root);
   const docs: AffineDoc[] = [];
@@ -165,7 +226,7 @@ export function readWorkspace(db: SqliteDatabase, options: ReadOptions = {}): Wo
     try {
       const loaded = loadDoc(db, schema, entry.id);
       const ctx: ParserContext = {
-        workspaceId,
+        workspaceId: spaceId,
         doc: loaded.doc,
         buildBlobUrl: (key) => options.blobUrl?.(key) ?? `affine-blob:${key}`,
         buildDocUrl: (docId) => options.docUrl?.(docId) ?? `affine-doc:${docId}`,
@@ -190,5 +251,18 @@ export function readWorkspace(db: SqliteDatabase, options: ReadOptions = {}): Wo
     }
   }
 
-  return { workspaceId, schema, docs, skipped, blobs: readBlobIndex(db, schema), trashed };
+  return { workspaceId: spaceId, schema, docs, skipped, blobs: readBlobIndex(db, schema), trashed };
+}
+
+/**
+ * The bytes of a root document that holds NO page — `meta.pages` empty —
+ * encoded as one update. What a host needs to stand in a workspace with no
+ * content (a test double, a workspace created empty) without depending on
+ * yjs itself: the reader refuses a root that is absent by name, and the only
+ * honest way to say "present and empty" is a real encoded document.
+ */
+export function emptyRootDocUpdate(): Uint8Array {
+  const doc = new Y.Doc();
+  doc.getMap('meta').set('pages', new Y.Array());
+  return Y.encodeStateAsUpdate(doc);
 }

@@ -67,6 +67,14 @@ export interface BlobRef {
   size: number | null;
 }
 
+export interface SkippedBlob {
+  key: string;
+  /** Size AFFiNE recorded; `null` when it was unreadable and the skip had another cause. */
+  size: number | null;
+  /** Why the bytes were not read. Never dropped silently. */
+  reason: string;
+}
+
 export interface WorkspaceContent {
   workspaceId: string;
   schema: AffineSchema;

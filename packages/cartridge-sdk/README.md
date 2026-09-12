@@ -1,3 +1,5 @@
+**@mnemosyne_os/cartridge-sdk** — Official Cartridge SDK for Mnemosyne OS — secure postMessage bridge for sandboxed in-app cartridges (iframe widgets). The ONE canonical MnemoCartridgeSDK.
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />

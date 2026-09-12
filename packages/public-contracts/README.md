@@ -1,3 +1,5 @@
+**@mnemosyne_os/public-contracts** — Public types, Zod schemas, and interfaces for Mnemosyne OS. No business logic — the official integration surface.
+
 # @mnemosyne_os/public-contracts
 
 Public types, Zod schemas, and interfaces for **Mnemosyne OS** — the official

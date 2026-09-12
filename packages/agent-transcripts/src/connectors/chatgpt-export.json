@@ -1,0 +1,40 @@
+{
+  "id": "chatgpt-export",
+  "displayName": "ChatGPT (data export)",
+  "version": "0.1.0",
+  "format": "json",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. Paths use dots for object keys and [] to walk an array. Nothing here is evaluated.",
+  "_verified": "NOT MEASURED. Written on 2026-09-11 against the documented and widely-reported shape of conversations.json; no real ChatGPT export existed on this machine to run it over. Everything below is a BELIEF about the format, not an observation of it. The fixture proves the reader, not the mapping. Until someone points this at a real export, treat a large 'malformed' or 'no-live-path' count as the connector being wrong rather than the export being odd.",
+  "_where": "Settings > Data controls > Export data. OpenAI mails a link; the zip holds conversations.json, chat.html, user.json and any generated images.",
+  "filePattern": ".json",
+  "archive": {
+    "root": "",
+    "_groupingWhy": "This export is a TREE, not a list. Every regeneration hangs off the same parent as the answer it replaced, so a conversation the person remembers as linear can hold three contradictory answers to one question. Flattening 'mapping' puts all three into memory and poisons every later search. The reader walks 'parent' up from 'current_node' instead, and counts what it left behind.",
+    "grouping": "openai-mapping",
+    "conversation": {
+      "id": "conversation_id",
+      "title": "title",
+      "createdAt": "create_time",
+      "nodes": "mapping",
+      "current": "current_node"
+    },
+    "turn": {
+      "parent": "parent",
+      "role": "message.author.role",
+      "parts": "message.content.parts[]",
+      "time": "message.create_time"
+    },
+    "_timeTrap": "create_time is a FLOAT OF EPOCH SECONDS, not milliseconds. Read as milliseconds it lands in January 1970 - a convincing date that sorts every imported conversation before everything else the person owns. The reader splits at 1e11; see toIso in archive.ts.",
+    "_rolesWhy": "Only user and assistant are declared. A 'system' or 'tool' node sits ON the kept path but is not part of the conversation, so the reader passes over it without counting it as a loss - it was never the person's words nor the model's reply.",
+    "roles": {
+      "human": ["user"],
+      "assistant": ["assistant"]
+    }
+  },
+  "_mark": "No vendor asset ships on this machine to trace, and drawing a lookalike under OpenAI's name would be a fabricated brand asset. The label and tint stand in until an official path can be dropped in - a connector is data, so that costs no code change.",
+  "mark": {
+    "label": "GPT",
+    "tint": "#10a37f"
+  }
+}

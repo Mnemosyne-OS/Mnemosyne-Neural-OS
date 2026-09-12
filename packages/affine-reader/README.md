@@ -1,3 +1,5 @@
+**@mnemosyne_os/affine-reader** — Read a local AFFiNE workspace (SQLite + Yjs) and render its documents to Markdown. No BlockSuite at runtime, no native module, read-only.
+
 # @mnemosyne_os/affine-reader
 
 Read a local [AFFiNE](https://github.com/toeverything/AFFiNE) workspace and render its

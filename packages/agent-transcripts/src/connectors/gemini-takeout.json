@@ -1,0 +1,42 @@
+{
+  "id": "gemini-takeout",
+  "displayName": "Gemini (Google Takeout)",
+  "version": "0.1.0",
+  "format": "json",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. Paths use dots for object keys and [] to walk an array. Nothing here is evaluated.",
+  "_verified": "MEASURED against a real export on 2026-09-11: takeout-20260310T170953Z-3-001.zip, 558,450,834 bytes, member 'Takeout/Mon activite/Applications\\u00a0Gemini/MonActivite.json' (12.7 MB), 2084 entries spanning 2025-01-21 to 2026-03-10. Every path and every prefix below was counted against that file, not recalled.",
+  "_folderTrap": "The zip member name carries a NON-BREAKING SPACE in 'Applications\\u00a0Gemini' and its accented characters are not stored as UTF-8. A caller that matches the member by exact name finds nothing. Match on a suffix instead.",
+  "_noThreads": "There is no conversation id anywhere in this file: 'titleUrl' is absent from all 2084 rows, and two rows added from a shared link carry the SAME millisecond. Grouping by time proximity would invent threads rather than recover them, so grouping is 'none' and the reader reports turnsOnly.",
+  "_attachmentsNote": "attachedFiles names sit beside MonActivite.json in the same folder of the archive (632 rows carry them). Reading those files is the caller's business; this connector only reports the names.",
+  "filePattern": ".json",
+  "archive": {
+    "root": "",
+    "grouping": "none",
+    "record": {
+      "time": "time",
+      "humanText": "title",
+      "assistantHtml": "safeHtmlItem[].html",
+      "attachments": "attachedFiles[]"
+    },
+    "_prefixTrap": "MEASURED, and the reason this is a LIST. The two real prompt prefixes do NOT share typography: 'Prompt' takes a NON-BREAKING space before its colon (1303 rows) while 'Discussion ajoutee...' takes an ordinary one (730 rows). 'Prompt: ' with a plain space matched 0 of 2084. A connector written against one spelling loses the other entirely.",
+    "humanPrefixes": [
+      "Prompt\u00a0: ",
+      "Prompt : ",
+      "Prompt: ",
+      "Discussion ajout\u00e9e \u00e0 partir du lien : ",
+      "Discussion ajout\u00e9e \u00e0 partir du lien\u00a0: ",
+      "Prompted: ",
+      "Chat added from link: "
+    ],
+    "_localeGap": "Only the French spellings above are measured. The English ones are a best guess and may be wrong - which cannot fail silently, because a wrong guess shows up as a large 'no-prefix' count the app puts on screen. An unmeasured guess that the counter exposes is safer than an omission that loses every row.",
+    "_requirePrefixWhy": "MEASURED: 51 rows carry a prefix that is NOT a prompt - 14 'Commentaires envoyes' (feedback the human sent to GOOGLE), 1 'Application utilisee', 1 Canvas item - plus 35 with no prefix at all. Kept raw, those would be filed as things the person typed to Gemini. They are skipped and counted instead.",
+    "requirePrefix": true,
+    "_escapeNote": "The prefixes are written as \u00a0 / \u00e9 escapes ON PURPOSE. Rendered literally, a non-breaking space is indistinguishable from an ordinary one in any editor, and the first reviewer to tidy up the 'double space' silently breaks 1303 of 2084 rows."
+  },
+  "_mark": "No vendor asset ships on this machine to trace, and drawing a lookalike under Google's name would be a fabricated brand asset. The label and tint stand in until an official path can be dropped in - a connector is data, so that costs no code change.",
+  "mark": {
+    "label": "GEM",
+    "tint": "#4285f4"
+  }
+}

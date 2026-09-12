@@ -1,0 +1,40 @@
+{
+  "id": "claude-ai-export",
+  "displayName": "Claude.ai (data export)",
+  "version": "0.1.0",
+  "format": "json",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. Paths use dots for object keys and [] to walk an array. Nothing here is evaluated.",
+  "_verified": "NOT MEASURED. Written on 2026-09-11 against the documented shape of the claude.ai export; no real export existed on this machine to run it over. Everything below is a BELIEF about the format. The fixture proves the reader, not the mapping.",
+  "_where": "Settings > Privacy > Export data. Anthropic mails a link; the zip holds conversations.json, projects.json and users.json.",
+  "_noBranches": "Unlike the OpenAI export, this one carries an ordered message list with no regeneration siblings, so nothing is abandoned and abandonedTurns stays 0. That is a fact about the format, not a better reader.",
+  "filePattern": ".json",
+  "archive": {
+    "root": "",
+    "grouping": "flat-turns",
+    "conversation": {
+      "id": "uuid",
+      "title": "name",
+      "createdAt": "created_at",
+      "turns": "chat_messages[]"
+    },
+    "turn": {
+      "role": "sender",
+      "text": "text",
+      "parts": "content[]",
+      "time": "created_at"
+    },
+    "_textWhy": "'text' is read first and 'content' only when it is empty. Older exports carry the whole turn in 'text'; newer ones carry typed content parts and leave 'text' as a flattened copy. Preferring 'text' keeps both readable, and the parts walk is what catches an attachment-only turn.",
+    "_rolesWhy": "This export says 'human', not 'user'. Guessing between the two spellings is how a reader silently files the model's words as the person's, which is why roles are declared rather than inferred.",
+    "roles": {
+      "human": ["human"],
+      "assistant": ["assistant"]
+    }
+  },
+  "_mark": "DRAWN, not traced: no Anthropic asset ships on this machine to vectorise, so this is the same rendering of the Claude burst the claude-code connector carries, and this field says plainly that it is an approximation. Tony authorised approximate marks on 2026-09-06 after the risk was named. The day an official path exists it replaces this one, with no code change.",
+  "mark": {
+    "label": "CL",
+    "tint": "#c96442",
+    "svg": "M12.20 12.00 L12.95 1.10 L11.05 1.10 L11.80 12.00 Z M12.17 12.10 L18.27 3.04 L16.63 2.09 L11.83 11.90 Z M12.10 12.17 L21.91 7.37 L20.96 5.73 L11.90 11.83 Z M12.00 12.20 L22.90 12.95 L22.90 11.05 L12.00 11.80 Z M11.90 12.17 L20.96 18.27 L21.91 16.63 L12.10 11.83 Z M11.83 12.10 L16.63 21.91 L18.27 20.96 L12.17 11.90 Z M11.80 12.00 L11.05 22.90 L12.95 22.90 L12.20 12.00 Z M11.83 11.90 L5.73 20.96 L7.37 21.91 L12.17 12.10 Z M11.90 11.83 L2.09 16.63 L3.04 18.27 L12.10 12.17 Z M12.00 11.80 L1.10 11.05 L1.10 12.95 L12.00 12.20 Z M12.10 11.83 L3.04 5.73 L2.09 7.37 L11.90 12.17 Z M12.17 11.90 L7.37 2.09 L5.73 3.04 L11.83 12.10 Z"
+  }
+}

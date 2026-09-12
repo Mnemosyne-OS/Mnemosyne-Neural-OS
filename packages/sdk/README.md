@@ -1,3 +1,5 @@
+**@mnemosyne_os/sdk** — Official SDK for building Layer 2 apps on Mnemosyne OS — connects to the local AI memory runtime via WebSocket or Electron IPC.
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />

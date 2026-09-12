@@ -28,9 +28,26 @@ export {
   type Artifact,
   type Connector,
   type ConnectorFormat,
+  type ArchiveSpec,
   type DocState,
   type SessionState,
 } from './connector';
+
+export {
+  readArchive,
+  describeArchive,
+  accountedFor,
+  RECORD_LEVEL_REASONS,
+  toIso,
+  htmlToText,
+  stripPrefix,
+  walkOpenAiPath,
+  type ArchiveState,
+  type ConversationState,
+  type Role,
+  type SkipReason,
+  type Turn,
+} from './archive';
 
 export { shellWriteTargets, looksLikePath } from './shellWrites';
 
@@ -72,6 +89,9 @@ import antigravityNotes from './connectors/antigravity-notes.json';
 import antigravityIde from './connectors/antigravity-ide.json';
 import antigravityIdeNotes from './connectors/antigravity-ide-notes.json';
 import openclaw from './connectors/openclaw.json';
+import chatgptExport from './connectors/chatgpt-export.json';
+import claudeAiExport from './connectors/claude-ai-export.json';
+import geminiTakeout from './connectors/gemini-takeout.json';
 import type { Connector } from './connector';
 
 /**
@@ -96,4 +116,39 @@ export const CONNECTORS = {
   'openclaw': openclaw as Connector,
 } as const;
 
+/**
+ * Connectors for a PROVIDER'S DATA EXPORT, read with `readArchive`. Doc 118.
+ *
+ * Kept apart from CONNECTORS because the two answer different questions and a
+ * caller must never reach for the wrong reader: an agent transcript is a live
+ * file on your disk that an agent is still appending to, an export is a dead
+ * archive a provider handed you once. Merging the two maps would make
+ * `readSession` reachable with an archive connector, which fails as an empty
+ * result rather than as an error.
+ *
+ * ⚠️ Only `gemini-takeout` has been run over a real export. The other two are
+ * written against documented shape; each file says so in its own `_verified`,
+ * and `archiveConnectorIsVerified` reads that rather than letting a caller
+ * assume.
+ */
+export const ARCHIVE_CONNECTORS = {
+  'chatgpt-export': chatgptExport as Connector,
+  'claude-ai-export': claudeAiExport as Connector,
+  'gemini-takeout': geminiTakeout as Connector,
+} as const;
+
+export type ArchiveConnectorId = keyof typeof ARCHIVE_CONNECTORS;
+
 export type ConnectorId = keyof typeof CONNECTORS;
+
+/**
+ * Whether this connector has ever been run over a real export.
+ *
+ * Read from the connector's own `_verified` note, so the answer cannot drift
+ * from the file: a connector nobody has tested says MEASURED nowhere, and the
+ * app shows the difference instead of presenting a belief as a fact.
+ */
+export function archiveConnectorIsVerified(conn: Connector): boolean {
+  const note = (conn as unknown as { _verified?: unknown })._verified;
+  return typeof note === 'string' && note.startsWith('MEASURED');
+}

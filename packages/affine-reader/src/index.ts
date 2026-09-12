@@ -12,6 +12,8 @@ export { affineDataDir, affineDataDirs, findWorkspaces } from './locate';
 export { SIDECAR_SUFFIXES, stageDatabase } from './stage';
 export type { StagedDatabase } from './stage';
 export {
+  BLOB_CAP_BYTES,
+  blobOverCap,
   detectSchema,
   forEachBlob,
   loadDoc,
@@ -21,6 +23,7 @@ export {
   readWorkspaceId,
 } from './read';
 export { exportWorkspace, fileNameFor, slugify, workspaceFolderName } from './exportMarkdown';
+export { emptyRootDocUpdate } from './read';
 export type { ExportOptions, ExportResult } from './exportMarkdown';
 export { hasNodeSqlite, openNodeSqlite } from './nodeSqlite';
 export type {
@@ -28,6 +31,7 @@ export type {
   AffineSchema,
   BlobRef,
   ReadOptions,
+  SkippedBlob,
   SkippedDoc,
   SqliteDatabase,
   SqliteOpener,

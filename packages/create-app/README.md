@@ -1,3 +1,5 @@
+**@mnemosyne_os/create-app** — Scaffold a new Mnemosyne OS app with one command
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />

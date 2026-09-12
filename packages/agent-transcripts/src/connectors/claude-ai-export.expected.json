@@ -1,0 +1,48 @@
+{
+  "_comment": "Written from the fixture by reading it, BEFORE the reader was run over it.",
+  "source": "claude-ai-export",
+  "turnsOnly": false,
+  "recordsSeen": 1,
+  "conversations": [
+    {
+      "id": "11111111-2222-3333-4444-555555555555",
+      "title": "Sourdough timing",
+      "startedAt": "2026-02-02T07:30:00.000Z",
+      "endedAt": "2026-02-02T07:44:10.000Z",
+      "abandonedTurns": 0,
+      "attachments": [],
+      "turns": [
+        {
+          "role": "human",
+          "text": "My starter doubles in four hours. Is that ready?",
+          "at": "2026-02-02T07:30:00.000Z"
+        },
+        {
+          "role": "assistant",
+          "text": "Yes. Doubling in four hours at room temperature is a working starter.",
+          "at": "2026-02-02T07:31:20.000Z"
+        },
+        {
+          "role": "human",
+          "text": "And if the kitchen is cold?",
+          "at": "2026-02-02T07:40:00.000Z"
+        },
+        {
+          "role": "assistant",
+          "text": "It slows down. Give it eight hours, or find a warmer shelf.",
+          "at": "2026-02-02T07:44:10.000Z"
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "reason": "non-text-part",
+      "count": 1
+    },
+    {
+      "reason": "unknown-role",
+      "count": 1
+    }
+  ]
+}

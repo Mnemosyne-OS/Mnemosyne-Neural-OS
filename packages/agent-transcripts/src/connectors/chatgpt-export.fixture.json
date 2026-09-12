@@ -1,0 +1,101 @@
+[
+  {
+    "_comment": "SYNTHETIC. This package is public: no real conversation appears here. The SHAPE follows the documented export; the words are invented. This conversation carries the whole point of the connector - node n2a is an ABANDONED regeneration hanging off the same parent as n2b, and current_node names n4 so the live path runs through n2b only.",
+    "title": "Altitude and boiling",
+    "conversation_id": "conv-aaaa-1111",
+    "create_time": 1767517920.123,
+    "update_time": 1767518400.9,
+    "current_node": "n4",
+    "mapping": {
+      "root": { "id": "root", "message": null, "parent": null, "children": ["n0"] },
+      "n0": {
+        "id": "n0",
+        "_comment": "A system node sits ON the path but is not part of the conversation. Passed over, and NOT counted as a loss.",
+        "message": {
+          "author": { "role": "system" },
+          "create_time": null,
+          "content": { "content_type": "text", "parts": [""] }
+        },
+        "parent": "root",
+        "children": ["n1"]
+      },
+      "n1": {
+        "id": "n1",
+        "message": {
+          "author": { "role": "user" },
+          "create_time": 1767517920.5,
+          "content": { "content_type": "text", "parts": ["Why does water boil colder up a mountain?"] }
+        },
+        "parent": "n0",
+        "children": ["n2a", "n2b"]
+      },
+      "n2a": {
+        "id": "n2a",
+        "_comment": "THE ABANDONED BRANCH. The person regenerated this answer, so it is a sibling of n2b and NOT on the live path. Kept, it would sit in memory contradicting n2b forever.",
+        "message": {
+          "author": { "role": "assistant" },
+          "create_time": 1767517960.0,
+          "content": { "content_type": "text", "parts": ["Because mountains are cold."] }
+        },
+        "parent": "n1",
+        "children": []
+      },
+      "n2b": {
+        "id": "n2b",
+        "message": {
+          "author": { "role": "assistant" },
+          "create_time": 1767517990.0,
+          "content": {
+            "content_type": "text",
+            "parts": [
+              "Lower air pressure. The liquid reaches vapour pressure sooner, so it boils at a lower temperature.",
+              { "content_type": "image_asset_pointer", "asset_pointer": "file-service://file-abc" }
+            ]
+          }
+        },
+        "parent": "n1",
+        "children": ["n3"]
+      },
+      "n3": {
+        "id": "n3",
+        "message": {
+          "author": { "role": "user" },
+          "create_time": 1767518100.0,
+          "content": { "content_type": "text", "parts": ["So what temperature at 2000 m?"] }
+        },
+        "parent": "n2b",
+        "children": ["n4"]
+      },
+      "n4": {
+        "id": "n4",
+        "message": {
+          "author": { "role": "assistant" },
+          "create_time": 1767518400.0,
+          "content": { "content_type": "text", "parts": ["About 93 degrees Celsius."] }
+        },
+        "parent": "n3",
+        "children": []
+      }
+    }
+  },
+  {
+    "_comment": "MUST BE SKIPPED as 'no-live-path': current_node names a node the map does not contain. Flattening the map here would be the exact failure the connector exists to avoid, so the conversation is dropped and counted instead.",
+    "title": "Broken export row",
+    "conversation_id": "conv-bbbb-2222",
+    "create_time": 1767600000.0,
+    "current_node": "missing-node",
+    "mapping": {
+      "root": { "id": "root", "message": null, "parent": null, "children": ["m1"] },
+      "m1": {
+        "id": "m1",
+        "message": {
+          "author": { "role": "user" },
+          "create_time": 1767600001.0,
+          "content": { "content_type": "text", "parts": ["anyone home?"] }
+        },
+        "parent": "root",
+        "children": []
+      }
+    }
+  }
+]

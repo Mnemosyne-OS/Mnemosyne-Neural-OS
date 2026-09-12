@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/cartridge-sdk",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Official Cartridge SDK for Mnemosyne OS — secure postMessage bridge for sandboxed in-app cartridges (iframe widgets). The ONE canonical MnemoCartridgeSDK.",
   "keywords": [
     "mnemosyne",

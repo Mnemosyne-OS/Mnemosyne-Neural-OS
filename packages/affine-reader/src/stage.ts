@@ -13,7 +13,10 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
-/** The journal files that must travel with storage.db. Order matters: -wal first. */
+/**
+ * The journal files that must travel with storage.db. Copied in this order, and
+ * BEFORE the .db itself — see `stageDatabase` for why the main file goes last.
+ */
 export const SIDECAR_SUFFIXES = ['-wal', '-shm'] as const;
 
 export interface StagedDatabase {
@@ -41,8 +44,14 @@ export function stageDatabase(dbPath: string, stagingDir: string): StagedDatabas
   mkdirSync(stagingDir, { recursive: true });
 
   const target = join(stagingDir, 'storage.db');
-  copyFileSync(dbPath, target);
 
+  // 🚨 The journal is copied FIRST and the main file LAST. AFFiNE is live while
+  // this runs, and a checkpoint can land between the two copies. Main file
+  // first: the checkpoint moves the frames into storage.db AFTER our copy was
+  // taken and resets the -wal BEFORE we copy it — the staged pair has the old
+  // main file and a journal without those frames, so committed content is
+  // simply gone, and nothing errors. Journal first: the worst case is a journal
+  // whose frames the main file already holds, which replaying re-applies.
   const sidecars: string[] = [];
   for (const suffix of SIDECAR_SUFFIXES) {
     if (existsSync(dbPath + suffix)) {
@@ -50,6 +59,7 @@ export function stageDatabase(dbPath: string, stagingDir: string): StagedDatabas
       sidecars.push(suffix);
     }
   }
+  copyFileSync(dbPath, target);
 
   let disposed = false;
   return {

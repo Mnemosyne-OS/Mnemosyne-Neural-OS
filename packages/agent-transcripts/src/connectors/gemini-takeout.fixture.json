@@ -1,0 +1,78 @@
+[
+  {
+    "_comment": "SYNTHETIC. This package is public: no real prompt from anyone's export appears here. The SHAPE is copied from a measured file, the words are invented.",
+    "header": "Applications Gemini",
+    "title": "Prompt\u00a0: what is the boiling point of water at altitude?",
+    "time": "2026-01-04T09:12:00.000Z",
+    "products": [
+      "Applications Gemini"
+    ],
+    "activityControls": [
+      "Activit\u00e9 dans les applications Gemini"
+    ],
+    "safeHtmlItem": [
+      {
+        "html": "<p>It drops with pressure. At 2&nbsp;000&nbsp;m it is about 93&nbsp;&#176;C.</p><ul><li>Sea level: 100&#176;C</li><li>Everest: 68&#176;C</li></ul>"
+      }
+    ]
+  },
+  {
+    "_comment": "THE TYPOGRAPHY TRAP: this prefix takes an ORDINARY space before its colon while the one above takes a non-breaking one. 730 of 2084 measured rows look like this.",
+    "header": "Applications Gemini",
+    "title": "Discussion ajout\u00e9e \u00e0 partir du lien : draft a packing list for a week in Iceland",
+    "time": "2026-01-05T18:40:30.500Z",
+    "products": [
+      "Applications Gemini"
+    ],
+    "safeHtmlItem": [
+      {
+        "html": "<p>Wool layers, a shell, and boots you have already walked in.</p>"
+      }
+    ],
+    "attachedFiles": [
+      "itinerary-3f2a.md",
+      "map_9c11.png"
+    ]
+  },
+  {
+    "_comment": "MUST BE SKIPPED: feedback the person sent to GOOGLE, not something they asked Gemini. 14 measured rows look like this, and a naive importer files them as the human's own words.",
+    "header": "Applications Gemini",
+    "title": "Commentaires envoy\u00e9s\u00a0: the answer was cut off halfway",
+    "time": "2026-01-06T08:00:00.000Z",
+    "products": [
+      "Applications Gemini"
+    ]
+  },
+  {
+    "_comment": "MUST BE SKIPPED: no declared prefix at all. 35 measured rows look like this.",
+    "header": "Applications Gemini",
+    "title": "Application utilis\u00e9e",
+    "time": "2026-01-06T08:01:00.000Z",
+    "products": [
+      "Applications Gemini"
+    ]
+  },
+  {
+    "_comment": "MUST BE SKIPPED as 'empty-prompt'. MEASURED: 26 of 2084 real rows are a bare prefix with no prompt after it, and EVERY ONE carries a reply. Kept, each becomes an answer to a question nobody can see, filed under an empty title - and counted twice, once as kept and once as skipped.",
+    "header": "Applications Gemini",
+    "title": "Prompt\u00a0: ",
+    "time": "2026-01-07T12:00:00.000Z",
+    "products": [
+      "Applications Gemini"
+    ],
+    "safeHtmlItem": [
+      {
+        "html": "<p>Here is the answer you cannot see the question for.</p>"
+      }
+    ]
+  },
+  {
+    "_comment": "A prompt with no recorded reply. Kept: the person did type it.",
+    "header": "Applications Gemini",
+    "title": "Prompt\u00a0: remind me what we said about the roof",
+    "time": "2026-01-07T21:05:00.000Z",
+    "products": [
+      "Applications Gemini"
+    ]
+  }
+]

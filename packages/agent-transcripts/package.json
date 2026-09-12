@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/agent-transcripts",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Read what coding agents already write on disk: a declarative connector format, an interpreter that never evaluates it, and the liveness rules that keep \"last seen\" from becoming \"working\".",
   "keywords": [
     "mnemosyne",

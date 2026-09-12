@@ -1,0 +1,76 @@
+{
+  "_comment": "Written from the fixture by reading it, BEFORE the reader was run over it. turnsOnly is the honest half: this format carries no threads at all.",
+  "source": "gemini-takeout",
+  "turnsOnly": true,
+  "recordsSeen": 6,
+  "conversations": [
+    {
+      "id": null,
+      "title": "what is the boiling point of water at altitude?",
+      "startedAt": "2026-01-04T09:12:00.000Z",
+      "endedAt": "2026-01-04T09:12:00.000Z",
+      "abandonedTurns": 0,
+      "attachments": [],
+      "turns": [
+        {
+          "role": "human",
+          "text": "what is the boiling point of water at altitude?",
+          "at": "2026-01-04T09:12:00.000Z"
+        },
+        {
+          "role": "assistant",
+          "text": "It drops with pressure. At 2 000 m it is about 93 \u00b0C.\n- Sea level: 100\u00b0C\n- Everest: 68\u00b0C",
+          "at": "2026-01-04T09:12:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": null,
+      "title": "draft a packing list for a week in Iceland",
+      "startedAt": "2026-01-05T18:40:30.500Z",
+      "endedAt": "2026-01-05T18:40:30.500Z",
+      "abandonedTurns": 0,
+      "attachments": [
+        "itinerary-3f2a.md",
+        "map_9c11.png"
+      ],
+      "turns": [
+        {
+          "role": "human",
+          "text": "draft a packing list for a week in Iceland",
+          "at": "2026-01-05T18:40:30.500Z"
+        },
+        {
+          "role": "assistant",
+          "text": "Wool layers, a shell, and boots you have already walked in.",
+          "at": "2026-01-05T18:40:30.500Z"
+        }
+      ]
+    },
+    {
+      "id": null,
+      "title": "remind me what we said about the roof",
+      "startedAt": "2026-01-07T21:05:00.000Z",
+      "endedAt": "2026-01-07T21:05:00.000Z",
+      "abandonedTurns": 0,
+      "attachments": [],
+      "turns": [
+        {
+          "role": "human",
+          "text": "remind me what we said about the roof",
+          "at": "2026-01-07T21:05:00.000Z"
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "reason": "empty-prompt",
+      "count": 1
+    },
+    {
+      "reason": "no-prefix",
+      "count": 2
+    }
+  ]
+}

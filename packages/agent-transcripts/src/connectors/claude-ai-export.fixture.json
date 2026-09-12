@@ -1,0 +1,52 @@
+[
+  {
+    "_comment": "SYNTHETIC. This package is public: no real conversation appears here. The SHAPE follows the documented export; the words are invented.",
+    "uuid": "11111111-2222-3333-4444-555555555555",
+    "name": "Sourdough timing",
+    "created_at": "2026-02-02T07:30:00.000000Z",
+    "updated_at": "2026-02-02T07:44:10.000000Z",
+    "chat_messages": [
+      {
+        "uuid": "msg-1",
+        "sender": "human",
+        "created_at": "2026-02-02T07:30:00.000000Z",
+        "text": "My starter doubles in four hours. Is that ready?",
+        "content": [{ "type": "text", "text": "My starter doubles in four hours. Is that ready?" }],
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "msg-2",
+        "sender": "assistant",
+        "created_at": "2026-02-02T07:31:20.000000Z",
+        "text": "Yes. Doubling in four hours at room temperature is a working starter.",
+        "content": [{ "type": "text", "text": "Yes. Doubling in four hours at room temperature is a working starter." }]
+      },
+      {
+        "_comment": "The older field is empty and the turn lives in typed content parts. Both shapes exist in the wild, which is why the connector declares text AND parts.",
+        "uuid": "msg-3",
+        "sender": "human",
+        "created_at": "2026-02-02T07:40:00.000000Z",
+        "text": "",
+        "content": [
+          { "type": "text", "text": "And if the kitchen is cold?" },
+          { "type": "image", "source": { "type": "base64", "media_type": "image/png" } }
+        ]
+      },
+      {
+        "_comment": "MUST BE SKIPPED as 'unknown-role': neither declared role. Guessing here is how a reader files the wrong words as the person's.",
+        "uuid": "msg-4",
+        "sender": "system",
+        "created_at": "2026-02-02T07:41:00.000000Z",
+        "text": "conversation summarised"
+      },
+      {
+        "uuid": "msg-5",
+        "sender": "assistant",
+        "created_at": "2026-02-02T07:44:10.000000Z",
+        "text": "It slows down. Give it eight hours, or find a warmer shelf.",
+        "content": [{ "type": "text", "text": "It slows down. Give it eight hours, or find a warmer shelf." }]
+      }
+    ]
+  }
+]
