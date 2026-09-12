@@ -52,7 +52,28 @@ The three **agent-awareness** tools (`mnemosyne_agents`, `mnemosyne_agent_collis
 
 ## Install — 30 seconds
 
-### Claude Desktop
+### Claude Desktop — one click
+
+Download **[Mnemosyne-OS-MCP-1.10.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.4.5-infinity/Mnemosyne-OS-MCP-1.10.0.mcpb)**
+(4.3 MB, or take the newest `.mcpb` from the [releases page](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)),
+then open Claude Desktop → **Settings → Extensions** and drop the file into that
+panel. That is the whole install. The 25 tools appear straight away, and the same
+panel offers the three optional settings: default vault, other vaults, and the
+port the desktop application listens on.
+
+Two things worth knowing before you do it:
+
+- Claude Desktop shows a red **"unverified developer"** notice first. Every
+  unsigned bundle does. This one is built from the repository linked at the top
+  of this file, by `packages/mcp/scripts/build-mcpb.mjs`.
+- **Double-clicking the file does nothing** if your Claude Desktop came from the
+  Microsoft Store: a Store app does not register the `.mcpb` extension with
+  Windows. Drop it into the Extensions panel instead.
+
+### Claude Desktop — config file
+
+If you would rather not install an extension, or you are on a build that has no
+Extensions panel:
 
 Open Claude Desktop → **Settings → Developer → Edit config** (or edit `claude_desktop_config.json` directly):
 
