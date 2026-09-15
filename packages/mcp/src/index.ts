@@ -373,7 +373,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_resonances',
-    description: 'List active Resonances — cognitive workspaces tracking ongoing projects. Each resonance has a name, status (active/paused), last position (phase), and last activity timestamp. Use this to understand what projects are currently active and where each one stands.',
+    description: 'List the Resonances recorded in the default vault — cognitive workspaces tracking ongoing projects. Read-only: it queries memory and writes nothing. Each entry carries the resonance id, its last phase, how many minutes ago it moved, and the id of the chronicle behind it. There is no active/paused filter and no status field: you get every resonance the scan matched, in one vault, from at most 30 candidates. An empty result answers in words and means no resonance has been recorded yet, never that the call failed. Call mnemosyne_get_position with an id to read one in full, or mnemosyne_update_position to write a new one.',
     inputSchema: {
       type:       'object',
       properties: {},
@@ -381,7 +381,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_get_position',
-    description: 'Get the current position of a specific Resonance — the last known phase and description saved by an agent or the cockpit. Use this at the start of a session to know exactly where work left off.',
+    description: 'Read the last saved position of one Resonance — the phase and the free-text note an agent or the cockpit wrote when it stopped. Read-only: it queries memory and writes nothing. Returns the resonance id, when it was saved, the chronicle spineType, and the whole note. When nothing was ever saved under that id it answers in plain words and points at mnemosyne_update_position, never an error, so "never recorded" and "the call failed" do not look alike. Use it to resume work; call mnemosyne_resonances first when you do not know the id.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -417,7 +417,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_git_log',
-    description: 'Get recent git commits from the Mnemosyne OS monorepo. Use this to understand what changed recently, which phase is active, and what features were shipped.',
+    description: 'Read recent commits from the Mnemosyne OS monorepo. Read-only: it reads the repository and writes nothing. Each commit carries an 8-character hash, the subject line, the author and the date, newest first. The repository path is fixed on the OS side, so this cannot be pointed at another checkout, and it needs the monorepo:read scope; when either is missing it answers with a message naming what is missing instead of an empty list that would read as "no commits". Use it for what changed and when, and mnemosyne_query for the reasoning behind a change.',
     inputSchema: {
       type: 'object',
       properties: {

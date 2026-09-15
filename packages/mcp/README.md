@@ -16,6 +16,7 @@
 [![npm version](https://img.shields.io/npm/v/@mnemosyne_os/mcp)](https://www.npmjs.com/package/@mnemosyne_os/mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js ≥18](https://img.shields.io/badge/node-%3E%3D18-green)](https://nodejs.org)
+[![Mnemosyne OS MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/Mnemosyne-OS/Mnemosyne-Neural-OS/badges/score.svg)](https://glama.ai/mcp/servers/Mnemosyne-OS/Mnemosyne-Neural-OS)
 
 ---
 
