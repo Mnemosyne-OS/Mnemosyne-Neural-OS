@@ -319,7 +319,7 @@ export class MnemoWsClient {
       // Reject (and release the pending entry) if the backend never replies.
       const timer = setTimeout(() => {
         if (this.pending.delete(id)) {
-          reject(new Error(`RPC "${method}" timed out after ${timeoutMs}ms — is Mnemosyne OS running?`));
+          reject(new Error(`RPC "${method}" timed out after ${timeoutMs}ms. Is Mnemosyne OS running?`));
         }
       }, timeoutMs);
       this.pending.set(id, { resolve, reject, timer });

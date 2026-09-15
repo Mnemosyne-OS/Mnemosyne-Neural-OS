@@ -54,9 +54,9 @@ test('renderPhemeWatch says each outcome in its own words, and the closed-window
   assert.match(out, /add topic "agent memory": done/);
   assert.match(out, /add r\/LocalLLaMA: already on the list/);
   assert.match(out, /remove HN "zep": was not on the list/);
-  assert.match(out, /remove r\/ObsidianMD: refused — it is the last entry/);
-  assert.match(out, /add r\/x: refused — the list is full/);
-  assert.match(out, /add r\/r\/: refused — not a usable value/);
+  assert.match(out, /remove r\/ObsidianMD: refused: it is the last entry/);
+  assert.match(out, /add r\/x: refused: the list is full/);
+  assert.match(out, /add r\/r\/: refused: not a usable value/);
   assert.match(renderPhemeWatch({ ok: true, applied: 0, results: [] }), /^No change to Pheme's watch lists\./);
   assert.match(renderPhemeWatch({ ok: false, error: 'NO_PROFILE' }), /has not opened it and finished its onboarding/);
   assert.match(renderPhemeWatch({ ok: false, error: 'TOO_LARGE' }), /size cap. Nothing was written/);
@@ -80,7 +80,7 @@ test('renderPhemeRadar leads with WHEN, orders as given, and says a missing rada
   assert.match(out, /Subs the scan could not cover: r\/private\./);
 
   const none = renderPhemeRadar({ ok: false, error: 'NO_RADAR', lists: { subs: ['LocalLLaMA'], hnQueries: [], topics: [] } }, now);
-  assert.match(none, /not "no threads", no measurement/);
+  assert.match(none, /Not "no threads", no measurement/);
   assert.match(none, /subreddits: r\/LocalLLaMA/);
   const empty = renderPhemeRadar({ ok: true, scannedAt: '2026-09-06T22:00:00.000Z', items: [] }, now);
   assert.match(empty, /scanned 2 days ago .*no Mnemosyne pass yet \(no tiers\): no thread on it/);

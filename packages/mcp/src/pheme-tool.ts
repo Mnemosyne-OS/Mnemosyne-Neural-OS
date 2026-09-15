@@ -76,14 +76,14 @@ function label(kind: PhemeOpKind, value: string): string {
   return kind === 'sub' ? `r/${value}` : kind === 'hnQuery' ? `HN "${value}"` : `topic "${value}"`;
 }
 
-const NO_PROFILE = 'Pheme has no profile on this machine yet: the human has not opened it and finished its onboarding. An agent does not set Pheme up for them — ask them to open Pheme (the reputation cartridge) once, then call again.';
+const NO_PROFILE = 'Pheme has no profile on this machine yet: the human has not opened it and finished its onboarding. An agent does not set Pheme up for them. Ask them to open Pheme (the reputation cartridge) once, then call again.';
 
 function listsBlock(lists: PhemeLists | undefined): string {
   if (!lists) return '';
   const subs = lists.subs.length ? lists.subs.map(s => `r/${s}`).join(', ') : 'none';
   const hn = lists.hnQueries.length ? lists.hnQueries.map(q => `"${q}"`).join(', ') : 'none';
   const topics = lists.topics.length ? lists.topics.join(', ') : 'none';
-  return `\n\nWatched now — subreddits: ${subs}. HN queries: ${hn}. Topics: ${topics}.`;
+  return `\n\nWatched now, subreddits: ${subs}. HN queries: ${hn}. Topics: ${topics}.`;
 }
 
 export function renderPhemeWatch(result: PhemeWatchResult): string {
@@ -102,9 +102,9 @@ export function renderPhemeWatch(result: PhemeWatchResult): string {
       case 'already': return `- ${verb} ${what}: already on the list, nothing changed`;
       case 'absent': return `- ${verb} ${what}: was not on the list, nothing changed`;
       case 'refused':
-        if (r.reason === 'WOULD_EMPTY') return `- ${verb} ${what}: refused — it is the last entry, and an agent never empties one of the human's lists. They can, in Pheme.`;
-        if (r.reason === 'LIST_FULL') return `- ${verb} ${what}: refused — the list is full (the radar cannot lap more).`;
-        return `- ${verb} ${what}: refused — not a usable value.`;
+        if (r.reason === 'WOULD_EMPTY') return `- ${verb} ${what}: refused: it is the last entry, and an agent never empties one of the human's lists. They can, in Pheme.`;
+        if (r.reason === 'LIST_FULL') return `- ${verb} ${what}: refused: the list is full (the radar cannot lap more).`;
+        return `- ${verb} ${what}: refused: not a usable value.`;
       default: return `- ${verb} ${what}: ${String(r.outcome)}`;
     }
   });
@@ -133,7 +133,7 @@ export function renderPhemeRadar(result: PhemeRadarResult, now: number = Date.no
     switch (result.error) {
       case 'NO_PROFILE': return NO_PROFILE;
       case 'NO_RADAR':
-        return 'Pheme has not projected a radar yet: the human has not run a scan since this version, so there is nothing to read — not "no threads", no measurement. Ask them to open Pheme and press Scan; the radar is projected after every scan.' + listsBlock(result.lists);
+        return 'Pheme has not projected a radar yet: the human has not run a scan since this version, so there is nothing to read. Not "no threads", no measurement. Ask them to open Pheme and press Scan; the radar is projected after every scan.' + listsBlock(result.lists);
       default: return `Pheme could not hand the radar over: ${result.error ?? 'unknown error'}.`;
     }
   }

@@ -75,7 +75,7 @@ function renderMail(mail: CockpitMessage[]): string {
   // other agents' broadcasts to the tree — so the heading names the box, and
   // each line names its sender.
   const lines = mail.map(m => `- (${stamp(m.at)}) from ${m.from}: ${m.body}`).join('\n');
-  return `\n\n📬 ${mail.length} message${mail.length > 1 ? 's' : ''} in this session's mailbox (the human's replies on your card, and other agents' notes for this tree) — read ${mail.length > 1 ? 'them' : 'it'} and act on what is addressed to you:\n${lines}`;
+  return `\n\n📬 ${mail.length} message${mail.length > 1 ? 's' : ''} in this session's mailbox (the human's replies on your card, and other agents' notes for this tree). Read ${mail.length > 1 ? 'them' : 'it'} and act on what is addressed to you:\n${lines}`;
 }
 
 export function renderCockpitUpdate(result: CockpitUpdateResult, state: string): string {
@@ -102,7 +102,11 @@ export function renderCockpitUpdate(result: CockpitUpdateResult, state: string):
     return `${why}${waiting}${renderMail(result.messages ?? [])}`;
   }
   const where = result.pinned === false
-    ? 'The human removed this card from the canvas this session; it stays off until they pin it again (the data still reached the host).'
+    // 🚨 Says what actually brings it back. It read "until they pin it again",
+    // which stopped being true on 2026-09-11 (doc 110 §14.8) — and it was the
+    // sentence that would have had an agent give up on its own card, or worse,
+    // pester the human for a gesture that is not the only way out.
+    ? 'The human removed this card from the canvas. It stays off while you keep reporting the same state, and comes back on its own when this session changes state, or when they pin it again (the data still reached the host).'
     : `Card on the canvas: ${state}.`;
   const tree = result.treeIgnored
     ? '\n⚠️ The working directory is not a git working tree, so this card has no mailbox: the human cannot reply to it from the canvas.'

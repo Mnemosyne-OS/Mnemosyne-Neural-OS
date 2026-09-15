@@ -115,7 +115,7 @@ function reachableLine(
   present:  readonly string[] | null | undefined,
 ): string {
   if (declared.length === 0) {
-    return 'This MCP server declares no vault at all — MNEMO_VAULTS is empty in its config.';
+    return 'This MCP server declares no vault at all: MNEMO_VAULTS is empty in its config.';
   }
 
   // An unknown is not a zero. A host that did not answer tells us nothing about
@@ -181,7 +181,7 @@ export function resolveVaultTarget(
     error:
       `UNREACHABLE_VAULT: "${requested}" resolves to "${token || requested}", which this MCP server ` +
       `has no scope for. ${reachableLine(declared, present)} ` +
-      `Pass the vault TOKEN (folder name, uppercased, spaces and hyphens as underscores) — not the ` +
+      `Pass the vault TOKEN (folder name, uppercased, spaces and hyphens as underscores), not the ` +
       `path-shaped id. If this vault should be reachable, add its token to MNEMO_VAULTS in the MCP ` +
       `server config and restart it.`,
   };

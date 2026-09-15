@@ -72,7 +72,7 @@ export async function loadAgents(
         error: [
           'No agent transcript folder found. Nothing was read.',
           'Looked for:',
-          looked || '  (no source enabled — check MNEMO_AGENT_SOURCES)',
+          looked || '  (no source enabled: check MNEMO_AGENT_SOURCES)',
           '',
           'Set MNEMO_AGENT_SESSIONS in this server\'s MCP config to the folder your agent writes sessions to.',
         ].join('\n'),
@@ -117,7 +117,7 @@ export function renderSession(row: SourcedSession, now = Date.now()): string {
 export function renderProvenance(v: ReadAllResult): string {
   const lines = [''];
   for (const r of v.roots) {
-    lines.push(`Read ${r.id} from ${r.root}${r.declared ? ' (declared)' : ''} — ${r.found} transcript(s) found.`);
+    lines.push(`Read ${r.id} from ${r.root}${r.declared ? ' (declared)' : ''}: ${r.found} transcript(s) found.`);
   }
   if (v.missing.length > 0) {
     // Not an error: most machines run one agent. But "that folder was never
@@ -206,13 +206,13 @@ export function renderCollisions(
   let identified = false;
   for (const g of groups) {
     const harnesses = new Set(g.sessions.map(s => agentOf.get(s)?.agent ?? '?'));
-    const across = harnesses.size > 1 ? `  ⚠ ${[...harnesses].join(' + ')} — neither can see the other` : '';
+    const across = harnesses.size > 1 ? `  ⚠ ${[...harnesses].join(' + ')}: neither can see the other` : '';
     const self = findSelf(g.sessions, selfId);
     if (self) identified = true;
     const count = self
       ? `${g.sessions.length} sessions, ${g.sessions.length - 1} of them not you`
       : `${g.sessions.length} sessions`;
-    out.push(`${g.projectPath ?? 'unknown project'} · ${g.branch ?? 'unknown branch'} — ${count}${across}`);
+    out.push(`${g.projectPath ?? 'unknown project'} · ${g.branch ?? 'unknown branch'}: ${count}${across}`);
     for (const s of g.sessions) {
       const row = agentOf.get(s);
       if (row) out.push(`${renderSession(row, now)}${s === self ? '  ← you' : ''}`);
@@ -352,7 +352,7 @@ export async function handleAgentTool(
 
   const capped = view.sessions.filter(r => r.session.artifactsCapped).length;
   return [
-    `${rows.length} file(s), newest session first. Paths only — this tool never returns file contents.`,
+    `${rows.length} file(s), newest session first. Paths only: this tool never returns file contents.`,
     '',
     ...rows,
     capped > 0 ? `\n${capped} session(s) hit their own file ceiling, so their lists are short by whatever they wrote past it.` : '',

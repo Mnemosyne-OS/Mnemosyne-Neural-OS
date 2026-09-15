@@ -101,7 +101,7 @@ export function voiceError(code: string | undefined): string {
     return `${raw}\n\nThat engine has fixed voices. Use "xtts", "chatterbox" or "zonos" to clone, or drop the clone argument.`;
   }
   if (raw.startsWith('ENGINE_NOT_INSTALLED') || raw.startsWith('NO_CLONING_ENGINE') || raw.startsWith('NO_TTS_ENGINE')) {
-    return `${raw}\n\nThe user installs local voices from Settings → Voice in the Mnemosyne OS app. This is a multi-GB download — tell them rather than waiting.`;
+    return `${raw}\n\nThe user installs local voices from Settings → Voice in the Mnemosyne OS app. This is a multi-GB download, so tell them rather than waiting.`;
   }
   if (raw.startsWith('SCOPE_DENIED') || raw.startsWith('INTENT_DENIED')) {
     return `${raw}\n\nVoice rendering was not authorized for this MCP. It needs MNEMO_VOICE=1 in the MCP config AND the human approving the "voice:speak" permission when the app asks.`;
@@ -152,12 +152,12 @@ export function renderReport(job: VoiceJobLike, waited: number): string {
 
   if (job.state === 'done') {
     const warn = job.cloneWarning
-      ? `\n\n⚠ The reference voice had a problem: ${job.cloneWarning}. Listen before publishing — the resemblance may be poor.`
+      ? `\n\n⚠ The reference voice had a problem: ${job.cloneWarning}. Listen before publishing: the resemblance may be poor.`
       : '';
     return `# Voice-over ready\n\n**File:** \`${job.path}\`\n`
       + `**Length:** ${job.seconds === null || job.seconds === undefined ? 'unknown' : `${job.seconds}s`}\n`
       + `**Voice:** ${job.clone ?? 'the engine\'s built-in voice'} on ${job.engine ?? 'the local engine'}${progress}\n`
-      + `${warn}\n\nTell the user the path. The file is a WAV — every video editor reads it.`;
+      + `${warn}\n\nTell the user the path. The file is a WAV, and every video editor reads it.`;
   }
   if (job.state === 'failed') {
     return `# Render failed\n\n${voiceError(job.error ?? undefined)}\n\nJob \`${job.id}\`, stopped at segment ${done + 1} of ${total}. No file was written.`;
@@ -167,8 +167,8 @@ export function renderReport(job: VoiceJobLike, waited: number): string {
   }
   // Still rendering.
   const eta = typeof job.etaSeconds === 'number' ? `, about ${human(job.etaSeconds)} left` : '';
-  return `# Still rendering\n\nJob \`${job.id}\` — ${done}/${total} segments done${eta}.\n\n`
+  return `# Still rendering\n\nJob \`${job.id}\`: ${done}/${total} segments done${eta}.\n\n`
     + `${waited > 0 ? `Waited ${human(waited)}; ` : ''}`
     + `synthesis runs at roughly real time, so a long script takes as long as it plays. `
-    + `Call mnemosyne_speak_status with this job id to check again — do NOT start the render over.`;
+    + `Call mnemosyne_speak_status with this job id to check again. Do NOT start the render over.`;
 }

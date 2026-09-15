@@ -45,7 +45,7 @@ function renderLost(result: AgendaAddResult): string {
     parts.push(`${result.skipped} ${result.skipped === 1 ? 'was' : 'were'} refused (missing title or unreadable start time)`);
   }
   if (typeof result.truncated === 'number' && result.truncated > 0) {
-    parts.push(`${result.truncated} beyond the host's per-call cap ${result.truncated === 1 ? 'was' : 'were'} not looked at — file ${result.truncated === 1 ? 'it' : 'them'} in another call`);
+    parts.push(`${result.truncated} beyond the host's per-call cap ${result.truncated === 1 ? 'was' : 'were'} not looked at, file ${result.truncated === 1 ? 'it' : 'them'} in another call`);
   }
   return parts.length ? ` ${parts.join('; ')}.` : '';
 }
@@ -89,13 +89,13 @@ export function renderAgendaAdd(result: AgendaAddResult, asked: number): string 
       return `Nothing to file: every event was missing a title or a readable start time.${renderLost(result)}`;
     case 'NO_WINDOW':
     case 'NO_CALENDAR':
-      return 'This host cannot reach a calendar at all. That is not "the app is closed" — a closed app is written to directly — so check that this is a Mnemosyne OS install with a workspace configured.';
+      return 'This host cannot reach a calendar at all. That is not "the app is closed", since a closed app is written to directly, so check that this is a Mnemosyne OS install with a workspace configured.';
     case 'NO_VAULT':
       return 'No workspace is configured on this machine, so there is no calendar file yet. The human picks a vault folder in the app first.';
     case 'TIMEOUT':
       return 'The app did not answer in time. Nothing was written. Is the canvas open? Try again once the window is up.';
     case 'WRITE_FAILED':
-      return 'The app refused the write — the calendar file was not readable yet, or the disk said no. Nothing was written; try again in a moment.';
+      return 'The app refused the write: the calendar file was not readable yet, or the disk said no. Nothing was written; try again in a moment.';
     default:
       return `The calendar refused: ${result.error ?? 'unknown error'}. Nothing was written.`;
   }

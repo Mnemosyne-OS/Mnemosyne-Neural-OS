@@ -382,7 +382,7 @@ describe('knowing which session is asking', () => {
     const f = twoInOneTree();
     try {
       const out = await handleAgentTool('mnemosyne_agent_collisions', {}, f.env, NOW);
-      assert.match(out, /— 2 sessions/);
+      assert.match(out, /: 2 sessions/);
       assert.doesNotMatch(out, /not you/);
       assert.doesNotMatch(out, /← you/);
     } finally { f.cleanup(); }
@@ -409,7 +409,7 @@ describe('knowing which session is asking', () => {
       assert.match(out, /did not reach this server/);
       assert.match(out, /count is one too high/);
       // The count itself stays honest — an unknown id never becomes a subtraction.
-      assert.match(out, /— 2 sessions/);
+      assert.match(out, /: 2 sessions/);
       assert.doesNotMatch(out, /not you/);
     } finally { f.cleanup(); }
   });
@@ -450,7 +450,7 @@ describe('knowing which session is asking', () => {
     try {
       const env = { ...f.env, CLAUDE_CODE_SESSION_ID: 'the asker' } as NodeJS.ProcessEnv;
       const out = await handleAgentTool('mnemosyne_agent_collisions', {}, env, NOW);
-      assert.match(out, /— 2 sessions/);
+      assert.match(out, /: 2 sessions/);
       assert.doesNotMatch(out, /could not be determined/);
       assert.doesNotMatch(out, /count is one too high/);
       assert.doesNotMatch(out, /not you/);

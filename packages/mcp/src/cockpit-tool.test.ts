@@ -51,7 +51,13 @@ test('a cwd outside any git tree sends no tree — the host then says the card h
 
 test('the answer says where the card is, and hands over the mail to act on', () => {
   assert.match(renderCockpitUpdate({ ok: true, pinned: true, messages: [] }, 'working'), /Card on the canvas: working\./);
-  assert.match(renderCockpitUpdate({ ok: true, pinned: false, messages: [] }, 'done'), /removed this card/);
+  const off = renderCockpitUpdate({ ok: true, pinned: false, messages: [] }, 'done');
+  assert.match(off, /removed this card/);
+  // 🚨 And what brings it back, or an agent reads "gone until a human acts" and
+  // either gives up on its card or pesters them for a gesture that is not the
+  // only way out (doc 110 §14.8).
+  assert.match(off, /same state/);
+  assert.match(off, /changes state/);
   const s = renderCockpitUpdate({
     ok: true, pinned: true,
     messages: [{ from: 'the human, from the cockpit', at: '2026-09-06T01:02:03.000Z', subject: 'Stop', body: 'Stop, use the other branch.' }],

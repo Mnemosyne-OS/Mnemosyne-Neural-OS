@@ -67,7 +67,7 @@ function renderTodoLost(result: TodoAddResult): string {
   const parts: string[] = [];
   if (d.empty > 0) parts.push(`${d.empty} line${d.empty === 1 ? '' : 's'} had no text`);
   if (d.overflow > 0) {
-    parts.push(`${d.overflow} past the per-call cap ${d.overflow === 1 ? 'was' : 'were'} not filed — send ${d.overflow === 1 ? 'it' : 'them'} in another call`);
+    parts.push(`${d.overflow} past the per-call cap ${d.overflow === 1 ? 'was' : 'were'} not filed, send ${d.overflow === 1 ? 'it' : 'them'} in another call`);
   }
   return parts.length ? ` ${parts.join('; ')}.` : '';
 }
@@ -89,7 +89,7 @@ export function renderTodoAdd(result: TodoAddResult, asked: number): string {
     : '';
   switch (result.error) {
     case 'LIST_NOT_FOUND':
-      return `No list by that name.${lists}\nPick one of them, or call again with create_list: true to make a new one — never assume a default.`;
+      return `No list by that name.${lists}\nPick one of them, or call again with create_list: true to make a new one, never assume a default.`;
     case 'LIST_NAME_EMPTY':
       return 'The list name was empty. Name an existing list or pass create_list: true with a name.';
     case 'EMPTY_PLAN':
@@ -98,13 +98,13 @@ export function renderTodoAdd(result: TodoAddResult, asked: number): string {
     case 'NO_BACKLOG':
       // A closed app is no longer a refusal (the host writes the file itself),
       // so reaching here means this host has no backlog at all.
-      return 'This host cannot reach a To-do backlog at all. That is not "the app is closed" — a closed app is written to directly — so check that this is a Mnemosyne OS install with a workspace configured.';
+      return 'This host cannot reach a To-do backlog at all. That is not "the app is closed", since a closed app is written to directly, so check that this is a Mnemosyne OS install with a workspace configured.';
     case 'NO_VAULT':
       return 'No workspace is configured on this machine, so there is no backlog file yet. The human picks a vault folder in the app first.';
     case 'TIMEOUT':
       return 'The app did not answer in time. Nothing was written. Is the canvas open? Try again once the window is up.';
     case 'WRITE_FAILED':
-      return 'The app refused the write — the backlog file was not readable yet, or the disk said no. Nothing was written; try again in a moment.';
+      return 'The app refused the write: the backlog file was not readable yet, or the disk said no. Nothing was written; try again in a moment.';
     default:
       return `The backlog refused: ${result.error ?? 'unknown error'}. Nothing was written.${lists}`;
   }
