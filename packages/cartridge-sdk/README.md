@@ -173,6 +173,13 @@ not ask on your behalf.
   only ever reach **your own** vault.
 - Sandbox vaults are walled off (no federated RAG, no neural map, no Dream
   State) until the human unlocks permanence — see `docs/architecture/58`.
+- **Synaptic P2P.** The owner may GIVE your vault to a contact to read (nothing
+  is written on your side; no declaration needed). Your vault may become a
+  SHARED COPY between people only if your manifest says so:
+  `"p2p": { "acceptsSharedFiles": true }` — other members' `.md`/`.txt` files
+  will then land in the folder you watch, files you did not write (and
+  `name (Alice).md` copies after a conflict). Absent means `false`: the host
+  refuses the vault as a shared copy, by name. Declared, never deduced.
 
 ---
 
