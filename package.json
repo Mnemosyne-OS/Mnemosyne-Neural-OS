@@ -18,7 +18,8 @@
   "pnpm": {
     "overrides": {
       "browserslist": ">=4.28.7 <5.0.0",
-      "brace-expansion": ">=2.1.4 <3.0.0"
+      "brace-expansion": ">=2.1.4 <3.0.0",
+      "tsup>esbuild": ">=0.28.1 <0.29.0"
     }
   }
 }
