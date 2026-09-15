@@ -11,7 +11,7 @@
 # @mnemosyne_os/mcp
 
 > **Give Claude, Cursor, Hermes Agent, Copilot, and any MCP-compatible agent access to your local Mnemosyne OS memory vault.**
-> Code, decisions, architecture notes, git history — semantically queryable, 100% sovereign, zero cloud.
+> Code, decisions, architecture notes, git history, semantically queryable. The vaults stay on your machine, and this server opens exactly one socket: `127.0.0.1:7799`.
 
 [![npm version](https://img.shields.io/npm/v/@mnemosyne_os/mcp)](https://www.npmjs.com/package/@mnemosyne_os/mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -385,13 +385,42 @@ DocWatch ingests on file save with a small delay. Check the spine: if you wrote 
 
 ---
 
-## Privacy
+## Privacy Policy
 
-- The MCP **never** talks to any cloud directly. It only opens a WebSocket to `127.0.0.1:7799` on your machine.
-- Embedding (when enabled) is done by Mnemosyne OS Infinity using **your** Vertex AI / local model — never the MCP's.
-- No telemetry. No usage tracking. The MCP itself is a 16 KB stateless bridge.
-- Your AI agent (Claude / Cursor / Copilot) sees only the chronicles you allow via tool calls — never your raw vault file or vector store.
-- The agent-awareness tools read transcript files locally and return **metadata only**. They never open a network connection at all.
+This server is a bridge, not a service. It has no backend of its own, no account and no
+hosted endpoint: it opens a WebSocket to `127.0.0.1:7799` on your own machine and relays to
+the Mnemosyne OS desktop application running there.
+
+**What it collects.** Nothing. No telemetry, no usage tracking, no analytics, no crash
+reporting. It holds no identifier for you and never asks for one.
+
+**What it stores.** Nothing of its own — it is stateless between calls. Your chronicles live
+in vaults on your disk, written and managed by the desktop application. The agent-awareness
+tools read your coding agents' transcript files locally and return **metadata only** (paths,
+counts, timestamps), never the text of a message or the contents of a file, and they open no
+network connection at all.
+
+**Who else sees it.** Two parties, both of them your choice, and nobody beyond them:
+
+- **Your MCP client.** Whatever a tool returns goes to the AI client you connected — Claude,
+  Cursor, another — and travels wherever that client sends it. That is what the server is
+  for, and it is the line worth reading twice: a chronicle you let an agent read leaves your
+  machine if your client is a cloud model. Narrow `MNEMO_VAULTS` to the domains a given agent
+  should reach. A vault left out is refused, including vaults that exist on the machine.
+- **The desktop application**, for whatever you configured there yourself — a cloud model, a
+  cloud embedder. Those calls are the application's, made with your own keys. This server
+  neither makes them nor sees them.
+
+The server itself shares with no one, sells nothing and rents nothing.
+
+**How long it is kept.** By this server, not at all. In the application, for as long as you
+keep it: memory is deleted where it is made, in the app and by you. ⚠️ `mnemosyne_ingest`
+writes a **permanent** chronicle — the one call here that cannot be undone from the agent
+side afterwards.
+
+**Contact.** Privacy questions: **dev@mnemosyne-os.com** — XPACEGEMS LLC, 2932 NW 72 Ave,
+Miami, FL 33122, USA. Full policy: <https://mnemosyne-os.io/confidentialite>. Bugs and
+security reports: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues>.
 
 ---
 
