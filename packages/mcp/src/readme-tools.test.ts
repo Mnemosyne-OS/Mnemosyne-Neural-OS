@@ -33,12 +33,19 @@ function toolsIn(block: string): string[] {
   return [...block.matchAll(/name:\s*'(mnemosyne_[a-z_]+)'/g)].map((m) => m[1]!);
 }
 
-// VOICE_TOOLS is declared after TOOLS, so the split separates the two decks.
-const [beforeVoice, afterVoice] = SOURCE.split('const VOICE_TOOLS');
+// Three decks, each behind its own gate, declared in this order: TOOLS,
+// VOICE_TOOLS (MNEMO_VOICE=1), FORGET_TOOLS (MNEMO_FORGET=1). Splitting on the
+// two later declarations is what keeps a gated tool from being counted as an
+// always-on one — and keeps the erasure tool out of the voice total, which
+// would otherwise promise it to anyone who set MNEMO_VOICE and nothing else.
+const [beforeVoice, afterVoice]   = SOURCE.split('const VOICE_TOOLS');
 assert.ok(afterVoice, 'index.ts no longer declares VOICE_TOOLS — update this guard');
+const [voiceBlock, forgetBlock]   = afterVoice.split('const FORGET_TOOLS');
+assert.ok(forgetBlock, 'index.ts no longer declares FORGET_TOOLS — update this guard');
 
 const ALWAYS_ON = toolsIn(beforeVoice!);
-const VOICE     = toolsIn(afterVoice);
+const VOICE     = toolsIn(voiceBlock!);
+const FORGET    = toolsIn(forgetBlock);
 
 /** A tool counts as documented when it has its own bolded-code mention. */
 const documented = new Set(
@@ -48,10 +55,11 @@ const documented = new Set(
 test('the deck is non-empty, so a parse failure cannot pass as a green test', () => {
   assert.ok(ALWAYS_ON.length >= 10, `parsed only ${ALWAYS_ON.length} always-on tools`);
   assert.ok(VOICE.length >= 1, `parsed only ${VOICE.length} voice tools`);
+  assert.ok(FORGET.length >= 1, `parsed only ${FORGET.length} erasure tools`);
 });
 
 test('every registered tool is documented in the README', () => {
-  const missing = [...ALWAYS_ON, ...VOICE].filter((t) => !documented.has(t));
+  const missing = [...ALWAYS_ON, ...VOICE, ...FORGET].filter((t) => !documented.has(t));
   assert.deepEqual(
     missing,
     [],
@@ -60,7 +68,7 @@ test('every registered tool is documented in the README', () => {
 });
 
 test('the README documents no tool the server does not register', () => {
-  const registered = new Set([...ALWAYS_ON, ...VOICE]);
+  const registered = new Set([...ALWAYS_ON, ...VOICE, ...FORGET]);
   const ghosts = [...documented].filter((t) => !registered.has(t));
   assert.deepEqual(
     ghosts,
@@ -79,12 +87,12 @@ test('the tools heading states the always-on count', () => {
   );
 });
 
-test('the total quoted under that heading includes the voice tools', () => {
+test('the total quoted under that heading counts every gated tool', () => {
   const m = README.match(/for (\d+) in all/);
   assert.ok(m, 'the "for N in all" total is gone or was reworded');
   assert.equal(
     Number(m![1]),
-    ALWAYS_ON.length + VOICE.length,
-    `total says ${m![1]}, the server registers ${ALWAYS_ON.length + VOICE.length} with MNEMO_VOICE=1`,
+    ALWAYS_ON.length + VOICE.length + FORGET.length,
+    `total says ${m![1]}, the server registers ${ALWAYS_ON.length + VOICE.length + FORGET.length} with every gate open`,
   );
 });

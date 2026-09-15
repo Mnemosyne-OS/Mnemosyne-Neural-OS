@@ -74,7 +74,7 @@ test('a cancelled render is its own state, not a failure', () => {
 test('UNKNOWN_CLONE tells the agent to ASK, not to guess again', () => {
   const out = voiceError('UNKNOWN_CLONE:narrateur — available: default');
   assert.match(out, /Do NOT retry with another name/);
-  assert.match(out, /mnemosyne_voices/);
+  assert.match(out, /mnemosyne_voice_list/);
   // The reason, spelled out — a wrong-voice render is not a visible failure.
   assert.match(out, /sounds perfectly fine and is worthless/);
 });

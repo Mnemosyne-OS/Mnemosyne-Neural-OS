@@ -35,7 +35,7 @@ Once configured, your agent can:
 - 🎯 **Resume** projects exactly where you left off via Resonance positions.
 - 📡 **Filter** results by spineType (`ARCHITECTURE`, `GIT`, `SOURCE_CODE`, `BUGFIX`, …).
 
-**The MCP itself opens exactly one socket: `127.0.0.1:7799`.** It sends nothing anywhere else and keeps no state. Your `claude.ai` conversation sees only the chronicles you allow. What Mnemosyne OS does behind that socket follows the route you configured — `mnemosyne_ask` runs whichever model you picked, local or cloud.
+**The MCP itself opens exactly one socket: `127.0.0.1:7799`.** It sends nothing anywhere else and keeps no state. Your `claude.ai` conversation sees only the chronicles you allow. What Mnemosyne OS does behind that socket follows the route you configured — `mnemosyne_memory_ask` runs whichever model you picked, local or cloud.
 
 ---
 
@@ -45,7 +45,7 @@ Once configured, your agent can:
 
 The **memory** tools additionally need **[Mnemosyne OS Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)** running — it owns your vaults and exposes the WebSocket gateway on `ws://127.0.0.1:7799`. Get it from the project repo's releases page.
 
-The three **agent-awareness** tools (`mnemosyne_agents`, `mnemosyne_agent_collisions`, `mnemosyne_agent_files`) need neither. They read transcript files your coding-agent harness already writes to disk, so they answer with the app closed, with no vault, and without spending a token. They read **every** harness they find, so a Claude Code session can see an Antigravity session running in the same repository.
+The three **agent-awareness** tools (`mnemosyne_agent_list`, `mnemosyne_agent_collisions`, `mnemosyne_agent_files`) need neither. They read transcript files your coding-agent harness already writes to disk, so they answer with the app closed, with no vault, and without spending a token. They read **every** harness they find, so a Claude Code session can see an Antigravity session running in the same repository.
 
 > **The MCP is a thin bridge.** It does not store anything itself. All data lives in Mnemosyne OS Infinity (`%APPDATA%\@mnemosyne-workspace\infinity-edition\vaults\*.db` on Windows, `~/Library/Application Support/...` on macOS).
 
@@ -213,9 +213,9 @@ Mnemosyne OS ships local, offline text-to-speech engines that can clone a voice 
 
 | Tool | What it does |
 |---|---|
-| **`mnemosyne_voices`** | List the local engines (installed or not) and the reference voices available for cloning. Call it first. |
-| **`mnemosyne_speak`** | Render a script to a WAV. Long scripts are split at sentence boundaries and re-assembled into one file — nothing is truncated. Returns a job; the tool waits, then hands back a job id if the render is still going. |
-| **`mnemosyne_speak_status`** | Poll or cancel a render; returns the file path when it is done. |
+| **`mnemosyne_voice_list`** | List the local engines (installed or not) and the reference voices available for cloning. Call it first. |
+| **`mnemosyne_voice_speak`** | Render a script to a WAV. Long scripts are split at sentence boundaries and re-assembled into one file — nothing is truncated. Returns a job; the tool waits, then hands back a job id if the render is still going. |
+| **`mnemosyne_voice_status`** | Poll or cancel a render; returns the file path when it is done. |
 
 **Off by default, and on purpose.** Turning it on makes Mnemosyne ask *you* to authorize `voice:speak` — a permission that is never auto-granted, not even to first-party apps like this one, because its subject is your identity rather than your data. You approve it once, in a dialog that says what it means.
 
@@ -229,7 +229,7 @@ What it will not do: it never creates or records a voice (you do that in the app
 
 Open a new conversation with your agent and ask, for example:
 
-> *Use mnemosyne_query to search my vault for "authentication flow", spine_type_filter ARCHITECTURE only.*
+> *Use mnemosyne_memory_query to search my vault for "authentication flow", spine_type_filter ARCHITECTURE only.*
 
 You should see a structured response with 5–10 chronicles, each tagged with its spineType, score, source, and a content snippet. If the agent says it cannot connect, see [Troubleshooting](#troubleshooting).
 
@@ -238,15 +238,17 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 ## The 25 tools your agent gets
 
 Twenty-two below, plus the three that read the other agents on this machine. Setting
-`MNEMO_VOICE=1` adds the three voice tools documented further up, for 28 in all.
+`MNEMO_VOICE=1` adds the three voice tools documented further up, and `MNEMO_FORGET=1`
+adds the erasure tool, for 29 in all.
 
 | Tool | What it does |
 |---|---|
 | **`mnemosyne_about`** | Re-read the briefing you were handed on connect: the governance tenet, the vault protection model (NORMAL / MAXIMUM, `mixableWith`, isolated sandbox vaults), the spine model, and what an agent working on someone's memory must and must not do. Call it if your client did not surface the server instructions, or any time you want them again. |
-| **`mnemosyne_query`** | Semantic search — returns raw chronicles ranked by cosine × spineType weight (SOURCE_CODE scope by default). Supports `spine_type_filter`, `max_content_chars`, `limit` (≤ 50). |
-| **`mnemosyne_ask`** | **Ask Mnemosyne a question, get a synthesized prose answer** grounded in the vault (RAG+LLM), plus its source chronicles. Use for "why / who / how" questions that need reasoning across many memories. Slower than `query` (runs the LLM). |
-| **`mnemosyne_vaults`** | List the vaults Mnemosyne OS exposes (id, name, chronicle count) — call it to discover valid `vault` targets. |
-| **`mnemosyne_ingest`** | Persist a memory — pick a `spine_type` (ARCHITECTURE / DECISION / BUGFIX / FEATURE / NOTE / SESSION / RESONANCE / CUSTOM). |
+| **`mnemosyne_memory_query`** | Semantic search — returns raw chronicles ranked by cosine × spineType weight (SOURCE_CODE scope by default). Supports `spine_type_filter`, `max_content_chars`, `limit` (≤ 50). |
+| **`mnemosyne_memory_ask`** | **Ask Mnemosyne a question, get a synthesized prose answer** grounded in the vault (RAG+LLM), plus its source chronicles. Use for "why / who / how" questions that need reasoning across many memories. Slower than `query` (runs the LLM). |
+| **`mnemosyne_vault_list`** | List the vaults Mnemosyne OS exposes (id, name, chronicle count) — call it to discover valid `vault` targets. |
+| **`mnemosyne_memory_forget`** | Erase one chronicle for good, by the id `mnemosyne_memory_query` returned. Absent unless you set `MNEMO_FORGET=1`, and the host wants the `FORGET` intent on top of that: erasure is the one thing here that writing again cannot undo, so it is armed by hand or not at all. |
+| **`mnemosyne_memory_ingest`** | Persist a memory — pick a `spine_type` (ARCHITECTURE / DECISION / BUGFIX / FEATURE / NOTE / SESSION / RESONANCE / CUSTOM). |
 | **`mnemosyne_todo_add`** | Put tasks into the human's **To-do backlog** (the widget on their canvas), in order, optionally under named steps — "make tasks out of everything we said we would do". Name the `list` or pass `create_list: true`; an unknown name is refused with the lists that exist, never filed under a default. With a window the write goes through the widget's own store; on macOS with the window closed the host writes the file directly. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:write`. |
 | **`mnemosyne_cockpit_update`** | Your own **status card** on the human's canvas (the cockpit): `state` working / waiting / done / blocked / closed, a `title`, one `status` line, up to 4 `detail` lines. Declared, never inferred — the host prints your state next to the time since your last call, so call at real milestones. "waiting" and "blocked" make the card pulse and the taskbar flash. The answer carries the messages the human left on your card (its mailbox) — read and act on them. Needs the app window open (the card lives on the canvas). Scope `cockpit:write`. |
 | **`mnemosyne_pheme_watch`** | Put a subreddit, a Hacker News query or a topic on the human's **Pheme radar** (their reputation cartridge), or take one off. The lists are theirs: an op that would empty one is refused, each op reports its own outcome, and the human sees a receipt in Pheme naming the agent and what changed. Nothing here posts anywhere. Needs the app running; Pheme itself may be closed. Scope `pheme:profile`. |
@@ -254,13 +256,13 @@ Twenty-two below, plus the three that read the other agents on this machine. Set
 | **`mnemosyne_agenda_add`** | Put appointments or deadlines into the human's **calendar** (the Agenda widget on their canvas) — "add this to my calendar", a deadline, a meeting. `start` (and optional `end`) are ISO 8601; no timezone offset is read as the human's own machine local time. Supports `all_day`, `recurrence` (daily/weekly/monthly/yearly), and `alarm_minutes_before` for a reminder. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. To CHANGE or REMOVE one, see `mnemosyne_agenda_update` and `mnemosyne_agenda_remove` below. Scope `agenda:write`. |
 | **`mnemosyne_todo_list`** | **Read the backlog back** — the lists, and every task with the **id** you need to change it. Call it before `mnemosyne_todo_update`: that tool names tasks by id and never by text, because "delete the task about the invoice" is how the wrong task goes, in a sentence that reads perfectly either way. Filters by `list`, `include_done`, `limit`; the archive is counted, never listed. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:read`. |
 | **`mnemosyne_todo_update`** | **Change tasks**: `edit`, `complete`, `move`, `remove`. Every op names an id from `mnemosyne_todo_list`. `remove` **archives** by default (recoverable); `permanent: true` deletes outright and must be asked for. The batch applies in order as one save, and each op reports its own outcome, so a stale id does not sink the ones around it. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:write`. |
-| **`mnemosyne_todo_lists`** | **Manage the lists themselves**: `list.create`, `list.edit` (rename / recolour), `list.remove`. A list that still holds tasks is never removed — you are told how many are in the way, because picking a destination on someone's behalf is how a tidy-up becomes a loss. The three original lists can be renamed but not removed. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:write`. |
+| **`mnemosyne_todo_categories`** | **Manage the lists themselves**: `list.create`, `list.edit` (rename / recolour), `list.remove`. A list that still holds tasks is never removed — you are told how many are in the way, because picking a destination on someone's behalf is how a tidy-up becomes a loss. The three original lists can be renamed but not removed. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `todo:write`. |
 | **`mnemosyne_agenda_list`** | **Read the calendar back** — appointments in a time window, each with the **id** the two tools below require. A repeating event appears once, with its cadence and its next occurrence. An event with nothing left to happen says so rather than showing its original start as a future date. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `agenda:read`. |
 | **`mnemosyne_agenda_update`** | **Change an appointment**: move it, rename it, add or drop a reminder, start or stop it repeating. A field left out is left alone; `null` clears it. An unreadable date **refuses** the change rather than leaving the old one silently in place, and an unknown cadence is refused rather than quietly made a one-off. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `agenda:write`. |
 | **`mnemosyne_agenda_remove`** | **Remove appointments, by id only** — never by title, never by date range. ⚠️ The calendar has **no archive**: unlike a To-do task, a removed appointment is gone, so the answer names each one by title and start time for the human to check. A repeating appointment goes as the whole series; the calendar cannot cancel one occurrence. Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running. Scope `agenda:write`. |
-| **`mnemosyne_resonances`** | List active Resonances (cognitive workspaces / ongoing projects). |
-| **`mnemosyne_get_position`** | Get the last saved position of a Resonance — phase, what was done. |
-| **`mnemosyne_update_position`** | Save current position — persisted as a `DECISION` chronicle. |
+| **`mnemosyne_resonance_list`** | List active Resonances (cognitive workspaces / ongoing projects). |
+| **`mnemosyne_position_get`** | Get the last saved position of a Resonance — phase, what was done. |
+| **`mnemosyne_position_update`** | Save current position — persisted as a `DECISION` chronicle. |
 | **`mnemosyne_git_log`** | Recent commits from the active monorepo (requires `monorepo:read` scope). |
 | **`mnemosyne_spine_assignments`** | How the memories were actually classified: chronicle-to-spine assignments for a vault, newest first, with whole-vault counts per spine and, on request, the taxonomy tree. It is also where the taxon ids come from, so read it instead of guessing a `spine_type_filter`. |
 | **`mnemosyne_dream_bridges`** | The links the Dream State engine found on its own while the machine sat idle, each with its score and an excerpt of both sides, sometimes across two vaults. An empty list is the normal answer and means it has produced none yet, never that the query failed. |
@@ -272,7 +274,7 @@ These three read the transcripts coding-agent harnesses already write to disk. *
 | Tool | What it does |
 |---|---|
 | **`mnemosyne_agent_collisions`** | **Are two agent sessions live on the same project and branch right now?** Call it before `git add -A`, before a commit and before a rebase: the git index is shared by every process in one working tree, so a commit from one session picks up whatever the other has staged. |
-| **`mnemosyne_agents`** | The sessions on this machine — conversation name, project, branch, model, last tool, file count, and when a line was last written. |
+| **`mnemosyne_agent_list`** | The sessions on this machine — conversation name, project, branch, model, last tool, file count, and when a line was last written. |
 | **`mnemosyne_agent_files`** | Which files other sessions recently wrote, newest first, with the session each came from. Paths and timestamps only. |
 
 **No configuration needed.** Every shipped connector whose folder exists on this machine is read, and each answer names the folders it actually opened. Override only if your agent writes somewhere unusual:
@@ -315,7 +317,7 @@ that would add a phantom session to every warning.
 
 A file is marked `recorded` when the harness logged a file-writing tool call, and `from a command` when a redirection was read out of a shell command that may never have completed. Those are different kinds of fact and are never merged.
 
-### `mnemosyne_query` — full parameter reference
+### `mnemosyne_memory_query` — full parameter reference
 
 ```ts
 {
@@ -335,28 +337,28 @@ The MCP automatically opts into the semantic ranking branch (Vertex 768D / e5-ba
 
 ```
 At session start
-  agent → mnemosyne_get_position("my-project")
+  agent → mnemosyne_position_get("my-project")
         ← phase, last position, what was being worked on
 
 During the session
-  agent → mnemosyne_query("auth refactor decisions",
+  agent → mnemosyne_memory_query("auth refactor decisions",
                           spine_type_filter=["ARCHITECTURE","DECISION"])
         ← top 10 chronicles, ranked by relevance
 
 When making a decision worth keeping
-  agent → mnemosyne_ingest(
+  agent → mnemosyne_memory_ingest(
             content="Chose JWT over session cookies because we need stateless
                      workers; trade-off: token revocation needs a denylist.",
             spine_type="DECISION")
 
 At session end
-  agent → mnemosyne_update_position("my-project",
+  agent → mnemosyne_position_update("my-project",
                                      position="JWT migration shipped — next:
                                                denylist via Redis",
                                      phase="Phase 12")
 
 Next session
-  agent → mnemosyne_get_position("my-project")
+  agent → mnemosyne_position_get("my-project")
         ← Resumes from Phase 12 with full context
 ```
 
@@ -374,7 +376,7 @@ The vault is not in `MNEMO_VAULTS`. Edit your MCP client config, add the name (u
 
 ### Which vaults can my agent see?
 
-Ask the agent to run **`mnemosyne_vaults`** — it lists every vault Mnemosyne OS exposes (id, name, chronicle count) and flags which ones are outside your `MNEMO_VAULTS` config (those return `SCOPE_DENIED` until you add them).
+Ask the agent to run **`mnemosyne_vault_list`** — it lists every vault Mnemosyne OS exposes (id, name, chronicle count) and flags which ones are outside your `MNEMO_VAULTS` config (those return `SCOPE_DENIED` until you add them).
 
 ### Tool result is too large for my context window
 
@@ -415,7 +417,7 @@ network connection at all.
 The server itself shares with no one, sells nothing and rents nothing.
 
 **How long it is kept.** By this server, not at all. In the application, for as long as you
-keep it: memory is deleted where it is made, in the app and by you. ⚠️ `mnemosyne_ingest`
+keep it: memory is deleted where it is made, in the app and by you. ⚠️ `mnemosyne_memory_ingest`
 writes a **permanent** chronicle — the one call here that cannot be undone from the agent
 side afterwards.
 

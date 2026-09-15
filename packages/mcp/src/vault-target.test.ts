@@ -1,9 +1,9 @@
 /**
- * vault-target.test.ts — the resolution that unbroke `mnemosyne_vaults` →
- * `mnemosyne_ingest`.
+ * vault-target.test.ts — the resolution that unbroke `mnemosyne_vault_list` →
+ * `mnemosyne_memory_ingest`.
  *
  * The regression these lock down is REAL and was live: ingesting to the exact id
- * that `mnemosyne_vaults` printed returned SCOPE_DENIED, and the message blamed
+ * that `mnemosyne_vault_list` printed returned SCOPE_DENIED, and the message blamed
  * the manifest for a vault that was correctly declared in MNEMO_VAULTS.
  */
 import { test } from 'node:test';
@@ -24,7 +24,7 @@ const DECLARED = ['DEVELOPPEMENT', 'DEV', 'PERSONAL', 'SOCIAL', 'NOTES', 'MNEMOS
 const PRESENT = ['DEVELOPPEMENT', 'SOCIAL', 'NOTES', 'MNEMOSYNE_OS', 'PDF_INTERNET'];
 
 test('toVaultToken collapses a host id path to its last segment', () => {
-  // The exact id `mnemosyne_vaults` printed the day the bug was found.
+  // The exact id `mnemosyne_vault_list` printed the day the bug was found.
   assert.equal(
     toVaultToken('c:/users/crypt/documents/infinity/developpement/mnemosyne-os'),
     'MNEMOSYNE_OS',
@@ -132,7 +132,7 @@ test('an unmeasured census is an UNKNOWN, never an empty world', () => {
 test('a declared list that matches nothing says so instead of pointing nowhere', () => {
   const err = refusalOf(resolveVaultTarget('archipel', ['DEV', 'PERSONAL'], 'DEV', PRESENT));
   assert.match(err, /NONE of the vaults/i);
-  assert.match(err, /mnemosyne_vaults/);
+  assert.match(err, /mnemosyne_vault_list/);
 });
 
 test('presence never widens or narrows what is ACCEPTED', () => {

@@ -20,7 +20,7 @@ You are borrowing **someone's voice**. That framing decides everything below.
 
 ## Setup (if the voice tools are not available)
 
-The tools (`mnemosyne_voices`, `mnemosyne_speak`, `mnemosyne_speak_status`) come from the
+The tools (`mnemosyne_voice_list`, `mnemosyne_voice_speak`, `mnemosyne_voice_status`) come from the
 `@mnemosyne_os/mcp` server, and they are **off by default**. If they are missing, do not
 configure anything yourself — ask the human to add one line to their MCP config:
 
@@ -64,7 +64,7 @@ Three preconditions are not your fault when they fail, and each has a different 
 
 ### 1. Ask what can speak
 
-Call **`mnemosyne_voices`** first, every time. It is the only source of valid clone names,
+Call **`mnemosyne_voice_list`** first, every time. It is the only source of valid clone names,
 and it tells you which engines are installed:
 
 - **`xtts`**, **`chatterbox`**, **`zonos`** clone a voice. `chatterbox` is the most
@@ -90,7 +90,7 @@ what you give it, literally.
 
 ### 3. Render
 
-Call **`mnemosyne_speak`** with the script, a `clone` name if the human wants a specific
+Call **`mnemosyne_voice_speak`** with the script, a `clone` name if the human wants a specific
 voice, and a `title` that names the file recognizably (`"Short 12 — la mémoire souveraine"`).
 
 Long scripts are split at sentence boundaries and reassembled into **one** file; nothing is
@@ -99,7 +99,7 @@ scenes and render one file per scene.
 
 Synthesis runs at roughly real time: **a 3-minute script takes about 3-4 minutes**, plus a
 one-off ~30 s cold start the first time an engine wakes up. The tool waits, then hands back
-a job id if it is still going. Poll with **`mnemosyne_speak_status`** — never start over.
+a job id if it is still going. Poll with **`mnemosyne_voice_status`** — never start over.
 
 ### 4. Report
 

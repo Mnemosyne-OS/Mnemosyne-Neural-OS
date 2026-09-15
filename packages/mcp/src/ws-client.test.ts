@@ -141,6 +141,58 @@ test('a typed RPC (query) round-trips through the real wire contract', async () 
   await server.close();
 });
 
+test('forget() sends sdk.forget with the three params the host requires', async () => {
+  // The params are asserted, not just the reply: the host refuses this call
+  // outright when a name is wrong, and a test that only reads the result would
+  // pass against a client that sent `id` instead of `chronicleId` and left the
+  // human believing a chronicle was erased.
+  let seen: Record<string, unknown> | undefined;
+  const server = await startRegisteringServer((ws, msg) => {
+    if (msg.method === 'sdk.forget') {
+      seen = msg.params as Record<string, unknown>;
+      ws.send(JSON.stringify({ id: msg.id, result: { success: true, deletedId: 'c-42' } }));
+    }
+  });
+  const client = new MnemoWsClient(MANIFEST, server.port, 2_000);
+  await client.connect();
+
+  // try/finally, not bare assertions: a failing assert would otherwise skip
+  // both closes, leave the ws server holding the event loop open, and turn a
+  // red test into a hung run that reports nothing at all.
+  try {
+    const result = await client.forget({ chronicleId: 'c-42', vault: 'DEV' });
+
+    assert.equal(seen?.['appId'], 'test-app');
+    assert.equal(seen?.['chronicleId'], 'c-42');
+    assert.equal(seen?.['vault'], 'DEV');
+    assert.equal(result.success, true);
+    assert.equal(result.deletedId, 'c-42');
+  } finally {
+    client.close();
+    await server.close();
+  }
+});
+
+test('forget() reports a refusal instead of claiming the chronicle is gone', async () => {
+  const server = await startRegisteringServer((ws, msg) => {
+    if (msg.method === 'sdk.forget') {
+      ws.send(JSON.stringify({ id: msg.id, result: { success: false, error: 'SCOPE_DENIED' } }));
+    }
+  });
+  const client = new MnemoWsClient(MANIFEST, server.port, 2_000);
+  await client.connect();
+
+  try {
+    const result = await client.forget({ chronicleId: 'c-1', vault: 'DEV' });
+
+    assert.equal(result.success, false);
+    assert.equal(result.error, 'SCOPE_DENIED');
+  } finally {
+    client.close();
+    await server.close();
+  }
+});
+
 test('a server error reply rejects the caller with that message', async () => {
   const server = await startRegisteringServer((ws, msg) => {
     if (msg.method === 'sdk.ingest') {

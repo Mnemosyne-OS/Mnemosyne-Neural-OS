@@ -2,7 +2,7 @@
  * Pure formatting / classification helpers for the MCP server.
  *
  * Extracted from index.ts so they can be unit-tested without a live WS backend.
- * The resonance helpers here fix the bug where `mnemosyne_resonances` returned a
+ * The resonance helpers here fix the bug where `mnemosyne_resonance_list` returned a
  * ~189KB code blob: a loose `content.includes('[RESONANCE:')` match treated any
  * source file or commit mentioning the literal token as a resonance, and a
  * greedy `/Name:\s*(.+)/` capture then swallowed the whole file as its "name".
@@ -25,7 +25,7 @@ export function unwrapContent(s: string): string {
   return s;
 }
 
-// A real position chronicle written by mnemosyne_update_position STARTS with this
+// A real position chronicle written by mnemosyne_position_update STARTS with this
 // marker. Anchoring at the body start is what rejects source files / commits that
 // merely mention "[RESONANCE:" somewhere in the middle.
 const RESONANCE_MARKER = /^\s*\[RESUME_SESSION\]\s*\[RESONANCE:/i;
@@ -94,7 +94,7 @@ export function formatResonances(chronicles: MnemoChronicle[], now: number = Dat
 export function voiceError(code: string | undefined): string {
   const raw = code ?? 'unknown error';
   if (raw.startsWith('UNKNOWN_CLONE')) {
-    return `${raw}\n\nThe voice you named does not exist. Call mnemosyne_voices for the real list and ask the user which one they meant.`
+    return `${raw}\n\nThe voice you named does not exist. Call mnemosyne_voice_list for the real list and ask the user which one they meant.`
       + ` Do NOT retry with another name: a voice-over in the wrong voice sounds perfectly fine and is worthless.`;
   }
   if (raw.startsWith('CLONE_NOT_SUPPORTED')) {
@@ -170,5 +170,5 @@ export function renderReport(job: VoiceJobLike, waited: number): string {
   return `# Still rendering\n\nJob \`${job.id}\`: ${done}/${total} segments done${eta}.\n\n`
     + `${waited > 0 ? `Waited ${human(waited)}; ` : ''}`
     + `synthesis runs at roughly real time, so a long script takes as long as it plays. `
-    + `Call mnemosyne_speak_status with this job id to check again. Do NOT start the render over.`;
+    + `Call mnemosyne_voice_status with this job id to check again. Do NOT start the render over.`;
 }

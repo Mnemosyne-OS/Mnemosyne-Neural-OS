@@ -256,7 +256,7 @@ export function renderCollisions(
 /** Names this module answers. Checked BEFORE the server tries to connect: the
  *  whole point is that these work with Mnemosyne OS closed. */
 export const AGENT_TOOLS = new Set([
-  'mnemosyne_agents',
+  'mnemosyne_agent_list',
   'mnemosyne_agent_collisions',
   'mnemosyne_agent_files',
 ]);
@@ -301,7 +301,7 @@ export async function handleAgentTool(
     return renderCollisions(view, project, now, env);
   }
 
-  if (name === 'mnemosyne_agents') {
+  if (name === 'mnemosyne_agent_list') {
     const liveOnly = args['live_only'] === true;
     let list = view.sessions;
     if (project) list = list.filter(r => contains(r.session.projectPath, project));

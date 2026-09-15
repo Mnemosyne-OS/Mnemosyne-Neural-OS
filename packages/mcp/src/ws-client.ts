@@ -18,6 +18,7 @@
  *   sdk.register            — manifest → { token, expiresAt, appId }
  *   sdk.query (semantic)    — { appId, text, vault, limit, semantic } → { chronicles, _semantic }
  *   sdk.ingest              — { appId, content, spineType, vault } → { chronicleId }
+ *   sdk.forget              — { appId, chronicleId, vault } → { success, deletedId }
  *   sdk.git.log             — { appId, limit, since? } → { commits }
  *   sdk.dream.bridges       — { appId, limit?, minDbs?, sessionId?, chronicleId? } → { bridges }
  *   sdk.spine.assignments   — { appId, vault?, spineType?, limit?, offset?, includeTaxonomy? }
@@ -95,6 +96,12 @@ export interface IngestResult {
   success:      boolean;
   chronicleId?: string;
   error?:       string;
+}
+
+export interface ForgetResult {
+  success:    boolean;
+  deletedId?: string;
+  error?:     string;
 }
 
 export interface GitCommit {
@@ -398,6 +405,19 @@ export class MnemoWsClient {
       content:   p.content,
       spineType: p.spineType,
       vault:     p.vault,
+    });
+  }
+
+  /**
+   * Erase one chronicle by id. The host requires the `FORGET` intent on top of
+   * the vault write scope, so a server that did not declare it is refused here
+   * rather than silently doing nothing.
+   */
+  async forget(p: { chronicleId: string; vault: string }): Promise<ForgetResult> {
+    return await this._rpc<ForgetResult>('sdk.forget', {
+      appId:       this.manifest.id,
+      chronicleId: p.chronicleId,
+      vault:       p.vault,
     });
   }
 

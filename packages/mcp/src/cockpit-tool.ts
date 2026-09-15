@@ -7,7 +7,7 @@
  * is an agent whose card goes quiet on the canvas — which is the truth.
  *
  * The session id comes from the harness (`CLAUDE_CODE_SESSION_ID`, the same
- * variable `mnemosyne_agents` uses to mark "← you"), or from `session` when the
+ * variable `mnemosyne_agent_list` uses to mark "← you"), or from `session` when the
  * harness does not publish one. The working tree is resolved from the process
  * cwd like the collision tool does, so a reply the human leaves on the card
  * lands in THIS session's mailbox and not in a sibling worktree's.
@@ -41,7 +41,7 @@ export function cockpitParams(
   cwd: string = process.cwd(),
 ): { params: Record<string, unknown> } | { error: string } {
   // 🚨 The harness id comes FIRST. The transcript file, the `← you` marker of
-  // `mnemosyne_agents`, the pre-commit hook and the Stop hook all name this
+  // `mnemosyne_agent_list`, the pre-commit hook and the Stop hook all name this
   // session by CLAUDE_CODE_SESSION_ID; an explicit `session` that beat it
   // split one conversation into two cards and two mailboxes, and a reply the
   // human typed on the card reached a session id nobody else ever reads.

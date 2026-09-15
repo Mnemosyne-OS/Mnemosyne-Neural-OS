@@ -48,7 +48,7 @@ export const MNEMOSYNE_ABOUT = {
     'It can write freely there. It can NEVER unlock mixing its data into the user\'s real memory. Only the human does that from the Vault Manager, after testing the app. Permanence is a human decision, not an agent action. ' +
     'SDK apps request theirs with the `sdk.vault.sandbox.ensure` method (idempotent).',
   rules: [
-    'Discover before you target: call mnemosyne_vaults to see which vaults exist and their protection before choosing one. A vault you were not granted returns SCOPE_DENIED. Do not try to route around it.',
+    'Discover before you target: call mnemosyne_vault_list to see which vaults exist and their protection before choosing one. A vault you were not granted returns SCOPE_DENIED. Do not try to route around it.',
     'Recall with query/ask; persist with ingest. Ingest is PERMANENT and shared with every future agent, so write self-contained content and include WHY, not just what.',
     'Respect protection: never read a MAXIMUM vault for cross-vault work, never mix or expose it, never write to it, unless the user asks in this conversation.',
     'Never blend an isolated vault (mixableWith:[]) into others. Benchmark/sandbox vaults are disposable and must not be presented as the user\'s real knowledge.',
@@ -87,7 +87,7 @@ const VOICE_COVENANT = [
  */
 const AGENTS_COVENANT = (roots: string[]): string => [
   '## Seeing the other agents on this machine',
-  '`mnemosyne_agents`, `mnemosyne_agent_collisions` and `mnemosyne_agent_files` read the',
+  '`mnemosyne_agent_list`, `mnemosyne_agent_collisions` and `mnemosyne_agent_files` read the',
   'transcripts coding-agent harnesses already write to disk. They touch no vault, need no',
   'running app and cost no tokens.',
   '',
@@ -139,8 +139,8 @@ export function renderCovenant(opts: { defaultVault: string; declaredVaults: str
     // does measure. Naming a vault here that is not mounted sent agents to
     // addresses that could not answer (DEV and PERSONAL, found 2026-08-31).
     `- Vaults this MCP is scoped for (config, not a census, so some may not be mounted here): ${others.length ? others.map(v => `**${v}**`).join(', ') : '(none)'}`,
-    '- Call `mnemosyne_vaults` for the vaults that actually exist on this machine, with their chronicle counts and protection.',
+    '- Call `mnemosyne_vault_list` for the vaults that actually exist on this machine, with their chronicle counts and protection.',
     '',
-    '_Call `mnemosyne_about` any time to re-read this. Call `mnemosyne_vaults` to see live vaults and their protection._',
+    '_Call `mnemosyne_about` any time to re-read this. Call `mnemosyne_vault_list` to see live vaults and their protection._',
   ].join('\n');
 }

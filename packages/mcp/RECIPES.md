@@ -37,8 +37,8 @@ Create `.mcp.json` at the root of your project, then reload the session:
 }
 ```
 
-Your agent now has eight tools, the important two being `mnemosyne_query` to
-recall and `mnemosyne_ingest` to remember.
+Your agent now has eight tools, the important two being `mnemosyne_memory_query` to
+recall and `mnemosyne_memory_ingest` to remember.
 
 ## Give Cursor a persistent memory
 
@@ -117,7 +117,7 @@ Leave your personal vault out of the list when the agent is autonomous. Point
 Ask your agent, in plain language:
 
 ```text
-Use mnemosyne_ingest to record: we chose JWT over session cookies because the
+Use mnemosyne_memory_ingest to record: we chose JWT over session cookies because the
 workers must stay stateless; the trade-off is that revocation now needs a
 denylist. Use spine_type DECISION.
 ```
@@ -128,31 +128,31 @@ stand on its own. Record the **why**, not just the what.
 ## Recall what was decided about a feature
 
 ```text
-Use mnemosyne_query to search for "session cookie revocation", with
+Use mnemosyne_memory_query to search for "session cookie revocation", with
 spine_type_filter ["DECISION","ARCHITECTURE"] and limit 5.
 ```
 
 ## Get a synthesized answer instead of raw hits
 
 ```text
-Use mnemosyne_ask: why did we drop session cookies?
+Use mnemosyne_memory_ask: why did we drop session cookies?
 ```
 
-`mnemosyne_ask` reasons across many memories and answers in prose, with its
-sources. It runs a model, so it is slower than `mnemosyne_query`.
+`mnemosyne_memory_ask` reasons across many memories and answers in prose, with its
+sources. It runs a model, so it is slower than `mnemosyne_memory_query`.
 
 ## Resume a project exactly where you left off
 
 ```text
-At session start:  use mnemosyne_get_position for the resonance "auth-migration".
-At session end:    use mnemosyne_update_position for "auth-migration" with what
+At session start:  use mnemosyne_position_get for the resonance "auth-migration".
+At session end:    use mnemosyne_position_update for "auth-migration" with what
                    was done and what comes next.
 ```
 
 ## Discover which vaults exist before targeting one
 
 ```text
-Use mnemosyne_vaults, then tell me which ones I granted you.
+Use mnemosyne_vault_list, then tell me which ones I granted you.
 ```
 
 ---

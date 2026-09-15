@@ -57,7 +57,7 @@ test('renderCovenant never calls the config list "reachable"', () => {
   const out = renderCovenant({ defaultVault: 'DEVELOPPEMENT', declaredVaults: ['DEVELOPPEMENT', 'DEV', 'PERSONAL'] });
   assert.ok(!/reachable/i.test(out), 'the covenant claims reachability it has not measured');
   // And it must point at the tool that CAN measure.
-  assert.match(out, /mnemosyne_vaults/);
+  assert.match(out, /mnemosyne_vault_list/);
 });
 
 test('MNEMOSYNE_ABOUT exposes the structured facts used by the renderer', () => {

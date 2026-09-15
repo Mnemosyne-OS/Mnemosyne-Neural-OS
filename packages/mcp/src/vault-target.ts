@@ -4,7 +4,7 @@
  *
  * THE BUG THIS EXISTS TO KILL
  * --------------------------
- * `mnemosyne_vaults` lists vaults by their host id, which is a lowercased
+ * `mnemosyne_vault_list` lists vaults by their host id, which is a lowercased
  * absolute path (`toWorkspaceId()` in core-engine: lowercase + forward slashes).
  * Its own description told agents to pass that id back as the `vault` argument.
  * Doing so fails twice over:
@@ -88,7 +88,7 @@ export function refuseUndeclaredWriteTarget(
     `is not a vault, it resolves to whichever sub-vault mounted first, which is not a place anyone chose. ` +
     `${reachableLine(declared, present)} ` +
     `Pass one explicitly as \`vault\`, or set MNEMO_DEFAULT_VAULT in the MCP server config and restart it. ` +
-    `Call mnemosyne_vaults if you need to see what each one holds first.`
+    `Call mnemosyne_vault_list if you need to see what each one holds first.`
   );
 }
 
@@ -123,7 +123,7 @@ function reachableLine(
   // was never taken — the same fabrication, pointed the other way.
   if (!present) {
     return `Declared in this MCP's config, but NOT verified against the host (it did not answer): ` +
-           `${declared.join(', ')}. Call mnemosyne_vaults for the live list.`;
+           `${declared.join(', ')}. Call mnemosyne_vault_list for the live list.`;
   }
 
   const live = new Set(present);
@@ -131,7 +131,7 @@ function reachableLine(
   if (both.length > 0) return `Reachable right now: ${both.join(', ')}.`;
 
   return `NONE of the vaults this MCP declares (${declared.join(', ')}) exists on the host. ` +
-         `Call mnemosyne_vaults to see what does.`;
+         `Call mnemosyne_vault_list to see what does.`;
 }
 
 /**

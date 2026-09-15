@@ -50,8 +50,8 @@ Two rails reach the same memory. Neither of them stores anything: the desktop
 application owns the data and has to be running.
 
 **As an agent already in a chat.** The MCP server needs no code — a config entry
-and a relaunch, and you get `mnemosyne_query`, `mnemosyne_ask`,
-`mnemosyne_ingest`, `mnemosyne_vaults`, `mnemosyne_resonances` and the rest:
+and a relaunch, and you get `mnemosyne_memory_query`, `mnemosyne_memory_ask`,
+`mnemosyne_memory_ingest`, `mnemosyne_vault_list`, `mnemosyne_resonance_list` and the rest:
 
 ```json
 {

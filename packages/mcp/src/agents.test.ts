@@ -162,13 +162,13 @@ describe('mnemosyne_agent_collisions', () => {
   });
 });
 
-describe('mnemosyne_agents', () => {
+describe('mnemosyne_agent_list', () => {
   it('lists sessions as metadata, and never as a status', async () => {
     const f = fixture({
       'one.jsonl': transcript({ title: 'refactor the walker', project: project(), branch: 'feat', at: minutesAgo(4) }),
     });
     try {
-      const out = await handleAgentTool('mnemosyne_agents', {}, f.env, NOW);
+      const out = await handleAgentTool('mnemosyne_agent_list', {}, f.env, NOW);
       assert.match(out, /refactor the walker/);
       assert.match(out, /branch feat/);
       assert.match(out, /last seen 4 min ago/);
@@ -188,7 +188,7 @@ describe('mnemosyne_agents', () => {
       'one.jsonl': transcript({ title: 'one', project: project(), branch: 'main', at: minutesAgo(1), secret }),
     });
     try {
-      for (const tool of ['mnemosyne_agents', 'mnemosyne_agent_collisions', 'mnemosyne_agent_files']) {
+      for (const tool of ['mnemosyne_agent_list', 'mnemosyne_agent_collisions', 'mnemosyne_agent_files']) {
         const out = await handleAgentTool(tool, {}, f.env, NOW);
         assert.ok(!out.includes(secret), `${tool} leaked the human turn`);
       }
@@ -201,7 +201,7 @@ describe('mnemosyne_agents', () => {
       'b.jsonl': transcript({ title: 'elsewhere', project: project('repo-b'), branch: 'main', at: minutesAgo(1) }),
     });
     try {
-      const out = await handleAgentTool('mnemosyne_agents', { project: 'repo-a' }, f.env, NOW);
+      const out = await handleAgentTool('mnemosyne_agent_list', { project: 'repo-a' }, f.env, NOW);
       assert.match(out, /in-here/);
       assert.doesNotMatch(out, /elsewhere/);
     } finally { f.cleanup(); }
@@ -214,7 +214,7 @@ describe('mnemosyne_agents', () => {
       MNEMO_AGENT_SESSIONS: join(tmpdir(), 'nope-nothing-here'),
       MNEMO_AGENT_SOURCES: 'claude-code',
     } as NodeJS.ProcessEnv;
-    const out = await handleAgentTool('mnemosyne_agents', {}, env, NOW);
+    const out = await handleAgentTool('mnemosyne_agent_list', {}, env, NOW);
     assert.match(out, /No agent transcript folder found/);
     assert.match(out, /Nothing was read/);
     assert.doesNotMatch(out, /No .* agent session found/);
@@ -259,7 +259,7 @@ describe('every answer', () => {
       'one.jsonl': transcript({ title: 'one', project: project(), branch: 'main', at: minutesAgo(1), writes: ['C:/repo/a.ts'] }),
     });
     try {
-      for (const tool of ['mnemosyne_agents', 'mnemosyne_agent_collisions', 'mnemosyne_agent_files']) {
+      for (const tool of ['mnemosyne_agent_list', 'mnemosyne_agent_collisions', 'mnemosyne_agent_files']) {
         const out = await handleAgentTool(tool, {}, f.env, NOW);
         assert.match(out, /Read claude-code from /, tool);
         assert.match(out, /transcript\(s\) found/, tool);
@@ -313,7 +313,7 @@ describe('across harnesses', () => {
   it('lists sessions from both harnesses, each named', async () => {
     const f = twoHarnesses();
     try {
-      const out = await handleAgentTool('mnemosyne_agents', {}, f.env, NOW);
+      const out = await handleAgentTool('mnemosyne_agent_list', {}, f.env, NOW);
       assert.match(out, /across 2 harness\(es\)/);
       assert.match(out, /Claude Code/);
       assert.match(out, /Antigravity/);
@@ -323,7 +323,7 @@ describe('across harnesses', () => {
   it('names every folder it opened, one line per harness', async () => {
     const f = twoHarnesses();
     try {
-      const out = await handleAgentTool('mnemosyne_agents', {}, f.env, NOW);
+      const out = await handleAgentTool('mnemosyne_agent_list', {}, f.env, NOW);
       assert.match(out, /Read claude-code from /);
       assert.match(out, /Read antigravity from /);
     } finally { f.cleanup(); }
@@ -345,7 +345,7 @@ describe('across harnesses', () => {
   it('says which harness is absent rather than pretending it looked', async () => {
     const f = twoHarnesses();
     try {
-      const out = await handleAgentTool('mnemosyne_agents', {}, f.env, NOW);
+      const out = await handleAgentTool('mnemosyne_agent_list', {}, f.env, NOW);
       assert.match(out, /Not present on this machine: antigravity-ide/);
     } finally { f.cleanup(); }
   });

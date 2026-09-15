@@ -13,14 +13,14 @@ Mnemosyne OS is a local-first memory operating system owned by a **human**. Thei
 is organized into **vaults** — isolated stores, one per life domain (code, notes, research,
 journal…). Each memory is a **chronicle**: content + a `spineType` (its semantic kind) +
 a vector embedding. You reach it through the `@mnemosyne_os/mcp` MCP server, which exposes
-semantic retrieval (`mnemosyne_query`, `mnemosyne_ask`) and persistence (`mnemosyne_ingest`).
+semantic retrieval (`mnemosyne_memory_query`, `mnemosyne_memory_ask`) and persistence (`mnemosyne_memory_ingest`).
 
 You are a **guest in someone's memory**. That framing decides everything below.
 
 ## Setup (if the `mnemosyne_*` tools are not available)
 
-This skill relies on MCP tools (`mnemosyne_query`, `mnemosyne_ask`, `mnemosyne_vaults`,
-`mnemosyne_ingest`, …) provided by the `@mnemosyne_os/mcp` server, which bridges to a
+This skill relies on MCP tools (`mnemosyne_memory_query`, `mnemosyne_memory_ask`, `mnemosyne_vault_list`,
+`mnemosyne_memory_ingest`, …) provided by the `@mnemosyne_os/mcp` server, which bridges to a
 locally running [Mnemosyne OS Infinity](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS).
 
 If those tools are not present in your session, **do not install or configure anything
@@ -35,7 +35,7 @@ write vault at a vault dedicated to agent work.
 
 ## The covenant — non-negotiable rules
 
-1. **Discover before you target.** Call `mnemosyne_vaults` before choosing a vault.
+1. **Discover before you target.** Call `mnemosyne_vault_list` before choosing a vault.
    Never guess a vault id. `SCOPE_DENIED` means the human did not grant it — say so
    and stop; never try to route around it.
 2. **Read before you write.** Operate as an observer first: query, learn the shape of
@@ -55,19 +55,19 @@ write vault at a vault dedicated to agent work.
 
 ## Recalling
 
-- `mnemosyne_query` — semantic search, returns raw ranked chronicles. Be specific;
+- `mnemosyne_memory_query` — semantic search, returns raw ranked chronicles. Be specific;
   longer queries are fine. Filter with `spine_type_filter` (e.g. `["ARCHITECTURE","DECISION"]`)
   and trim with `max_content_chars` when browsing.
-- `mnemosyne_ask` — a synthesized prose answer grounded in the vault (slower, runs the
+- `mnemosyne_memory_ask` — a synthesized prose answer grounded in the vault (slower, runs the
   local RAG+LLM pipeline). Use for "why / who / how" questions that need reasoning
   across many memories. **Always check the returned source chronicles before trusting
   the answer** — a synthesized answer can drift beyond its sources.
-- `mnemosyne_get_position` / `mnemosyne_resonances` — resume ongoing projects exactly
+- `mnemosyne_position_get` / `mnemosyne_resonance_list` — resume ongoing projects exactly
   where the human left off.
 
 ## Persisting
 
-Before your first `mnemosyne_ingest` in a session, confirm with the human that they
+Before your first `mnemosyne_memory_ingest` in a session, confirm with the human that they
 want this agent writing to their memory, and to which vault. Then follow the discipline:
 
 - **Self-contained content.** A future reader has no access to this conversation.
@@ -82,10 +82,10 @@ want this agent writing to their memory, and to which vault. Then follow the dis
 ## Session pattern
 
 ```
-Session start   → mnemosyne_get_position(project)     — where were we?
-While working   → mnemosyne_query(...)                — recall, don't re-derive
-Decision made   → mnemosyne_ingest(DECISION, why + provenance)
-Session end     → mnemosyne_update_position(project)  — leave the trail
+Session start   → mnemosyne_position_get(project)     — where were we?
+While working   → mnemosyne_memory_query(...)                — recall, don't re-derive
+Decision made   → mnemosyne_memory_ingest(DECISION, why + provenance)
+Session end     → mnemosyne_position_update(project)  — leave the trail
 ```
 
 ## Troubleshooting
