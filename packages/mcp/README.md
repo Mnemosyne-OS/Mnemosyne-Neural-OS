@@ -424,16 +424,6 @@ security reports: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues>.
 
 ---
 
-## Ecosystem
-
-| Package | What it is |
-|---|---|
-| **`@mnemosyne_os/mcp`** *(you are here)* | MCP server — gives AI agents vault access |
-| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | TypeScript SDK — build Layer 2 apps directly on the WebSocket API |
-| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | CLI — scaffold, list chronicles, import / export |
-
----
-
 ## The `@mnemosyne_os` packages
 
 All of them live under one npm organization:
