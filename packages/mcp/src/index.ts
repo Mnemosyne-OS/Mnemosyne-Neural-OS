@@ -302,7 +302,7 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Vault TOKEN to query (case-insensitive; the folder name uppercased, spaces and hyphens as underscores). The path-shaped \`id\` from mnemosyne_vaults is also accepted and normalized. Mnemosyne OS exposes one vault per tracked folder. This deployment's default is "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for: a config list, not a census, so some may not be mounted on this machine: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. Call mnemosyne_vaults for the vaults that actually exist. Anything outside the scoped list is refused.`,
+          description: `Vault TOKEN to query (case-insensitive; the folder name uppercased, spaces and hyphens as underscores). The path-shaped \`id\` from mnemosyne_vaults is also accepted and normalized. Mnemosyne OS exposes one vault per tracked folder. This deployment's default is "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for (a config list, not a census, so some may not be mounted on this machine): ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. Call mnemosyne_vaults for the vaults that actually exist. Anything outside the scoped list is refused.`,
           default:     DEFAULT_VAULT,
         },
         spine_type_filter: {
@@ -436,7 +436,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_dream_bridges',
-    description: 'List the connections Mnemosyne\'s Dream State engine discovered between memories during its offline (idle-time) scans, "what did you dream about?". Each bridge links two chronicles (possibly across vaults) with a composite Dream Bridge Score (dbs, prime-aware) and a raw cosine similarity, plus a short excerpt of both sides. Use it to surface non-obvious associations the memory found on its own, to audit whether dreamed connections are insightful or noise, or to seed creative exploration. An empty list is normal: it means the dream engine has not produced bridges yet (it runs while the machine is idle, if enabled in Settings).',
+    description: 'List the connections Mnemosyne\'s Dream State engine discovered between memories during its offline (idle-time) scans ("what did you dream about?"). Each bridge links two chronicles (possibly across vaults) with a composite Dream Bridge Score (dbs, prime-aware) and a raw cosine similarity, plus a short excerpt of both sides. Use it to surface non-obvious associations the memory found on its own, to audit whether dreamed connections are insightful or noise, or to seed creative exploration. An empty list is normal: it means the dream engine has not produced bridges yet (it runs while the machine is idle, if enabled in Settings).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -558,7 +558,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_cockpit_update',
-    description: 'Your own status card on the human\'s canvas (the cockpit). Call it when you START a task ("working" + a short title and status), when you NEED the human ("waiting", the card pulses and the taskbar flashes), when you are stuck ("blocked"), and when you are DONE ("done"). The state is what you declare; the host prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the human left on your card. Read it and act on it. Needs the app window open. Nothing is stored in memory; this is a card, not a note.',
+    description: 'Your own status card on the human\'s canvas (the cockpit). Call it when you START a task ("working" + a short title and status), when you NEED the human ("waiting": the card pulses and the taskbar flashes), when you are stuck ("blocked"), and when you are DONE ("done"). The state is what you declare; the host prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the human left on your card. Read it and act on it. Needs the app window open. Nothing is stored in memory; this is a card, not a note.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -889,7 +889,7 @@ const VOICE_TOOLS = [
       properties: {
         text: {
           type:        'string',
-          description: 'The script to speak, as it should be read aloud. Write it for the EAR: expand abbreviations, spell out numbers and symbols, and use punctuation for pacing: a piece with no grammatical end makes an autoregressive engine ramble. Markdown, bullets and emoji are read literally: strip them first.',
+          description: 'The script to speak, as it should be read aloud. Write it for the EAR: expand abbreviations, spell out numbers and symbols, and use punctuation for pacing, because a piece with no grammatical end makes an autoregressive engine ramble. Markdown, bullets and emoji are read literally: strip them first.',
         },
         clone: {
           type:        'string',
@@ -1037,10 +1037,10 @@ class MnemoMcpServer {
     const daemonPath = join(here, 'daemon.js');
     // Only present in a monorepo checkout — never in the published tarball.
     if (!existsSync(daemonPath)) {
-      console.error('[mnemosyne-mcp] No backend on 7799 and no bundled daemon — start the Mnemosyne OS app.');
+      console.error('[mnemosyne-mcp] No backend on 7799 and no bundled daemon. Start the Mnemosyne OS app.');
       return false;
     }
-    console.error(`[mnemosyne-mcp] No backend on 7799 — launching headless daemon: ${daemonPath}`);
+    console.error(`[mnemosyne-mcp] No backend on 7799, launching headless daemon: ${daemonPath}`);
     const child = spawn(process.execPath, [daemonPath], {
       detached: true,
       stdio:    'ignore',
@@ -1158,7 +1158,7 @@ class MnemoMcpServer {
           const raw        = unwrapContent(c.content ?? '');
           const { text: snippet, truncated, totalLen } = truncate(raw);
           const truncHint  = truncated
-            ? `\n\n_(content truncated — ${totalLen} chars total. Re-query with max_content_chars: ${Math.min(totalLen, 4000)} for the full body, or call mnemosyne_query with a more specific text to surface the right chunk.)_`
+            ? `\n\n_(content truncated, ${totalLen} chars total. Re-query with max_content_chars: ${Math.min(totalLen, 4000)} for the full body, or call mnemosyne_query with a more specific text to surface the right chunk.)_`
             : '';
           return [
             `### [${i + 1}] ${c.spineType} · score: ${c.score.toFixed(3)}`,
@@ -1166,7 +1166,7 @@ class MnemoMcpServer {
             `**Date:** ${new Date(c.timestamp).toLocaleString()}`,
             `**Source:** ${c.source_app_id}`,
             ...(isDoc
-              ? ['> ⚠️ Design/vision doc — verify class names, file paths and identifiers against the actual source code before relying on them.']
+              ? ['> ⚠️ Design/vision doc: verify class names, file paths and identifiers against the actual source code before relying on them.']
               : []),
             '',
             snippet || '_(no content)_',
@@ -1198,14 +1198,14 @@ class MnemoMcpServer {
         const sources = (result.sources ?? []).slice(0, 6).map((c, i) => {
           const raw     = unwrapContent(c.content ?? '');
           const snippet = raw.length > 200 ? raw.slice(0, 200).trimEnd() + '…' : raw;
-          return `- [${i + 1}] ${c.spineType} · ${c.id}${snippet ? ` — ${snippet}` : ''}`;
+          return `- [${i + 1}] ${c.spineType} · ${c.id}${snippet ? `: ${snippet}` : ''}`;
         }).join('\n');
 
         const sourcesBlock = sources
-          ? `\n\n---\n**Sources (${result.sources.length}) — verify before trusting:**\n${sources}`
-          : '\n\n_(no sources returned — treat with caution.)_';
+          ? `\n\n---\n**Sources (${result.sources.length}), verify before trusting:**\n${sources}`
+          : '\n\n_(no sources returned; treat with caution.)_';
 
-        return text(`# Mnemosyne — "${question}" (vault:${vault})\n\n${result.answer}${sourcesBlock}`);
+        return text(`# Mnemosyne, "${question}" (vault:${vault})\n\n${result.answer}${sourcesBlock}`);
       }
 
       // ── mnemosyne_dream_bridges ──────────────────────────────────────────────
@@ -1221,16 +1221,16 @@ class MnemoMcpServer {
         }
         const bridges = result.bridges ?? [];
         if (bridges.length === 0) {
-          return text('No dream bridges yet. The Dream State engine has not produced connections — it runs while the machine is idle (enable/force it in Mnemosyne OS Settings → Dream).');
+          return text('No dream bridges yet. The Dream State engine has not produced connections: it runs while the machine is idle (enable/force it in Mnemosyne OS Settings → Dream).');
         }
 
         const rows = bridges.map((b, i) => [
           `### [${i + 1}] dbs ${b.dbs.toFixed(3)} · cosine ${b.cosine.toFixed(3)} · ${b.scannedAt}`,
-          `- **From** [${b.from.chronicleId}] ${b.from.spineType || '?'} (vault:${b.from.vault})${b.from.excerpt ? ` — ${b.from.excerpt}` : ''}`,
-          `- **To** [${b.to.chronicleId}] ${b.to.spineType || '?'} (vault:${b.to.vault})${b.to.excerpt ? ` — ${b.to.excerpt}` : ''}`,
+          `- **From** [${b.from.chronicleId}] ${b.from.spineType || '?'} (vault:${b.from.vault})${b.from.excerpt ? `: ${b.from.excerpt}` : ''}`,
+          `- **To** [${b.to.chronicleId}] ${b.to.spineType || '?'} (vault:${b.to.vault})${b.to.excerpt ? `: ${b.to.excerpt}` : ''}`,
         ].join('\n')).join('\n\n');
 
-        return text(`# Dream bridges (${bridges.length})\n\n_Connections Mnemosyne dreamed while idle — judge insightfulness before acting on them._\n\n${rows}`);
+        return text(`# Dream bridges (${bridges.length})\n\n_Connections Mnemosyne dreamed while idle. Judge insightfulness before acting on them._\n\n${rows}`);
       }
 
       // ── mnemosyne_spine_assignments ──────────────────────────────────────────
@@ -1258,7 +1258,7 @@ class MnemoMcpServer {
           .join('\n') || '_(empty vault)_';
 
         const rows = (result.assignments ?? [])
-          .map((a) => `- [${a.chronicleId}] **${a.spineType}** · ${a.createdAt}${a.excerpt ? ` — ${a.excerpt}` : ''}`)
+          .map((a) => `- [${a.chronicleId}] **${a.spineType}** · ${a.createdAt}${a.excerpt ? `: ${a.excerpt}` : ''}`)
           .join('\n') || '_(no assignments on this page)_';
 
         const taxonomyBlock = result.taxonomy
@@ -1269,10 +1269,10 @@ class MnemoMcpServer {
 
         const filterLine = spineType ? ` · filter: ${spineType}` : '';
         const embedLine  = typeof result.unvectorized === 'number' && result.unvectorized > 0
-          ? `\n⚠️ ${result.unvectorized} chronicle(s) have NO embedding yet — invisible to semantic retrieval until vectorized.`
+          ? `\n⚠️ ${result.unvectorized} chronicle(s) have NO embedding yet, invisible to semantic retrieval until vectorized.`
           : '';
         const pageLine   = `page ${offset}–${offset + (result.assignments?.length ?? 0)} of ${result.total}`;
-        return text(`# Spine assignments — vault:${result.vault}\n\n${pageLine}${filterLine}${embedLine}\n\n## Per-spine counts (whole vault)\n${counts}\n\n## Assignments (newest first)\n${rows}${taxonomyBlock}`);
+        return text(`# Spine assignments, vault:${result.vault}\n\n${pageLine}${filterLine}${embedLine}\n\n## Per-spine counts (whole vault)\n${counts}\n\n## Assignments (newest first)\n${rows}${taxonomyBlock}`);
       }
 
       // ── mnemosyne_about ──────────────────────────────────────────────────────
@@ -1302,7 +1302,7 @@ class MnemoMcpServer {
           const scope = reachable.has(token) ? '' : ' · ⚠️ not in MNEMO_VAULTS (add its token there to reach it)';
           // Governance flags an agent must honor (see mnemosyne_about).
           const gov: string[] = [];
-          if (v.protection === 'MAXIMUM') gov.push('🔒 MAXIMUM (private — do not read for cross-vault work, mix, or write unless asked)');
+          if (v.protection === 'MAXIMUM') gov.push('🔒 MAXIMUM (private: do not read for cross-vault work, mix, or write unless asked)');
           if (Array.isArray(v.mixableWith) && v.mixableWith.length === 0) gov.push('⛓️ isolated (never blend with other vaults)');
           if (v.visibleInNeuralMap === false && v.protection !== 'MAXIMUM') gov.push('🧪 sandbox/out-of-band (not the user\'s real knowledge)');
           const govLine = gov.length ? `\n    ${gov.join(' · ')}` : '';
@@ -1312,7 +1312,7 @@ class MnemoMcpServer {
           return `- **${token}**${name}${count}${scope}\n    id: \`${v.id}\`${govLine}`;
         }).join('\n');
 
-        return text(`# Vaults exposed by Mnemosyne OS\n\n${rows}\n\n_Pass the bold **token** above as the \`vault\` argument to mnemosyne_query / mnemosyne_ask / mnemosyne_ingest. The \`id\` line is the host's internal path — shown for reference only. Honor the governance flags — see mnemosyne_about._`);
+        return text(`# Vaults exposed by Mnemosyne OS\n\n${rows}\n\n_Pass the bold **token** above as the \`vault\` argument to mnemosyne_query / mnemosyne_ask / mnemosyne_ingest. The \`id\` line is the host's internal path, shown for reference only. Honor the governance flags; see mnemosyne_about._`);
       }
 
       // ── mnemosyne_ingest ─────────────────────────────────────────────────────
@@ -1471,7 +1471,7 @@ class MnemoMcpServer {
         if (!r.success) return text(voiceError(r.error));
 
         const engines = (r.engines ?? []).map((e) =>
-          `- **${e.id}** — ${e.installed ? 'installed' : 'NOT installed'}${e.clones ? ', can clone a voice' : ', fixed voices only (cannot clone)'}`
+          `- **${e.id}**: ${e.installed ? 'installed' : 'NOT installed'}${e.clones ? ', can clone a voice' : ', fixed voices only (cannot clone)'}`
         ).join('\n');
 
         // A missing default sample is stated, not omitted: "no voice recorded"
@@ -1479,15 +1479,15 @@ class MnemoMcpServer {
         const clones = (r.clones ?? []).length
           ? (r.clones ?? []).map((c) => {
               const len = c.seconds === null ? 'length unreadable' : `${c.seconds}s reference`;
-              const warn = c.warning ? ` — ⚠ ${c.warning}` : '';
-              return `- **${c.name}**${c.isDefault ? ' _(the sample recorded in the app)_' : ''} — ${len}${warn}`;
+              const warn = c.warning ? `, ⚠ ${c.warning}` : '';
+              return `- **${c.name}**${c.isDefault ? ' _(the sample recorded in the app)_' : ''}: ${len}${warn}`;
             }).join('\n')
           : '_No reference voice on this machine. The user records one in the app: Settings → Voice. You cannot create one._';
 
         const piper = (r.piperVoices ?? []).length ? `\n\n**Piper voices installed:** ${(r.piperVoices ?? []).join(', ')}` : '';
         return text(
           `# Voices available\n\n## Engines\n${engines}\n\n## Reference voices (for cloning)\n${clones}${piper}\n\n`
-          + `Rendered files are written to \`${r.outputDir ?? '(unknown)'}\`. Max ${r.maxScriptChars ?? 20000} characters per render — `
+          + `Rendered files are written to \`${r.outputDir ?? '(unknown)'}\`. Max ${r.maxScriptChars ?? 20000} characters per render. `
           + `split a longer script into scenes.\n\n`
           + `⚠ A clone name not in the list above is REFUSED, never substituted. Do not guess one.`
         );
@@ -1522,7 +1522,7 @@ class MnemoMcpServer {
           if (!r.success) return text(voiceError(r.error));
           return text(r.stopped
             ? `Render \`${jobId}\` will stop at the next segment boundary (up to ~2s). No file will be written.`
-            : `Render \`${jobId}\` was not running — nothing to stop.`);
+            : `Render \`${jobId}\` was not running, nothing to stop.`);
         }
         const r = await client.voiceStatus(jobId || undefined);
         if (!r.success) return text(voiceError(r.error));
@@ -1530,7 +1530,7 @@ class MnemoMcpServer {
         const jobs = r.jobs ?? [];
         if (!jobs.length) return text('No voice render in this session.');
         return text(`# Voice renders (${jobs.length})\n\n` + jobs.map((j) =>
-          `- \`${j.id}\` — **${j.state}** · ${j.segmentsDone}/${j.segments} segments · ${j.path ?? 'no file'}`
+          `- \`${j.id}\`: **${j.state}** · ${j.segmentsDone}/${j.segments} segments · ${j.path ?? 'no file'}`
         ).join('\n'));
       }
 
@@ -1545,7 +1545,7 @@ class MnemoMcpServer {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
     // stderr only — stdout is reserved for MCP JSON-RPC
-    console.error('[mnemosyne-mcp] Server started on stdio — waiting for Mnemosyne OS connection...');
+    console.error('[mnemosyne-mcp] Server started on stdio, waiting for Mnemosyne OS connection...');
   }
 }
 
