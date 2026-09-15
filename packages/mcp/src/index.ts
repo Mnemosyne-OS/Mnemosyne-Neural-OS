@@ -232,7 +232,7 @@ const MCP_MANIFEST = {
   version:         PKG_VERSION,
   mnemosyne_sdk:   '^1.4.0',
   author:          'Mnemosyne Labs',
-  description:     'MCP bridge — gives AI agents access to vault memory and resonances',
+  description:     'MCP bridge that gives AI agents access to vault memory and resonances',
   // Scopes declared for every vault the deployment cares about. Without these,
   // the server returns SCOPE_DENIED on queries against unlisted vaults.
   scopes:          [
@@ -282,18 +282,18 @@ const MCP_MANIFEST = {
 const TOOLS = [
   {
     name:        'mnemosyne_about',
-    description: 'Read who Mnemosyne OS is and the rules you must honor when using it: its governance tenet, the vault protection model (NORMAL/MAXIMUM, mixableWith, isolated sandbox vaults), the spine model, and the do/don\'t behavior for an agent operating on a human\'s memory. The same briefing is delivered as the server instructions on connect — call this to re-read it, or if your client did not surface those instructions.',
+    description: 'Read who Mnemosyne OS is and the rules you must honor when using it: its governance tenet, the vault protection model (NORMAL/MAXIMUM, mixableWith, isolated sandbox vaults), the spine model, and the do/don\'t behavior for an agent operating on a human\'s memory. The same briefing is delivered as the server instructions on connect. Call this to re-read it, or if your client did not surface those instructions.',
     inputSchema: { type: 'object', properties: {} },
   },
   {
     name:        'mnemosyne_query',
-    description: 'Raw chronicle search in a Mnemosyne OS vault. Returns the matching chronicles themselves (architecture notes, code, decisions, sessions, git history) for YOU to read, rank and cite — nothing is rewritten, so this is what to use when you need the source text verbatim, e.g. to quote it or to write documentation from it. Ranked by vector similarity fused with a local BM25 channel, weighted by spineType. ⚠️ If your goal is to FIND something rather than to quote it, prefer mnemosyne_ask even when you only want its sources: measured on 2026-08-31, ask surfaces notes on rare literal terms (proper nouns, identifiers, product names) that this tool misses, because it retrieves deeper and re-ranks. ⛔ And never read the score as confidence: a miss and a hit come back with indistinguishable scores, so judge the returned text, never the number beside it.',
+    description: 'Raw chronicle search in a Mnemosyne OS vault. Returns the matching chronicles themselves (architecture notes, code, decisions, sessions, git history) for YOU to read, rank and cite. Nothing is rewritten, so this is what to use when you need the source text verbatim, e.g. to quote it or to write documentation from it. Ranked by vector similarity fused with a local BM25 channel, weighted by spineType. ⚠️ If your goal is to FIND something rather than to quote it, prefer mnemosyne_ask even when you only want its sources: measured on 2026-08-31, ask surfaces notes on rare literal terms (proper nouns, identifiers, product names) that this tool misses, because it retrieves deeper and re-ranks. ⛔ And never read the score as confidence: a miss and a hit come back with indistinguishable scores, so judge the returned text, never the number beside it.',
     inputSchema: {
       type: 'object',
       properties: {
         query: {
           type:        'string',
-          description: 'The search query — be specific. Examples: "Phase 51 auto-poll implementation", "SDK authentication bug", "why did we choose dual-vector dimensions".',
+          description: 'The search query. Be specific. Examples: "Phase 51 auto-poll implementation", "SDK authentication bug", "why did we choose dual-vector dimensions".',
         },
         limit: {
           type:        'number',
@@ -302,13 +302,13 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Vault TOKEN to query (case-insensitive; the folder name uppercased, spaces and hyphens as underscores). The path-shaped \`id\` from mnemosyne_vaults is also accepted and normalized. Mnemosyne OS exposes one vault per tracked folder. This deployment's default is "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for — a config list, not a census, so some may not be mounted on this machine: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. Call mnemosyne_vaults for the vaults that actually exist. Anything outside the scoped list is refused.`,
+          description: `Vault TOKEN to query (case-insensitive; the folder name uppercased, spaces and hyphens as underscores). The path-shaped \`id\` from mnemosyne_vaults is also accepted and normalized. Mnemosyne OS exposes one vault per tracked folder. This deployment's default is "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for: a config list, not a census, so some may not be mounted on this machine: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. Call mnemosyne_vaults for the vaults that actually exist. Anything outside the scoped list is refused.`,
           default:     DEFAULT_VAULT,
         },
         spine_type_filter: {
           type:        'array',
           items:       { type: 'string' },
-          description: 'Optional whitelist of spineTypes — restricts results to those types only. Use ["ARCHITECTURE"] to surface design docs over code, ["GIT"] for commit history, ["BUGFIX","DEBUG"] for incident knowledge, ["SOURCE_CODE"] to force code-only. Without this, all types are returned (the SOURCE_CODE scope weighting decides ranking).',
+          description: 'Optional whitelist of spineTypes: restricts results to those types only. Use ["ARCHITECTURE"] to surface design docs over code, ["GIT"] for commit history, ["BUGFIX","DEBUG"] for incident knowledge, ["SOURCE_CODE"] to force code-only. Without this, all types are returned (the SOURCE_CODE scope weighting decides ranking).',
         },
         max_content_chars: {
           type:        'number',
@@ -321,7 +321,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_ask',
-    description: 'Ask Mnemosyne a question and get a SYNTHESIZED prose answer grounded in the vault, PLUS the chronicles it drew on. It runs the full local RAG pipeline — deeper retrieval, lexical fusion and a re-rank — so it is both the reasoning tool AND, measured on 2026-08-31, the better RETRIEVER: reach for it whenever you need to find something, and read the Sources list even if you ignore the prose. Best on "why / who / how" questions spanning many memories ("why was SQLite chosen over Postgres?", "who is <name> and what do they own?"). Slower than mnemosyne_query (up to ~30s). ⚠️ The prose is a model rewording of the sources: never quote it as the words the memory holds — quote the sources, or fetch them with mnemosyne_query. Always check the sources before trusting the answer.',
+    description: 'Ask Mnemosyne a question and get a SYNTHESIZED prose answer grounded in the vault, PLUS the chronicles it drew on. It runs the full local RAG pipeline (deeper retrieval, lexical fusion and a re-rank), so it is both the reasoning tool AND, measured on 2026-08-31, the better RETRIEVER: reach for it whenever you need to find something, and read the Sources list even if you ignore the prose. Best on "why / who / how" questions spanning many memories ("why was SQLite chosen over Postgres?", "who is <name> and what do they own?"). Slower than mnemosyne_query (up to ~30s). ⚠️ The prose is a model rewording of the sources: never quote it as the words the memory holds. Quote the sources, or fetch them with mnemosyne_query. Always check the sources before trusting the answer.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -340,7 +340,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_vaults',
-    description: 'List the memory vaults this Mnemosyne OS exposes — each with its TOKEN, display name and chronicle count. Call this first when you are unsure which vault to query/ask/ingest against, or when the user refers to a memory store by a name you have not seen. Pass a returned **token** (bold, e.g. MNEMOSYNE_OS) as the `vault` argument to the other tools — NOT the `id` line, which is the host\'s internal path. Note: you can only read/write the vaults this MCP was configured for (MNEMO_VAULTS); others are flagged here and are refused until added.',
+    description: 'List the memory vaults this Mnemosyne OS exposes, each with its TOKEN, display name and chronicle count. Call this first when you are unsure which vault to query/ask/ingest against, or when the user refers to a memory store by a name you have not seen. Pass a returned **token** (bold, e.g. MNEMOSYNE_OS) as the `vault` argument to the other tools, never the `id` line, which is the host\'s internal path. Note: you can only read/write the vaults this MCP was configured for (MNEMO_VAULTS); others are flagged here and are refused until added.',
     inputSchema: {
       type:       'object',
       properties: {},
@@ -348,7 +348,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_ingest',
-    description: 'Persist a memory into the Mnemosyne OS vault — a decision, an architecture note, a debug finding, or a session summary. Stored permanently and indexed for future semantic retrieval by any agent. Use this at the END of a meaningful work session, or whenever you reach a decision that future you (or other agents) would want to recall.',
+    description: 'Persist a memory into the Mnemosyne OS vault: a decision, an architecture note, a debug finding, or a session summary. Stored permanently and indexed for future semantic retrieval by any agent. Use this at the END of a meaningful work session, or whenever you reach a decision that future you (or other agents) would want to recall.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -358,13 +358,13 @@ const TOOLS = [
         },
         spine_type: {
           type:        'string',
-          description: 'Semantic type of the content. ARCHITECTURE is heavily boosted (×1.40) in SOURCE_CODE scope queries — use it for design docs, big-picture decisions, structural choices. DECISION for narrower trade-offs. BUGFIX/DEBUG for incident learnings. SESSION for "here is where I left off". FEATURE for new capabilities. NOTE for everything else.',
+          description: 'Semantic type of the content. ARCHITECTURE is heavily boosted (×1.40) in SOURCE_CODE scope queries. Use it for design docs, big-picture decisions, structural choices. DECISION for narrower trade-offs. BUGFIX/DEBUG for incident learnings. SESSION for "here is where I left off". FEATURE for new capabilities. NOTE for everything else.',
           enum:        ['DECISION', 'ARCHITECTURE', 'DEBUG', 'BUGFIX', 'FEATURE', 'NOTE', 'SESSION', 'RESONANCE', 'CUSTOM'],
           default:     'NOTE',
         },
         vault: {
           type:        'string',
-          description: `Target vault TOKEN — the folder name uppercased, spaces and hyphens as underscores (e.g. MNEMOSYNE_OS). The path-shaped \`id\` from mnemosyne_vaults is also accepted and normalized. Default for this deployment: "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for — a config list, not a census: ${DECLARED_VAULTS.join(', ')}. Ingest is PERMANENT, so confirm the vault EXISTS with mnemosyne_vaults before writing anywhere you have not written before.`,
+          description: `Target vault TOKEN: the folder name uppercased, spaces and hyphens as underscores (e.g. MNEMOSYNE_OS). The path-shaped \`id\` from mnemosyne_vaults is also accepted and normalized. Default for this deployment: "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for: a config list, not a census, ${DECLARED_VAULTS.join(', ')}. Ingest is PERMANENT, so confirm the vault EXISTS with mnemosyne_vaults before writing anywhere you have not written before.`,
           default:     DEFAULT_VAULT,
         },
       },
@@ -373,7 +373,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_resonances',
-    description: 'List the Resonances recorded in the default vault — cognitive workspaces tracking ongoing projects. Read-only: it queries memory and writes nothing. Each entry carries the resonance id, its last phase, how many minutes ago it moved, and the id of the chronicle behind it. There is no active/paused filter and no status field: you get every resonance the scan matched, in one vault, from at most 30 candidates. An empty result answers in words and means no resonance has been recorded yet, never that the call failed. Call mnemosyne_get_position with an id to read one in full, or mnemosyne_update_position to write a new one.',
+    description: 'List the Resonances recorded in the default vault, the cognitive workspaces tracking ongoing projects. Read-only: it queries memory and writes nothing. Each entry carries the resonance id, its last phase, how many minutes ago it moved, and the id of the chronicle behind it. There is no active/paused filter and no status field: you get every resonance the scan matched, in one vault, from at most 30 candidates. An empty result answers in words and means no resonance has been recorded yet, never that the call failed. Call mnemosyne_get_position with an id to read one in full, or mnemosyne_update_position to write a new one.',
     inputSchema: {
       type:       'object',
       properties: {},
@@ -381,7 +381,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_get_position',
-    description: 'Read the last saved position of one Resonance — the phase and the free-text note an agent or the cockpit wrote when it stopped. Read-only: it queries memory and writes nothing. Returns the resonance id, when it was saved, the chronicle spineType, and the whole note. When nothing was ever saved under that id it answers in plain words and points at mnemosyne_update_position, never an error, so "never recorded" and "the call failed" do not look alike. Use it to resume work; call mnemosyne_resonances first when you do not know the id.',
+    description: 'Read the last saved position of one Resonance: the phase and the free-text note an agent or the cockpit wrote when it stopped. Read-only: it queries memory and writes nothing. Returns the resonance id, when it was saved, the chronicle spineType, and the whole note. When nothing was ever saved under that id it answers in plain words and points at mnemosyne_update_position, never an error, so "never recorded" and "the call failed" do not look alike. Use it to resume work; call mnemosyne_resonances first when you do not know the id.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -395,7 +395,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_update_position',
-    description: 'Update the current position of a Resonance. Call this at the end of a session to record where you left off — phase, current state, next steps. This is persisted as a DECISION chronicle in the vault.',
+    description: 'Update the current position of a Resonance. Call this at the end of a session to record where you left off: phase, current state, next steps. This is persisted as a DECISION chronicle in the vault.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -436,7 +436,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_dream_bridges',
-    description: 'List the connections Mnemosyne\'s Dream State engine discovered between memories during its offline (idle-time) scans — "what did you dream about?". Each bridge links two chronicles (possibly across vaults) with a composite Dream Bridge Score (dbs, prime-aware) and a raw cosine similarity, plus a short excerpt of both sides. Use it to surface non-obvious associations the memory found on its own, to audit whether dreamed connections are insightful or noise, or to seed creative exploration. An empty list is normal — it means the dream engine has not produced bridges yet (it runs while the machine is idle, if enabled in Settings).',
+    description: 'List the connections Mnemosyne\'s Dream State engine discovered between memories during its offline (idle-time) scans, "what did you dream about?". Each bridge links two chronicles (possibly across vaults) with a composite Dream Bridge Score (dbs, prime-aware) and a raw cosine similarity, plus a short excerpt of both sides. Use it to surface non-obvious associations the memory found on its own, to audit whether dreamed connections are insightful or noise, or to seed creative exploration. An empty list is normal: it means the dream engine has not produced bridges yet (it runs while the machine is idle, if enabled in Settings).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -500,7 +500,7 @@ const TOOLS = [
   // makes "check before you commit" cheap enough to actually do.
   {
     name:        'mnemosyne_agents',
-    description: 'What OTHER coding-agent sessions exist on this machine, read from the transcripts their harnesses already write to disk. Returns metadata only — conversation name, project, git branch, model, last tool, how many files were touched, and when a line was last written. Reads EVERY coding-agent harness installed on this machine, not just your own, so you can see a session from a different agent working in your repository. Use it before you touch shared state. NEVER reports that an agent is "working": a crashed agent and an idle one fall equally silent, so it reports when a line was last SEEN and you conclude. Works with Mnemosyne OS closed.',
+    description: 'What OTHER coding-agent sessions exist on this machine, read from the transcripts their harnesses already write to disk. Returns metadata only: conversation name, project, git branch, model, last tool, how many files were touched, and when a line was last written. Reads EVERY coding-agent harness installed on this machine, not just your own, so you can see a session from a different agent working in your repository. Use it before you touch shared state. NEVER reports that an agent is "working": a crashed agent and an idle one fall equally silent, so it reports when a line was last SEEN and you conclude. Works with Mnemosyne OS closed.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -523,7 +523,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agent_collisions',
-    description: 'Are two agent sessions live in the SAME git working tree and branch right now, from ANY installed harness? This is the one to call before `git add -A`, before a commit, and before a rebase: the git index is shared by every process in one working tree, so a commit from one session picks up whatever the other has staged. Answers from transcript files on disk; needs neither Mnemosyne OS nor a token. Each recorded directory is resolved to its working tree first, because one `cd` into a subfolder would otherwise make two sessions in one repository look like two projects. A clean answer says only that nothing was found IN WHAT IS READABLE — an agent whose transcripts live elsewhere does not appear at all, and sessions whose harness records no directory are listed separately as unplaceable rather than guessed at.',
+    description: 'Are two agent sessions live in the SAME git working tree and branch right now, from ANY installed harness? This is the one to call before `git add -A`, before a commit, and before a rebase: the git index is shared by every process in one working tree, so a commit from one session picks up whatever the other has staged. Answers from transcript files on disk; needs neither Mnemosyne OS nor a token. Each recorded directory is resolved to its working tree first, because one `cd` into a subfolder would otherwise make two sessions in one repository look like two projects. A clean answer says only that nothing was found IN WHAT IS READABLE. An agent whose transcripts live elsewhere does not appear at all, and sessions whose harness records no directory are listed separately as unplaceable rather than guessed at.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -536,7 +536,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agent_files',
-    description: 'Which FILES other agent sessions have written or edited recently, newest first, with the session each came from. Paths and timestamps only — never file contents. Each entry says how it is known: `recorded` means the harness logged a file-writing tool call, `from a command` means a redirection was read out of a shell command the session ran and may never have completed. Spans every installed harness, and each line names the session and the agent it came from. Use it to see what another session has already touched before you edit the same area.',
+    description: 'Which FILES other agent sessions have written or edited recently, newest first, with the session each came from. Paths and timestamps only, never file contents. Each entry says how it is known: `recorded` means the harness logged a file-writing tool call, `from a command` means a redirection was read out of a shell command the session ran and may never have completed. Spans every installed harness, and each line names the session and the agent it came from. Use it to see what another session has already touched before you edit the same area.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -558,7 +558,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_cockpit_update',
-    description: 'Your own status card on the human\'s canvas (the cockpit). Call it when you START a task ("working" + a short title and status), when you NEED the human ("waiting" — the card pulses and the taskbar flashes), when you are stuck ("blocked"), and when you are DONE ("done"). The state is what you declare; the host prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the human left on your card — read it and act on it. Needs the app window open. Nothing is stored in memory; this is a card, not a note.',
+    description: 'Your own status card on the human\'s canvas (the cockpit). Call it when you START a task ("working" + a short title and status), when you NEED the human ("waiting", the card pulses and the taskbar flashes), when you are stuck ("blocked"), and when you are DONE ("done"). The state is what you declare; the host prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the human left on your card. Read it and act on it. Needs the app window open. Nothing is stored in memory; this is a card, not a note.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -595,7 +595,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_pheme_watch',
-    description: 'Put a subreddit, a Hacker News search query or a topic on the human\'s Pheme radar (their reputation cartridge, which finds fresh threads worth a genuine reply), or take one off. The lists are THEIRS: an op that would empty a list is refused, every op reports its own outcome (done / already there / not there / refused), and the human sees a receipt in Pheme naming this agent and what changed. Use it when a conversation has found a community worth watching ("we answered a thread in r/hermesagent, keep an eye on it"). It does not scan and it does not post — nothing here posts anywhere; the human posts. Needs the app running (Pheme\'s settings mirror lives in it); Pheme itself may be closed.',
+    description: 'Put a subreddit, a Hacker News search query or a topic on the human\'s Pheme radar (their reputation cartridge, which finds fresh threads worth a genuine reply), or take one off. The lists are THEIRS: an op that would empty a list is refused, every op reports its own outcome (done / already there / not there / refused), and the human sees a receipt in Pheme naming this agent and what changed. Use it when a conversation has found a community worth watching ("we answered a thread in r/hermesagent, keep an eye on it"). It does not scan and it does not post: nothing here posts anywhere; the human posts. Needs the app running (Pheme\'s settings mirror lives in it); Pheme itself may be closed.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -618,7 +618,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_pheme_radar',
-    description: 'Read what the human\'s Pheme radar last found: fresh threads in the subreddits and Hacker News queries they watch, each with a topic score and, when the human has run the Mnemosyne pass, a tier (high / mid / low = how much substance THEY can bring to that thread). The answer leads with WHEN the scan ran — it is as fresh as the last time the human opened Pheme and pressed Scan, never fresher. Use it to find threads to draft a reply for; the human posts the reply. "No radar" means no scan has been projected yet, not that nothing was found: ask the human to open Pheme and scan. Needs the app running; Pheme itself may be closed.',
+    description: 'Read what the human\'s Pheme radar last found: fresh threads in the subreddits and Hacker News queries they watch, each with a topic score and, when the human has run the Mnemosyne pass, a tier (high / mid / low = how much substance THEY can bring to that thread). The answer leads with WHEN the scan ran: it is as fresh as the last time the human opened Pheme and pressed Scan, never fresher. Use it to find threads to draft a reply for; the human posts the reply. "No radar" means no scan has been projected yet, not that nothing was found: ask the human to open Pheme and scan. Needs the app running; Pheme itself may be closed.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -629,7 +629,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_add',
-    description: 'Put tasks into the human\'s To-do backlog (the To-do widget on their canvas) — in order, optionally under named steps. Use it when a conversation has settled WHAT to do: "make tasks out of everything we said we would do". Name the list ("list") — call once without it to be told the lists that exist on a LIST_NOT_FOUND answer — or pass create_list: true to make a new one. Never assume a default list. The host routes the write through the widget\'s own store, so what you file is exactly what the human sees. ' + FILE_PATH_CAVEAT + ' To read the backlog back or change what is in it, see mnemosyne_todo_list, mnemosyne_todo_update and mnemosyne_todo_lists.',
+    description: 'Put tasks into the human\'s To-do backlog (the To-do widget on their canvas), in order, optionally under named steps. Use it when a conversation has settled WHAT to do: "make tasks out of everything we said we would do". Name the list ("list"): call once without it to be told the lists that exist on a LIST_NOT_FOUND answer, or pass create_list: true to make a new one. Never assume a default list. The host routes the write through the widget\'s own store, so what you file is exactly what the human sees. ' + FILE_PATH_CAVEAT + ' To read the backlog back or change what is in it, see mnemosyne_todo_list, mnemosyne_todo_update and mnemosyne_todo_lists.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -823,7 +823,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agenda_add',
-    description: 'Put appointments or deadlines into the human\'s calendar (the Agenda widget on their canvas). Use it when a conversation names a specific date/time to remember — "add this to my calendar", a deadline, a meeting. The host routes the write through the widget\'s own store, so what you file is exactly what the human sees. ' + FILE_PATH_CAVEAT + ' To read the calendar back, change or remove an appointment, see mnemosyne_agenda_list, mnemosyne_agenda_update and mnemosyne_agenda_remove.',
+    description: 'Put appointments or deadlines into the human\'s calendar (the Agenda widget on their canvas). Use it when a conversation names a specific date/time to remember: "add this to my calendar", a deadline, a meeting. The host routes the write through the widget\'s own store, so what you file is exactly what the human sees. ' + FILE_PATH_CAVEAT + ' To read the calendar back, change or remove an appointment, see mnemosyne_agenda_list, mnemosyne_agenda_update and mnemosyne_agenda_remove.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -839,7 +839,7 @@ const TOOLS = [
               },
               start: {
                 type:        'string',
-                description: 'ISO 8601 date-time, e.g. "2026-09-10T14:00:00". No timezone offset = read as the HUMAN\'S OWN machine local time, never UTC — do not add a "Z" unless you mean UTC.',
+                description: 'ISO 8601 date-time, e.g. "2026-09-10T14:00:00". No timezone offset = read as the HUMAN\'S OWN machine local time, never UTC. Do not add a "Z" unless you mean UTC.',
               },
               end: {
                 type:        'string',
@@ -878,22 +878,22 @@ const VOICE_TOOL_NAMES = new Set(['mnemosyne_voices', 'mnemosyne_speak', 'mnemos
 const VOICE_TOOLS = [
   {
     name:        'mnemosyne_voices',
-    description: 'List what can SPEAK on this machine: the local TTS engines (installed or not), the reference voices available for cloning, and where rendered files are written. ALWAYS call this before mnemosyne_speak — it tells you which engine to ask for, which clone names exist (an invented name is refused, never substituted), and warns when a reference clip is too short or not mono to clone well. Requires the Mnemosyne OS app to be running: the voice engines are Python sidecars inside it, and the headless daemon cannot speak.',
+    description: 'List what can SPEAK on this machine: the local TTS engines (installed or not), the reference voices available for cloning, and where rendered files are written. ALWAYS call this before mnemosyne_speak: it tells you which engine to ask for, which clone names exist (an invented name is refused, never substituted), and warns when a reference clip is too short or not mono to clone well. Requires the Mnemosyne OS app to be running: the voice engines are Python sidecars inside it, and the headless daemon cannot speak.',
     inputSchema: { type: 'object', properties: {} },
   },
   {
     name:        'mnemosyne_speak',
-    description: 'Render a written script to a WAV file using a local voice — including the user\'s own cloned voice. Made for producing voice-overs (TikTok, YouTube, podcast, narration): the audio is written to a file on disk and the PATH is returned, ready to drop on a video timeline. Runs entirely offline on the local engines; nothing is sent to a cloud service.\n\nThis is a JOB, not an instant call: synthesis runs at roughly real time (a 3-minute script takes ~3-4 minutes). The tool waits a while and, if the render is still going, returns a job id — poll it with mnemosyne_speak_status. Long scripts are split at sentence boundaries and re-assembled into ONE file; nothing is truncated.\n\nGOVERNANCE — the voice belongs to a person. Only produce audio the user asked for, tell them the file path and what was said, and never use a cloned voice to make someone appear to say something they did not. If a clone name does not exist the call is REFUSED rather than falling back to another voice: report the error instead of retrying with a different one.',
+    description: 'Render a written script to a WAV file using a local voice, including the user\'s own cloned voice. Made for producing voice-overs (TikTok, YouTube, podcast, narration): the audio is written to a file on disk and the PATH is returned, ready to drop on a video timeline. Runs entirely offline on the local engines; nothing is sent to a cloud service.\n\nThis is a JOB, not an instant call: synthesis runs at roughly real time (a 3-minute script takes ~3-4 minutes). The tool waits a while and, if the render is still going, returns a job id. Poll it with mnemosyne_speak_status. Long scripts are split at sentence boundaries and re-assembled into ONE file; nothing is truncated.\n\nGOVERNANCE. The voice belongs to a person. Only produce audio the user asked for, tell them the file path and what was said, and never use a cloned voice to make someone appear to say something they did not. If a clone name does not exist the call is REFUSED rather than falling back to another voice: report the error instead of retrying with a different one.',
     inputSchema: {
       type: 'object',
       properties: {
         text: {
           type:        'string',
-          description: 'The script to speak, as it should be read aloud. Write it for the EAR: expand abbreviations, spell out numbers and symbols, and use punctuation for pacing — a piece with no grammatical end makes an autoregressive engine ramble. Markdown, bullets and emoji are read literally: strip them first.',
+          description: 'The script to speak, as it should be read aloud. Write it for the EAR: expand abbreviations, spell out numbers and symbols, and use punctuation for pacing: a piece with no grammatical end makes an autoregressive engine ramble. Markdown, bullets and emoji are read literally: strip them first.',
         },
         clone: {
           type:        'string',
-          description: 'Reference voice name from mnemosyne_voices ("default" is the sample the user recorded in the app). Omit for the default. A name that does not exist is refused — do NOT guess one.',
+          description: 'Reference voice name from mnemosyne_voices ("default" is the sample the user recorded in the app). Omit for the default. A name that does not exist is refused. Do NOT guess one.',
         },
         engine: {
           type:        'string',
@@ -905,7 +905,7 @@ const VOICE_TOOLS = [
         },
         title: {
           type:        'string',
-          description: 'Short label used to name the output file — a human should recognize it a week later ("Short 12 — la mémoire souveraine").',
+          description: 'Short label used to name the output file, so a human recognizes it a week later ("Short 12, la mémoire souveraine").',
         },
         speed: {
           type:        'number',
@@ -922,7 +922,7 @@ const VOICE_TOOLS = [
   },
   {
     name:        'mnemosyne_speak_status',
-    description: 'Check a voice render started by mnemosyne_speak: how many segments are done, the estimated time left, and — once finished — the path of the WAV file. Call it with no job id to list every render of this session. A render can also be stopped here (it halts at the next segment boundary and leaves no file).',
+    description: 'Check a voice render started by mnemosyne_speak: how many segments are done, the estimated time left, and, once finished, the path of the WAV file. Call it with no job id to list every render of this session. A render can also be stopped here (it halts at the next segment boundary and leaves no file).',
     inputSchema: {
       type: 'object',
       properties: {

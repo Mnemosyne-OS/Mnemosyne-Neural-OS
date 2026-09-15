@@ -21,7 +21,7 @@ export const MNEMOSYNE_ABOUT = {
   tagline: 'A sovereign, local-first memory operating system for a human.',
   what: [
     'Mnemosyne OS is a personal memory OS that lives on the user\'s own machine.',
-    'Memory is organized into VAULTS — isolated stores, one per life domain (code, notes, research, journal, social, …).',
+    'Memory is organized into VAULTS: isolated stores, one per life domain (code, notes, research, journal, social, …).',
     'Each memory is a CHRONICLE: content + a spineType (its semantic kind) + a vector embedding.',
     'You reach it by semantic retrieval (RAG): query returns ranked chronicles; ask returns a synthesized answer grounded in them.',
   ],
@@ -38,18 +38,18 @@ export const MNEMOSYNE_ABOUT = {
       'Which other vaults this one may be blended with. `["*"]` = open to mixing. ' +
       '`[]` = ISOLATED: do not cross-pollinate it with any other vault (private vaults and benchmark/sandbox vaults both use this).',
     visibleInNeuralMap:
-      '`false` marks a vault that is not real, cross-pollinatable memory — a benchmark sandbox or a private store. Treat its spine types and content as out-of-band; never surface them as if they were the user\'s real knowledge.',
+      '`false` marks a vault that is not real, cross-pollinatable memory: a benchmark sandbox or a private store. Treat its spine types and content as out-of-band; never surface them as if they were the user\'s real knowledge.',
   },
   spineModel:
     'spineType classifies each chronicle and weights retrieval (e.g. ARCHITECTURE is boosted for design questions, GIT_HISTORY for "what changed", BUGFIX for incidents). ' +
     'Call mnemosyne_spine_assignments to see a vault\'s actual taxonomy rather than guessing.',
   sandboxPrinciple:
     'An app/agent may be given its OWN isolated sandbox vault (id = APP-<app name>), walled off by default (mixableWith:[], hidden from the neural map, excluded from the dream layer). ' +
-    'It can write freely there. It can NEVER unlock mixing its data into the user\'s real memory — only the human does that from the Vault Manager, after testing the app. Permanence is a human decision, not an agent action. ' +
+    'It can write freely there. It can NEVER unlock mixing its data into the user\'s real memory. Only the human does that from the Vault Manager, after testing the app. Permanence is a human decision, not an agent action. ' +
     'SDK apps request theirs with the `sdk.vault.sandbox.ensure` method (idempotent).',
   rules: [
-    'Discover before you target: call mnemosyne_vaults to see which vaults exist and their protection before choosing one. A vault you were not granted returns SCOPE_DENIED — do not try to route around it.',
-    'Recall with query/ask; persist with ingest. Ingest is PERMANENT and shared with every future agent — write self-contained content and include WHY, not just what.',
+    'Discover before you target: call mnemosyne_vaults to see which vaults exist and their protection before choosing one. A vault you were not granted returns SCOPE_DENIED. Do not try to route around it.',
+    'Recall with query/ask; persist with ingest. Ingest is PERMANENT and shared with every future agent, so write self-contained content and include WHY, not just what.',
     'Respect protection: never read a MAXIMUM vault for cross-vault work, never mix or expose it, never write to it, unless the user asks in this conversation.',
     'Never blend an isolated vault (mixableWith:[]) into others. Benchmark/sandbox vaults are disposable and must not be presented as the user\'s real knowledge.',
     'Deletion and permission changes are the human\'s to make. Propose them; never perform them silently.',
@@ -73,10 +73,10 @@ export const MNEMOSYNE_ABOUT = {
 const VOICE_COVENANT = [
   '## The voice, when you can render one',
   '- A cloned voice is the identity of a person, not an asset. Produce only what the human asked for, in this conversation.',
-  '- Never make a voice say something the person did not choose to say — no impersonation, no put-into-their-mouth, however harmless the framing.',
+  '- Never make a voice say something the person did not choose to say: no impersonation, no put-into-their-mouth, however harmless the framing.',
   '- Always report the file PATH and what was spoken. Audio the human cannot find is audio they cannot check.',
   '- A clone name that does not exist is REFUSED, never substituted. Do not retry with another voice: a voice-over in the wrong voice sounds perfect and is worthless.',
-  '- The render is a job. Poll it; never restart one that is still running — the engine speaks one thing at a time.',
+  '- The render is a job. Poll it; never restart one that is still running, the engine speaks one thing at a time.',
 ].join('\n');
 
 /**
@@ -102,7 +102,7 @@ const AGENTS_COVENANT = (roots: string[]): string => [
   '- Files are marked `recorded` (the harness logged a write) or `from a command` (a',
   '  redirection was read out of a shell command that may never have completed). Do not',
   '  treat the second as a fact about the disk.',
-  '- These tools return METADATA only — never message text, never file contents. Do not ask',
+  '- These tools return METADATA only, never message text, never file contents. Do not ask',
   '  them for either, and do not infer content from a path.',
 ].join('\n');
 
@@ -110,7 +110,7 @@ export function renderCovenant(opts: { defaultVault: string; declaredVaults: str
   const a = MNEMOSYNE_ABOUT;
   const others = opts.declaredVaults.filter(v => v !== opts.defaultVault);
   return [
-    `# ${a.name} — ${a.tagline}`,
+    `# ${a.name}: ${a.tagline}`,
     '',
     a.what.map(l => `- ${l}`).join('\n'),
     '',
@@ -121,10 +121,10 @@ export function renderCovenant(opts: { defaultVault: string; declaredVaults: str
     a.rules.map((r, i) => `${i + 1}. ${r}`).join('\n'),
     '',
     '## Vault protection you must honor',
-    `- **protection NORMAL** — ${a.vaultProtection.protection.NORMAL}`,
-    `- **protection MAXIMUM** — ${a.vaultProtection.protection.MAXIMUM}`,
-    `- **mixableWith** — ${a.vaultProtection.mixableWith}`,
-    `- **visibleInNeuralMap:false** — ${a.vaultProtection.visibleInNeuralMap}`,
+    `- **protection NORMAL**: ${a.vaultProtection.protection.NORMAL}`,
+    `- **protection MAXIMUM**: ${a.vaultProtection.protection.MAXIMUM}`,
+    `- **mixableWith**: ${a.vaultProtection.mixableWith}`,
+    `- **visibleInNeuralMap:false**: ${a.vaultProtection.visibleInNeuralMap}`,
     '',
     '## Sandbox principle',
     a.sandboxPrinciple,
@@ -138,7 +138,7 @@ export function renderCovenant(opts: { defaultVault: string; declaredVaults: str
     // the CONFIG declares — say that, and send the agent to the one tool that
     // does measure. Naming a vault here that is not mounted sent agents to
     // addresses that could not answer (DEV and PERSONAL, found 2026-08-31).
-    `- Vaults this MCP is scoped for (config, not a census — some may not be mounted here): ${others.length ? others.map(v => `**${v}**`).join(', ') : '(none)'}`,
+    `- Vaults this MCP is scoped for (config, not a census, so some may not be mounted here): ${others.length ? others.map(v => `**${v}**`).join(', ') : '(none)'}`,
     '- Call `mnemosyne_vaults` for the vaults that actually exist on this machine, with their chronicle counts and protection.',
     '',
     '_Call `mnemosyne_about` any time to re-read this. Call `mnemosyne_vaults` to see live vaults and their protection._',
