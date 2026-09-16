@@ -55,8 +55,8 @@ The three **agent-awareness** tools (`mnemosyne_agent_list`, `mnemosyne_agent_co
 
 ### Claude Desktop — one click
 
-Download **[Mnemosyne-OS-MCP-1.10.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.4.5-infinity/Mnemosyne-OS-MCP-1.10.0.mcpb)**
-(4.3 MB, or take the newest `.mcpb` from the [releases page](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)),
+Download **[Mnemosyne-OS-MCP-2.0.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.4.5-infinity/Mnemosyne-OS-MCP-2.0.0.mcpb)**
+(4.1 MB, or take the newest `.mcpb` from the [releases page](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)),
 then open Claude Desktop → **Settings → Extensions** and drop the file into that
 panel. That is the whole install. The 25 tools appear straight away, and the same
 panel offers the three optional settings: default vault, other vaults, and the
