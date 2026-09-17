@@ -1,8 +1,7 @@
 blank_issues_enabled: true
+# No security link here: GitHub adds its own "Report a security vulnerability"
+# entry to this chooser as long as private vulnerability reporting is enabled.
 contact_links:
-  - name: Report a security vulnerability
-    url: https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/security/advisories/new
-    about: Private, maintainers only. Never put an exploit in a public issue.
   - name: Ask a question
     url: https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/discussions
     about: Not sure it is a bug, or want to know how something works? Ask here.
