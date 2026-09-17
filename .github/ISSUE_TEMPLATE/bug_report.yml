@@ -1,0 +1,92 @@
+name: Bug report
+description: Something crashed, answered wrong, or did nothing. Not for security issues.
+title: "[Bug] "
+labels: [bug]
+assignees: [yaka0007]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. From inside the desktop app, the bug
+        button in any window's title bar fills in the version and the
+        machine details for you, and shows what it sends before it sends it.
+        This form is the same report, written by hand.
+
+        **Security issue?** Do not use this form. Report it privately:
+        https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/security/advisories/new
+
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part
+      options:
+        - Desktop app (Mnemosyne OS)
+        - MCP server (@mnemosyne_os/mcp)
+        - SDK (@mnemosyne_os/sdk)
+        - MnemoForge CLI
+        - A cartridge from MnemoHub
+        - Website or documentation
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: App → Settings › About. Package → `npm view @mnemosyne_os/<name> version`. Cartridge → its name and version in MnemoHub.
+      placeholder: "1.4.5"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Windows 11 24H2 / macOS 15.1 / Ubuntu 24.04"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What you did, in order. One action per line.
+      placeholder: |
+        1. Open the Chat window
+        2. Drop a 40 MB PDF on it
+        3. Ask "what is chapter 3 about"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+      description: Paste the exact message if there was one. A screenshot helps.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: model
+    attributes:
+      label: Model route, if the bug involves an answer
+      options:
+        - Local model
+        - Cloud model with my own key
+        - Mnemosyne credits
+        - My own server (self-hosted)
+        - Not relevant
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Logs, how often it happens, whether it started after an update.
