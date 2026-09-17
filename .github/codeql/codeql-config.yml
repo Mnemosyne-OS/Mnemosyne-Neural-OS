@@ -1,0 +1,9 @@
+# CodeQL default setup reads only `paths` / `paths-ignore` / `query-filters` from this file.
+#
+# `cli/src/templates/` holds source-code templates that the CLI fills in at
+# generation time (`{{MODULE_NAME}}` placeholders). They carry a `.tsx`
+# extension so editors highlight them, but they are not valid TypeScript
+# until rendered, so the extractor reports a parse error on every scan.
+# Nothing in that folder is ever executed as-is.
+paths-ignore:
+  - cli/src/templates
