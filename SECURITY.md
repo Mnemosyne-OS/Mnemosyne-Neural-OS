@@ -39,6 +39,23 @@ What helps us act fast:
 
 You are credited in the release notes unless you ask not to be.
 
+### Safe harbour
+
+If you research and report in good faith, XPACEGEMS LLC will not take legal
+action against you and will not report you to law enforcement. Good faith
+means:
+
+- You report the finding privately and give us the time above to fix it
+  before saying anything in public.
+- You stop at proof. You do not read, copy or change other people's data,
+  you do not degrade the service for others, and you delete anything you
+  had to touch once the report is filed.
+- You use only accounts, machines and vaults that are yours.
+- You do not ask for money to disclose the finding.
+
+If a third party takes action against you for research done under these
+terms, we will say so in writing.
+
 ## Scope
 
 In scope:
