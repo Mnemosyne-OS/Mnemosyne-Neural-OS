@@ -115,7 +115,10 @@ export interface OverlapOptions {
 export const TOUCH_WINDOW_MS = 48 * 60 * 60 * 1000;
 
 const fold = (p: string, ci: boolean): string => {
-  const slashed = p.replace(/\\/g, '/').replace(/\/+$/, '');
+  let slashed = p.replace(/\\/g, '/');
+  // A loop, not `/\/+$/`: that pattern retried a long run of slashes from every
+  // position when the run was not at the end (quadratic on a hostile path).
+  while (slashed.endsWith('/')) slashed = slashed.slice(0, -1);
   return ci ? slashed.toLowerCase() : slashed;
 };
 

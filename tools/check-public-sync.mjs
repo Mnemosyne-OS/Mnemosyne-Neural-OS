@@ -47,7 +47,9 @@ function cmpVersion(a, b) {
 }
 
 async function npmLatest(name) {
-  const url = `https://registry.npmjs.org/${name.replace('/', '%2F')}/latest`
+  // Every '/' is escaped (a scoped name has exactly one, but the pattern is
+  // what a reader sees); the '@' stays, which is how the registry keys scopes.
+  const url = `https://registry.npmjs.org/${name.replace(/\//g, '%2F')}/latest`
   const res = await fetch(url, { headers: { accept: 'application/json' } })
   if (res.status === 404) return { unpublished: true }
   if (!res.ok) throw new Error(`npm ${res.status}`)

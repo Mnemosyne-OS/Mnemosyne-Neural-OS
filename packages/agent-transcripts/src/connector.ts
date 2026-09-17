@@ -560,8 +560,11 @@ export function readDoc(
   if (!doc.name) doc.name = file.replace(/\.[^.]+$/, '');
 
   // [[wiki-links]] are the note graph. Deduplicated, order preserved.
+  // 🪤 The class excludes '[' as well as ']': with `[^\]]+` a body made of
+  // `[[[[…` re-scanned to its end from every position (quadratic), and a note
+  // can arrive from someone else's machine over a replicated vault.
   const seen = new Set<string>();
-  for (const m of doc.body.matchAll(/\[\[([^\]]+)\]\]/g)) {
+  for (const m of doc.body.matchAll(/\[\[([^[\]]+)\]\]/g)) {
     const target = m[1].trim();
     if (target && !seen.has(target)) { seen.add(target); doc.links.push(target); }
   }
@@ -577,6 +580,13 @@ export function readDoc(
  * `key: value\r` silently failed to parse while `key: \r` succeeded — the
  * empty-value case let \s* swallow the carriage return. That cost 132 of 249
  * notes their description and type, and looked exactly like missing metadata.
+ *
+ * The line is trimmed BEFORE the pattern, and the pattern has no `$`. CodeQL
+ * flags `\s*:\s*(.*)$` as polynomial (spaces handed back one at a time when
+ * `$` fails on a lone '\r'); MEASURED in V8 it is not — 0 ms at 400k spaces —
+ * so this is a simplification that closes the alert, not a fix for a hang.
+ * The value is trimmed afterwards anyway, so nothing the anchor guaranteed is
+ * lost.
  */
 function parseFrontmatter(block: string): Record<string, string> {
   const out: Record<string, string> = {};
@@ -584,7 +594,7 @@ function parseFrontmatter(block: string): Record<string, string> {
   for (const raw of block.split(/\r?\n/)) {
     if (!raw.trim() || raw.trim().startsWith('#')) continue;
     const indented = /^\s+/.test(raw);
-    const m = /^\s*([A-Za-z0-9_-]+)\s*:\s*(.*)$/.exec(raw);
+    const m = /^([A-Za-z0-9_-]+)\s*:(.*)/.exec(raw.trim());
     if (!m) continue;
     const [, key, value] = m;
     const clean = value.trim().replace(/^["']|["']$/g, '');

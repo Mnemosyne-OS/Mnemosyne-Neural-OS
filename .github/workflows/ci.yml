@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+# None of these jobs writes to the repository: checkout, build, compare.
+permissions:
+  contents: read
+
 jobs:
   docs-check:
     name: Docs integrity check

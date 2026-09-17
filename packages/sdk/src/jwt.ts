@@ -79,7 +79,9 @@ function b64url(input: string | Uint8Array): string {
   } else {
     b64 = Buffer.from(bytes).toString('base64');
   }
-  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  // '=' is padding and nothing else in base64, so a global strip is exact and
+  // linear where `/=+$/` retried every run of '=' that was not at the end.
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
 /**

@@ -127,6 +127,16 @@ describe('overlappingTouches', () => {
     expect(overlappingTouches([s], ['C:/proj/src/a.ts'], OPTS).touches).toHaveLength(1);
   });
 
+  it('folds a path made of slashes in linear time', () => {
+    // The old `/\/+$/` retried the whole run from every position when it was
+    // not at the end: 100k slashes took seconds. Paths are read from someone
+    // else's transcript, so the shape is not ours to trust.
+    const s = session({ artifacts: [art('C:/proj/' + '/'.repeat(100_000) + 'x')] });
+    const t0 = performance.now();
+    expect(overlappingTouches([s], ['C:/proj/a.ts'], OPTS).touches).toEqual([]);
+    expect(performance.now() - t0).toBeLessThan(1_000);
+  });
+
   it('does NOT fold case when told the filesystem is case-sensitive', () => {
     // On Linux `A.ts` and `a.ts` are two files; folding them would invent an
     // overlap the committer cannot act on.

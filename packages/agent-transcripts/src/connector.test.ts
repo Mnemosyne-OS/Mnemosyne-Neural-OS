@@ -300,6 +300,21 @@ describe('readDoc', () => {
     expect(d.links).toEqual(['a', 'b']);
   });
 
+  // A note can come from someone else's machine (replicated vaults), so a body
+  // built to make the link scan quadratic must not hang the reader.
+  // 🪤 The hostile shape has NO closing pair anywhere: with one, the old class
+  // matched the whole body in a single link and returned instantly (measured
+  // 0 ms), which is how the first version of this test failed to catch it.
+  // Without one, the old class re-scanned to the end from every position:
+  // 13 s at 100k pairs, 213 s at 400k.
+  it('reads a body of open brackets with no closing pair in linear time', () => {
+    const hostile = '[['.repeat(100_000) + ' [[real';
+    const t0 = performance.now();
+    const d = doc(hostile);
+    expect(performance.now() - t0).toBeLessThan(1_000);
+    expect(d.links).toEqual([]);
+  });
+
   describe('sidecar', () => {
     const SIDE: Connector = {
       ...MD, frontmatter: undefined,

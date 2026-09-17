@@ -19,6 +19,10 @@ on:
     - cron: "0 4 1,15 * *"
   workflow_dispatch:
 
+# The job only calls an external API with its own key; it never touches the
+# repository, so the GITHUB_TOKEN needs nothing at all.
+permissions: {}
+
 jobs:
   refresh:
     name: Ask Context7 to re-index
