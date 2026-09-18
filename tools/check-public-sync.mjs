@@ -107,11 +107,30 @@ if (!/npm create @mnemosyne_os\/app/.test(readme)) {
 //
 // AGENTS.md tells agents its figures can be trusted, which is what makes a
 // stale one worse than none: the IPC count sat at 242 from July 2026 while the
-// real number climbed past 400, and nothing complained. metrics.json is written
-// by the monorepo's inventory generator, so the prose is checked against
+// real number climbed past 400, and nothing complained. metrics.json is copied
+// from the monorepo's inventory output, so the prose is checked against
 // something generated rather than against somebody's memory.
+//
+// It must also say WHERE it was copied from. Until 2026-09-18 the monorepo's
+// pre-commit hook wrote this file from whatever working tree was committing —
+// including feature worktrees hundreds of commits behind main, and once a
+// count that included another session's uncommitted handlers (509 over the
+// published 506). The copy is now made by `pnpm mirror:metrics` from a commit
+// on main and stamped with it. A file without the stamp is a hand copy or a
+// hook write, and this refuses it. (The predicate is mirrored by hand from
+// scripts/sync-public-metrics.mjs in the monorepo; both carry this note.)
 try {
   const metrics = JSON.parse(readFileSync(resolve(root, 'tools/metrics.json'), 'utf8'))
+  const stamped =
+    typeof metrics.sourceCommit === 'string' &&
+    /^[0-9a-f]{40}$/.test(metrics.sourceCommit) &&
+    metrics.sourceBranch === 'main'
+  if (!stamped) {
+    errors.push(
+      'tools/metrics.json carries no provenance (sourceCommit + sourceBranch: main). ' +
+        'It was hand-copied or written by the old pre-commit hook. Run `pnpm mirror:metrics` in the monorepo, which copies it from a commit on main and stamps it.',
+    )
+  }
   const agents = readFileSync(resolve(root, 'AGENTS.md'), 'utf8')
   const claimed = agents.match(/\*\*([\d\s,]+)\*\*\s+IPC channels/)
   if (!claimed) {
@@ -121,7 +140,7 @@ try {
     if (n !== metrics.ipcChannels) {
       errors.push(
         'AGENTS.md claims ' + n + ' IPC channels, tools/metrics.json says ' + metrics.ipcChannels + '. ' +
-          'Run `pnpm inventory` in the monorepo to refresh tools/metrics.json, then edit the "N IPC channels" figure in AGENTS.md BY HAND to match it. The inventory script writes the data, never the prose — that is the point: prose goes stale silently, so this check is what makes it loud.',
+          'Run `pnpm mirror:metrics` in the monorepo to refresh tools/metrics.json from main, then edit the "N IPC channels" figure in AGENTS.md BY HAND to match it. The script writes the data, never the prose — that is the point: prose goes stale silently, so this check is what makes it loud.',
       )
     }
   }
