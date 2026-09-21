@@ -1,7 +1,7 @@
 {
   "name": "@mnemosyne_os/public-contracts",
   "version": "0.2.6",
-  "description": "Public types, Zod schemas, and interfaces for Mnemosyne OS. No business logic — the official integration surface.",
+  "description": "Public types, Zod schemas and interfaces for Mnemosyne OS. No business logic, just the official integration surface.",
   "license": "MIT",
   "author": "Tony Trochet <tony@xpacegems.com> (https://xpacegems.com)",
   "homepage": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",

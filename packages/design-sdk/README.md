@@ -1,16 +1,16 @@
-**@mnemosyne_os/design-sdk** — Mnemosyne Design SDK — Create custom UI skins for Mnemosyne OS using only JSON. Zero TypeScript required.
+**@mnemosyne_os/design-sdk**: Create custom UI skins for Mnemosyne OS using only JSON. No TypeScript required.
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS. Your memory. Your machine. Your rules." />
 
-🌐 [**mnemosyne-os.io**](https://mnemosyne-os.io) — the product, for builders · [**mnemosyne-os.com**](https://mnemosyne-os.com) — the company, press & labs · [**docs.mnemosyne-os.io**](https://docs.mnemosyne-os.io) — the documentation
+**Product** [mnemosyne-os.io](https://mnemosyne-os.io) · **Company, press and labs** [mnemosyne-os.com](https://mnemosyne-os.com) · **Documentation** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)
 
 </div>
 
 # @mnemosyne_os/design-sdk
 
-> **Create custom UI skins for Mnemosyne OS using only JSON — Zero TypeScript required.**
+> **Create custom UI skins for Mnemosyne OS using only JSON. No TypeScript required.**
 
 [![Phase 62](https://img.shields.io/badge/Mnemosyne-Phase%2062-00cc6a?style=flat-square)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
@@ -19,7 +19,7 @@
 
 ## What is this?
 
-The **Mnemosyne Design SDK** lets UI designers create complete custom themes for Mnemosyne OS by overriding CSS variables — no React, no TypeScript, no build step required.
+The **Mnemosyne OS Design SDK** lets UI designers create complete custom themes by overriding CSS variables. No React, no TypeScript, no build step.
 
 A skin is a single `.json` file. Drop it into the app and see the result live.
 
@@ -130,7 +130,7 @@ A skin can override any subset of these CSS variables.
 ### Spacing, Radius, Borders, Shadows, Transitions
 See [`skin-schema.json`](./skin-schema.json) for the full list with descriptions.
 
-### ⚠ Layout tokens (Advanced)
+### Layout tokens (advanced)
 These exist but modifying them **may break the app layout**:
 - `--titlebar-height`
 - `--panel-left-width`
@@ -222,15 +222,15 @@ All of them live under one npm organization:
 
 | Package | What it is |
 |---|---|
-| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app** — a Node or browser process talking to the local WebSocket surface |
-| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` — scaffolds that Layer 2 app in one command |
-| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge** — a sandboxed iframe widget rendered on the canvas |
-| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server** — plug Claude, Cursor or any MCP agent into the vaults |
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app**: a Node or browser process talking to the local WebSocket surface |
+| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` scaffolds that Layer 2 app in one command |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge**: a sandboxed iframe widget rendered on the canvas |
+| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server**: plug Claude, Cursor or any MCP agent into the vaults |
 | **`@mnemosyne_os/design-sdk`** *(you are here)* | **Skin the OS** with JSON alone, no TypeScript |
 | [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | The shared **types and Zod schemas**. No business logic |
-| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk** — connector format + interpreter |
+| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk**: the connector format and the interpreter |
 | [`@mnemosyne_os/affine-reader`](https://www.npmjs.com/package/@mnemosyne_os/affine-reader) | Read a local **AFFiNE workspace** and render its documents to Markdown |
-| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI** — scaffold, list chronicles, import / export |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI**: scaffold, list chronicles, import and export |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
 
 ---
@@ -249,12 +249,12 @@ Published by XPACEGEMS LLC. Its official addresses:
 
 ## License
 
-MIT — [Mnemosyne Neural OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
+MIT. [Mnemosyne OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)
 
 ---
 
 ## The OS your code talks to
 
-<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
 
-*Mnemosyne OS — Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*
+*Mnemosyne OS Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*

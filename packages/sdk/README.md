@@ -1,17 +1,17 @@
-**@mnemosyne_os/sdk** — Official SDK for building Layer 2 apps on Mnemosyne OS — connects to the local AI memory runtime via WebSocket or Electron IPC.
+**@mnemosyne_os/sdk**: Official SDK for building Layer 2 apps on Mnemosyne OS. Connects to the local AI memory runtime over WebSocket or Electron IPC.
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS. Your memory. Your machine. Your rules." />
 
-🌐 [**mnemosyne-os.io**](https://mnemosyne-os.io) — the product, for builders · [**mnemosyne-os.com**](https://mnemosyne-os.com) — the company, press & labs · [**docs.mnemosyne-os.io**](https://docs.mnemosyne-os.io) — the documentation
+**Product** [mnemosyne-os.io](https://mnemosyne-os.io) · **Company, press and labs** [mnemosyne-os.com](https://mnemosyne-os.com) · **Documentation** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)
 
 </div>
 
 # @mnemosyne_os/sdk
 
 > **Official SDK for building Layer 2 apps on [Mnemosyne OS](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)**  
-> Connect your app to a local sovereign AI memory runtime — no cloud dependency.
+> Connect your app to a local sovereign AI memory runtime. No cloud dependency.
 
 [![npm version](https://img.shields.io/npm/v/@mnemosyne_os/sdk)](https://www.npmjs.com/package/@mnemosyne_os/sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -35,16 +35,16 @@ model answers on the machine, a cloud model is a call you configured.
 
 | Package | Version | Role |
 |---------|---------|------|
-| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | latest | MCP server — plug Claude / Cursor / any MCP agent into your vault |
-| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | `1.4.7` | CLI — scaffold, chronicles, MCP server |
-| [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | `0.0.1` | P2P — multi-agent synchronization |
-| **`@mnemosyne_os/sdk`** | **`1.3.0`** | **SDK — build Layer 2 apps** |
+| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | latest | MCP server: plug Claude, Cursor or any MCP agent into your vault |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | `1.4.7` | CLI: scaffold, chronicles, MCP server |
+| [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | `0.0.1` | P2P: multi-agent synchronization |
+| **`@mnemosyne_os/sdk`** | **`1.3.0`** | **SDK: build Layer 2 apps** |
 
 ---
 
 ## Requirements
 
-- **[Mnemosyne OS — Infinity Edition](https://mnemosyne-os.io/download)** running on your machine (it exposes the SDK WebSocket surface on `ws://127.0.0.1:7799`)
+- **[Mnemosyne OS Infinity Edition](https://mnemosyne-os.io/download)** running on your machine (it exposes the SDK WebSocket surface on `ws://127.0.0.1:7799`)
 - Node.js ≥ 18 (for `MnemoClient`) OR any modern browser / Electron renderer (for `MnemoClientBrowser`)
 
 ---
@@ -57,7 +57,7 @@ npm install @mnemosyne_os/sdk
 
 ---
 
-## Two Clients — Pick the Right One
+## Two clients, and how to pick one
 
 | Client | Environment | Transport |
 |--------|------------|-----------|
@@ -68,7 +68,7 @@ npm install @mnemosyne_os/sdk
 
 ---
 
-## Quick Start — Browser / React / Vite
+## Quick start: browser, React, Vite
 
 ### 1. Create your `app.manifest.json`
 
@@ -121,7 +121,7 @@ client.close();
 
 ---
 
-## Quick Start — Node.js External App
+## Quick start: a Node.js external app
 
 ```typescript
 import { MnemoClient } from '@mnemosyne_os/sdk';
@@ -143,7 +143,7 @@ await client.disconnect();
 
 ## Semantic Ranking (v1.2+)
 
-By default `query()` returns the **N most recent chronicles** — fast (~5 ms) and good for "what changed lately" panes.
+By default `query()` returns the **N most recent chronicles**. That is fast, about 5 ms, and good for "what changed lately" panes.
 For agent-style relevance, opt into the **semantic branch**:
 
 ```typescript
@@ -164,16 +164,16 @@ console.log(result.chronicles);
 |---|---|---|
 | `semantic` | `false` | Embeds the query and ranks by cosine × spineType weight. Without it: recent N. |
 | `scope` | `'SOURCE_CODE'` | Cognitive scope that drives the type-weight table (ARCHITECTURE ×1.40, GIT ×1.35, etc.). |
-| `spineTypeFilter` | `undefined` | Server-side SQL `IN` clause — restricts results to listed types. |
+| `spineTypeFilter` | `undefined` | Server-side SQL `IN` clause. Restricts results to the listed types. |
 | `threshold` | `0.0` | Minimum cosine score (0–1) before type-weighting. |
 
-The runtime applies an **exact-term boost** for identifier-like tokens in your query (uppercased words ≥4 chars, hyphenated codes, version numbers). Matching chronicles get `cosine × (1 + matchCount × 0.5)`, surfacing docs that contain rare identifiers verbatim — which dense embeddings alone tend to miss.
+The runtime applies an **exact-term boost** for identifier-like tokens in your query (uppercased words ≥4 chars, hyphenated codes, version numbers). Matching chronicles get `cosine × (1 + matchCount × 0.5)`, surfacing docs that contain rare identifiers verbatim, which dense embeddings alone tend to miss.
 
 The optional `_semantic` field on `QueryResult` is your debug breadcrumb: it tells you whether the semantic branch ran, what dimension the query vector had, how many chronicles were in the target vault, and the error message if it silently fell back to "recent" (e.g. embedding provider not registered).
 
 ---
 
-## Full API — `MnemoClientBrowser`
+## Full API: `MnemoClientBrowser`
 
 ### Connection
 
@@ -205,7 +205,7 @@ const chronicles = await client.query(text, vault?, limit?);
 const resonances = await client.resonancesList();
 
 // Update current position (persisted as DECISION chronicle)
-await client.updatePosition('resonance-id', 'Phase 52 — polish complete', 'Phase 52');
+await client.updatePosition('resonance-id', 'Phase 52, polish complete', 'Phase 52');
 ```
 
 ### Monorepo
@@ -240,7 +240,7 @@ client.onDisconnect(() => { /* reconnect logic */ });
 ## Scopes & Zero-Trust
 
 Every app declares its permissions in `app.manifest.json`.  
-**The OS refuses any operation not declared in the manifest** — Zero-Trust by design.
+**The OS refuses any operation not declared in the manifest.** Zero-Trust by design.
 
 ```typescript
 type MnemoScope =
@@ -255,7 +255,7 @@ type MnemoScope =
   | 'agents:read'          // list connected agents
   | 'neural:graph:read'    // NeuralGraph access
   | 'bridge:read'          // Perpetual Memory Bridges (getBridgeHistory / computeResonance)
-  | 'nft:validate'         // reserved, not answered yet — see ‘Engramm licence’ below
+  | 'nft:validate'         // reserved, not answered yet; see ‘Engramm licence’ below
   | 'llm:query';           // Direct LLM queries (premium)
 ```
 
@@ -307,65 +307,65 @@ The OS pushes real-time events to all connected clients. Handle them with `onPus
 |---|---|---|
 | `chronicle:new` | `{ vault, spineType, sourceApp, ts }` | Any client calls `ingest()` |
 
-More event types are planned. None of them is live — this table is the whole list today.
+More event types are planned. None of them is live, so this table is the whole list today.
 
 ---
 
-## Engramm licence (MnemoHub) — roadmap
+## Engramm licence (MnemoHub), on the roadmap
 
 > **Not yet available.** The `nft:validate` scope and its associated types are
-> reserved for gating an app behind the user's **Engramm licence** — the
+> reserved for gating an app behind the user's **Engramm licence**, the
 > lifetime licence of Mnemosyne OS. No client method is implemented and the OS
 > does not yet answer `sdk.nft.validate` (the scope keeps its historical
 > internal name). Declaring the scope is harmless; do not build against it
 > until this section documents a live API.
 
 When shipped, apps distributed on **MnemoHub** will be able to check that the
-running user holds a valid Engramm licence with one call — resolved by the OS
+running user holds a valid Engramm licence with one call, resolved by the OS
 and cached; your app never touches the licence plumbing.
 
 ---
 
 ## Changelog
 
-### 1.5.5 — the crash npm was still serving
+### 1.5.5: the crash npm was still serving
 
-- **FIX** `jwt.ts` no longer throws at module load. The probe for `'base64url'`
+- **FIX** `jwt.ts` now imports cleanly. The probe for `'base64url'`
   support ran unguarded, so a browser `buffer` polyfill that rejects that
-  encoding name crashed the import — in exactly the polyfilled-browser
+  encoding name crashed the import, in exactly the polyfilled-browser
   environment the dual path exists to support. It now degrades to the universal
   `btoa`/`atob` fallback. The fix had been in the tree since 30/08 while npm
   kept serving the crashing build.
 - The tarball now carries its own `LICENSE`.
 
-### 1.5.0 — Voice
+### 1.5.0: Voice
 
 - **NEW** `sdk.voice.engines` / `sdk.voice.speak` / `sdk.voice.status` /
-  `sdk.voice.cancel` — render a script to a WAV file. Scope `voice:speak`,
+  `sdk.voice.cancel` render a script to a WAV file. Scope `voice:speak`,
   intent `VOICE_SPEAK`. It is a **sensitive scope**: the OS never auto-grants
   it, the human is asked. A render runs long past any RPC timeout, so `speak`
   returns a job and you poll `status`.
 
-### 1.4.0 — Read-only introspection
+### 1.4.0: Read-only introspection
 
 - **NEW** `dreamBridges()` (`sdk.dream.bridges`) and `spineAssignments()`
-  (`sdk.spine.assignments`) on both clients — read the consolidation layer
+  (`sdk.spine.assignments`) on both clients, to read the consolidation layer
   without writing to it.
-- **NEW** `ensureSandboxVault()` — an app gets its own writable vault without
+- **NEW** `ensureSandboxVault()`: an app gets its own writable vault without
   asking for someone else's.
 - Vault discovery now carries the governance permissions of each vault, so a
   client can tell a vault it may read from one it may not.
 
-### 1.3.0 — Ask Mnemosyne
+### 1.3.0: Ask Mnemosyne OS
 
 - **NEW** `ask(question, vault?)` on both `MnemoClientBrowser` and `MnemoClient`,
   and `MNEMOSYNE_METHODS.ASK` (`sdk.ask`). Runs the full RAG+LLM pipeline and
   returns a synthesized prose answer plus its source chronicles (`AskResult`),
   vs `query()` which returns raw chronicles. Same `vault:read:*` scope + `QUERY`
-  intent as `query` — no manifest change needed. Slower (runs the LLM).
+  intent as `query`, so no manifest change is needed. Slower, since it runs the LLM.
 - No breaking changes.
 
-### 1.2.1 — Bridge API + republish
+### 1.2.1: Bridge API + republish
 
 - **NEW** `bridge:read` scope, plus `getBridgeHistory()` and `computeResonance()`
   on `MnemoClientBrowser` (Perpetual Memory Bridges, Phase 58–59). `computeResonance`
@@ -378,19 +378,19 @@ and cached; your app never touches the licence plumbing.
 > **That was never shipped.** The manifest is still `app.manifest.json` with
 > `mnemosyne_sdk`, `vaults`, and `intents` (the source of truth is the Zod
 > validator in `src/manifest.ts`). `getBridgeSessions()` was likewise never
-> implemented. There is no `2.0.0` on npm — the current version line is `1.3.x`.
+> implemented. There is no `2.0.0` on npm; the current version line is `1.3.x`.
 
-### v1.2.0 — 2026-06-07 — Semantic Bridge
+### v1.2.0, 2026-06-07: Semantic Bridge
 
-- **NEW** `QueryOptions.semantic?: boolean` — opt-in true semantic ranking (server embeds query, ranks by cosine × spineType weight).
-- **NEW** `QueryOptions.scope?: string` — cognitive scope for the type-weight table (default `'SOURCE_CODE'`, boosts ARCHITECTURE / GIT / API).
-- **NEW** `QueryOptions.spineTypeFilter?: string[]` — server-side `IN` filter to restrict results to specific spineTypes.
-- **NEW** `QueryResult._semantic?: QuerySemanticDebug` — breadcrumb that tells you whether the semantic branch ran, the vector dim used, and the vault size (or the fallback reason).
+- **NEW** `QueryOptions.semantic?: boolean`: opt-in true semantic ranking (server embeds query, ranks by cosine × spineType weight).
+- **NEW** `QueryOptions.scope?: string`: cognitive scope for the type-weight table (default `'SOURCE_CODE'`, boosts ARCHITECTURE / GIT / API).
+- **NEW** `QueryOptions.spineTypeFilter?: string[]`: server-side `IN` filter to restrict results to specific spineTypes.
+- **NEW** `QueryResult._semantic?: QuerySemanticDebug`: breadcrumb that tells you whether the semantic branch ran, the vector dim used, and the vault size (or the fallback reason).
 - **NEW** Exported `QuerySemanticDebug` type.
-- **FIX** Bundle no longer crashes under pure Node ESM. v1.1.0 inlined `ws` and produced a tsup `__require2('events')` shim that threw `Dynamic require of "events" is not supported` at module load — making `npm install @mnemosyne_os/sdk` followed by `import` from any plain Node script crash on startup. `ws` is now an `optionalDependency`, marked external in the build, so the SDK loads cleanly in any ESM context (MCP servers, CLIs, Node services).
+- **FIX** The bundle now loads under pure Node ESM. v1.1.0 inlined `ws` and produced a tsup `__require2('events')` shim that threw `Dynamic require of "events" is not supported` at module load: making `npm install @mnemosyne_os/sdk` followed by `import` from any plain Node script crash on startup. `ws` is now an `optionalDependency`, marked external in the build, so the SDK loads cleanly in any ESM context (MCP servers, CLIs, Node services).
 - **COMPAT** Fully backward-compatible: existing `query(text, options)` calls without the new fields behave exactly as in 1.1.0.
 
-### Phase 58–59 (Bridge API — folded into 1.2.1, no separate release)
+### Phase 58–59 (Bridge API: folded into 1.2.1, no separate release)
 
 - `bridge:read` scope unlocks `computeResonance` and `getBridgeHistory` on
   `MnemoClientBrowser`.
@@ -398,17 +398,17 @@ and cached; your app never touches the licence plumbing.
   bridge spine vectors), falling back to a keyword heuristic when the embedding
   model is offline.
 
-### v1.1.0 — 2026-04-27
-- **NEW** `MnemoClientBrowser` — zero-dependency browser client (native WebSocket API)
-- **NEW** `sdk.resonances.list` — fetch real Resonance objects from the vault
-- **NEW** `sdk.resonance.updatePosition` — persist session position as DECISION chronicle
-- **NEW** `sdk.readFile` — read `.md` files from the OS repo (monorepo:read scope)
-- **NEW** Push events — `onPush()` handler for real-time OS→client notifications
+### v1.1.0: 2026-04-27
+- **NEW** `MnemoClientBrowser`: zero-dependency browser client (native WebSocket API)
+- **NEW** `sdk.resonances.list`: fetch real Resonance objects from the vault
+- **NEW** `sdk.resonance.updatePosition`: persist session position as DECISION chronicle
+- **NEW** `sdk.readFile`: read `.md` files from the OS repo (monorepo:read scope)
+- **NEW** Push events: `onPush()` handler for real-time OS→client notifications
 - **TYPES** Added `GitCommit`, `AgentInfo`, `RESONANCE`/`SESSION`/`POSITION_UPDATE` SpineTypes
 - **TYPES** Added `monorepo:read`, `agents:read` scopes; `GIT_LOG`, `LIST_AGENTS` intents
 - **FIX** `Chronicle.content` is now optional (some vault records only store vectors)
 
-### v1.0.0 — 2026-04-24
+### v1.0.0: 2026-04-24
 - Initial release: `MnemoClient`, `sdk.ingest`, `sdk.query`, `sdk.git.log`, `sdk.agents.list`, JWT Zero-Trust
 
 ---
@@ -417,7 +417,7 @@ and cached; your app never touches the licence plumbing.
 
 This SDK is open source (MIT). Mnemosyne OS itself is **open core**: the memory core is sealed, the application around it reads.
 
-- **Layer 2 apps**: build freely using this SDK — no core access needed.
+- **Layer 2 apps**: build freely using this SDK. No core access needed.
 - **Core Contributors**: contact `tony@xpacegems.com` for NDA + scoped repo access.
 
 ---
@@ -429,15 +429,15 @@ All of them live under one npm organization:
 
 | Package | What it is |
 |---|---|
-| **`@mnemosyne_os/sdk`** *(you are here)* | Build a **Layer 2 app** — a Node or browser process talking to the local WebSocket surface |
-| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` — scaffolds that Layer 2 app in one command |
-| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge** — a sandboxed iframe widget rendered on the canvas |
-| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server** — plug Claude, Cursor or any MCP agent into the vaults |
+| **`@mnemosyne_os/sdk`** *(you are here)* | Build a **Layer 2 app**: a Node or browser process talking to the local WebSocket surface |
+| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` scaffolds that Layer 2 app in one command |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge**: a sandboxed iframe widget rendered on the canvas |
+| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server**: plug Claude, Cursor or any MCP agent into the vaults |
 | [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | **Skin the OS** with JSON alone, no TypeScript |
 | [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | The shared **types and Zod schemas**. No business logic |
-| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk** — connector format + interpreter |
+| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk**: the connector format and the interpreter |
 | [`@mnemosyne_os/affine-reader`](https://www.npmjs.com/package/@mnemosyne_os/affine-reader) | Read a local **AFFiNE workspace** and render its documents to Markdown |
-| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI** — scaffold, list chronicles, import / export |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI**: scaffold, list chronicles, import and export |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
 
 ---
@@ -462,6 +462,6 @@ MIT © [Tony Trochet / XPACEGEMS LLC](https://xpacegems.com)
 
 ## The OS your code talks to
 
-<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
 
-*Mnemosyne OS — Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*
+*Mnemosyne OS Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*

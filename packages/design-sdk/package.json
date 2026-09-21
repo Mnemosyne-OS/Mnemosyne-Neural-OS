@@ -1,7 +1,7 @@
 {
   "name": "@mnemosyne_os/design-sdk",
   "version": "0.2.6",
-  "description": "Mnemosyne Design SDK — Create custom UI skins for Mnemosyne OS using only JSON. Zero TypeScript required.",
+  "description": "Create custom UI skins for Mnemosyne OS using only JSON. No TypeScript required.",
   "keywords": [
     "mnemosyne",
     "design-sdk",

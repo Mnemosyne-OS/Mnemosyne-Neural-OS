@@ -1,10 +1,10 @@
-**@mnemosyne_os/create-app** — Scaffold a new Mnemosyne OS app with one command
+**@mnemosyne_os/create-app**: Scaffold a new Mnemosyne OS app with one command
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Your memory. Your machine. Your rules." />
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS. Your memory. Your machine. Your rules." />
 
-🌐 [**mnemosyne-os.io**](https://mnemosyne-os.io) — the product, for builders · [**mnemosyne-os.com**](https://mnemosyne-os.com) — the company, press & labs · [**docs.mnemosyne-os.io**](https://docs.mnemosyne-os.io) — the documentation
+**Product** [mnemosyne-os.io](https://mnemosyne-os.io) · **Company, press and labs** [mnemosyne-os.com](https://mnemosyne-os.com) · **Documentation** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)
 
 </div>
 
@@ -19,9 +19,9 @@ npm create @mnemosyne_os/app my-awesome-app
 That's it. You get a ready-to-run project wired to the local Mnemosyne OS
 runtime:
 
-- `app.manifest.json` — your app's identity and requested scopes
-- `index.ts` — a working starter that connects, queries memory and ingests
-- `package.json` — with [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) already in place
+- `app.manifest.json`: your app's identity and requested scopes
+- `index.ts`: a working starter that connects, queries memory and ingests
+- `package.json`, with [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) already in place
 - `tsconfig.json` + a project README
 
 ## What you actually get
@@ -55,7 +55,7 @@ async function main() {
   const client = await MnemoClient.connect({
     appId: 'my-awesome-app',
     manifest: './app.manifest.json',
-    transport: 'ws', // WebSocket — external Node.js app
+    transport: 'ws', // WebSocket, external Node.js app
   });
 
   const result = await client.ingest({
@@ -90,20 +90,20 @@ ranking instead of recency.
 
 A **standalone Node process** that talks to a running Mnemosyne OS instance
 over its local WebSocket surface (`ws://127.0.0.1:7799`) through the official
-SDK — semantic memory queries, ingestion, model inference, voice. Your code
+SDK: semantic memory queries, ingestion, model inference, voice. Your code
 runs outside the app, and the vault it reads is a file on the same disk. The
 socket is local; whether a model call stays local is the route you picked in
 the OS.
 
 Building an **in-app widget** instead (an iframe cartridge rendered on the
-canvas)? That's a different rail — use the
+canvas)? That's a different rail, so use the
 [cartridge SDK](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) and
 its boilerplate.
 
 ## Requirements
 
 - Node.js ≥ 18
-- [Mnemosyne OS — Infinity Edition](https://mnemosyne-os.io/download) running
+- [Mnemosyne OS Infinity Edition](https://mnemosyne-os.io/download) running
   locally (free download; Windows builds are code-signed)
 
 ## Next steps
@@ -116,9 +116,9 @@ its boilerplate.
 
 ## The OS your code talks to
 
-<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS — Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
 
-*Mnemosyne OS — Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*
+*Mnemosyne OS Infinity Edition · [download](https://mnemosyne-os.io/download) · [mnemosyne-os.io](https://mnemosyne-os.io) · [mnemosyne-os.com](https://mnemosyne-os.com)*
 
 ## The `@mnemosyne_os` packages
 
@@ -127,15 +127,15 @@ All of them live under one npm organization:
 
 | Package | What it is |
 |---|---|
-| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app** — a Node or browser process talking to the local WebSocket surface |
-| **`@mnemosyne_os/create-app`** *(you are here)* | `npm create @mnemosyne_os/app` — scaffolds that Layer 2 app in one command |
-| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge** — a sandboxed iframe widget rendered on the canvas |
-| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server** — plug Claude, Cursor or any MCP agent into the vaults |
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app**: a Node or browser process talking to the local WebSocket surface |
+| **`@mnemosyne_os/create-app`** *(you are here)* | `npm create @mnemosyne_os/app` scaffolds that Layer 2 app in one command |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge**: a sandboxed iframe widget rendered on the canvas |
+| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server**: plug Claude, Cursor or any MCP agent into the vaults |
 | [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | **Skin the OS** with JSON alone, no TypeScript |
 | [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | The shared **types and Zod schemas**. No business logic |
-| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk** — connector format + interpreter |
+| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk**: the connector format and the interpreter |
 | [`@mnemosyne_os/affine-reader`](https://www.npmjs.com/package/@mnemosyne_os/affine-reader) | Read a local **AFFiNE workspace** and render its documents to Markdown |
-| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI** — scaffold, list chronicles, import / export |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI**: scaffold, list chronicles, import and export |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
 
 ---

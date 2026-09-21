@@ -1,9 +1,9 @@
-**@mnemosyne_os/affine-reader** — Read a local AFFiNE workspace (SQLite + Yjs) and render its documents to Markdown. No BlockSuite at runtime, no native module, read-only.
+**@mnemosyne_os/affine-reader**: Read a local AFFiNE workspace (SQLite + Yjs) and render its documents to Markdown. No BlockSuite at runtime, no native module, read-only.
 
 # @mnemosyne_os/affine-reader
 
 Read a local [AFFiNE](https://github.com/toeverything/AFFiNE) workspace and render its
-documents to Markdown — without running AFFiNE, without BlockSuite, without a server.
+documents to Markdown, without running AFFiNE, without BlockSuite, without a server.
 
 **Read-only, in every direction.** Two processes writing one CRDT corrupt it, so this
 package copies the database before it reads and never writes back.
@@ -44,7 +44,8 @@ for (const ref of findWorkspaces()) {
 ```
 
 `findWorkspaces()` returning `[]` and `affineDataDir()` returning `null` are **different
-answers** — nothing to read versus AFFiNE not installed. Both are reported.
+answers**. One says there is nothing to read, the other says AFFiNE is not
+installed. Both are reported.
 
 ### Bring your own SQLite
 
@@ -83,7 +84,7 @@ when they exist and reports which ones it took.
 
 **A snapshot alone is stale.** A document typed one minute earlier decoded to **2
 characters** from its snapshot row and **323** once its 16 `updates` rows were replayed.
-Long-settled documents give the same answer either way — so a test written on those
+Long-settled documents give the same answer either way, so a test written on those
 passes while the reader loses everything the user just wrote. Every load here replays
 the updates.
 
@@ -94,20 +95,20 @@ All of them live under one npm organization:
 
 | Package | What it is |
 |---|---|
-| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app** — a Node or browser process talking to the local WebSocket surface |
-| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` — scaffolds that Layer 2 app in one command |
-| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge** — a sandboxed iframe widget rendered on the canvas |
-| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server** — plug Claude, Cursor or any MCP agent into the vaults |
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Build a **Layer 2 app**: a Node or browser process talking to the local WebSocket surface |
+| [`@mnemosyne_os/create-app`](https://www.npmjs.com/package/@mnemosyne_os/create-app) | `npm create @mnemosyne_os/app` scaffolds that Layer 2 app in one command |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build an **in-app cartridge**: a sandboxed iframe widget rendered on the canvas |
+| [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | **MCP server**: plug Claude, Cursor or any MCP agent into the vaults |
 | [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | **Skin the OS** with JSON alone, no TypeScript |
 | [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | The shared **types and Zod schemas**. No business logic |
-| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk** — connector format + interpreter |
+| [`@mnemosyne_os/agent-transcripts`](https://www.npmjs.com/package/@mnemosyne_os/agent-transcripts) | Read what **coding agents already write on disk**: the connector format and the interpreter |
 | **`@mnemosyne_os/affine-reader`** *(you are here)* | Read a local **AFFiNE workspace** and render its documents to Markdown |
-| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI** — scaffold, list chronicles, import / export |
+| [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI**: scaffold, list chronicles, import and export |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
 
 ---
 
 ## Licence
 
-MIT. Includes MIT-licensed source vendored from AFFiNE — see [NOTICE.md](./NOTICE.md).
+MIT. Includes MIT-licensed source vendored from AFFiNE. See [NOTICE.md](./NOTICE.md).
 BlockSuite (MPL-2.0) is **not** included and is not required at runtime.
