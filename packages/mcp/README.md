@@ -20,7 +20,7 @@
 
 ---
 
-> 🍳 **In a hurry?** [**RECIPES.md**](./RECIPES.md) gives your coding agent a persistent memory in one copy-paste block — Claude Code, Cursor, Claude Desktop, and the TypeScript SDK.
+> 🍳 **In a hurry?** [**RECIPES.md**](./RECIPES.md) gives your coding agent a persistent memory in one copy-paste block, for Claude Code, Cursor, Claude Desktop and the TypeScript SDK.
 
 ## What this is
 
