@@ -9,6 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readSession, CONNECTORS } from '../../agent-transcripts/src/index';
+import { workingTreeOf } from '../../agent-transcripts/src/node';
 
 export const HOOK_APP_ID = 'agent-cockpit';
 const MAX_STATUS = 120;
@@ -196,7 +197,18 @@ export function detailFrom(transcriptPath: string | undefined, warn: (line: stri
   if (!transcriptPath) return [];
   const s = sessionAt(transcriptPath, warn);
   if (!s) return [];
-  const project = s.projectPath ? path.basename(s.projectPath) : null;
+  /**
+   * 🚨 The PROJECT, never the folder the shell was left in. The harness records
+   * a cwd, so one `cd` into a subdirectory renamed the card: measured on the
+   * board, `desktops · main` sitting next to four `_MNEMOSYNE OS · main` of the
+   * same repository. Doc 93 §11 established the working tree as the honest key
+   * for exactly this reason, and the routing beside this line already uses it.
+   *
+   * 🎭 A cwd under no repository keeps its own name. `workingTreeOf` returns
+   * null there, and that is an answer: a directory outside any repository has
+   * not thereby joined another one.
+   */
+  const project = s.projectPath ? path.basename(workingTreeOf(s.projectPath) ?? s.projectPath) : null;
   const where = [project, s.branch].filter(Boolean).join(' · ');
   return [where, s.model].filter((l): l is string => Boolean(l && l.trim()));
 }
