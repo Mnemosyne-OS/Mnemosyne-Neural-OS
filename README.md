@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS — Infinity Edition. Your memory. Your machine. Your rules. A sovereign, local-first memory OS — the relationship layer between you and every AI." />
+<img src="assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS Infinity Edition. Your memory. Your machine. Your rules. A sovereign, local-first memory OS the relationship layer between you and every AI." />
 
 ### The sovereign AI Operating System
 
@@ -10,7 +10,7 @@
 
 <br/>
 
-*Everyone is building the intelligence. Mnemosyne builds the **relationship** — the memory that makes an AI truly know you, across sessions and across time. On your machine. Yours to see.*
+*Everyone is building the intelligence. Mnemosyne OS builds the **relationship**: the memory that makes an AI truly know you, across sessions and across time. On your machine. Yours to see.*
 
 [**→ Why the relationship layer**](doc/WHY.md)
 
@@ -35,8 +35,8 @@
 <br/>
 
 🔏 Every installer above is **cryptographically attested** to this exact repo, workflow
-and commit — via [GitHub Artifact Attestations](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/attestations)
-(Sigstore-backed build provenance). Don't take the download on faith — verify the file
+and commit, via [GitHub Artifact Attestations](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/attestations)
+(Sigstore-backed build provenance). Don't take the download on faith: verify the file
 you got matches what our CI actually built:
 ```bash
 gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemosyne-Neural-OS
@@ -49,23 +49,23 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 
 <br/>
 
-🌐 **[mnemosyne-os.io](https://mnemosyne-os.io)** — the product, for builders&ensp;·&ensp;**[mnemosyne-os.com](https://mnemosyne-os.com)** — the company, press & labs&ensp;·&ensp;📖 **[docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)** — the user guide
+🌐 **[mnemosyne-os.io](https://mnemosyne-os.io)**, the product, for builders&ensp;·&ensp;**[mnemosyne-os.com](https://mnemosyne-os.com)**, the company, press & labs&ensp;·&ensp;📖 **[docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)**, the user guide
 
 <br/>
 
-<img src="assets/strip-specs.png" width="100%" alt="100% local — your memory never leaves your machine · 8 GB RAM — enough to start, fully local from 16 GB · 7 languages — EN FR ES DE PT RU ZH · Windows, macOS, Linux — code-signed builds, auto-update" />
+<img src="assets/strip-specs.png" width="100%" alt="100% local, your memory never leaves your machine · 8 GB RAM, enough to start, fully local from 16 GB · 7 languages, EN FR ES DE PT RU ZH · Windows, macOS, Linux, code-signed builds, auto-update" />
 
 </div>
 
 ---
 
 > [!TIP]
-> **📖 The user documentation is live: [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)** — every engine explained step by step, in
+> **📖 The user documentation is live at [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)**, with every engine explained step by step, in
 > [English](https://docs.mnemosyne-os.io/) · [Français](https://docs.mnemosyne-os.io/fr/) · [Español](https://docs.mnemosyne-os.io/es/).
 
-## 🌍 Fully multilingual — the OS speaks your language
+## 🌍 Fully multilingual: the OS speaks your language
 
-The **entire interface is localized in seven languages** — onboarding, settings,
+The **entire interface is localized in seven languages**: onboarding, settings,
 chat, the voice assistant, every dialog. Switching language even re-selects the
 ★ recommended embedding model for it, so **retrieval quality follows your
 language**, not just the labels. Open windows pick the change up instantly.
@@ -80,7 +80,7 @@ language**, not just the labels. Open windows pick the change up instantly.
 | <img src="assets/flags/ru.svg" width="24" height="16" alt="Флаг России" /> | **Русский** | Твоя память. Твоя машина. Твои правила. | Beta |
 | <img src="assets/flags/zh.svg" width="24" height="16" alt="中国国旗" /> | **中文** | 你的记忆。你的机器。你的规则。 | Beta |
 
-*Sovereign, local-first memory — in your language: un système d'exploitation de
+*Sovereign, local-first memory, in your language: un système d'exploitation de
 mémoire souverain et local · un sistema operativo de memoria soberano y local ·
 ein souveränes, lokales Gedächtnis-Betriebssystem · um sistema operacional de
 memória soberano e local · суверенная локальная операционная система памяти ·
@@ -92,11 +92,11 @@ memória soberano e local · суверенная локальная опера�
 
 Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
 
-**Mnemosyne OS is a personal memory OS that runs on your machine** — your data never
+**Mnemosyne OS is a personal memory OS that runs on your machine**: your data never
 leaves it, a human governs it, and it scores **77.1% on LongMemEval-M** ([audit it
 yourself](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)).
 
-The AI that remembers *you* — not infrastructure you plug into someone else's.
+The AI that remembers *you*, not infrastructure you plug into someone else's.
 
 ### Where the project lives
 
@@ -108,44 +108,44 @@ Published by **XPACEGEMS LLC**. These are its official addresses:
 | **Organizations** | [mnemosyne-os.com](https://mnemosyne-os.com) |
 | **Documentation** | [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io) |
 | **Source** | this repository |
-| **Packages** | the npm scope `@mnemosyne_os` — [the list](https://mnemosyne-os.io/packages) |
+| **Packages** | the npm scope `@mnemosyne_os`: [the list](https://mnemosyne-os.io/packages) |
 
 ---
 
 ## Why call it an "OS"?
 
-Not because it has a kernel or drivers — because it does what an OS does:
+Not because it has a kernel or drivers. Because it does what an OS does:
 **it manages resources on behalf of processes that shouldn't have to manage them
-themselves.** Linux does that for programs (CPU, RAM, disk, network). Mnemosyne does
+themselves.** Linux does that for programs (CPU, RAM, disk, network). Mnemosyne OS does
 the same thing for **AI agents**, and the resources are just different:
 
-| An agent needs | Mnemosyne manages it via |
+| An agent needs | Mnemosyne OS manages it via |
 |---|---|
-| **Memory** | Vaults — SQLite + vector stores, partitioned by domain, with AES-256 encryption at rest you arm |
-| **Context** | Chronicles + semantic retrieval — the agent never rebuilds its past by hand |
+| **Memory** | Vaults, SQLite + vector stores, partitioned by domain, with AES-256 encryption at rest you arm |
+| **Context** | Chronicles + semantic retrieval, the agent never rebuilds its past by hand |
 | **Compute** | Routing across model tiers (budget/standard/premium, local/cloud) by task complexity |
 | **Hardware** | Real GPU/CPU dispatch for local speech (CUDA detection, isolated sidecars) so a heavy model never blocks the app |
 | **I/O** | A signed intent protocol (query / ingest / forget / focus) instead of raw reads and writes |
 | **Security** | FGAC, scoped JWTs, Zero-Trust IPC validation |
-| **Persistence** | Cross-session continuity — no cold start on every invocation |
+| **Persistence** | Cross-session continuity, no cold start on every invocation |
 
 This isn't a marketing stretch invented for this repo. **MemGPT** (Packer et al., UC
 Berkeley, 2023, [arXiv:2310.08560](https://arxiv.org/abs/2310.08560)) proposed the same
-"OS for LLMs" analogy in a peer-reviewed paper — virtual context management modeled on
-OS memory hierarchies. Mnemosyne takes that same premise further: not a single-session
+"OS for LLMs" analogy in a peer-reviewed paper, virtual context management modeled on
+OS memory hierarchies. Mnemosyne OS takes that same premise further: not a single-session
 context-paging technique, but a system that runs continuously, isolates multiple agents,
-and persists on the machine as a daemon — not a library you import and lose on exit.
+and persists on the machine as a daemon, not a library you import and lose on exit.
 
 ---
 
-## The flagship app — Mnemosyne OS Infinity Edition
+## The flagship app: Mnemosyne OS Infinity Edition
 
 The reference application of the ecosystem: a **local-first AI Operating System** that
 puts a sovereign memory core under strict user control. It runs LLMs locally or in the
-cloud, keeps every encrypted vault on your machine, and — for agent-to-agent sync — can
+cloud, keeps every encrypted vault on your machine, and, for agent-to-agent sync, can
 speak over a **libp2p** transport (`@mnemosyne-workspace/mnemosync-p2p`).
 
-Unlike fragmented AI wrappers, Mnemosyne never exposes your knowledge vault
+Unlike fragmented AI wrappers, Mnemosyne OS never exposes your knowledge vault
 indiscriminately. Every agentic connection is governed by **FGAC (Fine-Grained Access
 Control)** and 400 Zod-validated IPC channels, ensuring total sovereignty over what
 executes, what's stored, and what syncs.
@@ -154,58 +154,58 @@ executes, what's stored, and what syncs.
 
 | Module | Description |
 |--------|-------------|
-| 🧭 **Neural Map** | Your memory rendered as a living mathematical topology — nodes are memories, edges are semantic similarity between them, tuned live |
+| 🧭 **Neural Map** | Your memory rendered as a living mathematical topology, nodes are memories, edges are semantic similarity between them, tuned live |
 | 🧩 **MnemoHub** | A store of cartridges (mini-apps) whose catalog is signed by a sovereign wallet and verified client-side before anything renders |
 | 💤 **Dream State** | A consolidation engine that replays and links memories during idle phases |
 | 🗄️ **Vaults** | Memory partitioned by life domain, each with its own protection level and consent boundary |
 | 🎙️ **Voice Assistant** | Local or cloud speech, streaming STT/TTS, gapless local playback |
 | 💬 **Multimodal Chat** | Text, voice, and file-grounded conversation with live retrieval from your own vaults |
-| 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running — laptop LLM to frontier cloud model |
-| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits — no account, no password, no gas fees |
-| 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs — position carries meaning |
+| 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running, laptop LLM to frontier cloud model |
+| 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits, no account, no password, no gas fees |
+| 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs, position carries meaning |
 
-### Under the hood — the engines
+### Under the hood: the engines
 
-<img src="assets/strip-engines.png" width="100%" alt="Spine engine — memory, semantically classified · Adaptive RAG — retrieval that shifts gears · Dream State — consolidation while you sleep · Voice engines — local STT and TTS, GPU or CPU · Embeddings — cloud, local ONNX or Ollama" />
+<img src="assets/strip-engines.png" width="100%" alt="Spine engine, memory, semantically classified · Adaptive RAG, retrieval that shifts gears · Dream State, consolidation while you sleep · Voice engines, local STT and TTS, GPU or CPU · Embeddings, cloud, local ONNX or Ollama" />
 
-Not one big "AI" black box — several independent, purpose-built engines:
+Not one big "AI" black box. Several independent, purpose-built engines:
 
-- **Embedding engine** — a priority-ordered chain of embedding providers (cloud, local
+- **Embedding engine**: a priority-ordered chain of embedding providers (cloud, local
   ONNX, Ollama). Tries each in order and **fails loud rather than returning a null
-  vector** — a failed embedding must never silently become an invisible memory.
-- **Retrieval engine** — an in-RAM, decrypted vector cache (int8-quantized to scale),
+  vector**, a failed embedding must never silently become an invisible memory.
+- **Retrieval engine**: an in-RAM, decrypted vector cache (int8-quantized to scale),
   ANN search unioned with exact term matching before the final re-rank pass.
-- **Spine engine** — classifies every memory by semantic nature (its "spine" + tags),
-  from a taxonomy that lives as **data**, not hardcoded logic — so new categories don't
+- **Spine engine**: classifies every memory by semantic nature (its "spine" + tags),
+  from a taxonomy that lives as **data**, not hardcoded logic, so new categories don't
   require a code change.
-- **Dream State** — two-speed consolidation. A fast, low-latency tier extracts facts
+- **Dream State**: two-speed consolidation. A fast, low-latency tier extracts facts
   during active use; a heavier tier runs at idle/night to resolve contradictions and
   link memories across sessions. Output is appended alongside raw retrieval, never
-  silently replacing it — see the [benchmark results](#proven-on-longmemeval-m--not-just-a-pitch) below.
-- **Adaptive RAG (the "gearbox")** — rather than injecting every retrieved candidate,
+  silently replacing it. See the [benchmark results](#proven-on-longmemeval-m--not-just-a-pitch) below.
+- **Adaptive RAG (the "gearbox")**: rather than injecting every retrieved candidate,
   context selection (top-k / MMR / low-discrepancy sampling) scales to both the model
   tier you're running and the thinking mode you pick.
-- **Theia — the vision engine** — named for the Titaness of sight, who in the myth is
+- **Theia, the vision engine**: named for the Titaness of sight, who in the myth is
   Mnemosyne's sister. A complete image-memory engine: your images are embedded **100%
   locally** (SigLIP 2, in an isolated sidecar) into their own vector space, recalled in
-  chat as thumbnails through three rank-fused channels — semantic, pixel-color palette,
-  and emergent categories the engine discovers on its own — and browsed in a living
+  chat as thumbnails through three rank-fused channels: semantic, pixel-color palette,
+  and emergent categories the engine discovers on its own, and browsed in a living
   gallery. **The human always outranks the model**: rate, pin, describe, teach, rename
   or merge its categories. Honest by construction: a cold or still-indexing engine says
-  so, instead of inventing "no matches". Off by default — one Settings toggle.
-- **Voice engines, STT and TTS, fully independent** — speech-to-text runs small models
+  so, instead of inventing "no matches". Off by default, behind one Settings toggle.
+- **Voice engines, STT and TTS, fully independent**: speech-to-text runs small models
   in-process and large models in an **isolated GPU/CPU sidecar** (a big STT model loaded
   in-process can crash the whole app); text-to-speech runs system, cloud, or local
   (offline binary or GPU voice cloning), scheduled sample-accurately for gapless
   playback. No NVIDIA GPU → automatic CPU fallback, never a hard block.
-- **400 Zod-validated IPC channels** connect all of the above to the UI — auto-generated
+- **400 Zod-validated IPC channels** connect all of the above to the UI, auto-generated
   and checked by a drift test on every build.
 
-> 📄 **Deep dive:** [**The Resonance Engine** — technical whitepaper](doc/RESONANCE_ENGINE_WHITEPAPER.md).
+> 📄 **Deep dive:** [**The Resonance Engine**, technical whitepaper](doc/RESONANCE_ENGINE_WHITEPAPER.md).
 > The full architecture behind these engines: why memory should *resonate* rather than be looked
-> up, how consolidation and adaptive selection work, and the LongMemEval results — kept current as the engine ships.
+> up, how consolidation and adaptive selection work, and the LongMemEval results, kept current as the engine ships.
 >
-> 📚 **Full documentation** — the user guide lives at [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io); concepts, architecture, governance, and design decisions live in [`doc/`](doc/).
+> 📚 **Full documentation**: the user guide lives at [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io); concepts, architecture, governance, and design decisions live in [`doc/`](doc/).
 
 ### How memory works
 
@@ -221,18 +221,18 @@ flowchart LR
     style F fill:#1a0e1a,stroke:#ff6b9d,color:#fff
 ```
 
-### Proven on LongMemEval-M — not just a pitch
+### Proven on LongMemEval-M: not just a pitch
 
 | | |
 |---|---|
-| **77.1 %** (37/48) | overall accuracy, full-haystack (hard) variant, **strict** judge — August 2026 |
+| **77.1 %** (37/48) | overall accuracy, full-haystack (hard) variant, **strict** judge, August 2026 |
 | **29/48 → 37/48** | what the second, fully local retrieval channel bought, under that strict judge |
-| **+4/−0 · +2/−0** | evidence sessions and answer-bearing chunks on 48 **held-out** questions — zero regressions |
-| Every HIT above | **replayed and reproduced** before being counted — no cherry-picked runs |
+| **+4/−0 · +2/−0** | evidence sessions and answer-bearing chunks on 48 **held-out** questions, zero regressions |
+| Every HIT above | **replayed and reproduced** before being counted, no cherry-picked runs |
 
 [LongMemEval](https://github.com/xiaowu0162/LongMemEval) is a public,
 independent long-term-memory benchmark. Its **full-haystack** variant surrounds
-every question's evidence with ~480 distractor sessions — the closest published
+every question's evidence with ~480 distractor sessions, the closest published
 setup to a real, lived-in memory vault, and harder than the `-S` slice most
 reported numbers use.
 
@@ -242,18 +242,18 @@ July's *flexible* judge the same build measures **81.3 %**; under the *strict* o
 flexible reading (+7/−2) than under the strict one (+9/−1).
 
 July's **72.9 %** stays on the record as what it was: a *lower bound* under the
-flexible judge, and a **composed** one — only the multi-session category had been
+flexible judge, and a **composed** one, only the multi-session category had been
 re-run with the full engine, the other 40 rows carried from the baseline. It is
 archived and DOI-pinned rather than withdrawn. It is **not** the same instrument as
 77.1 %, so the two are published side by side and never chained into a single
 progression.
 
-**Don't take any of it on faith — audit it.** The published grader and
+**Don't take any of it on faith. Audit it.** The published grader and
 per-question verdicts let you re-derive every score in one command, no engine and
 no network. Full methodology, root-cause analysis, and the raw run logs of both
 campaigns are public too:
 
-**🔍 [Audit it yourself — live results page →](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+**🔍 [Audit it yourself, live results page →](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks)
 
 **Citing this work.** Both the evidence and the architecture are archived under
@@ -261,8 +261,8 @@ permanent identifiers, so they can be cited rather than merely linked:
 
 | | |
 |---|---|
-| Verification kit — ledgers, grader, raw logs | [10.5281/zenodo.21727140](https://doi.org/10.5281/zenodo.21727140) |
-| The Resonance Engine — technical whitepaper | [10.5281/zenodo.21728283](https://doi.org/10.5281/zenodo.21728283) |
+| Verification kit, ledgers, grader, raw logs | [10.5281/zenodo.21727140](https://doi.org/10.5281/zenodo.21727140) |
+| The Resonance Engine, technical whitepaper | [10.5281/zenodo.21728283](https://doi.org/10.5281/zenodo.21728283) |
 | Author | Tony Trochet · [ORCID 0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917) |
 
 ### Interface Gallery
@@ -270,45 +270,45 @@ permanent identifiers, so they can be cited rather than merely linked:
 <br/>
 
 <div align="center">
-  <img src="assets/infinite-canvas.jpg" alt="The infinite canvas — an endless plane with the gallery, MnemoHub, chat, world clocks, weather and stickers, zoomed to 26%" width="820" />
+  <img src="assets/infinite-canvas.jpg" alt="The infinite canvas, an endless plane with the gallery, MnemoHub, chat, world clocks, weather and stickers, zoomed to 26%" width="820" />
   <br/>
-  <em>The infinite canvas (v1.4.0): pan the void, zoom 10%–100%, and make the plane yours — the image gallery, MnemoHub, diagnostics, world clocks, weather and stickers, all living on one endless surface</em>
+  <em>The infinite canvas (v1.4.0): pan the void, zoom 10%–100%, and make the plane yours, the image gallery, MnemoHub, diagnostics, world clocks, weather and stickers, all living on one endless surface</em>
   <br/><br/>
 
-  <img src="assets/infinite-canvas.gif" alt="Thirteen seconds of the infinite canvas — panned, zoomed and decorated live" width="820" />
+  <img src="assets/infinite-canvas.gif" alt="Thirteen seconds of the infinite canvas, panned, zoomed and decorated live" width="820" />
   <br/>
-  <em>Thirteen seconds of the real thing — the canvas panned, zoomed and decorated live · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/infinite-canvas.mp4">watch in higher quality</a></em>
+  <em>Thirteen seconds of the real thing, the canvas panned, zoomed and decorated live · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/infinite-canvas.mp4">watch in higher quality</a></em>
   <br/><br/>
 
   <strong>Turn memory on for your images.</strong> One Settings toggle gives your vaults an eye:
-  drop in a folder of photos and <strong>Mnemosyne OS remembers every image you add</strong> —
+  drop in a folder of photos and <strong>Mnemosyne OS remembers every image you add</strong>:
   indexed 100% locally, organized in a living gallery you can rate, pin and teach,
   and recalled in chat: ask for <em>"the pieces that look like a blue cup"</em> and your own photos answer.
   <br/><br/><br/>
 
-  <img src="assets/neural-map.jpg" alt="Neural Map — topology-driven memory graph" width="820" />
+  <img src="assets/neural-map.jpg" alt="Neural Map, topology-driven memory graph" width="820" />
   <br/>
-  <em>Neural Map: your vault rendered as a living mathematical topology — Enneper surface, Klein bottle, Lorenz attractor, Clifford torus… the equation <strong>is</strong> the shape</em>
+  <em>Neural Map: your vault rendered as a living mathematical topology, Enneper surface, Klein bottle, Lorenz attractor, Clifford torus… the equation <strong>is</strong> the shape</em>
   <br/><br/><br/>
 
-  <img src="assets/neural-map-torus.jpg" alt="Neural Map — torus topology" width="820" />
+  <img src="assets/neural-map-torus.jpg" alt="Neural Map, torus topology" width="820" />
   <br/>
-  <em>Every node is a memory, every edge a measured semantic link — here the same graph wound onto a torus, tuned live</em>
+  <em>Every node is a memory, every edge a measured semantic link, here the same graph wound onto a torus, tuned live</em>
   <br/><br/><br/>
 
-  <img src="assets/ai-configuration.jpg" alt="AI Configuration — multi-model, local or cloud" width="820" />
+  <img src="assets/ai-configuration.jpg" alt="AI Configuration, multi-model, local or cloud" width="820" />
   <br/>
-  <em>Multi-model by design: run memory 100% local, cloud, or hybrid — Gemini, Claude, OpenAI, Groq, Mistral, DeepSeek, Ollama</em>
+  <em>Multi-model by design: run memory 100% local, cloud, or hybrid, Gemini, Claude, OpenAI, Groq, Mistral, DeepSeek, Ollama</em>
   <br/><br/><br/>
 
-  <img src="assets/mnemohub-store.jpg" alt="MnemoHub — build, sign and publish a cartridge" width="820" />
+  <img src="assets/mnemohub-store.jpg" alt="MnemoHub, build, sign and publish a cartridge" width="820" />
   <br/>
   <em>MnemoHub: build a cartridge on the SDK, sign it with your sovereign wallet, and publish it to the ecosystem</em>
   <br/><br/><br/>
 
   <img src="assets/sovereign-notes.jpg" alt="Sovereign Notes" width="820" />
   <br/>
-  <em>Sovereign Notes: write in a local, classified vault — every note is embedded and retrievable, feeding the same memory your agent draws on</em>
+  <em>Sovereign Notes: write in a local, classified vault, every note is embedded and retrievable, feeding the same memory your agent draws on</em>
   <br/><br/>
 </div>
 
@@ -318,8 +318,8 @@ permanent identifiers, so they can be cited rather than merely linked:
 
 You already run an agent next to your editor. It opens every session without the history
 of the project it is working in, so it reasons its way back to conclusions you reached
-weeks ago, and it will do that again tomorrow. Part of that history is not lost: the
-agent wrote it down itself. It is sitting in a dot-directory beside the code, usually
+weeks ago, and it will do that again tomorrow. Part of that history survives: the
+agent wrote it down itself. It sits in a dot-directory beside the code, usually
 gitignored, read by nothing.
 
 Mnemosyne OS opens two doors onto it, and they run in opposite directions.
@@ -355,15 +355,15 @@ live on this branch before I commit?"* cheap enough to actually ask.
 
 ## Build on Mnemosyne OS
 
-You've seen what it is and that it works — now build on it. Your apps, agents, and
+You've seen what it is and that it works. Now build on it. Your apps, agents, and
 skins talk to the private AI memory runtime through a **public Gateway contract**: a
 stable, documented surface you build against, while the Cognitive Core stays sealed
 and never exposed.
 
 Two ways in:
 
-- 🛠️ **Build on it** — scaffold an app and you're talking to the memory vault in minutes.
-- 💾 **Run it** — install the flagship desktop app, [Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/latest).
+- 🛠️ **Build on it**: scaffold an app and you're talking to the memory vault in minutes.
+- 💾 **Run it**: install the flagship desktop app, [Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/latest).
 
 ```bash
 npm create @mnemosyne_os/app
@@ -372,37 +372,37 @@ npm create @mnemosyne_os/app
 | Package | What it does |
 |---|---|
 | [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Connect an app to the local AI memory runtime (WebSocket / Electron IPC) |
-| [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | Shared types & Zod schemas — the integration contract |
-| [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | Build custom UI skins in pure JSON — zero TypeScript |
-| [`@mnemosyne_os/create-app`](packages/create-app) | Scaffold a new Mnemosyne app in one command |
+| [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | Shared types & Zod schemas, the integration contract |
+| [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | Build custom UI skins in pure JSON, zero TypeScript |
+| [`@mnemosyne_os/create-app`](packages/create-app) | Scaffold a new Mnemosyne OS app in one command |
 
 Start from the [cartridge boilerplate](examples/cartridge-boilerplate) and you're
-ingesting and querying the vault — under FGAC, scoped, and consent-gated — in minutes.
+ingesting and querying the vault, under FGAC, scoped, and consent-gated, in minutes.
 
 > **🛡️ Zero-Trust by design.** Every SDK connection authenticates with a short-lived
 > JWT, listens on `127.0.0.1` only, and is bounded by the scopes your app manifest
 > declares. The OS sees your requests; you never see the core.
 
-### The cartridges are real — and readable
+### The cartridges are real, and readable
 
 The apps in MnemoHub aren't black boxes. Each ships its actual `src/` (React + the SDK),
-public and inspectable — **clone one as a reference implementation** and read exactly how a
+public and inspectable. **Clone one as a reference implementation** and read exactly how a
 real app connects to the memory runtime, ingests, and queries the vault through the SDK. Don't
-learn the SDK from API docs alone — download a working app and copy the patterns. A few live examples:
+learn the SDK from API docs alone, download a working app and copy the patterns. A few live examples:
 
 | Cartridge | What it is | Clone it to learn | License |
 |---|---|---|---|
 | [MnemoArchipel](https://github.com/Mnemosyne-OS/MnemoArchipel---Mnemosyne-OS) | The sovereign, offline-first personal CRM | semantic relationship maps + custom node coordinates over the vault | Cartridge License · source-available |
-| [MnemoResto](https://github.com/Mnemosyne-OS/MnemoResto---MnemosyneOS) | A full restaurant suite — POS, reservations, tips, per-product VAT, inventory | structured business data persisted in scoped vaults | Cartridge License · source-available |
+| [MnemoResto](https://github.com/Mnemosyne-OS/MnemoResto---MnemosyneOS) | A full restaurant suite, POS, reservations, tips, per-product VAT, inventory | structured business data persisted in scoped vaults | Cartridge License · source-available |
 | [BMAD 2.0](https://github.com/Mnemosyne-OS/mnemosyne_OS-bmad) | A wizard that turns an idea into a structured project blueprint | a multi-step flow that reads and writes the vault | Cartridge License · source-available |
 | [MnemoReader](https://github.com/Mnemosyne-OS/MnemoReader---MnemosyneOS) | A living PDF library that reads aloud with word-synced highlighting | document ingestion + streaming local TTS through the SDK | **MIT** |
 | [Translator](https://github.com/Mnemosyne-OS/mnemosyne_OS-translator) | Batch-translate text & Markdown with your own AI key | bringing your own AI key + batched runtime calls | **MIT** |
 
-*MIT cartridges are yours to fork and ship anywhere. The **Cartridge License** is source-available —
-read it, learn from it, modify it — with one condition: it runs inside the Mnemosyne OS ecosystem.*
+*MIT cartridges are yours to fork and ship anywhere. The **Cartridge License** is source-available:
+read it, learn from it, modify it, with one condition: it runs inside the Mnemosyne OS ecosystem.*
 
 > **🧩 Make your own.** Scaffold a cartridge from the [boilerplate](examples/cartridge-boilerplate),
-> build it against the SDK, and publish it to MnemoHub — exactly how these were made. From `npm create`
+> build it against the SDK, and publish it to MnemoHub, exactly how these were made. From `npm create`
 > to a signed, installable cartridge, the whole path is yours.
 
 ---
@@ -411,9 +411,9 @@ read it, learn from it, modify it — with one condition: it runs inside the Mne
 
 The open surface of Mnemosyne OS is **MIT-licensed** and free to build on:
 
-- **Layer-2 SDK** (`/packages`) — the integration surface above: connect apps, build
+- **Layer-2 SDK** (`/packages`) is the integration surface above: connect apps, build
   skins, scaffold projects, evaluate against the Gateway.
-- **MnemoForge CLI** (`/cli`) — the sovereign developer tool: give any AI agent
+- **MnemoForge CLI** (`/cli`) is the sovereign developer tool: give any AI agent
   persistent memory, a behavioral identity, and an automated publish pipeline.
 
 ```bash
@@ -423,10 +423,10 @@ mnemoforge
 
 | Feature | Command |
 |---|---|
-| 🪬 Soul Protocol — a persistent personality profile for your agent (tone, values, behavioral rules as a structured system-prompt), injected straight into your IDE | `mnemoforge soul inject` |
-| 📋 Canvas Rules — living ruleset persisted across sessions | vault-based, auto-applied |
-| 🗂️ Chronicle System — structured AI memory files | `mnemoforge chronicle write` |
-| 🔌 MCP Server — expose vault tools to any agent | `mnemoforge serve` |
+| 🪬 Soul Protocol, a persistent personality profile for your agent (tone, values, behavioral rules as a structured system-prompt), injected straight into your IDE | `mnemoforge soul inject` |
+| 📋 Canvas Rules, living ruleset persisted across sessions | vault-based, auto-applied |
+| 🗂️ Chronicle System, structured AI memory files | `mnemoforge chronicle write` |
+| 🔌 MCP Server, expose vault tools to any agent | `mnemoforge serve` |
 | 🖥️ Responsive dashboard | `mnemoforge` |
 
 [![npm version](https://img.shields.io/npm/v/@mnemosyne_os/forge?color=8b5cf6&label=%40mnemosyne_os%2Fforge)](https://www.npmjs.com/package/@mnemosyne_os/forge)
@@ -460,7 +460,7 @@ flowchart TB
         MCP["MCP server"]
     end
 
-    subgraph Chain["Base L2 — on-chain"]
+    subgraph Chain["Base L2, on-chain"]
         ENGRAMM["Engramm License"]
     end
 
@@ -477,20 +477,20 @@ flowchart TB
 
 ### The Engramm License
 
-Running Mnemosyne OS is unlocked by an **Engramm** — named after the *engram*, the physical
+Running Mnemosyne OS is unlocked by an **Engramm**, named after the *engram*, the physical
 trace a memory leaves in the brain. Fitting for a memory OS: it's your own verifiable trace of
 ownership.
 
 Rather than an account and a monthly subscription, your license lives on-chain (Base), bound to
-your wallet — not to a machine, not to an email. You hold it, so you own your copy and carry it to
+your wallet, not to a machine, not to an email. You hold it, so you own your copy and carry it to
 any device you want, and anyone can verify it. The same Engramm drives your sovereign pseudonym
-and cloud credits. Holding it and checking it cost you nothing — see below.
+and cloud credits. Holding it and checking it cost you nothing. See below.
 
-### Auth — cold boot / warm boot
+### Auth: cold boot / warm boot
 
 A local wallet is the only credential. No account, no password server-side to breach.
 
-> **No gas fees, no crypto to manage.** The chain is plumbing, not a paywall — you never pay a
+> **No gas fees, no crypto to manage.** The chain is plumbing, not a paywall. You never pay a
 > network fee, hold a token, or approve a transaction. Ownership is recorded on Base so it stays
 > publicly verifiable, but every network cost is covered for you. A wallet you never have to think about.
 
@@ -509,9 +509,9 @@ sequenceDiagram
     C-->>G: does this wallet hold the license?
     G-->>W: signed verdict
 
-    Note over U,T: Arming encryption at rest — separate, and up to you
+    Note over U,T: Arming encryption at rest, separate, and up to you
     U->>W: turn on encryption at rest
-    W-->>U: 24-word recovery phrase — confirm it
+    W-->>U: 24-word recovery phrase, confirm it
     U->>W: confirmed
     W->>T: seal the AES-256 key
 
@@ -524,13 +524,13 @@ sequenceDiagram
 
 **Security-first Electron architecture**
 - `contextIsolation: true`, `nodeIntegration: false` on every window
-- `sandbox: true` for web content — relaxed only for the local-AI worker threads, mitigated by context isolation + Zod-validated IPC
+- `sandbox: true` for web content, relaxed only for the local-AI worker threads, mitigated by context isolation + Zod-validated IPC
 - Explicitly declared IPC methods via Context Bridge, validated with Zod + audit logging
 - Strict Content Security Policy
 - Windows builds code-signed (Certum OV, RFC-3161 timestamped); every release binary carries a [Sigstore build-provenance attestation](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/attestations) tying it to the exact CI run and commit that produced it
 
 **Sovereignty enforced in code**
-- FGAC governs exactly what an agent — or a third-party app — can read, write, or sync
+- FGAC governs exactly what an agent, or a third-party app, can read, write, or sync
 - 24h TTL on access grants, auto-healing on refresh
 - P2P Shadow Sync with alert system and OS notifications
 - No telemetry without consent
@@ -540,8 +540,8 @@ sequenceDiagram
 - **Frontend:** React 18, TypeScript (strict mode), Vite
 - **State:** Zustand with `useShallow` atomic selectors
 - **AI Integration:** Claude API, Ollama (local LLMs), OpenAI-compatible endpoints
-- **Testing:** Vitest + Testing Library — green CI gate
-- **CI/CD:** GitHub Actions — typecheck + lint + i18n validation + tests
+- **Testing:** Vitest + Testing Library, green CI gate
+- **CI/CD:** GitHub Actions, typecheck + lint + i18n validation + tests
 
 ---
 
@@ -552,25 +552,25 @@ ecosystem built around a proprietary core.
 
 | Component | License | Description |
 |-----------|---------|-------------|
-| **Developer SDK** (`/packages/*`) | [MIT](./LICENSE) | Open — build apps, agents & skins on Mnemosyne OS |
-| **MnemoForge CLI** (`/cli`) | [MIT](./cli/LICENSE) | Open source — free to use, modify, and redistribute |
-| **Mnemosyne Neural OS** (platform) | Proprietary | © 2026 XPACEGEMS LLC — All rights reserved |
+| **Developer SDK** (`/packages/*`) | [MIT](./LICENSE) | Open, build apps, agents & skins on Mnemosyne OS |
+| **MnemoForge CLI** (`/cli`) | [MIT](./cli/LICENSE) | Open source, free to use, modify, and redistribute |
+| **Mnemosyne Neural OS** (platform) | Proprietary | © 2026 XPACEGEMS LLC, All rights reserved |
 
-The **SDK** and **MnemoForge CLI** are MIT licensed — fork them, build on them, ship
-your own apps. The **Mnemosyne Neural OS platform** — the desktop application, Neural
-Map, MnemoHub, Dream State, Vaults, and associated services — is **proprietary
+The **SDK** and **MnemoForge CLI** are MIT licensed. Fork them, build on them, ship
+your own apps. The **Mnemosyne Neural OS platform**, the desktop application, Neural
+Map, MnemoHub, Dream State, Vaults, and associated services, is **proprietary
 software**. No part of the platform may be copied, modified, or distributed without
 explicit written permission from XPACEGEMS LLC.
 
 **End-user licensing is separate from the code license above.** *Running* Mnemosyne OS is unlocked
-per user by the [Engramm](#the-engramm-license) — an on-chain license bound to your wallet, not a
-subscription — while the SDK and CLI you *build with* stay MIT.
+per user by the [Engramm](#the-engramm-license), an on-chain license bound to your wallet, not a
+subscription, while the SDK and CLI you *build with* stay MIT.
 
 **Why the core is closed.** Everything you need to *build* is open; what stays sealed is
-the part that took years of full-time R&D to get right — the memory engines (Spine,
+the part that took years of full-time R&D to get right, the memory engines (Spine,
 Retrieval, Dream State) behind the LongMemEval numbers above. Keeping that core
 proprietary is what lets an independent lab sustain the project, fund the open ecosystem
-around it, and grow a team — instead of handing a hard-won engine to anyone who would
+around it, and grow a team, instead of handing a hard-won engine to anyone who would
 re-skin it. The trade is deliberate: everything above the Gateway is yours to fork; the
 engine that makes it worth building on stays ours.
 
@@ -594,36 +594,36 @@ Electron security     : context isolation · Zod-validated IPC · CSP
 
 ## Development Philosophy
 
-Mnemosyne is built on three principles:
+Mnemosyne OS is built on three principles:
 
-**1. Sovereignty** — Your data stays local. Your models run locally if you choose. No
+**1. Sovereignty**: Your data stays local. Your models run locally if you choose. No
 telemetry without consent. FGAC controls what the AI can and cannot access.
 
-**2. Multi-model** — No vendor lock-in. Claude, GPT, Gemini, Groq, Mistral, DeepSeek,
+**2. Multi-model**: No vendor lock-in. Claude, GPT, Gemini, Groq, Mistral, DeepSeek,
 and MiniMax in the cloud; Ollama or a local GGUF model fully offline; any
-OpenAI-compatible endpoint on top — switch per task, or let the app route
+OpenAI-compatible endpoint on top. Switch per task, or let the app route
 automatically.
 
-**3. Agentic by design** — Not a chat interface with file upload. A real orchestration
+**3. Agentic by design.** This is not a chat interface with file upload. A real orchestration
 layer where multiple AI agents coordinate, with policy enforcement and audit trails.
 
 ---
 
-## 🔬 Mnemosyne Labs — research, activated
+## 🔬 Mnemosyne Labs: research, activated
 
-<img src="assets/labs-activated.png" width="100%" alt="Mnemosyne Labs — open research program. Research, activated. Open methodology, auditable benchmarks, artifacts archived with a DOI — cite the work, audit the claims." />
+<img src="assets/labs-activated.png" width="100%" alt="Mnemosyne Labs, open research program. Research, activated. Open methodology, auditable benchmarks, artifacts archived with a DOI, cite the work, audit the claims." />
 
-The numbers above are not marketing copy — they are **published, citable research
+The numbers above come from **published, citable research
 artifacts**. Mnemosyne Labs is the research arm of the project: methodology in
 the open, benchmarks anyone can audit, artifacts archived with a DOI.
 
 | Artifact | DOI |
 |---|---|
-| 📄 **The Resonance Engine** — technical whitepaper v2.1: the architecture behind the engines, consolidation, adaptive selection, the hybrid lexical channel, and the LongMemEval results | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21728283-1682D4)](https://doi.org/10.5281/zenodo.21728283) |
-| 🔍 **LongMemEval-M audit kit** — the scorer, per-question verdicts and honest methodology, packaged so you can audit the claims yourself. This DOI pins the **July** deposit (the 72.9% campaign); the [live kit](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) also recomputes the August one | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21727140-1682D4)](https://doi.org/10.5281/zenodo.21727140) |
+| 📄 **The Resonance Engine**: technical whitepaper v2.1: the architecture behind the engines, consolidation, adaptive selection, the hybrid lexical channel, and the LongMemEval results | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21728283-1682D4)](https://doi.org/10.5281/zenodo.21728283) |
+| 🔍 **LongMemEval-M audit kit**: the scorer, per-question verdicts and honest methodology, packaged so you can audit the claims yourself. This DOI pins the **July** deposit (the 72.9% campaign); the [live kit](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) also recomputes the August one | [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21727140-1682D4)](https://doi.org/10.5281/zenodo.21727140) |
 
 Both records are open access (CC BY 4.0), cite each other on Zenodo, and are
-bound to the founder's research identity — ORCID
+bound to the founder's research identity, ORCID
 [0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917).
 
 **[→ Mnemosyne Labs](https://mnemosyne-os.com/labs)** ·
@@ -635,38 +635,38 @@ bound to the founder's research identity — ORCID
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition — 23 public releases**, now at [**v1.5.0 · The Synapse**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.5.0-infinity)
-- [x] 🖼️ **Theia — image memory & visual recall** — Mnemosyne's sister engine (named for the Titaness of sight) gives every vault an eye: your images are embedded **locally** (SigLIP 2, no cloud, no API), recall answers with thumbnails under the reply, and a living gallery shows them with categories the engine discovers on its own — categories you can rate, correct, rename or teach, because the human's word always outranks the model's guess. Off by default; one Settings toggle installs, downloads pinned weights and indexes.
-- [x] 🧩 **MnemoHub** — signed cartridge marketplace, community submission pipeline, live publishing
-- [x] 🪪 **Sovereign identity** — claim a public pseudonym bound to your wallet, no account, no password
-- [x] 💤 **Dream State** — a consolidation engine that replays and links your memories while you're away
-- [x] 🗜️ **Octave — multi-resolution memory compression** — the engine behind the compression milestone, aboard since v1.3.8: while you're away, consolidation prepares each memory at several resolutions, so the answer path can carry more memory into a small context window. Strictly extractive — every compressed line is a verbatim excerpt of the original, provable by character offsets, never a paraphrase — and compressed derivatives inherit the exact vault protection of their source. Serving them on the answer path stays off by default until the full benchmark campaign clears it.
-- [x] ⚡ **MnemoForge CLI v1.4.7** on npm — [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
-- [x] 🌱 **Public beta — v1.1.0-beta.1** — where it started (personality-profile builder, semantic memory graph, first-contact onboarding)
+- [x] 🚀 **Infinity Edition, 23 public releases**, now at [**v1.5.0 · The Synapse**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.5.0-infinity)
+- [x] 🖼️ **Theia, image memory and visual recall**: Mnemosyne's sister engine (named for the Titaness of sight) gives every vault an eye: your images are embedded **locally** (SigLIP 2, no cloud, no API), recall answers with thumbnails under the reply, and a living gallery shows them with categories the engine discovers on its own: categories you can rate, correct, rename or teach, because the human's word always outranks the model's guess. Off by default; one Settings toggle installs, downloads pinned weights and indexes.
+- [x] 🧩 **MnemoHub**: signed cartridge marketplace, community submission pipeline, live publishing
+- [x] 🪪 **Sovereign identity**: claim a public pseudonym bound to your wallet, no account, no password
+- [x] 💤 **Dream State**: a consolidation engine that replays and links your memories while you're away
+- [x] 🗜️ **Octave, multi-resolution memory compression**: the engine behind the compression milestone, aboard since v1.3.8: while you're away, consolidation prepares each memory at several resolutions, so the answer path can carry more memory into a small context window. Strictly extractive: every compressed line is a verbatim excerpt of the original, provable by character offsets, never a paraphrase: and compressed derivatives inherit the exact vault protection of their source. Serving them on the answer path stays off by default until the full benchmark campaign clears it.
+- [x] ⚡ **MnemoForge CLI v1.4.7** on npm, [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) · Soul Protocol · Canvas Rules · Chronicle System · MCP Server
+- [x] 🌱 **Public beta, v1.1.0-beta.1**: where it started (personality-profile builder, semantic memory graph, first-contact onboarding)
 
 ### What's next
-- [ ] 🗜️ **Context compression, on by default** — the Octave engine is already aboard (see *Shipped*): while your machine is idle, every memory is prepared at several resolutions — strictly extractive, offset-provable, never a paraphrase. What remains is serving those compressed forms on the answer path for everyone, gated behind the full measurement campaign, so a lifetime of accumulated memory stays cheap to carry into the small **context windows** of on-device models. Memory that keeps growing must stay cheap to carry — this is what keeps Mnemosyne sovereign on modest hardware.
-- [ ] 📱 **Mobile companion app** — take notes and reach Mnemosyne OS running on your desktop remotely: capture on the go, sync back into your local vault, chat with your own memory away from the machine
-- [ ] 🔗 **Synaptic P2P** — a sovereign libp2p mesh (`mnemosync-p2p`) so your Mnemosyne can reach a trusted peer's directly: no cloud relay, no VPS, no account. Built for teams who want to share a deliberate slice of memory (an architecture decision, an API contract, a chronicle) without exposing the rest — and, eventually, direct messages between instances. Authentication reuses your existing sovereign wallet; nothing leaves your vault unless you explicitly publish it.
-- [ ] 👥 Team features — shared vaults, multi-agent coordination
+- [ ] 🗜️ **Context compression, on by default**: the Octave engine is already aboard (see *Shipped*). While your machine is idle, every memory is prepared at several resolutions, strictly extractive, offset-provable, never a paraphrase. What remains is serving those compressed forms on the answer path for everyone, gated behind the full measurement campaign, so a lifetime of accumulated memory stays cheap to carry into the small **context windows** of on-device models. Memory that keeps growing must stay cheap to carry, this is what keeps Mnemosyne sovereign on modest hardware.
+- [ ] 📱 **Mobile companion app**: take notes and reach Mnemosyne OS running on your desktop remotely. Capture on the go, sync back into your local vault, chat with your own memory away from the machine
+- [ ] 🔗 **Synaptic P2P**: a sovereign libp2p mesh (`mnemosync-p2p`) so your Mnemosyne OS can reach a trusted peer's vault directly: no cloud relay, no VPS, no account. Built for teams who want to share a deliberate slice of memory (an architecture decision, an API contract, a chronicle) without exposing the rest, and, eventually, direct messages between instances. Authentication reuses your existing sovereign wallet; nothing leaves your vault unless you explicitly publish it.
+- [ ] 👥 Team features, shared vaults, multi-agent coordination
 - [ ] 🖥️ Self-hosted sync server
-- [ ] 🕸️ **Permaweb archival** — pay-once, permanent memory storage on Arweave, no subscription and no server that can disappear. [Psyche](https://psyche.mnemosyne-os.io) (souls for any AI agent) is the vehicle; bringing it into Mnemosyne OS as a cartridge is the path to making permanent archival a native option for chronicles, and eventually vault backups
-- [ ] 💰 Creator economy — paid visibility for cartridges, revenue flowing back to builders
+- [ ] 🕸️ **Permaweb archival**: pay-once, permanent memory storage on Arweave, no subscription and no server that can disappear. [Psyche](https://psyche.mnemosyne-os.io) (souls for any AI agent) is the vehicle; bringing it into Mnemosyne OS as a cartridge is the path to making permanent archival a native option for chronicles, and eventually vault backups
+- [ ] 💰 Creator economy, paid visibility for cartridges, revenue flowing back to builders
 
 ---
 
 ## About
 
-**XPACEGEMS LLC** — Independent AI software lab  
+**XPACEGEMS LLC**, Independent AI software lab  
 **Headquarters:** 2932 NW 72 AVE, Miami, FL 33122, USA  
 **Founder & Lead Architect:** Tony Trochet  
-**Product:** [mnemosyne-os.io](https://mnemosyne-os.io) — downloads, docs, build on it  
-**Company:** [mnemosyne-os.com](https://mnemosyne-os.com) — press, research, [Labs](https://mnemosyne-os.com/labs)  
-**Documentation:** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io) — every engine, step by step  
+**Product:** [mnemosyne-os.io](https://mnemosyne-os.io): downloads, docs, build on it  
+**Company:** [mnemosyne-os.com](https://mnemosyne-os.com): press, research, [Labs](https://mnemosyne-os.com/labs)  
+**Documentation:** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io): every engine, step by step  
 **LinkedIn:** [Tony Trochet](https://www.linkedin.com/in/tony-t-19544650/)  
 **GitHub:** [@yaka0007](https://github.com/yaka0007)
 
-> Built through **Neural Coding** — human-architected, with Claude (Anthropic), Antigravity (Google DeepMind), and Cursor directed as instruments.
+> Built through **Neural Coding**, human-architected, with Claude (Anthropic), Antigravity (Google DeepMind), and Cursor directed as instruments.
 
 ---
 
@@ -677,20 +677,20 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 | Date | Release | In one line |
 |------|---------|-------------|
 | **Sep 18, 2026** | [**v1.5.0 · The Synapse**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.5.0-infinity) | Two installs can now connect. **Synaptic P2P** (beta) gives someone a vault to read, sends courier mail and shares one vault that several people write. You can tell the app what to do, spoken to the orb or typed in the chat: "open my agenda", "full screen", on any window, in your language, plus the phrases you teach it in Settings › Commands. The recorder transcribes with timestamps and recognises your enrolled voice. Also new: a memory health panel, an ask line on a blank desktop, external shortcuts pinned on the board, agent cards in the cockpit, the chat acting on your agenda and backlog, and MCP 2.0 with a one-click install for Claude Desktop. More than 500 commits since 1.4.5, more than 200 of them fixes. |
-| **Sep 8, 2026** | [**v1.4.5 · The Locked Door**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.5-infinity) | A repair release that grew a beta. The headline is a lock: **only a cartridge you linked yourself in developer mode can start a script on your machine** — a Hub cartridge could declare a development address and run its script the moment its window opened, so every install on 1.4.4 or earlier should take this one. Behind it, a zone-by-zone pass of 650 commits and 285 fixes: **the chat answers in under a second instead of freezing for a minute**, it searches by exact words again (the lexical channel had only ever served the SDK, not the chat), the Dream State dreams a whole topic instead of its first forty pieces, a watched-folder rule applies to that folder alone, and every number nobody measured reads *unknown* instead of 0. New: **drive the board with your hands** (Settings › Gestures, beta — pinch to grab, two hands to zoom, swipe), a **conversation recorder** that keeps you and the other side on two tracks with no speaker model, a **portable cartridge** that carries a memory to another machine on a drive, **« Ask »** in the capture browser to question your memory about the page you are on, **eight new MCP tools** so an agent can read, change and remove your To-do and Agenda even with the app closed, words-only vaults for code, a neural map with one settings drawer and a brain figure, and an AFFiNE import. |
+| **Sep 8, 2026** | [**v1.4.5 · The Locked Door**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.5-infinity) | A repair release that grew a beta. The headline is a lock: **only a cartridge you linked yourself in developer mode can start a script on your machine**: a Hub cartridge could declare a development address and run its script the moment its window opened, so every install on 1.4.4 or earlier should take this one. Behind it, a zone-by-zone pass of 650 commits and 285 fixes: **the chat answers in under a second instead of freezing for a minute**, it searches by exact words again (the lexical channel had only ever served the SDK, not the chat), the Dream State dreams a whole topic instead of its first forty pieces, a watched-folder rule applies to that folder alone, and every number nobody measured reads *unknown* instead of 0. New: **drive the board with your hands** (Settings › Gestures, beta, pinch to grab, two hands to zoom, swipe), a **conversation recorder** that keeps you and the other side on two tracks with no speaker model, a **portable cartridge** that carries a memory to another machine on a drive, **« Ask »** in the capture browser to question your memory about the page you are on, **eight new MCP tools** so an agent can read, change and remove your To-do and Agenda even with the app closed, words-only vaults for code, a neural map with one settings drawer and a brain figure, and an AFFiNE import. |
 | **Sep 3, 2026** | [**v1.4.4 · The Whole Document**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.4-infinity) | For anyone who drops real documents into a vault: **a long document now enters memory whole**. It was cut at 18 000 characters, so a 300-page book was remembered as its first six pages. A file refused outright said nothing at all, and two 150-page courses had been turned away in complete silence; a refusal now names the file, its size and the rule it broke. PDF, Word and Excel go from 5 MB to 50 MB. For a company: point Mnemosyne at **your own OpenAI-compatible model server** on your own network, and the route is yours end to end. The chat reads **several vaults at once**, follows the vault you picked in the panel, or lets the model choose per question. **Ask Mnemosyne about Mnemosyne**: a manual ships inside the app in French, English and Spanish, and says plainly when it has no page on your subject. The **capture browser** is rebuilt for the web: every image of a page in one click, or the page as text, as a PDF, as a screenshot, all reviewed before any of it becomes memory. Plus a problem report from any window that shows you what gets sent before you send it, images pasted inside a `.docx` kept and indexed, and a boot that stopped rebuilding the neural map eleven times per launch. |
 | **Aug 31, 2026** | [**v1.4.3 · What Your Agent Knows**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.3-infinity) | For anyone who codes with an AI agent open beside them: **your agent's memory can finally enter a vault**. Every agent keeps what it learned under a dot-directory (`.claude`, `.cursor`, `.aider`, `.continue`), and a blanket ignore rule dropped all of them whole, in silence: the source read enabled, the panel showed a green dot, the log said the watch had attached, and not one file was ever ingested. A folder you deliberately point at is now watched, whatever its name. Searching **through the MCP** also gains the exact-word channel the app's own retrieval already had. Plus the work that piled up behind the 1.4.2 cut: **desktops on the canvas** (a desktop is a world, with its own windows, camera and decor), a **to-do rework** with lists of your own, an archive that is not a delete, drag to reorder, and tasks that leave the list to sit on the canvas and ring; notes that **open in a window of their own**; vaults readable from across the board; and a vault's weight that says who answers without ever stopping it from recording. |
-| **Aug 29, 2026** | [**v1.4.2 · The Clean Cut**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.2-infinity) | Cut a subject out of any image **on your own machine**: right-click it on the canvas, and put the background back in one click — the original file is never touched. Two permissively-licensed models, the choice yours in Settings. Image memory can now use an **NVIDIA GPU**, and nothing is marked upgraded without proof it booted on one. A new room for making pictures: several plans open at once, your own images as a **brand kit** a generation must honour, and a prompt Mnemosyne writes out of your own memory. **Oikos** reads the devices in your house and keeps a still of them where your memory can find it a year later — one approved device at a time, addresses you declare, polling that stops the moment you withdraw consent. And the canvas travels: opening a window flies to it, with a way back from every trip. |
-| **Aug 26, 2026** | [**v1.4.1 · The Closed Pipe**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.1-infinity) | Linux fix: launching the AppImage from a terminal that was later closed broke standard output, and every log line then raised a fatal error dialog — one per line. The log bus now detects the closed pipe and keeps the ring buffer and the daily file, which is the path packaged builds actually use. Also, a scanned book is read whole: OCR reads a document in page windows instead of stopping at 60 pages, and says which page it is on. |
-| **Aug 25, 2026** | [**v1.4.0 · The Infinite Vision**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.0-infinity) | Mnemosyne learns to **see**: Theia, a fully local image-memory engine (SigLIP 2, on-device), makes your photos recallable in chat — ask for *"the pieces that look like a blue cup"* and the thumbnails answer — with a living gallery (day timeline, stars, pins, and categories the engine discovers and **you** can correct or teach). The workspace unlocks into an **infinite canvas** you pan, zoom and decorate with clocks, weather and stickers; paste or drop an image anywhere and a vault picker turns it into memory; a sandboxed **capture browser** (beta) brings the web in — one human gesture per capture, never automatic. Plus: local models fixed on fresh installs, gapless local read-aloud, and a notes rework with a constellation view and five-colour highlights. |
-| **Aug 18, 2026** | [**v1.3.8 · The Second Channel**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.8-infinity) | Retrieval gains a second, fully local channel: your vault is now also ranked by **exact words** (BM25 over a persistent index built inside the vault) and fused with the semantic ranking by rank — a proper noun, an identifier or a number now finds its session. Measured on LongMemEval full-haystack, strict judge: **29 → 37 of 48**, reproduced twice, confirmed on held-out questions with zero regressions. Plus per-app isolation proven on every retrieval channel, and an installer with a proper trilingual EULA that launches the app when it's done. Also aboard: **Octave**, a multi-resolution memory-compression engine — strictly extractive, off by default on the answer path until measured. |
-| **Aug 10, 2026** | [**v1.3.7 · The Kept Promise**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.7-infinity) | The whole loop runs on your machine — model, memory and retrieval, with no key and no account. A refreshed local catalogue with **262k-token context windows** (the entry-level model shipped with 4k), your own `.gguf` files welcome, bring-your-own-key providers that hand you *their* real model list, a local journal of what every call costs at **your** prices — and vault protection the routing now honours end to end. |
-| **Aug 3, 2026** | [**v1.3.6 · The Persona**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.6-infinity) | The OS takes your shape: four new shell languages (Deutsch, Português, Русский, 中文), abstract voice-orb skins with a full-screen mode, a user-chosen accent that cartridges inherit live, a sixteen-archetype cognitive lens that styles the voice without ever touching retrieval — and web search rebuilt. |
+| **Aug 29, 2026** | [**v1.4.2 · The Clean Cut**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.2-infinity) | Cut a subject out of any image **on your own machine**: right-click it on the canvas, and put the background back in one click, the original file is never touched. Two permissively-licensed models, the choice yours in Settings. Image memory can now use an **NVIDIA GPU**, and nothing is marked upgraded without proof it booted on one. A new room for making pictures: several plans open at once, your own images as a **brand kit** a generation must honour, and a prompt Mnemosyne writes out of your own memory. **Oikos** reads the devices in your house and keeps a still of them where your memory can find it a year later, one approved device at a time, addresses you declare, polling that stops the moment you withdraw consent. And the canvas travels: opening a window flies to it, with a way back from every trip. |
+| **Aug 26, 2026** | [**v1.4.1 · The Closed Pipe**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.1-infinity) | Linux fix: launching the AppImage from a terminal that was later closed broke standard output, and every log line then raised a fatal error dialog, one per line. The log bus now detects the closed pipe and keeps the ring buffer and the daily file, which is the path packaged builds actually use. Also, a scanned book is read whole: OCR reads a document in page windows instead of stopping at 60 pages, and says which page it is on. |
+| **Aug 25, 2026** | [**v1.4.0 · The Infinite Vision**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.0-infinity) | Mnemosyne learns to **see**: Theia, a fully local image-memory engine (SigLIP 2, on-device), makes your photos recallable in chat, ask for *"the pieces that look like a blue cup"* and the thumbnails answer, with a living gallery (day timeline, stars, pins, and categories the engine discovers and **you** can correct or teach). The workspace unlocks into an **infinite canvas** you pan, zoom and decorate with clocks, weather and stickers; paste or drop an image anywhere and a vault picker turns it into memory; a sandboxed **capture browser** (beta) brings the web in, one human gesture per capture, never automatic. Plus: local models fixed on fresh installs, gapless local read-aloud, and a notes rework with a constellation view and five-colour highlights. |
+| **Aug 18, 2026** | [**v1.3.8 · The Second Channel**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.8-infinity) | Retrieval gains a second, fully local channel: your vault is now also ranked by **exact words** (BM25 over a persistent index built inside the vault) and fused with the semantic ranking by rank, a proper noun, an identifier or a number now finds its session. Measured on LongMemEval full-haystack, strict judge: **29 → 37 of 48**, reproduced twice, confirmed on held-out questions with zero regressions. Plus per-app isolation proven on every retrieval channel, and an installer with a proper trilingual EULA that launches the app when it's done. Also aboard: **Octave**, a multi-resolution memory-compression engine, strictly extractive, off by default on the answer path until measured. |
+| **Aug 10, 2026** | [**v1.3.7 · The Kept Promise**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.7-infinity) | The whole loop runs on your machine, model, memory and retrieval, with no key and no account. A refreshed local catalogue with **262k-token context windows** (the entry-level model shipped with 4k), your own `.gguf` files welcome, bring-your-own-key providers that hand you *their* real model list, a local journal of what every call costs at **your** prices, and vault protection the routing now honours end to end. |
+| **Aug 3, 2026** | [**v1.3.6 · The Persona**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.6-infinity) | The OS takes your shape: four new shell languages (Deutsch, Português, Русский, 中文), abstract voice-orb skins with a full-screen mode, a user-chosen accent that cartridges inherit live, a sixteen-archetype cognitive lens that styles the voice without ever touching retrieval, and web search rebuilt. |
 | **Jul 29, 2026** | [**v1.3.5 · The Sealed Vault**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.5-infinity) | Opt-in **AES-256 encryption at rest** with a 24-word recovery phrase, backups decided by an allow-list of what is genuinely yours, and ~10 GB of machine-bound toolchain moved out of the data folder. |
-| **Jul 22, 2026** | [v1.3.4](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.4-infinity) | The first **code-signed** Windows build — no more "unknown publisher". |
+| **Jul 22, 2026** | [v1.3.4](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.4-infinity) | The first **code-signed** Windows build, no more "unknown publisher". |
 | **Jul 20, 2026** | [**v1.3.3 · The Sovereign Ledger**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.3-infinity) | The credit economy: in-app credit and license flow, a creator cockpit for cartridge builders, sovereign pseudonyms backed by a real install counter. |
 | **Jul 19, 2026** | [**v1.3.0 · The Memory Covenant**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.3.0-infinity) | The sealed core, app-sandbox vaults with human-gated permanence, and memory-purge governance. |
-| **Jul 7, 2026** | [**v1.2.0 · The Reading Engine**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.2.0-infinity) | A PDF library that reads to you — deferred local OCR, voice reading, and the spine memory engine underneath. |
+| **Jul 7, 2026** | [**v1.2.0 · The Reading Engine**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.2.0-infinity) | A PDF library that reads to you, deferred local OCR, voice reading, and the spine memory engine underneath. |
 
 **[→ All releases](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)**
 
@@ -698,11 +698,11 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 
 The longer stories behind the releases and the campaigns, on the product site:
 
-- **[A multiplier cannot rescue a zero](https://mnemosyne-os.io/blog/a-multiplier-cannot-rescue-a-zero)** — dense embeddings can't hear a rare proper noun. What worked: a second, fully local ranking fused by rank — with two reproduced runs, a 48-question holdout, and every number auditable.
-- **[72.9% — and the three questions we miss](https://mnemosyne-os.io/blog/full-haystack-72-9)** — LongMemEval on the full-haystack variant, the one nobody shows: the number, the protocol, the levers we refuted, and the misses we own.
-- **[We gave personality control of memory. It cost 31 points.](https://mnemosyne-os.io/blog/personality-lens-31-points)** — the most seductive feature we built this year made retrieval measurably worse; the ablation, and why personality shipped as a costume.
-- **[Present is not the same as loadable](https://mnemosyne-os.io/blog/a-release-that-could-not-load-a-model)** — a package can be there, at the right version, and still be unreachable to the code that imports it.
-- **[The memory my brain kept asking for](https://mnemosyne-os.io/blog/la-memoire-que-mon-cerveau-reclamait)** — why this OS exists: not a product, a prosthesis for a brain that ran too fast for the world. *([original in French](https://mnemosyne-os.io/fr/blog/la-memoire-que-mon-cerveau-reclamait))*
+- **[A multiplier cannot rescue a zero](https://mnemosyne-os.io/blog/a-multiplier-cannot-rescue-a-zero)**: dense embeddings can't hear a rare proper noun. What worked: a second, fully local ranking fused by rank, with two reproduced runs, a 48-question holdout, and every number auditable.
+- **[72.9%: and the three questions we miss](https://mnemosyne-os.io/blog/full-haystack-72-9)**: LongMemEval on the full-haystack variant, the one nobody shows: the number, the protocol, the levers we refuted, and the misses we own.
+- **[We gave personality control of memory. It cost 31 points.](https://mnemosyne-os.io/blog/personality-lens-31-points)**: the most seductive feature we built this year made retrieval measurably worse; the ablation, and why personality shipped as a costume.
+- **[Present is not the same as loadable](https://mnemosyne-os.io/blog/a-release-that-could-not-load-a-model)**: a package can be there, at the right version, and still be unreachable to the code that imports it.
+- **[The memory my brain kept asking for](https://mnemosyne-os.io/blog/la-memoire-que-mon-cerveau-reclamait)**: why this OS exists: not a product, a prosthesis for a brain that ran too fast for the world. *([original in French](https://mnemosyne-os.io/fr/blog/la-memoire-que-mon-cerveau-reclamait))*
 
 **[→ All posts](https://mnemosyne-os.io/blog)**
 
@@ -710,7 +710,7 @@ The longer stories behind the releases and the campaigns, on the product site:
 
 <div align="center">
 
-*Memory decides who an agent stays between sessions — not whatever model happens to be running.*
+*Memory decides who an agent stays between sessions, not whatever model happens to be running.*
 
 <br/>
 
