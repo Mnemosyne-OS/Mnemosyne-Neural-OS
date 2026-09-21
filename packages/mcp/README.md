@@ -389,20 +389,26 @@ npm install -g @mnemosyne_os/mcp
   "hooks": {
     "SessionStart":     [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }],
     "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }],
+    "Notification":     [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }],
     "Stop":             [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }],
     "SessionEnd":       [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }]
   }
 }
 ```
 
-The event name arrives on stdin, so one command serves all four. What each does:
+The event name arrives on stdin, so one command serves all five. What each does:
 
 | Event | The card | Your mail |
 |---|---|---|
 | `SessionStart` | appears, **working** | delivered as context |
 | `UserPromptSubmit` | **working**, status is your prompt's first line | delivered as context |
+| `Notification` | **waiting**, and the question the harness is putting to you | — |
 | `Stop` | **done**, status is the answer's first line | if mail is waiting, the stop is **refused** and the mail is the reason, so the session reads it instead of ending |
 | `SessionEnd` | goes away | — |
+
+Nothing clears **waiting** on its own, because answering a question is not a
+prompt. The card holds it until the turn ends or you type something. The host
+says how long it has been unconfirmed rather than quietly moving on.
 
 **Do not reach for `npx` here**, even though the server line above uses it.
 `npx --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook` does work, and it cost
