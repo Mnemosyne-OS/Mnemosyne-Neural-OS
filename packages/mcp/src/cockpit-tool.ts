@@ -27,6 +27,16 @@ export interface CockpitUpdateResult {
   /** Mail left in the box because the update was refused — see `renderCockpitUpdate`. */
   pendingMail?: number;
   treeIgnored?: boolean;
+  /**
+   * What became of a board request, present only when one was made.
+   *
+   * 🎭 UNAVAILABLE means the desktops could not be read, which says nothing
+   * about whether the board exists. Merging it with UNKNOWN would send
+   * someone to check the spelling of a name that is sitting on their screen.
+   */
+  desktop?:
+    | { ok: true; name: string }
+    | { ok: false; reason: 'UNKNOWN' | 'AMBIGUOUS' | 'UNAVAILABLE'; names: string[] };
 }
 
 export interface CockpitRpcClient {
@@ -58,6 +68,10 @@ export function cockpitParams(
   if (typeof args['status'] === 'string' && args['status'].trim()) out['status'] = args['status'].trim();
   if (Array.isArray(args['detail'])) out['detail'] = args['detail'].filter((l): l is string => typeof l === 'string');
   if (args['attention'] === true) out['attention'] = true;
+  // 🚨 Sent EXACTLY as the human said it, never lowercased or trimmed to a
+  // width here. The host matches the name exactly (case aside), so anything
+  // this end reshapes can only turn a good name into a miss.
+  if (typeof args['desktop'] === 'string' && args['desktop'].trim()) out['desktop'] = args['desktop'].trim();
   const tree = workingTreeOf(cwd);
   if (tree) out['tree'] = tree;
   return { params: out };
@@ -101,6 +115,26 @@ export function renderCockpitUpdate(result: CockpitUpdateResult, state: string):
       : '';
     return `${why}${waiting}${renderMail(result.messages ?? [])}`;
   }
+  /**
+   * What became of a board request.
+   *
+   * 🚨 Said on its own line, under a card that went through anyway. Folding a
+   * misspelt board name into the refusal would take the card off the canvas
+   * over a typo, and an agent that cannot see the board cannot tell the
+   * difference between "wrong name" and "the app is gone".
+   *
+   * 🎭 The three failures send the agent to three different places, so they
+   * get three sentences. UNAVAILABLE says nothing about the board existing.
+   */
+  const board = !result.desktop
+    ? ''
+    : result.desktop.ok
+      ? `\n🧭 Cards for this session go to the "${result.desktop.name}" desktop.`
+      : result.desktop.reason === 'AMBIGUOUS'
+        ? `\n⚠️ Two desktops carry that name, so the card was left where it was. Ask the human to rename one. Desktops: ${result.desktop.names.join(', ') || '(none are named)'}.`
+        : result.desktop.reason === 'UNAVAILABLE'
+          ? '\n⚠️ The desktops could not be read, so the board you asked for was not applied. This says nothing about whether it exists — the canvas may still be starting. Ask again on your next update.'
+          : `\n⚠️ No desktop carries that name, so the card was left where it was. Named desktops: ${result.desktop.names.join(', ') || '(none are named — ask the human to name the one they want)'}.`;
   const where = result.pinned === false
     // 🚨 Says what actually brings it back. It read "until they pin it again",
     // which stopped being true on 2026-09-11 (doc 110 §14.8) — and it was the
@@ -111,7 +145,7 @@ export function renderCockpitUpdate(result: CockpitUpdateResult, state: string):
   const tree = result.treeIgnored
     ? '\n⚠️ The working directory is not a git working tree, so this card has no mailbox: the human cannot reply to it from the canvas.'
     : '';
-  return `${where}${tree}${renderMail(result.messages ?? [])}`;
+  return `${where}${board}${tree}${renderMail(result.messages ?? [])}`;
 }
 
 export async function handleCockpitUpdate(
