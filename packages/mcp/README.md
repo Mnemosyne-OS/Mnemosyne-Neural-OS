@@ -368,6 +368,48 @@ worse than no tool.
 
 A file is marked `recorded` when the harness logged a file-writing tool call, and `from a command` when a redirection was read out of a shell command that may never have completed. Those are different kinds of fact and are never merged.
 
+### Keep the status card honest, without the model remembering
+
+`mnemosyne_cockpit_update` puts your session on the user's canvas, but only
+when the model decides to call it. A session that forgets leaves a card saying
+"working" long after it stopped, and a message the human typed on that card
+waits for a call that may never come.
+
+The package ships a **Claude Code hook** that closes both gaps. It is wired by
+you, in your own settings, and the package never touches them:
+
+```jsonc
+// .claude/settings.json, or ~/.claude/settings.json for every project
+{
+  "hooks": {
+    "SessionStart":     [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }],
+    "Stop":             [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }],
+    "SessionEnd":       [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }]
+  }
+}
+```
+
+The event name arrives on stdin, so one command serves all four. What each does:
+
+| Event | The card | Your mail |
+|---|---|---|
+| `SessionStart` | appears, **working** | delivered as context |
+| `UserPromptSubmit` | **working**, status is your prompt's first line | delivered as context |
+| `Stop` | **done**, status is the answer's first line | if mail is waiting, the stop is **refused** and the mail is the reason, so the session reads it instead of ending |
+| `SessionEnd` | goes away | — |
+
+**It cannot cost you a session.** Every failure path writes one line to stderr
+and exits 0. With Mnemosyne OS closed, a run measured 155 to 175 ms and said so
+on stderr; most of that is Node starting, since a closed local port refuses at
+once. A refused stop cannot loop either: the mail is marked delivered when it is
+handed over, so the next stop finds none and ends normally.
+
+**Claude Code only.** The event names and the refusal format are Claude Code's
+hook contract. Cursor and Antigravity have their own and will not fire this one.
+The three agent-awareness tools above work with every harness; this hook does
+not.
+
 ### `mnemosyne_memory_query`, full parameter reference
 
 ```ts
