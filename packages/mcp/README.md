@@ -375,17 +375,22 @@ when the model decides to call it. A session that forgets leaves a card saying
 "working" long after it stopped, and a message the human typed on that card
 waits for a call that may never come.
 
-The package ships a **Claude Code hook** that closes both gaps. It is wired by
-you, in your own settings, and the package never touches them:
+The package ships a **Claude Code hook** that closes both gaps. Install the
+package so the binary is on your path, then wire it in your own settings. The
+package never touches them.
+
+```bash
+npm install -g @mnemosyne_os/mcp
+```
 
 ```jsonc
 // .claude/settings.json, or ~/.claude/settings.json for every project
 {
   "hooks": {
-    "SessionStart":     [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }],
-    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }],
-    "Stop":             [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }],
-    "SessionEnd":       [{ "hooks": [{ "type": "command", "command": "npx -y --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook" }] }]
+    "SessionStart":     [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }],
+    "Stop":             [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }],
+    "SessionEnd":       [{ "hooks": [{ "type": "command", "command": "mnemosyne-cockpit-hook" }] }]
   }
 }
 ```
@@ -399,11 +404,18 @@ The event name arrives on stdin, so one command serves all four. What each does:
 | `Stop` | **done**, status is the answer's first line | if mail is waiting, the stop is **refused** and the mail is the reason, so the session reads it instead of ending |
 | `SessionEnd` | goes away | — |
 
+**Do not reach for `npx` here**, even though the server line above uses it.
+`npx --package=@mnemosyne_os/mcp mnemosyne-cockpit-hook` does work, and it cost
+2.1 to 3.7 seconds a run on the machine where the installed binary cost 0.4 to
+0.7. `UserPromptSubmit` fires on every message you send, so that difference is
+the whole feature.
+
 **It cannot cost you a session.** Every failure path writes one line to stderr
-and exits 0. With Mnemosyne OS closed, a run measured 155 to 175 ms and said so
-on stderr; most of that is Node starting, since a closed local port refuses at
-once. A refused stop cannot loop either: the mail is marked delivered when it is
-handed over, so the next stop finds none and ends normally.
+and exits 0. Measured on Windows through the installed binary: 0.40 to 0.58 s
+with Mnemosyne OS running, 0.47 to 0.66 s with it closed. Most of that is Node
+starting and the shim npm writes on Windows, since a closed local port refuses
+at once. A refused stop cannot loop either: the mail is marked delivered when it
+is handed over, so the next stop finds none and ends normally.
 
 **Claude Code only.** The event names and the refusal format are Claude Code's
 hook contract. Cursor and Antigravity have their own and will not fire this one.

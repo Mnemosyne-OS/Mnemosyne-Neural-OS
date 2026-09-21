@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * cockpit-hook — the Claude Code hook that keeps this session's cockpit card
  * honest without the model having to remember to (doc 110 §9).
