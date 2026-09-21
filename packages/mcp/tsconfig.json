@@ -5,7 +5,10 @@
     "moduleResolution": "bundler",
     "strict": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    // No rootDir: tsc never emits here (the only call is --noEmit, tsup does
+    // the building), and the cockpit hook reads the transcript reader from
+    // packages/agent-transcripts, which tsup inlines because that package
+    // publishes raw TypeScript and could not be required at runtime.
     "declaration": true,
     "esModuleInterop": true,
     "skipLibCheck": true
