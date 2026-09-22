@@ -20,7 +20,7 @@
 
 ---
 
-> 🍳 **In a hurry?** [**RECIPES.md**](./RECIPES.md) gives your coding agent a persistent memory in one copy-paste block, for Claude Code, Cursor, Claude Desktop and the TypeScript SDK.
+> 🍳 **In a hurry?** [**RECIPES.md**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/packages/mcp/RECIPES.md) gives your coding agent a persistent memory in one copy-paste block, for Claude Code, Cursor, Claude Desktop and the TypeScript SDK.
 
 ## What this is
 
@@ -207,7 +207,7 @@ Hermes promises you.
 vaults the task needs and no others. Point `MNEMO_DEFAULT_VAULT` at a vault
 dedicated to agent work rather than at your personal notes.
 
-The [`mnemosyne-memory` skill](./skills/mnemosyne-memory/SKILL.md) is a
+The [`mnemosyne-memory` skill](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/packages/mcp/skills/mnemosyne-memory/SKILL.md) is a
 portable [agentskills.io](https://agentskills.io)-standard skill that teaches
 any agent the governance rules: discover vaults first, respect protection
 levels, ingest with provenance, read before you write.
