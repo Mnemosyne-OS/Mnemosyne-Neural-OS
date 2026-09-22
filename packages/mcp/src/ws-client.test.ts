@@ -19,8 +19,11 @@
 
 import { test }          from 'node:test';
 import assert            from 'node:assert/strict';
+import { readFileSync }  from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path              from 'node:path';
 import { WebSocketServer, WebSocket } from 'ws';
-import { MnemoWsClient, type AppManifest } from './ws-client.js';
+import { BackendRefusedError, MnemoWsClient, type AppManifest } from './ws-client.js';
 
 const MANIFEST: AppManifest = {
   id: 'test-app',
@@ -114,6 +117,77 @@ test('connect() rejects when sdk.register replies without a token', async () => 
   assert.equal(client.isConnected, false);
 
   await server.close();
+});
+
+test('[SECURITY] a backend that ANSWERS and refuses is told apart from one that is absent', async () => {
+  // 🚨 The two used to throw the same shape, and the caller (index.ts
+  // `_connect`) reads "connect failed" as "no backend" and spawns the headless
+  // daemon — which prompts nobody and then holds 7799 for the session. So a
+  // human pressing Deny on the consent dialog, or revoking this app in
+  // Settings, started an ungated backend instead of being obeyed.
+  const server = await startServer((ws, msg) => {
+    if (msg.method === 'sdk.register') {
+      ws.send(JSON.stringify({
+        id: msg.id,
+        error: 'CONSENT_DENIED: user did not authorize the requested scopes',
+      }));
+    }
+  });
+  const client = new MnemoWsClient(MANIFEST, server.port, 2_000);
+
+  try {
+    await assert.rejects(
+      () => client.connect(),
+      (err: Error) => {
+        assert.equal(err instanceof BackendRefusedError, true, `got ${err.name}: ${err.message}`);
+        // And it carries what the backend said, not a shape of our own.
+        assert.match(err.message, /CONSENT_DENIED/);
+        return true;
+      },
+    );
+  } finally {
+    // 🪤 In a `finally` because a FAILING assertion here otherwise skips the
+    // close, the WebSocketServer keeps the event loop alive, and `node:test`
+    // hangs at exit instead of printing which test failed — found by
+    // mutation-checking this very test, where the kill looked like a freeze.
+    await server.close();
+  }
+});
+
+test('nothing listening is NOT reported as a refusal', () => {
+  // The other half of the same rule: mislabelling an absent backend would stop
+  // the daemon ever being launched, which is the feature this door exists for.
+  const client = new MnemoWsClient(MANIFEST, 1, 500);
+  return assert.rejects(
+    () => client.connect(),
+    (err: Error) => {
+      assert.equal(err instanceof BackendRefusedError, false, 'ECONNREFUSED reported as a refusal');
+      return true;
+    },
+  );
+});
+
+test('the MCP checks for a refusal BEFORE it spawns anything', () => {
+  // 🎭 Read as TEXT — importing index.ts constructs a server and calls run(),
+  // the same reason readme-tools.test.ts parses instead of importing. So this
+  // proves the branch is there and comes first, not that it behaves; the
+  // behaviour half is the two tests above, on the class this file owns.
+  const HERE = path.dirname(fileURLToPath(import.meta.url));
+  const src  = readFileSync(path.join(HERE, 'index.ts'), 'utf8');
+
+  // 🪤 Measured INSIDE _connect, not in the file: the import sits at the top,
+  // so a whole-file search would still find the name after the branch that uses
+  // it had been deleted — a guard that passes on the very edit it exists to
+  // catch.
+  const start = src.indexOf('private async _connect');
+  assert.notEqual(start, -1, 'index.ts no longer declares _connect — update this guard');
+  const body = src.slice(start);
+
+  const refusal = body.indexOf('BackendRefusedError');
+  const spawn   = body.indexOf('_spawnDaemon()');
+  assert.notEqual(refusal, -1, '_connect never checks BackendRefusedError — the daemon spawns on a refusal again');
+  assert.notEqual(spawn, -1, '_connect no longer calls _spawnDaemon — update this guard');
+  assert.ok(refusal < spawn, 'the refusal check must come BEFORE the spawn, or it cannot prevent it');
 });
 
 test('a typed RPC (query) round-trips through the real wire contract', async () => {

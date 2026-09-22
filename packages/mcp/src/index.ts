@@ -38,11 +38,13 @@ import {
 // supported` (tsup-bundled ws calls __require2() at module load time). The MCP
 // must boot under plain `node dist/index.js` because that's how Claude Desktop
 // and Claude Code launch it. We talk the same wire protocol via a local client.
-import { MnemoWsClient, type VoiceJob } from './ws-client.js';
+import { BackendRefusedError, MnemoWsClient, type VoiceJob } from './ws-client.js';
 import { unwrapContent, selectResonances, toResonanceView, voiceError, renderReport } from './format.js';
 import { renderCovenant } from './covenant.js';
+import { recordCall } from './usage.js';
 import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget } from './vault-target.js';
 import { AGENT_TOOLS, handleAgentTool, sessionsRoots } from './agents.js';
+import { annotated } from './annotations.js';
 import { handleTodoAdd } from './todo-tool.js';
 import { handleTodoApply, handleTodoList } from './todo-edit-tool.js';
 import { handleAgendaList, handleAgendaRemove, handleAgendaUpdate } from './agenda-edit-tool.js';
@@ -186,11 +188,10 @@ const VOICE_ENABLED = process.env['MNEMO_VOICE'] === '1';
 /**
  * Erasure, off unless the human asks for it by name.
  *
- * The host has had `sdk.forget` all along — it is the GDPR erasure path, and it
- * already refuses to run without the `FORGET` intent on top of the vault write
- * scope. What was missing was a door, and a door is exactly the thing to be
- * careful about: every other memory tool in here is additive, so this is the
- * only one whose mistake cannot be undone by writing again.
+ * The host has had `sdk.forget` all along — it is the GDPR erasure path. What
+ * was missing was a door, and a door is exactly the thing to be careful about:
+ * every other memory tool in here is additive, so this is the only one whose
+ * mistake cannot be undone by writing again.
  *
  * The governance tenet is that Mnemosyne never deletes SILENTLY, and that
  * deletion is the human's to make. An env var the human sets, plus an intent
@@ -303,18 +304,18 @@ const MCP_MANIFEST = {
 const TOOLS = [
   {
     name:        'mnemosyne_about',
-    description: 'Read who Mnemosyne OS is and the rules you must honor when using it: its governance tenet, the vault protection model (NORMAL/MAXIMUM, mixableWith, isolated sandbox vaults), the spine model, and the do/don\'t behavior for an agent operating on a human\'s memory. The same briefing is delivered as the server instructions on connect. Call this to re-read it, or if your client did not surface those instructions.',
+    description: 'Re-read the server instructions: the governance tenet, the vault protection model (NORMAL and MAXIMUM, mixableWith, isolated sandbox vaults), the spine model, and the rules for an agent working on someone else\'s memory. Most clients show this text on connect. Call it if yours did not, or to read it again.',
     inputSchema: { type: 'object', properties: {} },
   },
   {
     name:        'mnemosyne_memory_query',
-    description: 'Raw chronicle search in a Mnemosyne OS vault. Returns the matching chronicles themselves (architecture notes, code, decisions, sessions, git history) for YOU to read, rank and cite. Nothing is rewritten, so this is what to use when you need the source text verbatim, e.g. to quote it or to write documentation from it. Ranked by vector similarity fused with a local BM25 channel, weighted by spineType. ⚠️ If your goal is to FIND something rather than to quote it, prefer mnemosyne_memory_ask even when you only want its sources: measured on 2026-08-31, ask surfaces notes on rare literal terms (proper nouns, identifiers, product names) that this tool misses, because it retrieves deeper and re-ranks. ⛔ And never read the score as confidence: a miss and a hit come back with indistinguishable scores, so judge the returned text, never the number beside it.',
+    description: 'Search a vault and get the matching memories back word for word: notes, code, decisions, session summaries, commit history. Nothing is rewritten, so use this when you need the source text itself, to quote it or to write documentation from it. Ranking is vector similarity fused with a local BM25 channel, weighted by spine type. To FIND something rather than quote it, prefer mnemosyne_memory_ask, even when you only want its sources. It retrieves deeper and re-ranks, so it catches rare literal terms this tool misses: proper nouns, identifiers, product names. The score is not a confidence value. A hit and a miss come back with similar numbers, so judge the text, not the number beside it.',
     inputSchema: {
       type: 'object',
       properties: {
         query: {
           type:        'string',
-          description: 'The search query. Be specific. Examples: "Phase 51 auto-poll implementation", "SDK authentication bug", "why did we choose dual-vector dimensions".',
+          description: 'The search query. Be specific. Examples: "why we moved off Postgres", "the retry logic in the payment worker", "notes from the March planning session".',
         },
         limit: {
           type:        'number',
@@ -323,17 +324,17 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Vault TOKEN to query (case-insensitive; the folder name uppercased, spaces and hyphens as underscores). The path-shaped \`id\` from mnemosyne_vault_list is also accepted and normalized. Mnemosyne OS exposes one vault per tracked folder. This deployment's default is "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for (a config list, not a census, so some may not be mounted on this machine): ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. Call mnemosyne_vault_list for the vaults that actually exist. Anything outside the scoped list is refused.`,
+          description: `Vault TOKEN to search, case-insensitive. A token is the folder name uppercased, with spaces and hyphens as underscores. The path-shaped id from mnemosyne_vault_list also works. This deployment's default is "${DEFAULT_VAULT}". It is also scoped for: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. That list is configuration rather than a census, so call mnemosyne_vault_list for the vaults that exist on this machine. Anything outside the list is refused.`,
           default:     DEFAULT_VAULT,
         },
         spine_type_filter: {
           type:        'array',
           items:       { type: 'string' },
-          description: 'Optional whitelist of spineTypes: restricts results to those types only. Use ["ARCHITECTURE"] to surface design docs over code, ["GIT"] for commit history, ["BUGFIX","DEBUG"] for incident knowledge, ["SOURCE_CODE"] to force code-only. Without this, all types are returned (the SOURCE_CODE scope weighting decides ranking).',
+          description: 'Optional whitelist of spine types. Use ["ARCHITECTURE"] for design docs, ["GIT"] for commit history, ["BUGFIX","DEBUG"] for incident knowledge, ["SOURCE_CODE"] for code only. Omit it to get every type, with the SOURCE_CODE scope weighting deciding the ranking.',
         },
         max_content_chars: {
           type:        'number',
-          description: 'Per-chronicle content snippet size in chars (default: 600). Each result is truncated to this length with a hint about total size. Raise to 2000+ when you genuinely need full file content, but be aware results stack up against your context window.',
+          description: 'Per-memory snippet size in characters (default 600). Each result is cut to this length, with a hint about its full size. Raise it past 2000 when you need whole files, and watch your context window.',
           default:     600,
         },
       },
@@ -342,17 +343,17 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_memory_ask',
-    description: 'Ask Mnemosyne a question and get a SYNTHESIZED prose answer grounded in the vault, PLUS the chronicles it drew on. It runs the full local RAG pipeline (deeper retrieval, lexical fusion and a re-rank), so it is both the reasoning tool AND, measured on 2026-08-31, the better RETRIEVER: reach for it whenever you need to find something, and read the Sources list even if you ignore the prose. Best on "why / who / how" questions spanning many memories ("why was SQLite chosen over Postgres?", "who is <name> and what do they own?"). Slower than mnemosyne_memory_query (up to ~30s). ⚠️ The prose is a model rewording of the sources: never quote it as the words the memory holds. Quote the sources, or fetch them with mnemosyne_memory_query. Always check the sources before trusting the answer.',
+    description: 'Ask a question and get a prose answer grounded in the vault, plus the memories it drew on. It runs the full local RAG pipeline: deeper retrieval, lexical fusion and a re-rank. That also makes it the better retriever, so reach for it whenever you need to find something, and read the Sources list even if you ignore the prose. It is at its best on why, who and how questions that span many memories. It takes up to about 30 seconds. The prose is a model rewording of the sources, so quote the sources instead, or fetch them with mnemosyne_memory_query. Check them before you trust the answer.',
     inputSchema: {
       type: 'object',
       properties: {
         question: {
           type:        'string',
-          description: 'A natural-language question, as you would ask a knowledgeable colleague. Be specific.',
+          description: 'A question in plain language, the way you would ask a colleague who knows the material. Be specific.',
         },
         vault: {
           type:        'string',
-          description: `Vault to reason over (case-insensitive). Default for this deployment: "${DEFAULT_VAULT}". A vault not declared to this MCP is refused with SCOPE_DENIED.`,
+          description: `Vault to reason over, case-insensitive. Default for this deployment: "${DEFAULT_VAULT}". A vault this server was not configured for is refused with SCOPE_DENIED.`,
           default:     DEFAULT_VAULT,
         },
       },
@@ -361,7 +362,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_vault_list',
-    description: 'List the memory vaults this Mnemosyne OS exposes, each with its TOKEN, display name and chronicle count. Call this first when you are unsure which vault to query/ask/ingest against, or when the user refers to a memory store by a name you have not seen. Pass a returned **token** (bold, e.g. MNEMOSYNE_OS) as the `vault` argument to the other tools, never the `id` line, which is the host\'s internal path. Note: you can only read/write the vaults this MCP was configured for (MNEMO_VAULTS); others are flagged here and are refused until added.',
+    description: 'List the memory vaults this Mnemosyne OS exposes, each with its token, display name and memory count. Call it first when you are unsure which vault to work against, or when the user names a store you have not seen. Pass the bold token as the `vault` argument of the other tools. The `id` line is a local path and the other tools do not take it. Vaults this server was not configured for are flagged here and refused until the user adds them.',
     inputSchema: {
       type:       'object',
       properties: {},
@@ -369,23 +370,23 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_memory_ingest',
-    description: 'Persist a memory into the Mnemosyne OS vault: a decision, an architecture note, a debug finding, or a session summary. Stored permanently and indexed for future semantic retrieval by any agent. Use this at the END of a meaningful work session, or whenever you reach a decision that future you (or other agents) would want to recall.',
+    description: 'Write a memory into a vault: a decision, an architecture note, a debug finding, a session summary. It is stored permanently and indexed for every future agent to retrieve. Use it at the end of a meaningful work session, or whenever a decision is reached that someone will want to recall later.',
     inputSchema: {
       type: 'object',
       properties: {
         content: {
           type:        'string',
-          description: 'Content to persist (markdown supported). Be self-contained: include WHY the decision was made, not just WHAT.',
+          description: 'The content to store. Markdown works. Write it self-contained, and say WHY the decision was made rather than only what was decided.',
         },
         spine_type: {
           type:        'string',
-          description: 'Semantic type of the content. ARCHITECTURE is heavily boosted (×1.40) in SOURCE_CODE scope queries. Use it for design docs, big-picture decisions, structural choices. DECISION for narrower trade-offs. BUGFIX/DEBUG for incident learnings. SESSION for "here is where I left off". FEATURE for new capabilities. NOTE for everything else.',
+          description: 'Semantic type of the content. ARCHITECTURE is boosted heavily in code-scope queries: use it for design docs, big-picture decisions and structural choices. DECISION for narrower trade-offs. BUGFIX and DEBUG for incident learnings. SESSION for where you left off. FEATURE for new capabilities. NOTE for the rest.',
           enum:        ['DECISION', 'ARCHITECTURE', 'DEBUG', 'BUGFIX', 'FEATURE', 'NOTE', 'SESSION', 'RESONANCE', 'CUSTOM'],
           default:     'NOTE',
         },
         vault: {
           type:        'string',
-          description: `Target vault TOKEN: the folder name uppercased, spaces and hyphens as underscores (e.g. MNEMOSYNE_OS). The path-shaped \`id\` from mnemosyne_vault_list is also accepted and normalized. Default for this deployment: "${DEFAULT_VAULT}". Tokens this MCP is SCOPED for: a config list, not a census, ${DECLARED_VAULTS.join(', ')}. Ingest is PERMANENT, so confirm the vault EXISTS with mnemosyne_vault_list before writing anywhere you have not written before.`,
+          description: `Target vault TOKEN: the folder name uppercased, with spaces and hyphens as underscores. The path-shaped id from mnemosyne_vault_list also works. Default for this deployment: "${DEFAULT_VAULT}". Scoped tokens, which are configuration rather than a census: ${DECLARED_VAULTS.join(', ')}. Ingest is permanent, so confirm the vault exists with mnemosyne_vault_list before writing anywhere new.`,
           default:     DEFAULT_VAULT,
         },
       },
@@ -394,7 +395,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_resonance_list',
-    description: 'List the Resonances recorded in the default vault, the cognitive workspaces tracking ongoing projects. Read-only: it queries memory and writes nothing. Each entry carries the resonance id, its last phase, how many minutes ago it moved, and the id of the chronicle behind it. There is no active/paused filter and no status field: you get every resonance the scan matched, in one vault, from at most 30 candidates. An empty result answers in words and means no resonance has been recorded yet, never that the call failed. Call mnemosyne_position_get with an id to read one in full, or mnemosyne_position_update to write a new one.',
+    description: 'List the resonances recorded in the default vault. A resonance is a workspace that tracks one ongoing project. Each entry carries its id, its last phase, how many minutes ago it moved, and the id of the memory behind it. Read-only. There is no status filter, so you get every resonance the scan matched in one vault, from at most 30 candidates. An empty result is written in words and means no resonance has been recorded yet. Read one in full with mnemosyne_position_get, or write a new one with mnemosyne_position_update.',
     inputSchema: {
       type:       'object',
       properties: {},
@@ -402,13 +403,13 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_position_get',
-    description: 'Read the last saved position of one Resonance: the phase and the free-text note an agent or the cockpit wrote when it stopped. Read-only: it queries memory and writes nothing. Returns the resonance id, when it was saved, the chronicle spineType, and the whole note. When nothing was ever saved under that id it answers in plain words and points at mnemosyne_position_update, never an error, so "never recorded" and "the call failed" do not look alike. Use it to resume work; call mnemosyne_resonance_list first when you do not know the id.',
+    description: 'Read where one resonance was left: the phase, and the free-text note an agent or the cockpit wrote when it stopped. Read-only. It returns the resonance id, when it was saved, the spine type of the memory, and the whole note. An id nothing was ever saved under answers in plain words and points at mnemosyne_position_update, so a blank history and a failed call do not look alike. Call mnemosyne_resonance_list when you do not know the id.',
     inputSchema: {
       type: 'object',
       properties: {
         resonance_id: {
           type:        'string',
-          description: 'ID of the resonance (e.g. "agent-cockpit", "mnemosync-p2p")',
+          description: 'ID of the resonance, for example "checkout-rewrite" or "v2-migration".',
         },
       },
       required: ['resonance_id'],
@@ -416,7 +417,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_position_update',
-    description: 'Update the current position of a Resonance. Call this at the end of a session to record where you left off: phase, current state, next steps. This is persisted as a DECISION chronicle in the vault.',
+    description: 'Record where you left off on a resonance: phase, current state, next steps. Call it at the end of a session. It is stored as a DECISION memory in the vault.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -438,7 +439,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_git_log',
-    description: 'Read recent commits from the Mnemosyne OS monorepo. Read-only: it reads the repository and writes nothing. Each commit carries an 8-character hash, the subject line, the author and the date, newest first. The repository path is fixed on the OS side, so this cannot be pointed at another checkout, and it needs the monorepo:read scope; when either is missing it answers with a message naming what is missing instead of an empty list that would read as "no commits". Use it for what changed and when, and mnemosyne_memory_query for the reasoning behind a change.',
+    description: 'Read recent commits from the git repository this Mnemosyne OS is configured to read. Read-only. Each commit carries an 8-character hash, the subject line, the author and the date, newest first. The path is set on the app side, so this cannot be pointed at another checkout, and it needs the monorepo:read scope. When either is missing the answer names what is missing, rather than returning an empty list that would read as "no commits". Use mnemosyne_memory_query for the reasoning behind a change.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -457,7 +458,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_dream_bridges',
-    description: 'List the connections Mnemosyne\'s Dream State engine discovered between memories during its offline (idle-time) scans ("what did you dream about?"). Each bridge links two chronicles (possibly across vaults) with a composite Dream Bridge Score (dbs, prime-aware) and a raw cosine similarity, plus a short excerpt of both sides. Use it to surface non-obvious associations the memory found on its own, to audit whether dreamed connections are insightful or noise, or to seed creative exploration. An empty list is normal: it means the dream engine has not produced bridges yet (it runs while the machine is idle, if enabled in Settings).',
+    description: 'List the connections the Dream State engine found between memories while the machine was idle. Each bridge links two memories, sometimes from different vaults, with a Dream Bridge Score, a raw cosine similarity, and a short excerpt of both sides. Use it to surface associations the memory made on its own, to audit whether they are insightful or noise, or to seed creative exploration. An empty list is normal and means the engine has not produced bridges yet. It runs on idle time, when the user enables it in Settings.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -483,13 +484,13 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_spine_assignments',
-    description: 'Inspect how Mnemosyne classified its memories: chronicle → spine assignments for a vault (newest first), whole-vault per-spine counts, and optionally the global spine taxonomy tree. Use it to audit auto-classification quality ("did memories land in the RIGHT spines?"), to see a vault\'s composition at a glance, or to discover the taxon ids to pass as spine_type_filter in mnemosyne_memory_query.',
+    description: 'See how Mnemosyne classified its memories. It returns the memory-to-spine assignments for one vault, newest first, and the per-spine counts for the whole vault. Use it to check whether memories landed in the right spines, to read a vault\'s composition at a glance, or to find the taxon ids to pass as spine_type_filter in mnemosyne_memory_query. Set include_taxonomy to also get the global spine tree.',
     inputSchema: {
       type: 'object',
       properties: {
         vault: {
           type:        'string',
-          description: `Vault to inspect (case-insensitive). Default for this deployment: "${DEFAULT_VAULT}".`,
+          description: `Vault to inspect, case-insensitive. Default for this deployment: "${DEFAULT_VAULT}".`,
           default:     DEFAULT_VAULT,
         },
         spine_type: {
@@ -521,7 +522,7 @@ const TOOLS = [
   // makes "check before you commit" cheap enough to actually do.
   {
     name:        'mnemosyne_agent_list',
-    description: 'What OTHER coding-agent sessions exist on this machine, read from the transcripts their harnesses already write to disk. Returns metadata only: conversation name, project, git branch, model, last tool, how many files were touched, and when a line was last written. Reads EVERY coding-agent harness installed on this machine, not just your own, so you can see a session from a different agent working in your repository. Use it before you touch shared state. NEVER reports that an agent is "working": a crashed agent and an idle one fall equally silent, so it reports when a line was last SEEN and you conclude. Works with Mnemosyne OS closed.',
+    description: 'List the other coding-agent sessions on this machine, read from the transcript files their harnesses already write to disk. Metadata only: conversation name, project, git branch, model, last tool, how many files were touched, and when a line was last written. It reads every harness installed here, not just your own, so you can see a session from a different agent working in your repository. Use it before you touch shared state. It reports when a line was last seen and you draw the conclusion: a crashed session and an idle one fall equally silent, so nothing here can tell you an agent is working. Works with the Mnemosyne OS app closed.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -544,7 +545,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agent_collisions',
-    description: 'Are two agent sessions live in the SAME git working tree and branch right now, from ANY installed harness? This is the one to call before `git add -A`, before a commit, and before a rebase: the git index is shared by every process in one working tree, so a commit from one session picks up whatever the other has staged. Answers from transcript files on disk; needs neither Mnemosyne OS nor a token. Each recorded directory is resolved to its working tree first, because one `cd` into a subfolder would otherwise make two sessions in one repository look like two projects. A clean answer says only that nothing was found IN WHAT IS READABLE. An agent whose transcripts live elsewhere does not appear at all, and sessions whose harness records no directory are listed separately as unplaceable rather than guessed at.',
+    description: 'Check whether two agent sessions are live in the same git working tree and branch right now, across every installed harness. Call it before `git add -A`, before a commit, and before a rebase: one working tree shares one git index, so a commit from one session picks up whatever the other has staged. It answers from transcript files on disk and needs neither Mnemosyne OS nor a token. Each recorded directory is resolved to its working tree first, because one `cd` into a subfolder would make two sessions in one repository look like two projects. A clean answer covers what is readable: a session whose transcripts live elsewhere does not appear at all, and sessions whose harness records no directory are listed separately as unplaceable.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -557,7 +558,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agent_files',
-    description: 'Which FILES other agent sessions have written or edited recently, newest first, with the session each came from. Paths and timestamps only, never file contents. Each entry says how it is known: `recorded` means the harness logged a file-writing tool call, `from a command` means a redirection was read out of a shell command the session ran and may never have completed. Spans every installed harness, and each line names the session and the agent it came from. Use it to see what another session has already touched before you edit the same area.',
+    description: 'List the files other agent sessions wrote or edited recently, newest first, with the session each one came from. Paths and timestamps only. Each entry says how it is known. `recorded` means the harness logged a file-writing tool call. `from a command` means a redirection was read out of a shell command the session ran, which may never have completed. It spans every installed harness and names the agent each line came from. Use it to see what another session has already touched before you edit the same area.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -579,7 +580,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_cockpit_update',
-    description: 'Your own status card on the human\'s canvas (the cockpit). Call it when you START a task ("working" + a short title and status), when you NEED the human ("waiting": the card pulses and the taskbar flashes), when you are stuck ("blocked"), and when you are DONE ("done"). The state is what you declare; the host prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the human left on your card. Read it and act on it. Needs the app window open. Nothing is stored in memory; this is a card, not a note.',
+    description: 'Update your own status card on the user\'s canvas, the cockpit. Call it when you start a task ("working", with a short title and status), when you need the user ("waiting"), when you are stuck ("blocked"), and when you finish ("done"). "waiting" and "blocked" make the card pulse and the taskbar flash. You declare the state; the app prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the user left on your card. Read it and act on it. Needs the app window open. This is a card, so nothing is stored in memory.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -601,6 +602,10 @@ const TOOLS = [
           items:       { type: 'string' },
           description: 'Up to 4 short lines under the status (files, a branch, a count). Optional.',
         },
+        desktop: {
+          type:        'string',
+          description: 'The desktop this session should put its cards on, by name, exactly as the human wrote it. Send it once when they tell you; the card stays there for the rest of the conversation without you repeating it. The match is exact apart from case, and an unknown or duplicated name is reported back with the names that exist rather than guessed at. Leave it out and the card goes to whichever desktop answers for this project, which is what most sessions want.',
+        },
         attention: {
           type:        'boolean',
           description: 'Ask for the human\'s eye even in "working"/"done" (the card pulses, the taskbar flashes). "waiting" and "blocked" ask on their own.',
@@ -616,7 +621,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_pheme_watch',
-    description: 'Put a subreddit, a Hacker News search query or a topic on the human\'s Pheme radar (their reputation cartridge, which finds fresh threads worth a genuine reply), or take one off. The lists are THEIRS: an op that would empty a list is refused, every op reports its own outcome (done / already there / not there / refused), and the human sees a receipt in Pheme naming this agent and what changed. Use it when a conversation has found a community worth watching ("we answered a thread in r/hermesagent, keep an eye on it"). It does not scan and it does not post: nothing here posts anywhere; the human posts. Needs the app running (Pheme\'s settings mirror lives in it); Pheme itself may be closed.',
+    description: 'Add a subreddit, a Hacker News search query or a topic to the user\'s Pheme radar, or take one off. Pheme is their reputation cartridge: it finds fresh threads worth a genuine reply. The lists belong to them. An operation that would empty one is refused. Every operation reports its own outcome: done, already there, not there, refused. The user gets a receipt in Pheme naming this agent and what changed. Use it when a conversation finds a community worth watching. It scans nothing and posts nothing; the user posts. Needs the app running, though Pheme itself can be closed.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -639,7 +644,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_pheme_radar',
-    description: 'Read what the human\'s Pheme radar last found: fresh threads in the subreddits and Hacker News queries they watch, each with a topic score and, when the human has run the Mnemosyne pass, a tier (high / mid / low = how much substance THEY can bring to that thread). The answer leads with WHEN the scan ran: it is as fresh as the last time the human opened Pheme and pressed Scan, never fresher. Use it to find threads to draft a reply for; the human posts the reply. "No radar" means no scan has been projected yet, not that nothing was found: ask the human to open Pheme and scan. Needs the app running; Pheme itself may be closed.',
+    description: 'Read what the user\'s Pheme radar last found: fresh threads in the subreddits and Hacker News queries they watch. Each thread carries a topic score, and a tier once they have run the Mnemosyne pass. The tier says how much substance they can bring to that thread. The answer leads with when the scan ran, because it is only as fresh as the last time they opened Pheme and pressed Scan. Use it to find threads to draft a reply for; the user posts it. "No radar" means no scan has been projected yet, so ask them to open Pheme and scan. Needs the app running, though Pheme itself can be closed.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -650,7 +655,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_add',
-    description: 'Put tasks into the human\'s To-do backlog (the To-do widget on their canvas), in order, optionally under named steps. Use it when a conversation has settled WHAT to do: "make tasks out of everything we said we would do". Name the list ("list"): call once without it to be told the lists that exist on a LIST_NOT_FOUND answer, or pass create_list: true to make a new one. Never assume a default list. The host routes the write through the widget\'s own store, so what you file is exactly what the human sees. ' + FILE_PATH_CAVEAT + ' To read the backlog back or change what is in it, see mnemosyne_todo_list, mnemosyne_todo_update and mnemosyne_todo_categories.',
+    description: 'Put tasks into the user\'s To-do backlog, the To-do widget on their canvas, in order and optionally under named steps. Use it when a conversation has settled what to do. Name the destination list in "list": call once without it to get the existing lists back on a LIST_NOT_FOUND answer, or pass create_list: true to make a new one. Always name a list. The app routes the write through the widget\'s own store, so what you file is what the user sees. ' + FILE_PATH_CAVEAT + ' To read the backlog back or change what is in it, see mnemosyne_todo_list, mnemosyne_todo_update and mnemosyne_todo_categories.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -666,11 +671,11 @@ const TOOLS = [
         },
         list: {
           type:        'string',
-          description: 'Displayed name of the destination list (case-insensitive), e.g. "En cours", "WIP", or a list the human created. Omitted = the first original list. Unknown name + create_list false = refused with the names that exist.',
+          description: 'Displayed name of the destination list, case-insensitive: "Today", "WIP", or a list the user created. Omitted, it goes to the first original list. An unknown name with create_list false is refused, and the answer gives the names that exist.',
         },
         create_list: {
           type:        'boolean',
-          description: 'Create the list named in "list" when it does not exist. Default false: an agent must not invent lists in someone\'s backlog without saying so.',
+          description: 'Create the list named in "list" when it does not exist. Default false, so an agent does not invent lists in someone\'s backlog without saying so.',
           default:     false,
         },
         color: {
@@ -683,7 +688,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_list',
-    description: 'Read the human\'s To-do backlog back: the lists that exist and the tasks in them, each with the ID you must use to change it. Call this BEFORE mnemosyne_todo_update - that tool names tasks by id and never by text, because "delete the task about the invoice" is how the wrong task goes, in a sentence that reads perfectly either way. Also the way to answer "what is on my plate" or to check whether something is already filed before adding a duplicate. ' + FILE_PATH_CAVEAT + ' Scope todo:read.',
+    description: 'Read the user\'s To-do backlog back: the lists that exist and the tasks in them, each with the id you need to change it. Call this before mnemosyne_todo_update, which names tasks by id. A phrase like "delete the task about the invoice" reads perfectly and can still match the wrong task. This is also the way to answer "what is on my plate", or to check whether something is already filed before you add a duplicate. ' + FILE_PATH_CAVEAT + ' Scope todo:read.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -705,7 +710,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_update',
-    description: 'CHANGE the human\'s To-do backlog: edit a task, tick it off, move it to another list, or take it out. Every operation names a task by the id from mnemosyne_todo_list - call that first. Removing a task ARCHIVES it by default (it leaves the list and can be restored); pass permanent: true only when the human asked for it to be deleted outright. The whole batch is applied in order as ONE save, and each operation reports its own outcome, so a stale id does not sink the ones around it. ' + FILE_PATH_CAVEAT + ' Scope todo:write.',
+    description: 'Change the user\'s To-do backlog: edit a task, tick it off, move it to another list, or take it out. Every operation names a task by the id from mnemosyne_todo_list, so call that first. Removing a task archives it by default, and it can be restored. Pass permanent: true only when the user asked for it to be deleted outright. The whole batch is applied in order as one save, and each operation reports its own outcome, so a stale id does not sink the ones around it. ' + FILE_PATH_CAVEAT + ' Scope todo:write.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -743,7 +748,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_categories',
-    description: 'Manage the LISTS of the human\'s To-do backlog: create one, rename or recolour one, remove an empty one. Separate from mnemosyne_todo_update because these change the shape of someone\'s workspace rather than the work in it. Two refusals worth knowing before you call: a list that still HOLDS tasks is never removed (you are told how many are in the way - move them first, the host will not pick a destination on someone\'s behalf), and the three original lists can be renamed but never removed, because their contents are what make the file readable at all. ' + FILE_PATH_CAVEAT + ' Scope todo:write.',
+    description: 'Manage the lists of the user\'s To-do backlog: create one, rename or recolour one, remove an empty one. It is separate from mnemosyne_todo_update because these change the shape of a workspace rather than the work in it. Two refusals are worth knowing before you call. A list that still holds tasks is never removed, and you are told how many are in the way: move them first, since the app will not pick a destination on someone\'s behalf. The three original lists can be renamed, never removed, because their contents are what make the file readable. ' + FILE_PATH_CAVEAT + ' Scope todo:write.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -771,7 +776,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agenda_list',
-    description: 'Read the human\'s calendar back: the appointments in a time window, each with the ID you must use to change or remove it. Call this BEFORE mnemosyne_agenda_update or mnemosyne_agenda_remove - both name appointments by id and never by title or date, because the calendar has no archive and a removal cannot be undone. A repeating event appears ONCE, with its cadence and the date of its next occurrence. Times in the answer are the human\'s machine local time. ' + FILE_PATH_CAVEAT + ' Scope agenda:read.',
+    description: 'Read the user\'s calendar back: the appointments in a time window, each with the id you need to change or remove it. Call this before mnemosyne_agenda_update and mnemosyne_agenda_remove, which both name appointments by id. The calendar has no archive and a removal cannot be undone. A repeating event appears once, with its cadence and the date of its next occurrence. Times in the answer are the user\'s machine local time. ' + FILE_PATH_CAVEAT + ' Scope agenda:read.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -794,7 +799,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agenda_update',
-    description: 'CHANGE an appointment already in the human\'s calendar: move it, rename it, add or drop a reminder, start or stop it repeating. Names appointments by the id from mnemosyne_agenda_list - call that first. A field you leave out is left alone; passing null CLEARS it. A start or end time that cannot be read REFUSES the change rather than leaving the old one silently in place, and a cadence that is not one of daily/weekly/monthly/yearly is refused rather than quietly turned into a one-off. ' + FILE_PATH_CAVEAT + ' Scope agenda:write.',
+    description: 'Change an appointment already in the user\'s calendar: move it, rename it, add or drop a reminder, start or stop it repeating. It names appointments by the id from mnemosyne_agenda_list, so call that first. A field you leave out is left alone, and passing null clears it. A start or end time that cannot be read refuses the change rather than leaving the old one quietly in place. A cadence outside daily, weekly, monthly and yearly is refused rather than turned into a one-off. ' + FILE_PATH_CAVEAT + ' Scope agenda:write.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -829,7 +834,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agenda_remove',
-    description: 'REMOVE appointments from the human\'s calendar. Read them with mnemosyne_agenda_list first and pass the ids: this tool never matches by title or by date, because "remove my meetings on Thursday" is how an agent removes the wrong Thursday. THERE IS NO ARCHIVE - unlike a To-do task, a removed appointment is gone, so the answer names each one it removed by title and start time, for the human to check. A repeating appointment is removed as the whole SERIES; the calendar has no way to cancel a single occurrence. ' + FILE_PATH_CAVEAT + ' Scope agenda:write.',
+    description: 'Remove appointments from the user\'s calendar. Read them with mnemosyne_agenda_list first and pass the ids. This tool matches by id only, because "remove my meetings on Thursday" is how an agent removes the wrong Thursday. There is no archive: unlike a To-do task, a removed appointment is gone, so the answer names each one it removed by title and start time for the user to check. A repeating appointment is removed as a whole series, since the calendar cannot cancel a single occurrence. ' + FILE_PATH_CAVEAT + ' Scope agenda:write.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -844,7 +849,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_agenda_add',
-    description: 'Put appointments or deadlines into the human\'s calendar (the Agenda widget on their canvas). Use it when a conversation names a specific date/time to remember: "add this to my calendar", a deadline, a meeting. The host routes the write through the widget\'s own store, so what you file is exactly what the human sees. ' + FILE_PATH_CAVEAT + ' To read the calendar back, change or remove an appointment, see mnemosyne_agenda_list, mnemosyne_agenda_update and mnemosyne_agenda_remove.',
+    description: 'Put appointments or deadlines into the user\'s calendar, the Agenda widget on their canvas. Use it when a conversation names a date and time to remember: a meeting, a deadline, "add this to my calendar". The app routes the write through the widget\'s own store, so what you file is what the user sees. ' + FILE_PATH_CAVEAT + ' To read the calendar back, change or remove an appointment, see mnemosyne_agenda_list, mnemosyne_agenda_update and mnemosyne_agenda_remove.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -899,12 +904,12 @@ const VOICE_TOOL_NAMES = new Set(['mnemosyne_voice_list', 'mnemosyne_voice_speak
 const VOICE_TOOLS = [
   {
     name:        'mnemosyne_voice_list',
-    description: 'List what can SPEAK on this machine: the local TTS engines (installed or not), the reference voices available for cloning, and where rendered files are written. ALWAYS call this before mnemosyne_voice_speak: it tells you which engine to ask for, which clone names exist (an invented name is refused, never substituted), and warns when a reference clip is too short or not mono to clone well. Requires the Mnemosyne OS app to be running: the voice engines are Python sidecars inside it, and the headless daemon cannot speak.',
+    description: 'List what can speak on this machine: the local TTS engines, installed or not, the reference voices available for cloning, and where rendered files are written. Call it before mnemosyne_voice_speak. It tells you which engine to ask for and which clone names exist, and it warns when a reference clip is too short or not mono to clone well. A clone name that does not exist is refused rather than substituted. Requires the Mnemosyne OS app to be running: the voice engines are Python sidecars inside it, and the headless daemon cannot speak.',
     inputSchema: { type: 'object', properties: {} },
   },
   {
     name:        'mnemosyne_voice_speak',
-    description: 'Render a written script to a WAV file using a local voice, including the user\'s own cloned voice. Made for producing voice-overs (TikTok, YouTube, podcast, narration): the audio is written to a file on disk and the PATH is returned, ready to drop on a video timeline. Runs entirely offline on the local engines; nothing is sent to a cloud service.\n\nThis is a JOB, not an instant call: synthesis runs at roughly real time (a 3-minute script takes ~3-4 minutes). The tool waits a while and, if the render is still going, returns a job id. Poll it with mnemosyne_voice_status. Long scripts are split at sentence boundaries and re-assembled into ONE file; nothing is truncated.\n\nGOVERNANCE. The voice belongs to a person. Only produce audio the user asked for, tell them the file path and what was said, and never use a cloned voice to make someone appear to say something they did not. If a clone name does not exist the call is REFUSED rather than falling back to another voice: report the error instead of retrying with a different one.',
+    description: 'Render a written script to a WAV file with a local voice, including the user\'s own cloned voice. It is made for voice-overs: TikTok, YouTube, podcast, narration. The audio is written to disk and the path comes back, ready to drop on a video timeline. It runs offline on the local engines and sends nothing to a cloud service.\n\nThis is a job rather than an instant call. Synthesis runs at roughly real time, so a 3-minute script takes 3 to 4 minutes. The tool waits a while and returns a job id if the render is still going. Poll it with mnemosyne_voice_status. Long scripts are split at sentence boundaries and re-assembled into one file, with nothing truncated.\n\nThe voice belongs to a person. Only produce audio the user asked for, tell them the file path and what was said, and never use a cloned voice to make someone appear to say something they did not. A clone name that does not exist is refused: report the error instead of retrying with another voice.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -926,7 +931,7 @@ const VOICE_TOOLS = [
         },
         title: {
           type:        'string',
-          description: 'Short label used to name the output file, so a human recognizes it a week later ("Short 12, la mémoire souveraine").',
+          description: 'Short label used to name the output file, so a human recognises it a week later, for example "Episode 12, opening narration".',
         },
         speed: {
           type:        'number',
@@ -943,7 +948,7 @@ const VOICE_TOOLS = [
   },
   {
     name:        'mnemosyne_voice_status',
-    description: 'Check a voice render started by mnemosyne_voice_speak: how many segments are done, the estimated time left, and, once finished, the path of the WAV file. Call it with no job id to list every render of this session. A render can also be stopped here (it halts at the next segment boundary and leaves no file).',
+    description: 'Check a voice render started by mnemosyne_voice_speak: how many segments are done, the time left, and, once it is finished, the path of the WAV file. Call it with no job id to list every render of this session. A render can also be stopped here. It halts at the next segment boundary and leaves no file.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -966,7 +971,7 @@ const VOICE_TOOLS = [
 const FORGET_TOOLS = [
   {
     name:        'mnemosyne_memory_forget',
-    description: 'Permanently erase ONE chronicle from a Mnemosyne OS vault, by id. ⛔ This is not reversible and there is no undo, no trash, and no copy kept: the chronicle is gone from the vault and from every future retrieval. Call it only when the human asked for that specific thing to be erased in this conversation — never to tidy up, never to correct yourself (write a new chronicle instead, memory is meant to accumulate), and never on a MAXIMUM-protection vault unless they named it. Get the id from mnemosyne_memory_query, which returns one per result; ids are not stable across vaults, so pass the vault the id came from. Present only when the human set MNEMO_FORGET=1, and the host additionally refuses it without the FORGET intent, so absence of this tool means erasure was not granted, not that it failed.',
+    description: 'Permanently erase one memory from a vault, by id. This cannot be undone: there is no trash and no copy kept, and the memory is gone from every future retrieval. Call it only when the user asked for that specific thing to be erased in this conversation. Never to tidy up, and never to correct yourself, since memory is meant to accumulate and writing a new memory is the right fix. Never on a MAXIMUM-protection vault unless they named it. Get the id from mnemosyne_memory_query, which returns one per result. Ids are not stable across vaults, so pass the vault the id came from. This tool is present only when the user set MNEMO_FORGET=1, and the app also refuses it without the FORGET intent, so its absence means erasure was not granted.',
     inputSchema: {
       type:       'object',
       properties: {
@@ -983,6 +988,14 @@ const FORGET_TOOLS = [
     },
   },
 ];
+
+// ── Tool annotations ─────────────────────────────────────────────────────────────────
+
+// Declared in annotations.ts, which stays importable: this module runs a
+// server the moment it is imported, so the table could not be tested here.
+const ANNOTATED_TOOLS = annotated(TOOLS);
+const ANNOTATED_VOICE  = annotated(VOICE_TOOLS);
+const ANNOTATED_FORGET = annotated(FORGET_TOOLS);
 
 // ── MCP Server ─────────────────────────────────────────────────────────────────
 
@@ -1014,7 +1027,26 @@ class MnemoMcpServer {
     // (the Infinity app, or a daemon a previous agent spawned).
     try {
       return await this._tryConnect();
-    } catch {
+    } catch (first) {
+      // 🚨 A backend that ANSWERED and refused is not a backend that is absent.
+      // The registration reaching `sdk.register` and coming back CONSENT_DENIED
+      // (the human pressed Deny, or revoked this app in Settings) used to land
+      // here indistinguishable from ECONNREFUSED — so the MCP spawned the
+      // headless daemon, which prompts nobody, and that daemon then held 7799
+      // for the session: the human's refusal undone, and the app next to it
+      // unable to bind its own port. Say what the backend said and stop.
+      if (first instanceof BackendRefusedError) {
+        throw new McpError(
+          ErrorCode.InternalError,
+          `Mnemosyne OS answered on ws://127.0.0.1:7799 and refused this connection: ${first.message}`
+        );
+      }
+      // Nothing answered. Said out loud rather than swallowed: the reason the
+      // socket would not open is the first thing anyone debugging this needs,
+      // and it used to be dropped by a bare `catch {}`.
+      console.error(
+        `[mnemosyne-mcp] no backend on 7799: ${first instanceof Error ? first.message : String(first)}`
+      );
       // 🚨 An app-only tool (To-do, calendar, cockpit) gets "start the app" and
       // NOTHING is spawned: the daemon does not know those methods, so it would
       // answer UNKNOWN_METHOD and then hold 7799 for the rest of this session
@@ -1052,6 +1084,15 @@ class MnemoMcpServer {
       try {
         return await this._tryConnect();
       } catch (e) {
+        // Something is serving the port now and it said no. Polling for another
+        // minute cannot change an answer; report it instead of timing out on a
+        // backend that is up.
+        if (e instanceof BackendRefusedError) {
+          throw new McpError(
+            ErrorCode.InternalError,
+            `A Mnemosyne backend is listening on ws://127.0.0.1:7799 but refused this connection: ${e.message}`
+          );
+        }
         lastErr = e;
       }
     }
@@ -1101,15 +1142,23 @@ class MnemoMcpServer {
     // List tools
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: [
-        ...TOOLS,
-        ...(VOICE_ENABLED ? VOICE_TOOLS : []),
-        ...(FORGET_ENABLED ? FORGET_TOOLS : []),
+        ...ANNOTATED_TOOLS,
+        ...(VOICE_ENABLED ? ANNOTATED_VOICE : []),
+        ...(FORGET_ENABLED ? ANNOTATED_FORGET : []),
       ],
     }));
 
     // Call tool
     this.server.setRequestHandler(CallToolRequestSchema, async (req) => {
       const { name, arguments: args = {} } = req.params;
+
+      // Counted here rather than per branch: this is the one place every call
+      // passes, including the two that answer without a backend connect.
+      // Deliberately not awaited — the count is an observation of the work, not
+      // part of it, and a disk write has no business adding latency to an
+      // agent's question. Safe as a floating promise because `recordCall`
+      // resolves on every path and never rejects.
+      void recordCall(name);
 
       // Agent awareness reads transcript FILES on disk. Answered BEFORE the
       // connect on purpose: the whole value of "is another session live on my

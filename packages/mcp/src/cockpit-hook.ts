@@ -3,12 +3,14 @@
  * cockpit-hook — the Claude Code hook that keeps this session's cockpit card
  * honest without the model having to remember to (doc 110 §9).
  *
- * Wired in `.claude/settings.local.json` on four events, all through this one
+ * Wired in `.claude/settings.local.json` on five events, all through this one
  * entry (the event name arrives on stdin):
  *
  *   SessionStart       → "working"  (the card appears)
  *   UserPromptSubmit   → "working"  (status = the prompt's first line) + the
  *                                    mail waiting for this session, as context
+ *   Notification       → "waiting"  (carries the question the harness is asking;
+ *                                    no status is invented when it sends none)
  *   Stop               → "done"     (status = the answer's first line); if the
  *                                    human left mail on the card, the stop is
  *                                    BLOCKED and the mail is the reason — the

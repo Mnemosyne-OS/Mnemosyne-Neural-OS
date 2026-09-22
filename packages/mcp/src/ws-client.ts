@@ -174,6 +174,28 @@ export interface SpineAssignmentsResult {
   error?:      string;
 }
 
+/**
+ * A backend WAS there, on the socket, and it refused us.
+ *
+ * 🚨 This is not a nicety, it is the difference between two opposite actions.
+ * `connect()` used to throw the same shape whether nothing was listening on
+ * 7799 or the Mnemosyne OS app answered and denied the registration (the human
+ * clicked Deny on the consent dialog, or revoked this app in Settings). The MCP
+ * treats "connect failed" as "no backend" and spawns the headless daemon —
+ * which grants a token to any manifest, prompts nobody, and then HOLDS 7799 for
+ * the rest of the session, so the app sitting right there can no longer serve
+ * agents at all. A refusal answered by starting a process with no gate is the
+ * revocation undoing itself.
+ *
+ * Carries the server's own message so the agent reads the real cause.
+ */
+export class BackendRefusedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'BackendRefusedError';
+  }
+}
+
 interface PendingRpc {
   resolve: (v: any) => void;
   reject:  (e: Error) => void;
@@ -287,7 +309,10 @@ export class MnemoWsClient {
           resolve();
         } catch (e) {
           ws.close();
-          reject(e instanceof Error ? e : new Error(String(e)));
+          // We got as far as an OPEN socket, so something IS serving this port.
+          // Whatever went wrong past that point is the backend's answer, not its
+          // absence — see BackendRefusedError for what the caller must not do.
+          reject(new BackendRefusedError(e instanceof Error ? e.message : String(e)));
         }
       });
 
