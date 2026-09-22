@@ -14,7 +14,7 @@
 
 import { test }          from 'node:test';
 import assert            from 'node:assert/strict';
-import { readFileSync }  from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path              from 'node:path';
 import { PKG_VERSION }   from './version.js';
@@ -55,3 +55,31 @@ test('both announcement sites use the constant', () => {
     `expected the manifest and the Server constructor to use PKG_VERSION, found ${uses.length}`,
   );
 });
+
+/**
+ * The registry manifest is the third place a version is written, and until
+ * 2026-09-21 it was the only one nothing compared to `package.json`.
+ *
+ * 🚨 It matters more than a stale string on screen: `server.json` is what the
+ * MCP registry reads to tell people which version to install, so a bump that
+ * forgets it points every reader at the release before.
+ *
+ * 🎭 Skipped rather than failed when the file is absent. The public mirror does
+ * not carry it, and this suite runs there too.
+ */
+const SERVER_JSON_PATH = path.join(HERE, '..', 'server.json');
+const SERVER_JSON = existsSync(SERVER_JSON_PATH)
+  ? (JSON.parse(readFileSync(SERVER_JSON_PATH, 'utf8')) as { version?: string; packages?: { version?: string }[] })
+  : null;
+
+test('server.json states the version package.json states, in every place it states one',
+  { skip: SERVER_JSON ? false : 'server.json is not in this checkout' },
+  () => {
+    const found = [SERVER_JSON!.version, ...(SERVER_JSON!.packages ?? []).map(p => p.version)]
+      .filter((v): v is string => typeof v === 'string');
+    assert.ok(found.length >= 2, `parsed only ${found.length} version(s) — the guard would pass on a parse failure`);
+    for (const v of found) {
+      assert.equal(v, PKG.version,
+        `server.json says ${v}, package.json says ${PKG.version} — the registry would point at the wrong release`);
+    }
+  });

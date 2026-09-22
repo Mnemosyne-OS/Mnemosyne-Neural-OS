@@ -456,7 +456,7 @@ Published by XPACEGEMS LLC. Its official addresses:
 
 ## License
 
-MIT © [Tony Trochet / XPACEGEMS LLC](https://xpacegems.com)
+MIT © [Tony Trochet / XPACEGEMS LLC](https://mnemosyne-os.com)
 
 ---
 
