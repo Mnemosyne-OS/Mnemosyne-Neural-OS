@@ -94,16 +94,17 @@ different sentences, because they are two different problems.
 
 ### Claude Desktop, one click
 
-Download **[Mnemosyne-OS-MCP-2.0.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.4.5-infinity/Mnemosyne-OS-MCP-2.0.0.mcpb)**
+Download **[Mnemosyne-OS-MCP-2.1.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.5.1-infinity/Mnemosyne-OS-MCP-2.1.0.mcpb)**
 (4.1 MB), then open Claude Desktop → **Settings → Extensions** and drop the
 file into that panel. That is the whole install. The 25 tools appear straight away, and the same
 panel offers the three optional settings: default vault, other vaults, and the
 port the desktop application listens on.
 
-The bundle is attached to the
-[`v1.4.5-infinity` release](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.4.5-infinity).
-That is the only release carrying one, so the newest release is the wrong place
-to look for it.
+The bundle rides on the application's current release,
+[`v1.5.1-infinity`](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.5.1-infinity),
+because this package has no release of its own. Its own version is the npm one,
+2.1.0, and that is what the file is named after. Earlier bundles stay attached
+to `v1.4.5-infinity`, so a link someone saved keeps working.
 
 Two things worth knowing before you do it:
 
