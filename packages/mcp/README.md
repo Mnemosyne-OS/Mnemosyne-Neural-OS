@@ -47,8 +47,8 @@ Once configured, your agent can:
 
 **Node.js ≥ 18** is the only hard requirement.
 
-The **memory** tools additionally need **[Mnemosyne OS Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS)** running. It owns your vaults and exposes the WebSocket gateway on
-`ws://127.0.0.1:7799`. Get it from the project repo's releases page.
+The **memory** tools additionally need **[Mnemosyne OS Infinity Edition](https://mnemosyne-os.io/download)** running. It owns your vaults and exposes the WebSocket gateway on
+`ws://127.0.0.1:7799`. It is a desktop application, and it is where your content lives.
 
 The three **agent-awareness** tools need neither: `mnemosyne_agent_list`,
 `mnemosyne_agent_collisions` and `mnemosyne_agent_files`. They read transcript
@@ -58,6 +58,33 @@ harness they find, so a Claude Code session can see an Antigravity session
 running in the same repository.
 
 > **The MCP is a thin bridge.** It does not store anything itself. All data lives in Mnemosyne OS Infinity (`%APPDATA%\@mnemosyne-workspace\infinity-edition\vaults\*.db` on Windows, `~/Library/Application Support/...` on macOS).
+
+## Getting your code, commits and docs in
+
+Three different routes, and only one of them ingests anything. Knowing which is
+which saves you looking for a feature that is not where you expect it.
+
+**Your files: source, architecture notes, decision records.** You declare a
+folder, the app watches it, and what lands there is ingested into the vault you
+chose. Nothing is uploaded and nothing is scanned that you did not name. This is
+the step people miss: installing the app gives you empty vaults, and declaring
+the folder is what fills them.
+See [Getting started](https://docs.mnemosyne-os.io/category/getting-started) and
+[DocWatch](https://docs.mnemosyne-os.io/engines/docwatch).
+
+**Your commits.** `mnemosyne_git_log` reads the repository the app is
+configured to read, at the moment you call it. Nothing is ingested and nothing
+is stored, so history is never stale and never doubled.
+
+**What your agents did.** `mnemosyne_agent_list`, `mnemosyne_agent_collisions`
+and `mnemosyne_agent_files` read the transcript files your harness already
+writes. No app, no vault, no token. Those three work the minute this server is
+installed, which is why they are the ones to try first.
+
+⚠️ Without the app running, everything else refuses and says so. The refusal
+names what it checked: whether `~/.mnemosyne` exists tells it whether the app
+has ever run on this machine, and it says "install it" and "start it" as two
+different sentences, because they are two different problems.
 
 ---
 
