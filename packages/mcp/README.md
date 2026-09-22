@@ -102,8 +102,8 @@ port the desktop application listens on.
 
 The bundle rides on the application's current release,
 [`v1.5.1-infinity`](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.5.1-infinity),
-because this package has no release of its own. Its own version is the npm one,
-2.1.0, and that is what the file is named after. Earlier bundles stay attached
+because this package has no release of its own. The file is named after this
+package version, not after the application one in the tag. Earlier bundles stay attached
 to `v1.4.5-infinity`, so a link someone saved keeps working.
 
 Two things worth knowing before you do it:
