@@ -70,7 +70,9 @@ chose. Nothing is uploaded and nothing is scanned that you did not name. This is
 the step people miss: installing the app gives you empty vaults, and declaring
 the folder is what fills them.
 See [Getting started](https://docs.mnemosyne-os.io/category/getting-started) and
-[DocWatch](https://docs.mnemosyne-os.io/engines/docwatch).
+[DocWatch](https://docs.mnemosyne-os.io/engines/docwatch). The full walkthrough,
+including why there is an application behind this server at all, is
+[Get your repository into memory](https://docs.mnemosyne-os.io/developers/your-code-in-memory).
 
 **Your commits.** `mnemosyne_git_log` reads the repository the app is
 configured to read, at the moment you call it. Nothing is ingested and nothing
