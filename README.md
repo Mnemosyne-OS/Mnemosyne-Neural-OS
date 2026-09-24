@@ -59,6 +59,19 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 
 ---
 
+> [!IMPORTANT]
+> **🤖 New in 1.6.0: MnemoHermes, your memory on Telegram and by voice (beta).**
+> MnemoHermes installs [Hermes Agent](https://github.com/NousResearch/hermes-agent)
+> with one button and connects it to your vaults. Create your own Telegram bot and ask
+> your memory from your phone, typed or by voice note. In the app, say "ask Hermes to …"
+> and the orb hands it the task.
+>
+> **[→ See how it works: mnemosyne-os.io/hermes](https://mnemosyne-os.io/hermes)** · [The cartridge on GitHub](https://github.com/Mnemosyne-OS/MnemoHermes)
+
+<div align="center">
+<a href="https://mnemosyne-os.io/hermes"><img src="https://raw.githubusercontent.com/Mnemosyne-OS/MnemoHermes/main/docs/tour.gif" width="80%" alt="The MnemoHermes cockpit opening from the Mnemosyne OS dock, then its Tasks, Agents, Tools, Skills, Memory inbox and Settings tabs" /></a>
+</div>
+
 > [!TIP]
 > **📖 The user documentation is live at [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)**, with every engine explained step by step, in
 > [English](https://docs.mnemosyne-os.io/) · [Français](https://docs.mnemosyne-os.io/fr/) · [Español](https://docs.mnemosyne-os.io/es/).
