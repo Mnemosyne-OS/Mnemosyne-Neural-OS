@@ -21,7 +21,7 @@
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
-[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_strict_·_verifiable-33ffd6?style=flat-square)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
+[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_on_unseen_questions_·_verifiable-33ffd6?style=flat-square)](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 ![Interface languages](https://img.shields.io/badge/interface-7_languages-a98bff)
 [![version](https://img.shields.io/github/v/release/Mnemosyne-OS/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
@@ -106,9 +106,10 @@ memória soberano e local · суверенная локальная опера�
 Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
 
 **Mnemosyne OS is the control surface for your memory, your agents and your
-models**, and it runs on your machine: your data never leaves it, a human
-governs it, and it scores **77.1% on LongMemEval-M** ([audit it
-yourself](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)).
+models**, and it runs on your machine. You choose which model may read your
+memory, and a human governs it. On LongMemEval-M questions it had never seen, it
+scores **77.1%** with a cloud reader, gemini-3.8-flash ([audit it
+yourself](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)).
 
 The AI that remembers *you*, not infrastructure you plug into someone else's.
 
@@ -239,10 +240,10 @@ flowchart LR
 
 | | |
 |---|---|
-| **77.1 %** (37/48) | overall accuracy, full-haystack (hard) variant, **strict** judge, August 2026 |
-| **29/48 → 37/48** | what the second, fully local retrieval channel bought, under that strict judge |
-| **+4/−0 · +2/−0** | evidence sessions and answer-bearing chunks on 48 **held-out** questions, zero regressions |
-| Every HIT above | **replayed and reproduced** before being counted, no cherry-picked runs |
+| **77.1 %** (37/48) | 48 questions the engine had never seen, full-haystack (hard) variant, **official LongMemEval judge**, September 2026 |
+| **85.4 %** (41/48) | the 48 questions used to tune the engine, **strict** judge |
+| Two passes | a question counts only when both passes get it right |
+| Every answer | published with every raw judge reply, and a `verify.js` that recomputes each figure |
 
 [LongMemEval](https://github.com/xiaowu0162/LongMemEval) is a public,
 independent long-term-memory benchmark. Its **full-haystack** variant surrounds
@@ -250,24 +251,24 @@ every question's evidence with ~480 distractor sessions, the closest published
 setup to a real, lived-in memory vault, and harder than the `-S` slice most
 reported numbers use.
 
-**Which judge graded a number changes what it means, so we publish both.** Under
-July's *flexible* judge the same build measures **81.3 %**; under the *strict* one,
-77.1 %. Both ledgers ship, and the channel's gain is honestly smaller under the
-flexible reading (+7/−2) than under the strict one (+9/−1).
+**The protocol was published before the run.** The holdout questions had never
+been answered before. The reader is gemini-3.8-flash, and the run measures the
+SDK and MCP door that agents use.
 
-July's **72.9 %** stays on the record as what it was: a *lower bound* under the
-flexible judge, and a **composed** one, only the multi-session category had been
-re-run with the full engine, the other 40 rows carried from the baseline. It is
-archived and DOI-pinned rather than withdrawn. It is **not** the same instrument as
-77.1 %, so the two are published side by side and never chained into a single
-progression.
+In September an outside audit found a wrong verdict in our August result. The
+[erratum](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/blob/main/ERRATUM.md) corrects it to 35/48 (72.9 %) under the strict judge and
+37/48 (77.1 %) under the flexible one. We then ran the whole benchmark again.
+July's composed 72.9 % stays archived under its DOI. The reader, the engine and
+the judges changed between these runs, so the figures sit side by side and never
+chain into a progression.
 
 **Don't take any of it on faith. Audit it.** The published grader and
 per-question verdicts let you re-derive every score in one command, no engine and
 no network. Full methodology, root-cause analysis, and the raw run logs of both
 campaigns are public too:
 
-**🔍 [Audit it yourself, live results page →](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)**
+**🔍 [Audit it yourself: every answer and a verify.js →](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)**
+&nbsp;·&nbsp; [live results page](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/)
 &nbsp;·&nbsp; [raw logs & methodology](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks)
 
 **Citing this work.** Both the evidence and the architecture are archived under

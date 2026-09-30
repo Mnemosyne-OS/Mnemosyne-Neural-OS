@@ -139,18 +139,19 @@ anything you remember about it.
   **soul-weighted retrieval**. Never describe a future capability as if it ships today.
 - **Numbers you can trust** (don't invent others), all full-haystack LongMemEval-M and all
   [auditable](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/):
-  **77.1 %** (37/48) under the **strict** judge — the current headline, August 2026;
-  **81.3 %** (39/48) — the same answers under July's **flexible** judge;
-  **72.9 %** (35/48) — July's *composed lower bound* under that flexible judge, still
-  DOI-pinned. Plus **572** IPC channels between the sealed engine and the
+  **77.1 %** (37/48) on the holdout under the **official LongMemEval** judge — the
+  current headline, a pre-registered rerun of September 2026 ([every answer](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10));
+  **85.4 %** (41/48) on the dev (tuning) set under the **strict** judge, same rerun;
+  the August figures, corrected by an [erratum](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/blob/main/ERRATUM.md): **72.9 %** (35/48) strict,
+  **77.1 %** (37/48) flexible; July's composed **72.9 %** (35/48), still DOI-pinned. Plus **572** IPC channels between the sealed engine and the
     interface. That one is generated, not typed: the monorepo tooling copies it
     from a commit on its `main` into [`tools/metrics.json`](tools/metrics.json),
     stamped with that commit, and
     [`tools/check-public-sync.mjs`](tools/check-public-sync.mjs) fails when this
     sentence disagrees with it or when the file carries no stamp. It read 242
     from July to August 2026 because nothing checked it.
-  🚨 **Always name the judge, and never chain 72.9 → 77.1 as a progression** — they are
-  two different graders, so the arrow would be meaningless. If you see other figures in
+  🚨 **Always name the set and the judge, and never chain these figures into a
+  progression**: the reader, the engine and the judges changed between the runs. If you see other figures in
   old/archived text, treat them as potentially stale.
 - **Archived material is archived.** `archive/mnemosyne-docs-beta/` is historical beta
   narrative — good ideas, but stale names/numbers. Don't cite it as current.
