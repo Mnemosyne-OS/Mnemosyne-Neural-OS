@@ -7,6 +7,7 @@
 **Status:** Production-deployed · Part of Mnemosyne Neural OS
 **Cite as:** [10.5281/zenodo.21728283](https://doi.org/10.5281/zenodo.21728283) — v2.2, CC BY 4.0
 *(concept DOI — always resolves to the current edition; each edition also carries its own version DOI)*
+**This edition (v2.2):** [10.5281/zenodo.23070331](https://doi.org/10.5281/zenodo.23070331)
 
 > This is a living document. It tracks the architecture as it ships, not a frozen
 > snapshot — it is revised as the engine evolves. Prior editions described the earlier
