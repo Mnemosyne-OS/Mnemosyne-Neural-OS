@@ -108,7 +108,8 @@ Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
 **Mnemosyne OS is the control surface for your memory, your agents and your
 models**, and it runs on your machine. You choose which model may read your
 memory, and a human governs it. On LongMemEval-M questions it had never seen, it
-scores **77.1%** with a cloud reader, gemini-3.8-flash ([audit it
+scores **77.1%** in hybrid mode: embeddings and search on your machine, answers
+from a cloud model, gemini-3.8-flash ([audit it
 yourself](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)).
 
 The AI that remembers *you*, not infrastructure you plug into someone else's.
@@ -252,8 +253,9 @@ setup to a real, lived-in memory vault, and harder than the `-S` slice most
 reported numbers use.
 
 **The protocol was published before the run.** The holdout questions had never
-been answered before. The reader is gemini-3.8-flash, and the run measures the
-SDK and MCP door that agents use.
+been answered before. The run uses the hybrid mode: embeddings and search run on
+the machine, and a cloud model, gemini-3.8-flash, writes the answers. It measures
+the SDK and MCP door that agents use.
 
 In September an outside audit found a wrong verdict in our August result. The
 [erratum](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/blob/main/ERRATUM.md) corrects it to 35/48 (72.9 %) under the strict judge and
