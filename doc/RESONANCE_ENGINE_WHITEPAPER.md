@@ -1,11 +1,11 @@
 # The Resonance Engine: A Multi-Engine Cognitive Memory Architecture for Sovereign AI Systems
 
-**Technical Whitepaper — v2.1 · Living document**
-**Current as of Mnemosyne Neural OS v1.3.8 · core-engine 1.1.0 · Revised August 2026**
+**Technical Whitepaper — v2.2 · Living document**
+**Architecture as of Mnemosyne Neural OS v1.3.8 · core-engine 1.1.0 · §8 revised September 2026**
 **XPACEGEMS LLC** · Miami, FL 33122, USA
 **Author:** Tony Trochet, Founder & Lead Architect · [ORCID 0009-0009-1087-3917](https://orcid.org/0009-0009-1087-3917)
 **Status:** Production-deployed · Part of Mnemosyne Neural OS
-**Cite as:** [10.5281/zenodo.21728283](https://doi.org/10.5281/zenodo.21728283) — v2.1, CC BY 4.0
+**Cite as:** [10.5281/zenodo.21728283](https://doi.org/10.5281/zenodo.21728283) — v2.2, CC BY 4.0
 *(concept DOI — always resolves to the current edition; each edition also carries its own version DOI)*
 
 > This is a living document. It tracks the architecture as it ships, not a frozen
@@ -216,8 +216,11 @@ surrounds every question&rsquo;s evidence with ~480 distractor sessions — the 
 setup to a real, lived-in memory vault, and harder than the `-S` slice most reported
 numbers use.
 
-Two campaigns are published below. **They are graded by two different judges — a lenient
-one and a strict one — so their figures must not be chained into a single progression.**
+Three campaigns are published below. **They use different readers and different
+judges, so their figures must not be chained into a single progression.** Section 8 was
+rewritten in September 2026, after an external audit found a wrong judge verdict and
+two wrong sentences in the earlier edition. The corrections are listed in the
+[erratum](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/blob/main/ERRATUM.md).
 
 ### 8.1 July 2026 — the consolidation engine (lenient grader)
 
@@ -226,11 +229,12 @@ one and a strict one — so their figures must not be chained into a single prog
 | **64.6 % → 72.9 %** | overall accuracy, full-haystack (hard) variant |
 | **1/8 → 5/8** | multi-session recall — the category that actually needs a memory engine |
 
-**72.9 % is a stated lower bound**, not a measured 48-question result: only the
-multi-session category was re-run with the full engine, so the 40 carried questions can
-only improve on a full re-run. Every counted HIT was replayed and reproduced before being
-counted — no cherry-picked runs. The jump from 1/8 to 5/8 is the point: it is precisely the
-category that a memory *engine* — consolidation plus cross-session linking — exists to fix.
+**72.9 % is a composed figure**, not a measured 48-question result: only the
+multi-session category was re-run with the full engine, and the other 40 answers were
+carried from the baseline. The previous edition called it a lower bound. That was wrong:
+the August full-engine run of the same 48 questions, under the same lenient grader,
+scored 34/48 (70.8 %). The jump from 1/8 to 5/8 is the point: it is precisely the category
+that a memory *engine* — consolidation plus cross-session linking — exists to fix.
 
 ### 8.2 August 2026 — the lexical channel (strict grader)
 
@@ -240,35 +244,54 @@ instruments, and they are not interchangeable.
 **The instrument — deterministic retrieval, no LLM in the loop.** Byte-identical inputs
 give byte-identical outputs, so this measurement carries no grader noise at all. On the
 development sample, evidence sessions found rose **38/48 → 41/48** and the answer-bearing
-chunk **25/35 → 30/35**. On a **48-question holdout never seen during development**:
-**+4/−0 sessions and +2/−0 answer chunks — zero regressions**, with the gain landing in the
-same category as on the development sample. What replicated is the mechanism, not a number.
+chunk **25/35 → 30/35**. On a 48-question holdout never used during development:
+**+4/−0 sessions and +2/−0 answer chunks — zero regressions**. This holdout measures
+retrieval only: no answer was generated on it.
 
-**The confirmation — end to end, strict grader.** **29/48 → 37/48** under the replay rule: a
-HIT counts only if two independent runs agree, and they agreed on all 48 verdicts. Paired
-per question, +9 gained / −1 regressed; an exact binomial on 9-vs-1 flips gives
-**p = 0.0215**. The retrieval budget was frozen throughout, so the channel changed *which*
-chunks were served, never how many.
+**The confirmation — end to end, strict grader.** **29/48 → 35/48** under the replay rule:
+a HIT counts only if two independent runs agree. The two runs agreed on every verdict, and
+a human audit later overturned two of them, both from HIT to MISS. Paired per question,
++9 gained / −3 regressed, exact binomial **p = 0.146**. Under the lenient grader the same
+answers score 37/48 (+7/−4, p = 0.549). The retrieval budget was frozen throughout, so
+the channel changed *which* chunks were served, never how many.
 
-**Read with these limits, which are published beside the numbers rather than in a
-footnote.** The 48-question development sample runs about 13 points easier than its parent
-set and was used during development — which is exactly why the holdout exists. The grader
-has a measured noise floor of roughly 2.6 verdicts per 48 on byte-identical replays, so this
-bench cannot resolve a gap under about five questions: the +8 clears that floor, and smaller
-deltas in the published files must not be quoted as findings. Fusion parameters are the
-literature defaults (BM25 k1 = 1.5, b = 0.75; RRF k = 60) and were deliberately left
-untuned — fitting them on a sample this size would manufacture a gain that does not
-transfer. One category (single-session-preference, n = 8) is too noisy to resolve a
-two-question difference and is reported as such. **No comparison to any other product is
-claimed or supported:** both arms are this project&rsquo;s own montages under its own protocol.
+**Read with these limits.** The 48-question development sample runs about 13 points
+easier than its parent set and was used during development. The grader has a measured
+noise floor of roughly 2.6 verdicts per 48 on byte-identical replays, so this bench cannot
+resolve a gap under about five questions: the end-to-end gain of six questions is at the
+edge of that floor, which is why the deterministic retrieval measurement carries the
+claim. Fusion parameters are the literature defaults (BM25 k1 = 1.5, b = 0.75; RRF k = 60)
+and were deliberately left untuned. **No comparison to any other product is claimed or
+supported:** both arms are this project&rsquo;s own montages under its own protocol.
 
-### 8.3 Audit it
+### 8.3 September 2026 — the pre-registered rerun
 
-Neither figure is asked for on faith. The published grader and per-question verdicts let
-anyone **recompute every headline in one command, with no engine and no network** —
-including the composed 72.9 %, whose two replay-discarded questions are kept visible rather
-than deleted. The evidence is archived and citable, not merely linked: the per-question
-ledgers, the scoring scripts and the raw run logs are deposited under
+The whole benchmark was run again under a protocol published before the run: corpus
+hash, the 96 question ids, the engine build, the reader, both judges and the scoring
+rules were committed publicly first. Session ids were anonymized before ingestion, with
+a salt whose hash was published in advance. Every question was answered twice, and a
+question counts only when both answers are correct.
+
+|  |  |
+|---|---|
+| **77.1 %** (37/48) | 48 holdout questions with no answer generated before, official LongMemEval judge |
+| **85.4 %** (41/48) | the 48 development questions, strict grader |
+
+The run uses the hybrid mode: embeddings and search run on the machine, and a cloud
+model, gemini-3.8-flash, writes the answers. The reader, the engine and the judges all
+changed since August, so these figures stand beside the earlier ones and are not a
+progression from them. The dense-only and the fused arms are within the noise of this
+bench on both sets.
+
+### 8.4 Audit it
+
+No figure is asked for on faith. The grader, every answer and every raw judge reply are
+published, and anyone can **recompute every headline in one command, with no engine and no
+network**. For the rerun, the folder
+[`longmemeval-rerun-2026-10/`](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
+holds the protocol, the answers, the verdicts, the human audit, the salt and a
+`verify.js`. The earlier campaigns keep their per-question ledgers, scoring scripts and
+raw run logs under
 **[DOI 10.5281/zenodo.21727139](https://doi.org/10.5281/zenodo.21727139)** [5] (CC BY 4.0).
 That is the *concept* identifier; each campaign also carries its own version DOI, and a
 figure should be cited against the snapshot that produced it.
