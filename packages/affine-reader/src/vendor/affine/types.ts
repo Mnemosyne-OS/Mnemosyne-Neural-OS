@@ -15,7 +15,9 @@ export interface WorkspacePage {
 
 export type BaseFlavour<T extends string> = `affine:${T}`;
 
+// MODIFIED (Mnemosyne OS): 'latex' added to the union, for the case parser.ts gained.
 export type Flavour = BaseFlavour<
+  | 'latex'
   | 'page'
   | 'frame'
   | 'paragraph'

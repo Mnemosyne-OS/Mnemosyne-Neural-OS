@@ -18,6 +18,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { exportWorkspace, workspaceFolderName } from './exportMarkdown';
+import { readWorkspaceName } from './read';
 import { affineDataDir, findWorkspaces } from './locate';
 import { hasNodeSqlite, openNodeSqlite } from './nodeSqlite';
 import { stageDatabase } from './stage';
@@ -68,8 +69,15 @@ export function runCli(argv: string[] = process.argv.slice(2)): number {
       const db = openNodeSqlite(staged.path);
       try {
         const result = exportWorkspace(db, join(outDir, workspaceFolderName(ref)));
+        // The name is a label, never a reason to fail an export that worked.
+        let name: string | null = null;
+        try {
+          name = readWorkspaceName(db);
+        } catch (error) {
+          console.warn(`  (workspace name unreadable: ${error instanceof Error ? error.message : String(error)})`);
+        }
         console.log(
-          `\n${ref.kind} ${ref.id} — peer ${ref.peer}, schema ${result.schema}, ` +
+          `\n${ref.kind} ${name ? `"${name}" (${ref.id})` : ref.id} — peer ${ref.peer}, schema ${result.schema}, ` +
             `journal ${staged.sidecars.join('+') || 'none'}`,
         );
         for (const doc of result.docs)
@@ -89,6 +97,7 @@ export function runCli(argv: string[] = process.argv.slice(2)): number {
         for (const skip of result.skippedBlobs)
           console.log(`  SKIPPED blob ${skip.key} — ${skip.reason}`);
         for (const path of result.removed) console.log(`  REMOVED ${path}`);
+        for (const path of result.removedBlobs) console.log(`  REMOVED ${path}`);
         console.log(
           `  → ${result.files.length} file(s), ${result.blobsWritten} image(s)` +
             (result.trashed ? `, ${result.trashed} left in AFFiNE's trash` : ''),

@@ -2,7 +2,7 @@
  * Writing a workspace out as Markdown + blob files, ready for a watched folder.
  */
 
-import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import {
   blobOverCap,
@@ -27,6 +27,11 @@ export interface ExportResult extends WorkspaceContent {
    * `outDir`. Paths, so the caller can say what went, not only how many.
    */
   removed: string[];
+  /**
+   * Files in `outDir/blobs` from an earlier export that AFFiNE no longer lists
+   * (an image deleted or replaced), removed. Empty when blobs were not written.
+   */
+  removedBlobs: string[];
 }
 
 export interface ExportOptions extends ReadOptions {
@@ -40,8 +45,11 @@ export function slugify(input: string, fallback: string): string {
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-zA-Z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 60);
+    // 🪤 Cut BEFORE the edge dashes go, never after: a 60th character that is
+    // a dash used to survive the trim, and `title-` + `--` + id made a `---`
+    // that `docIdSlugOf` cannot read — the file of a renamed doc stayed for good.
+    .slice(0, 60)
+    .replace(/^-+|-+$/g, '');
   return cleaned || fallback;
 }
 
@@ -62,8 +70,11 @@ export function fileNameFor(title: string, docId: string): string {
 function docIdSlugOf(fileName: string): string | null {
   // `slugify` collapses every run of non-alphanumerics into ONE dash, so a
   // double dash can only be the separator: neither half ever contains one.
-  const match = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*--([A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)\.md$/.exec(fileName);
-  return match ? match[1] : null;
+  // The optional dash before it reads the `title---id.md` names an export
+  // before 2026-09-30 wrote for a title cut on a dash, so those copies can
+  // still be found and removed.
+  const match = /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*-?--([A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)\.md$/.exec(fileName);
+  return match?.[1] ?? null;
 }
 
 /**
@@ -84,6 +95,18 @@ function removeOrphans(
     const idSlug = docIdSlugOf(entry.name);
     if (idSlug === null || keepIds.has(idSlug)) continue;
     const path = join(outDir, entry.name);
+    rmSync(path);
+    removed.push(path);
+  }
+  return removed;
+}
+
+/** Removes, from `dir` alone, the files not in `keep`. Never recurses. */
+function removeUnlisted(dir: string, keep: ReadonlySet<string>): string[] {
+  const removed: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (!entry.isFile() || keep.has(entry.name)) continue;
+    const path = join(dir, entry.name);
     rmSync(path);
     removed.push(path);
   }
@@ -154,7 +177,8 @@ export function exportWorkspace(
   // not produce its file, so no link may point at it.
   const blobNames = new Map<string, string>();
   const skippedBlobs: SkippedBlob[] = [];
-  for (const blob of readBlobIndex(db, schema)) {
+  const blobIndex = readBlobIndex(db, schema);
+  for (const blob of blobIndex) {
     const over = blobOverCap(blob);
     if (over) skippedBlobs.push(over);
     else blobNames.set(blob.key, blobFileName(blob.key, blob.mime));
@@ -222,8 +246,9 @@ export function exportWorkspace(
   }
 
   let blobsWritten = 0;
+  let removedBlobs: string[] = [];
+  const blobDir = join(outDir, 'blobs');
   if (options.writeBlobs !== false && blobNames.size > 0) {
-    const blobDir = join(outDir, 'blobs');
     mkdirSync(blobDir, { recursive: true });
     // Same cap as the names above, so the two lists cannot disagree.
     const skippedWhileWriting = forEachBlob(db, rendered.schema, (blob) => {
@@ -233,6 +258,15 @@ export function exportWorkspace(
     });
     for (const skip of skippedWhileWriting)
       if (!skippedBlobs.some((s) => s.key === skip.key)) skippedBlobs.push(skip);
+  }
+  // A blob AFFiNE no longer lists has no reason to stay in the folder: its
+  // file was kept export after export, and the image count grew with it. Every
+  // blob AFFiNE still lists keeps its file, written this run or not — one left
+  // out this time (a row gone, the cap) keeps its last good copy, as a doc the
+  // reader could not render does. Never when the bytes were not asked for.
+  if (options.writeBlobs !== false && existsSync(blobDir)) {
+    const listed = new Set(blobIndex.map((blob) => blobNames.get(blob.key) ?? blobFileName(blob.key, blob.mime)));
+    removedBlobs = removeUnlisted(blobDir, listed);
   }
 
   const files: { docId: string; path: string }[] = [];
@@ -264,5 +298,5 @@ export function exportWorkspace(
   const keepIds = new Set(rendered.skipped.map((skip) => slugify(skip.id, 'id')));
   const removed = removeOrphans(outDir, written, keepIds);
 
-  return { ...rendered, outDir, files, blobsWritten, skippedBlobs, removed };
+  return { ...rendered, outDir, files, blobsWritten, skippedBlobs, removed, removedBlobs };
 }

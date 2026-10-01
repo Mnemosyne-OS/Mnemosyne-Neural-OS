@@ -4,6 +4,8 @@ import type { ColumnDataType } from './blocksuite-types';
 import { Array as YArray, type Map as YMap, type Text as YText } from 'yjs';
 
 import { deltaToMd, getConverters } from './delta-to-md';
+// MODIFIED (Mnemosyne OS): formulas, which upstream drops. See ../../latex.ts.
+import { inlineLatexToText, latexBlockToMd } from '../../latex';
 import type {
   BaseParsedBlock,
   Flavour,
@@ -57,8 +59,9 @@ export function parseBlock(
   const id = yBlock.get('sys:id') as string;
   const flavour = yBlock.get('sys:flavour') as Flavour;
   const type = yBlock.get('prop:type') as string;
+  // MODIFIED (Mnemosyne OS): `inlineLatexToText` added around the delta.
   const toMd = () =>
-    deltaToMd((yBlock.get('prop:text') as YText).toDelta(), deltaConverters);
+    deltaToMd(inlineLatexToText((yBlock.get('prop:text') as YText).toDelta()), deltaConverters);
   const hidden = yBlock.get('prop:hidden') as boolean;
   const displayMode = yBlock.get('prop:displayMode') as string;
   const childrenIds =
@@ -100,6 +103,11 @@ export function parseBlock(
           initial = '> ';
         }
         result.content = initial + toMd() + '\n';
+        break;
+      }
+      // MODIFIED (Mnemosyne OS): this case added. Upstream has no formula block.
+      case 'affine:latex': {
+        result.content = latexBlockToMd(yBlock.get('prop:latex'));
         break;
       }
       case 'affine:divider': {

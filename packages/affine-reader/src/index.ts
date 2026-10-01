@@ -19,11 +19,12 @@ export {
   loadDoc,
   readBlobIndex,
   readDocIndex,
+  emptyRootDocUpdate,
   readWorkspace,
   readWorkspaceId,
+  readWorkspaceName,
 } from './read';
 export { exportWorkspace, fileNameFor, slugify, workspaceFolderName } from './exportMarkdown';
-export { emptyRootDocUpdate } from './read';
 export type { ExportOptions, ExportResult } from './exportMarkdown';
 export { hasNodeSqlite, openNodeSqlite } from './nodeSqlite';
 export type {

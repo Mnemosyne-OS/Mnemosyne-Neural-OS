@@ -24,13 +24,19 @@ published to npm, which is why the source is vendored rather than depended upon.
 
 ### What was changed
 
-Two lines, both **type-only** and therefore erased at compilation, so runtime
-behaviour is byte-for-byte the upstream one:
+Two lines, both **type-only** and therefore erased at compilation, then one runtime
+change for formulas (below the table):
 
 | File | Before | After |
 |---|---|---|
 | `parser.ts` | `import type { ColumnDataType } from '@blocksuite/affine/model'` | `from './blocksuite-types'` |
 | `types.ts` | `import { type CellDataType } from '@blocksuite/affine/model'` | `from './blocksuite-types'` |
+
+One RUNTIME change, made on 2026-09-30: upstream drops formulas. An inline formula
+(a space carrying a `latex` attribute) came out as a blank, a formula block as
+nothing. `parser.ts` now passes each delta through `inlineLatexToText` and gains an
+`affine:latex` case (and `types.ts` adds `latex` to its `Flavour` union); both helpers live in `src/latex.ts`, which is ours. Formulas
+are written `$…$` and `$$…$$`, their source unchanged.
 
 `src/vendor/affine/blocksuite-types.ts` is ours, not AFFiNE's. It declares the two
 shapes locally so this package does not need `@blocksuite/affine` (MPL-2.0) on its

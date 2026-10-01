@@ -210,6 +210,15 @@ export function readWorkspace(db: SqliteDatabase, options: ReadOptions = {}): Wo
   if (!rootLoad.hadSnapshot && rootLoad.updatesReplayed === 0)
     throw new Error(`root document ${rootId ?? '(v1 root)'} is not in this database`);
   const root = rootLoad.doc;
+  // 🚨 And from a third side: a root that IS here but whose `meta.pages` is not
+  // the array AFFiNE writes (a format drift, a root a newer AFFiNE wrote) used
+  // to read as "no documents", and the exporter then removed every file of the
+  // previous export as orphans. An empty workspace has an EMPTY array; no array
+  // at all is a shape this reader does not know, so it is refused by name.
+  if (!(root.getMap('meta').get('pages') instanceof Y.Array))
+    throw new Error(
+      `root document ${rootId ?? '(v1 root)'} has no \`meta.pages\` list: a layout this reader does not know`,
+    );
   // v1 has no meta and no workspace id to report; '' is that absence, not a name.
   const spaceId = workspaceId ?? '';
 
@@ -255,14 +264,34 @@ export function readWorkspace(db: SqliteDatabase, options: ReadOptions = {}): Wo
 }
 
 /**
+ * The name the person gave the workspace in AFFiNE (`meta.name` of the root
+ * document), or null when there is none to read: a v1 layout, no space_id, a
+ * root not in this database, or a name that is not a non-empty string.
+ *
+ * 🎭 Null is "not read", never a name: the caller shows the id then. A list of
+ * ids is how two workspaces were told apart before, and a guessed name is worse
+ * than an id because it reads as an answer.
+ */
+export function readWorkspaceName(db: SqliteDatabase): string | null {
+  const schema = detectSchema(db);
+  if (schema !== 'v2') return null;
+  const workspaceId = readWorkspaceId(db, schema);
+  if (workspaceId === null) return null;
+  // A root not in this database loads as an empty doc, whose name is absent.
+  const name = loadDoc(db, schema, workspaceId).doc.getMap('meta').get('name');
+  return typeof name === 'string' && name.trim() ? name.trim() : null;
+}
+
+/**
  * The bytes of a root document that holds NO page — `meta.pages` empty —
- * encoded as one update. What a host needs to stand in a workspace with no
+ * encoded as one update, carrying `name` as the workspace name when given. What a host needs to stand in a workspace with no
  * content (a test double, a workspace created empty) without depending on
  * yjs itself: the reader refuses a root that is absent by name, and the only
  * honest way to say "present and empty" is a real encoded document.
  */
-export function emptyRootDocUpdate(): Uint8Array {
+export function emptyRootDocUpdate(name?: string): Uint8Array {
   const doc = new Y.Doc();
   doc.getMap('meta').set('pages', new Y.Array());
+  if (name !== undefined) doc.getMap('meta').set('name', name);
   return Y.encodeStateAsUpdate(doc);
 }
