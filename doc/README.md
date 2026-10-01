@@ -18,7 +18,7 @@ The map of everything written about Mnemosyne. New here? Start with **Concepts**
 | Doc | What it covers |
 |---|---|
 | 📄 [The Resonance Engine — Whitepaper](RESONANCE_ENGINE_WHITEPAPER.md) | The full multi-engine cognitive memory architecture — a living document, current as of v1.3.3 |
-| 🔬 [Benchmark — LongMemEval-M (auditable)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) | 77.1 % on unseen questions, official judge (85.4 % on the tuning questions, strict judge), full-haystack, protocol published before the run. Re-derive every score yourself in one command |
+| 🔬 [Benchmark — LongMemEval-M (auditable)](https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/) | 77.1 % on holdout questions, official judge (85.4 % on the tuning questions, strict judge), full-haystack, protocol published before the run. Re-derive every score yourself in one command |
 
 ## Governance, security & privacy
 

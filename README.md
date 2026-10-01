@@ -21,7 +21,7 @@
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
-[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_on_unseen_questions_·_verifiable-33ffd6?style=flat-square)](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
+[![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_on_holdout_questions_·_verifiable-33ffd6?style=flat-square)](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 ![Interface languages](https://img.shields.io/badge/interface-7_languages-a98bff)
 [![version](https://img.shields.io/github/v/release/Mnemosyne-OS/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
@@ -107,8 +107,8 @@ Mem0, Zep and Letta give *agents* a memory layer you wire into a cloud stack.
 
 **Mnemosyne OS is the control surface for your memory, your agents and your
 models**, and it runs on your machine. You choose which model may read your
-memory, and a human governs it. On LongMemEval-M questions it had never seen, it
-scores **77.1%** in hybrid mode: embeddings and search on your machine, answers
+memory, and a human governs it. On LongMemEval-M holdout questions, never used
+to tune the engine, it scores **77.1%** in hybrid mode: embeddings and search on your machine, answers
 from a cloud model, gemini-3.8-flash ([audit it
 yourself](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)).
 
@@ -241,7 +241,7 @@ flowchart LR
 
 | | |
 |---|---|
-| **77.1 %** (37/48) | 48 questions the engine had never seen, full-haystack (hard) variant, **official LongMemEval judge**, September 2026 |
+| **77.1 %** (37/48) | 48 holdout questions, never used to tune the engine, full-haystack (hard) variant, **official LongMemEval judge**, September 2026 |
 | **85.4 %** (41/48) | the 48 questions used to tune the engine, **strict** judge |
 | Two passes | a question counts only when both passes get it right |
 | Every answer | published with every raw judge reply, and a `verify.js` that recomputes each figure |
