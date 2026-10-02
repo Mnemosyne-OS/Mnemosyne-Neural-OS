@@ -83,3 +83,23 @@ test('handleTodoAdd refuses an empty plan without calling the host', async () =>
   assert.equal(called, false);
   assert.match(out, /Nothing to file/);
 });
+
+// Verification pass 2026-09-28: a shortened task was filed under a sentence
+// that said nothing was lost.
+test('a task filed SHORTENED is said, with the way to fix it', () => {
+  const s = renderTodoAdd({ ok: true, added: 2, listLabel: 'Site', dropped: { empty: 0, overflow: 0, clipped: 1 } }, 2);
+  assert.match(s, /1 task was filed SHORTENED/);
+  assert.match(s, /mnemosyne_todo_update/);
+  // An older host sends no `clipped`: nothing is invented.
+  assert.doesNotMatch(renderTodoAdd({ ok: true, added: 2, dropped: { empty: 1, overflow: 0 } }, 3), /SHORTENED/);
+});
+
+test('an unreadable backlog file is not told to retry', () => {
+  for (const error of ['FILE_ERROR', 'FILE_PARSE', 'FILE_SHAPE']) {
+    const s = renderTodoAdd({ ok: false, error }, 1);
+    assert.match(s, /could not read it/);
+    assert.match(s, /retrying will not help/);
+  }
+  assert.match(renderTodoAdd({ ok: false, error: 'FILE_NOVAULT' }, 1), /No workspace is configured/);
+  assert.match(renderTodoAdd({ ok: false, error: 'FILE_LOADING' }, 1), /still reading/);
+});

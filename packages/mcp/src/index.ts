@@ -39,7 +39,7 @@ import {
 // must boot under plain `node dist/index.js` because that's how Claude Desktop
 // and Claude Code launch it. We talk the same wire protocol via a local client.
 import { BackendRefusedError, MnemoWsClient, type VoiceJob } from './ws-client.js';
-import { unwrapContent, selectResonances, toResonanceView, voiceError, renderReport } from './format.js';
+import { unwrapContent, selectResonances, toResonanceView, voiceError, renderReport, freshnessLine } from './format.js';
 import { renderCovenant } from './covenant.js';
 import { recordCall } from './usage.js';
 import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget } from './vault-target.js';
@@ -580,7 +580,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_cockpit_update',
-    description: 'Update your own status card on the user\'s canvas, the cockpit. Call it when you start a task ("working", with a short title and status), when you need the user ("waiting"), when you are stuck ("blocked"), and when you finish ("done"). "waiting" and "blocked" make the card pulse and the taskbar flash. You declare the state; the app prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the user left on your card. Read it and act on it. Needs the app window open. This is a card, so nothing is stored in memory.',
+    description: 'Update your own status card on the user\'s canvas, the cockpit. Call it when you start a task ("working", with a short title and status), when you need the user ("waiting"), when you are stuck ("blocked"), and when you finish ("done"). "waiting" and "blocked" make the card pulse and the taskbar flash. Send "waiting" IN THE SAME TURN as the question you ask the user, right before you stop: the harness only knows to say "waiting" for a permission prompt, and a question asked in the chat is otherwise just the end of a turn — the user never sees that you are waiting for them. Your "waiting" survives the harness saying the turn ended. You declare the state; the app prints it next to the time since your last call, so keep calling at real milestones or the card goes quiet. The answer carries any message the user left on your card. Read it and act on it. Needs the app window open. This is a card, so nothing is stored in memory.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -661,11 +661,11 @@ const TOOLS = [
       properties: {
         tasks: {
           type:        'array',
-          description: 'The tasks, in execution order. Each item is a string, or {"text": string, "group": string} where group is the STEP the task belongs to (e.g. "Step 1 · Mockup"); tasks with the same group are shown under one header in the list. One concrete, actionable line each; 300 characters max.',
+          description: 'The tasks, in execution order. Each item is a string, or {"text": string, "group": string, "description": string} where group is the STEP the task belongs to (e.g. "Step 1 · Mockup"); tasks with the same group are shown under one header in the list. One concrete, actionable line each, 300 characters max; longer detail goes in description (4000 max). A longer text is filed shortened and the answer says so.',
           items: {
             anyOf: [
               { type: 'string' },
-              { type: 'object', properties: { text: { type: 'string' }, group: { type: 'string' } }, required: ['text'] },
+              { type: 'object', properties: { text: { type: 'string' }, group: { type: 'string' }, description: { type: 'string' } }, required: ['text'] },
             ],
           },
         },
@@ -1252,6 +1252,7 @@ class MnemoMcpServer {
 
         const formatted = result.chronicles.map((c, i) => {
           const isDoc      = DOC_SPINES.has(String(c.spineType).toUpperCase());
+          const stale      = freshnessLine(c.freshness);
           const raw        = unwrapContent(c.content ?? '');
           const { text: snippet, truncated, totalLen } = truncate(raw);
           const truncHint  = truncated
@@ -1265,6 +1266,7 @@ class MnemoMcpServer {
             ...(isDoc
               ? ['> ⚠️ Design/vision doc: verify class names, file paths and identifiers against the actual source code before relying on them.']
               : []),
+            ...(stale ? [stale] : []),
             '',
             snippet || '_(no content)_',
             truncHint,
@@ -1295,7 +1297,9 @@ class MnemoMcpServer {
         const sources = (result.sources ?? []).slice(0, 6).map((c, i) => {
           const raw     = unwrapContent(c.content ?? '');
           const snippet = raw.length > 200 ? raw.slice(0, 200).trimEnd() + '…' : raw;
-          return `- [${i + 1}] ${c.spineType} · ${c.id}${snippet ? `: ${snippet}` : ''}`;
+          const stale   = freshnessLine(c.freshness);
+          return `- [${i + 1}] ${c.spineType} · ${c.id}${snippet ? `: ${snippet}` : ''}${stale ? `
+  ${stale}` : ''}`;
         }).join('\n');
 
         const sourcesBlock = sources

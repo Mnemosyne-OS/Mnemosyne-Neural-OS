@@ -230,6 +230,44 @@ export function onHostConfig(
  * to `unknown` broke their call sites. Precisely-shaped envelopes are typed;
  * the rest stays `any` until the host actions publish response schemas. */
 
+// ── Gestures (doc 106 §32) ─────────────────────────────────────────────────
+
+/** The standard gestures a cartridge may take, declared in its manifest's
+ *  `gestures.takes`. The OS gestures (move by the corner, full screen,
+ *  close, the pad) are never in this list: a cartridge cannot take them. */
+export type MnemoGestureName = 'orbit' | 'pan' | 'depth' | 'zoom' | 'recenter' | 'point' | 'select' | 'next' | 'prev';
+
+/** One gesture step, as the host sends it. Distances are px of the cartridge. */
+export type MnemoGesture =
+  | { kind: 'orbit'; dx: number; dy: number }
+  | { kind: 'pan'; dx: number; dy: number }
+  | { kind: 'depth'; factor: number }
+  | { kind: 'zoom'; factor: number }
+  | { kind: 'recenter' }
+  /** Where the index aims in your page, in its px; null when the aim left it. */
+  | { kind: 'point'; x: number | null; y: number | null }
+  | { kind: 'select'; x: number; y: number }
+  | { kind: 'next' }
+  | { kind: 'prev' }
+  /** A pose the person taught for one of your `gestures.actions`, held. */
+  | { kind: 'action'; id: string };
+
+/** One handler per gesture you take. A gesture you did not declare never arrives. */
+export type MnemoGestureHandlers = {
+  [K in MnemoGesture['kind']]?: (g: Extract<MnemoGesture, { kind: K }>) => void;
+};
+
+export interface MnemoGestureSubscription {
+  /** Resolves with the gestures the host will send once it granted them;
+   *  rejects with the reason it refused (permission denied, a manifest
+   *  without `gestures.takes`, no host). */
+  ready: Promise<{ takes: MnemoGestureName[]; actions: string[] }>;
+  /** Stop receiving. Safe to call more than once. */
+  off: () => void;
+}
+
+const GESTURE_KINDS: readonly string[] = ['orbit', 'pan', 'depth', 'zoom', 'recenter', 'point', 'select', 'next', 'prev', 'action'];
+
 export class MnemoCartridgeSDK {
   private pluginId: string;
 
@@ -587,6 +625,110 @@ export class MnemoCartridgeSDK {
   /** Opens an installed/linked cartridge in its own window. */
   public launchPlugin(id: string): Promise<{ success: boolean; error?: string }> {
     return this.invoke('plugins.launch', { id });
+  }
+
+  // ── Gestures (doc 106 §32) ─────────────────────────────────────────────
+
+  /**
+   * Receive the hand gestures the person makes while your cartridge is in
+   * front (in full screen). Declare them first in `mnemo-plugin.json`:
+   *
+   * ```json
+   * "permissions": ["gesture:receive"],
+   * "gestures": {
+   *   "takes": ["orbit", "depth", "zoom", "recenter"],
+   *   "actions": [{ "id": "explode", "label": { "en": "Exploded view" } }]
+   * }
+   * ```
+   *
+   * An action in `actions` appears in the person's « My gestures » under your
+   * app's name. The person teaches its pose there; you receive
+   * `{ kind: 'action', id }` when that pose is held while your app is in front.
+   *
+   * The host asks the person once for `gesture:receive`. Your cartridge
+   * never sees the camera nor the hand: it receives intentions, such as
+   * « turn by 12 px » or « come closer by 3 % ».
+   *
+   * @example
+   * const sub = sdk.onGestures({
+   *   orbit: ({ dx, dy }) => model.rotate(dx, dy),
+   *   depth: ({ factor }) => camera.dolly(factor),
+   *   recenter: () => camera.reset(),
+   * });
+   * sub.ready.catch(err => showHint(err.message));
+   * // later: sub.off();
+   */
+  public onGestures(handlers: MnemoGestureHandlers, timeoutMs: number = DEFAULT_INVOKE_TIMEOUT_MS): MnemoGestureSubscription {
+    const requestId = Math.random().toString(36).substring(7);
+    let stopped = false;
+    let timer: number | undefined;
+    let settle: { resolve: (v: { takes: MnemoGestureName[]; actions: string[] }) => void; reject: (e: Error) => void } | null = null;
+    const ready = new Promise<{ takes: MnemoGestureName[]; actions: string[] }>((resolve, reject) => { settle = { resolve, reject }; });
+    // A subscription nobody awaits must not turn a refusal into an
+    // unhandled rejection; the caller still sees it through `ready`.
+    ready.catch(() => undefined);
+
+    const finish = (fn: (s: NonNullable<typeof settle>) => void) => {
+      if (timer !== undefined) { window.clearTimeout(timer); timer = undefined; }
+      const s = settle;
+      settle = null;
+      if (s) fn(s);
+    };
+
+    const listener = (event: MessageEvent) => {
+      // SECURITY: only the host frame (our parent) may send gestures.
+      if (event.source !== window.parent) return;
+      const d = event.data;
+      if (!d || typeof d.type !== 'string') return;
+      if (d.type === 'MNEMO_GESTURE_READY' && d.requestId === requestId) {
+        const takes = Array.isArray(d.takes) ? d.takes.filter((k: unknown) => typeof k === 'string' && GESTURE_KINDS.includes(k)) : [];
+        const actions = Array.isArray(d.actions) ? d.actions.filter((a: unknown) => typeof a === 'string') : [];
+        finish(s => s.resolve({ takes, actions }));
+        return;
+      }
+      if (d.type === 'MNEMO_GESTURE_REFUSED' && d.requestId === requestId) {
+        window.removeEventListener('message', listener);
+        finish(s => s.reject(new Error(typeof d.error === 'string' ? d.error : 'The host refused the gestures')));
+        return;
+      }
+      if (d.type === 'MNEMO_GESTURE' && d.requestId === requestId && !stopped) {
+        const g = d.gesture as MnemoGesture | undefined;
+        if (!g || !GESTURE_KINDS.includes(g.kind)) return;
+        const handler = handlers[g.kind] as ((x: MnemoGesture) => void) | undefined;
+        if (!handler) return;
+        try {
+          handler(g);
+        } catch (err) {
+          console.error(`[MnemoCartridgeSDK] the "${g.kind}" gesture handler threw:`, err);
+        }
+      }
+    };
+
+    const off = () => {
+      if (stopped) return;
+      stopped = true;
+      window.removeEventListener('message', listener);
+      finish(s => s.reject(new Error('Gestures were turned off before the host answered')));
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'MNEMO_GESTURE_UNSUBSCRIBE', pluginId: this.pluginId, requestId }, MNEMO_HOST_ORIGIN);
+      }
+    };
+
+    if (window.parent === window) {
+      stopped = true;
+      finish(s => s.reject(new Error('No Mnemosyne host: gestures were asked outside the shell (this page is not embedded in a host iframe).')));
+      return { ready, off };
+    }
+
+    window.addEventListener('message', listener);
+    if (timeoutMs > 0) {
+      timer = window.setTimeout(
+        () => finish(s => s.reject(new Error(`Host did not answer the gesture request within ${Math.round(timeoutMs / 1000)}s`))),
+        timeoutMs,
+      );
+    }
+    window.parent.postMessage({ type: 'MNEMO_GESTURE_SUBSCRIBE', pluginId: this.pluginId, requestId }, MNEMO_HOST_ORIGIN);
+    return { ready, off };
   }
 
   // ── System ─────────────────────────────────────────────────────────────

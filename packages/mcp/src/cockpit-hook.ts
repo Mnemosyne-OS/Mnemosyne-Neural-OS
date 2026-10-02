@@ -30,7 +30,8 @@
 import { MnemoWsClient } from './ws-client';
 import { workingTreeOf } from '../../agent-transcripts/src/node';
 import {
-  HOOK_APP_ID, planFor, titleFrom, statsFrom, detailFrom, renderMail, blockOutput, type HookInput, type HookMail,
+  HOOK_APP_ID, RESUME_UPDATE, planFor, titleFrom, statsFrom, detailFrom, renderMail, blockOutput,
+  type HookInput, type HookMail,
 } from './cockpitHook';
 
 const CONNECT_TIMEOUT_MS = 1_500;
@@ -112,7 +113,9 @@ async function main(): Promise<void> {
       // The session is not over: say so on the card, then hand the mail over
       // as the reason the stop is refused. The mail is already marked
       // delivered, so a second Stop finds nothing and ends normally.
-      await client._rpc('sdk.cockpit.update', { ...base, state: 'working', status: 'reading the message left on the card' });
+      // RESUME_UPDATE takes NO mail: this answer is never read, and a scope
+      // of `all` here swallowed the tree's broadcasts (see cockpitHook.ts).
+      await client._rpc('sdk.cockpit.update', { ...base, ...RESUME_UPDATE });
       process.stdout.write(blockOutput(mail) + '\n');
     } else {
       process.stdout.write(renderMail(mail) + '\n');

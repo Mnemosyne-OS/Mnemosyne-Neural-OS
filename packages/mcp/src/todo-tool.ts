@@ -17,7 +17,7 @@
  */
 
 export interface TodoAddArgs {
-  tasks: Array<string | { text: string; group?: string }>;
+  tasks: Array<string | { text: string; group?: string; description?: string }>;
   list?: string;
   createList?: boolean;
   color?: string;
@@ -32,7 +32,7 @@ export interface TodoAddResult {
   added?: number;
   created?: boolean;
   /** Present only when the plan LOST lines: empty texts, and tasks past the cap. */
-  dropped?: { empty: number; overflow: number };
+  dropped?: { empty: number; overflow: number; clipped?: number };
   /** 'file' = the app was closed and the host wrote the file directly. */
   via?: 'window' | 'file';
 }
@@ -69,6 +69,10 @@ function renderTodoLost(result: TodoAddResult): string {
   if (d.overflow > 0) {
     parts.push(`${d.overflow} past the per-call cap ${d.overflow === 1 ? 'was' : 'were'} not filed, send ${d.overflow === 1 ? 'it' : 'them'} in another call`);
   }
+  const clipped = d.clipped ?? 0;
+  if (clipped > 0) {
+    parts.push(`${clipped} task${clipped === 1 ? ' was' : 's were'} filed SHORTENED (text over 300 characters or description over 4000); put the detail in the description, or fix ${clipped === 1 ? 'it' : 'them'} with mnemosyne_todo_update`);
+  }
   return parts.length ? ` ${parts.join('; ')}.` : '';
 }
 
@@ -103,8 +107,17 @@ export function renderTodoAdd(result: TodoAddResult, asked: number): string {
       return 'No workspace is configured on this machine, so there is no backlog file yet. The human picks a vault folder in the app first.';
     case 'TIMEOUT':
       return 'The app did not answer in time. Nothing was written. Is the canvas open? Try again once the window is up.';
+    case 'FILE_ERROR':
+    case 'FILE_PARSE':
+    case 'FILE_SHAPE':
+      return 'The backlog file exists but the app could not read it as a To-do file, so nothing was written. The human needs to look at todo_widget.json; retrying will not help.';
+    case 'FILE_NOVAULT':
+      return 'No workspace is configured on this machine, so there is no backlog file yet. The human picks a vault folder in the app first.';
+    case 'FILE_IDLE':
+    case 'FILE_LOADING':
+      return 'The app was still reading the backlog file. Nothing was written; try again in a moment.';
     case 'WRITE_FAILED':
-      return 'The app refused the write: the backlog file was not readable yet, or the disk said no. Nothing was written; try again in a moment.';
+      return 'The disk refused the write. Nothing was written; try again in a moment.';
     default:
       return `The backlog refused: ${result.error ?? 'unknown error'}. Nothing was written.${lists}`;
   }

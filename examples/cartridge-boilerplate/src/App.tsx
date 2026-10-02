@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MnemoCartridgeSDK } from './sdk/mnemo-sdk';
+import GestureCube from './GestureCube';
 
 // Must match "name" in mnemo-plugin.json — the host keys your sandbox vault on
 // it. Rename it later and the old vault is orphaned, with no migration path.
@@ -227,6 +228,13 @@ export default function App() {
               <span style={styles.pathLabel}>{selectedFolder}</span>
             )}
           </div>
+        </section>
+
+        {/* Hand gestures (doc 106 §32): see GestureCube.tsx and mnemo-plugin.json */}
+        <section style={styles.card}>
+          <h2 style={styles.cardTitle}>Hand Gestures</h2>
+          <p style={styles.cardDesc}>Turn and enter a 3D object with your hand. The host sends intentions, never the camera.</p>
+          <GestureCube sdk={sdk} />
         </section>
 
         {/* AI Playground Section */}

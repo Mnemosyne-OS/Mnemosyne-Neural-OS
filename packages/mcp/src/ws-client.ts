@@ -51,6 +51,12 @@ export interface MnemoChronicle {
   timestamp:     number | string;
   score:         number;
   source_app_id: string;
+  /**
+   * Whether the source file still holds what was read (apps built after 2026-09-28). Absent
+   * from older apps and from rows with no source file. Read by
+   * `freshnessLine`, which validates it: never trust its shape here.
+   */
+  freshness?:    unknown;
 }
 
 export interface QueryResult {
@@ -268,6 +274,13 @@ export class MnemoWsClient {
     private readonly manifest: AppManifest,
     private readonly wsPort:   number = 7799,
     private readonly timeoutMs: number = 10_000,
+    /**
+     * How long `sdk.register` may take. Longer than an ordinary RPC for a
+     * server whose registration opens a consent dialog the human has to read
+     * (os-actions and its sensitive scope): the memory server keeps the
+     * default, its scopes are auto-granted and never wait on anyone.
+     */
+    private readonly registerTimeoutMs: number = RPC_TIMEOUT_MS,
   ) {}
 
   get isConnected(): boolean { return this.connected; }
@@ -301,7 +314,7 @@ export class MnemoWsClient {
           console.error('[mnemo-ws-client] ws error:', (err as Error).message);
         });
         try {
-          const reg = await this._rpc('sdk.register', { manifest: this.manifest }) as
+          const reg = await this._rpc('sdk.register', { manifest: this.manifest }, this.registerTimeoutMs) as
             { token: string; expiresAt: number; appId: string };
           if (!reg?.token) throw new Error('sdk.register returned no token');
           this.token     = reg.token;

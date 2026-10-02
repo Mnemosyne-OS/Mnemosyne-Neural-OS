@@ -3,7 +3,34 @@
   "displayName": "Cartridge Boilerplate",
   "version": "1.0.0",
   "description": "Standard template for Mnemosyne OS Cartridges",
-  "permissions": ["vault:read", "vault:write", "model:infer", "dialog:open"],
+  "permissions": [
+    "vault:read",
+    "vault:write",
+    "model:infer",
+    "dialog:open",
+    "gesture:receive"
+  ],
+  "gestures": {
+    "takes": [
+      "orbit",
+      "depth",
+      "recenter",
+      "point",
+      "select",
+      "next",
+      "prev"
+    ],
+    "actions": [
+      {
+        "id": "explode",
+        "label": {
+          "en": "Exploded view",
+          "fr": "Vue éclatée",
+          "es": "Vista despiezada"
+        }
+      }
+    ]
+  },
   "updateStrategy": "git",
   "entrypoints": {
     "renderer": "http://localhost:5185/index.html"

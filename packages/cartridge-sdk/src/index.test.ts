@@ -334,3 +334,101 @@ describe('MnemoCartridgeSDK — embedded', () => {
     });
   });
 });
+
+describe('onGestures (doc 106 §32)', () => {
+  let hostWin: Window;
+  let postSpy: ReturnType<typeof vi.spyOn>;
+  let parentDescriptor: PropertyDescriptor | undefined;
+
+  beforeEach(() => {
+    const frame = document.createElement('iframe');
+    document.body.appendChild(frame);
+    hostWin = frame.contentWindow as Window;
+    postSpy = vi.spyOn(hostWin, 'postMessage').mockImplementation(() => {});
+    parentDescriptor = Object.getOwnPropertyDescriptor(window, 'parent');
+    Object.defineProperty(window, 'parent', { configurable: true, get: () => hostWin });
+  });
+
+  afterEach(() => {
+    if (parentDescriptor) Object.defineProperty(window, 'parent', parentDescriptor);
+    else delete (window as unknown as { parent?: unknown }).parent;
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+  });
+
+  const request = () => postSpy.mock.calls[0]![0] as { type: string; pluginId: string; requestId: string };
+  const fromHost = (data: unknown, source: Window | null = hostWin) =>
+    window.dispatchEvent(new MessageEvent('message', { data, source }));
+
+  it('asks the host once, then delivers each declared gesture to its handler', async () => {
+    const orbit = vi.fn();
+    const sub = new MnemoCartridgeSDK('body-atlas').onGestures({ orbit });
+    expect(request()).toMatchObject({ type: 'MNEMO_GESTURE_SUBSCRIBE', pluginId: 'body-atlas' });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_GESTURE_READY', requestId, takes: ['orbit', 'depth', 'bogus'] });
+    await expect(sub.ready).resolves.toEqual({ takes: ['orbit', 'depth'], actions: [] });
+    fromHost({ type: 'MNEMO_GESTURE', requestId, gesture: { kind: 'orbit', dx: 3, dy: 4 } });
+    expect(orbit).toHaveBeenCalledWith({ kind: 'orbit', dx: 3, dy: 4 });
+    sub.off();
+  });
+
+  it("an app's own action arrives on the action handler, with its id", async () => {
+    const action = vi.fn();
+    const sub = new MnemoCartridgeSDK('body-atlas').onGestures({ action });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_GESTURE_READY', requestId, takes: [], actions: ['explode', 7] });
+    await expect(sub.ready).resolves.toEqual({ takes: [], actions: ['explode'] });
+    fromHost({ type: 'MNEMO_GESTURE', requestId, gesture: { kind: 'action', id: 'explode' } });
+    expect(action).toHaveBeenCalledWith({ kind: 'action', id: 'explode' });
+    sub.off();
+  });
+
+  it('ignores a gesture from anything but the host frame, or for another subscription', async () => {
+    const orbit = vi.fn();
+    const sub = new MnemoCartridgeSDK('p').onGestures({ orbit });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_GESTURE', requestId, gesture: { kind: 'orbit', dx: 1, dy: 1 } }, null);
+    fromHost({ type: 'MNEMO_GESTURE', requestId: 'other', gesture: { kind: 'orbit', dx: 1, dy: 1 } });
+    expect(orbit).not.toHaveBeenCalled();
+    sub.off();
+  });
+
+  it('a refusal rejects ready with the host reason, and nothing arrives after', async () => {
+    const orbit = vi.fn();
+    const sub = new MnemoCartridgeSDK('p').onGestures({ orbit });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_GESTURE_REFUSED', requestId, error: 'permission denied' });
+    await expect(sub.ready).rejects.toThrow('permission denied');
+    fromHost({ type: 'MNEMO_GESTURE', requestId, gesture: { kind: 'orbit', dx: 1, dy: 1 } });
+    expect(orbit).not.toHaveBeenCalled();
+  });
+
+  it('off() tells the host and stops the handlers', () => {
+    const orbit = vi.fn();
+    const sub = new MnemoCartridgeSDK('p').onGestures({ orbit });
+    const { requestId } = request();
+    sub.off();
+    expect(postSpy.mock.calls.at(-1)![0]).toMatchObject({ type: 'MNEMO_GESTURE_UNSUBSCRIBE', requestId });
+    fromHost({ type: 'MNEMO_GESTURE', requestId, gesture: { kind: 'orbit', dx: 1, dy: 1 } });
+    expect(orbit).not.toHaveBeenCalled();
+  });
+
+  it('a handler that throws is logged and does not stop the next gesture', async () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {});
+    let n = 0;
+    const sub = new MnemoCartridgeSDK('p').onGestures({ zoom: () => { n++; if (n === 1) throw new Error('boom'); } });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_GESTURE', requestId, gesture: { kind: 'zoom', factor: 2 } });
+    fromHost({ type: 'MNEMO_GESTURE', requestId, gesture: { kind: 'zoom', factor: 2 } });
+    expect(n).toBe(2);
+    expect(err).toHaveBeenCalled();
+    sub.off();
+  });
+});
+
+describe('onGestures outside the shell', () => {
+  it('rejects at once with the reason, and asks nothing', async () => {
+    const sub = new MnemoCartridgeSDK('p').onGestures({});
+    await expect(sub.ready).rejects.toThrow('No Mnemosyne host');
+  });
+});

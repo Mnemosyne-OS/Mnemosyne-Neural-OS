@@ -70,8 +70,25 @@ export interface HookPlan {
    * broadcast to the whole tree is read at the next prompt or the next
    * commit, never by holding a session that was done.
    */
-  mailScope: 'addressed' | 'all';
+  mailScope: 'addressed' | 'all' | 'none';
 }
+
+/**
+ * The follow-up a blocked Stop sends before handing the mail over: the card
+ * says the session is back at work, and NOTHING is taken from the box.
+ *
+ * 🚨 `mailScope: 'none'`, never the default. The first Stop update already
+ * took the mail addressed to this session; a follow-up with no scope read as
+ * `all` on the host and took every tree broadcast with it, marked them
+ * delivered, and the hook threw that answer away — a note left for the whole
+ * tree was shown to nobody (verifier pass on doc 110, 2026-09-26). A host
+ * older than the scope treats it as `all`: no worse than before.
+ */
+export const RESUME_UPDATE = {
+  state: 'working',
+  status: 'reading the message left on the card',
+  mailScope: 'none',
+} as const satisfies Pick<HookPlan, 'state' | 'status' | 'mailScope'>;
 
 /** One line, trimmed, capped — a status is a glance, not a transcript. */
 export function firstLine(text: unknown, max = MAX_STATUS): string | undefined {

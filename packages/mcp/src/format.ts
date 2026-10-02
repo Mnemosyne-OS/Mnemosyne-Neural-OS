@@ -9,6 +9,7 @@
  */
 
 import type { MnemoChronicle } from './ws-client.js';
+import { localStamp } from './local-time.js';
 
 /**
  * Unwrap the SemanticChunker envelope `{ raw, spineType, ... }` and return only
@@ -171,4 +172,43 @@ export function renderReport(job: VoiceJobLike, waited: number): string {
     + `${waited > 0 ? `Waited ${human(waited)}; ` : ''}`
     + `synthesis runs at roughly real time, so a long script takes as long as it plays. `
     + `Call mnemosyne_voice_status with this job id to check again. Do NOT start the render over.`;
+}
+
+/** An ISO instant → epoch ms, or null when it cannot be read. */
+function instantOf(iso: unknown): number | null {
+  if (typeof iso !== 'string') return null;
+  const ms = Date.parse(iso);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+/** The local day of an instant, `YYYY-MM-DD` (this machine's clock, never UTC). */
+const localDay = (ms: number): string => localStamp(ms).slice(0, 10);
+const localTime = (ms: number): string => localStamp(ms).slice(11);
+
+/**
+ * One line for a result whose source file no longer says what the memory says,
+ * or null. Only `changed` and `missing` print: a current file, an unchecked one,
+ * or a row with no file cost nothing, so a fresh vault adds zero tokens.
+ * The path is printed because it is the fix: the agent can read the file.
+ */
+export function freshnessLine(freshness: unknown): string | null {
+  if (!freshness || typeof freshness !== 'object') return null;
+  const f = freshness as Record<string, unknown>;
+  const filePath = typeof f['filePath'] === 'string' && f['filePath'] ? f['filePath'] : null;
+  if (!filePath) return null;
+  if (f['state'] === 'changed') {
+    const modified = instantOf(f['modifiedAt']);
+    const read = instantOf(f['readAt']);
+    if (modified === null || read === null) return null;
+    // Two dates on the same local day say nothing on their own: print the times.
+    const when = localDay(modified) === localDay(read)
+      ? `on ${localDay(modified)} at ${localTime(modified)}, after this memory was taken at ${localTime(read)}`
+      : `on ${localDay(modified)}, after this memory was taken on ${localDay(read)}`;
+    return `> ⚠️ Stale: the file changed ${when} (local time). Read \`${filePath}\` for its current state.`;
+  }
+  if (f['state'] === 'missing') {
+    const read = instantOf(f['readAt']);
+    return `> ⚠️ Gone: \`${filePath}\` no longer exists${read !== null ? `; this memory was taken on ${localDay(read)}` : ''}.`;
+  }
+  return null;
 }

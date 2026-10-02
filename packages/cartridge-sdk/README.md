@@ -150,6 +150,56 @@ Cloud route is metered: local inference costs nothing, and a personal API key is
 billed by the provider, which the host never sees. Those two are different
 statements. Say which one applies instead of displaying a misleading `0`.
 
+## Taking the hand gestures
+
+A cartridge with its own space, such as a 3D model, a map or an image you
+zoom, can take the hand gestures of Mnemosyne OS. Declare them in
+`mnemo-plugin.json`:
+
+```json
+"permissions": ["gesture:receive"],
+"gestures": { "takes": ["orbit", "depth", "zoom", "recenter"] }
+```
+
+Then subscribe:
+
+```ts
+const sub = sdk.onGestures({
+  orbit: ({ dx, dy }) => model.rotate(dx, dy),  // pinch and move
+  depth: ({ factor }) => camera.dolly(factor),  // hand toward the camera: > 1
+  zoom: ({ factor }) => camera.zoom(factor),    // two hands
+  recenter: () => camera.reset(),               // open hands held still
+  point: ({ x, y }) => highlightAt(x, y),       // the index aims; null when it leaves
+  select: ({ x, y }) => openAt(x, y),           // pinch and hold on a point
+  next: () => showNext(),                       // open hand swiped
+  prev: () => showPrevious(),
+});
+sub.ready.catch((err) => showWhy(err.message));
+// on unmount: sub.off();
+```
+
+Your app can also declare its own actions, for things no standard gesture
+covers:
+
+```json
+"gestures": {
+  "takes": ["orbit"],
+  "actions": [{ "id": "explode", "label": { "en": "Exploded view", "fr": "Vue éclatée" } }]
+}
+```
+
+Each action appears in the person's « My gestures » under your app's name.
+The person teaches the pose there. You receive it on the `action` handler:
+`action: ({ id }) => { if (id === 'explode') model.explode(); }`.
+
+The host asks the person once for `gesture:receive`. Your cartridge
+receives intentions, such as « turn by 12 px ». It never sees the camera
+or the hand. Gestures arrive while your window is in full screen. `point` and `select` come in your page's own
+pixels, so `document.elementFromPoint(x, y)` finds what was aimed. While your
+app takes `next` and `prev`, a swipe goes to you instead of switching the
+desktop. Moving a
+window by its corner, full screen, close and the pad stay with the OS.
+
 ## Deleting what you created
 
 Two different things, and your UI must not blur them:

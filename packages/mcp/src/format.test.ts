@@ -14,6 +14,7 @@ import {
   isResonanceChronicle,
   selectResonances,
   toResonanceView,
+  freshnessLine,
 } from './format.js';
 import type { MnemoChronicle } from './ws-client.js';
 
@@ -85,4 +86,41 @@ test('unwraps the envelope before extracting fields', () => {
   const body = '[RESUME_SESSION] [RESONANCE:wrapped]\nPhase 1 — 2026-01-01T00:00:00.000Z';
   const v = toResonanceView(chronicle({ id: '9', spineType: 'DECISION', content: JSON.stringify({ raw: body, spineType: 'DECISION' }) }));
   assert.equal(v.id, 'wrapped');
+});
+
+// ── freshnessLine — a result whose source file moved on ──────────────────────
+
+// Instants built from LOCAL wall-clock parts, so these hold in every timezone.
+const at = (y: number, mo: number, d: number, h = 12, mi = 0): string => new Date(y, mo - 1, d, h, mi).toISOString();
+
+test('freshnessLine: on different days, prints both local days and the path to read', () => {
+  const line = freshnessLine({ state: 'changed', filePath: '/repo/docs/a.md', readAt: at(2026, 8, 25, 10), modifiedAt: at(2026, 9, 20, 8) });
+  assert.equal(line, '> ⚠️ Stale: the file changed on 2026-09-20, after this memory was taken on 2026-08-25 (local time). Read `/repo/docs/a.md` for its current state.');
+});
+
+test('freshnessLine: on the same local day, prints the two times instead of one date twice', () => {
+  const line = freshnessLine({ state: 'changed', filePath: '/repo/q.ts', readAt: at(2026, 9, 28, 21, 41), modifiedAt: at(2026, 9, 28, 22, 24) });
+  assert.equal(line, '> ⚠️ Stale: the file changed on 2026-09-28 at 22:24, after this memory was taken at 21:41 (local time). Read `/repo/q.ts` for its current state.');
+});
+
+test('freshnessLine: the day is the local one, never the UTC one', () => {
+  // 23:30 local is the next day in UTC for every zone west of Greenwich, the previous one east of it.
+  const line = freshnessLine({ state: 'missing', filePath: '/repo/b.md', readAt: at(2026, 9, 28, 23, 30) });
+  assert.equal(line, '> ⚠️ Gone: `/repo/b.md` no longer exists; this memory was taken on 2026-09-28.');
+});
+
+test('freshnessLine: a missing file is said, with its read day only when known', () => {
+  assert.equal(freshnessLine({ state: 'missing', filePath: '/repo/b.md', readAt: at(2026, 8, 25, 10) }),
+    '> ⚠️ Gone: `/repo/b.md` no longer exists; this memory was taken on 2026-08-25.');
+  assert.equal(freshnessLine({ state: 'missing', filePath: '/repo/b.md', readAt: null }),
+    '> ⚠️ Gone: `/repo/b.md` no longer exists.');
+});
+
+test('freshnessLine: current, unchecked, absent or malformed cost nothing', () => {
+  for (const f of [
+    undefined, null, 'changed', { state: 'current' }, { state: 'unchecked', reason: 'timeout' },
+    { state: 'changed', filePath: '/a', readAt: 'garbage', modifiedAt: '2026-09-20T08:00:00.000Z' },
+    { state: 'changed', readAt: '2026-08-25T10:00:00.000Z', modifiedAt: '2026-09-20T08:00:00.000Z' },
+    { state: 'missing', filePath: '' },
+  ]) assert.equal(freshnessLine(f), null, JSON.stringify(f));
 });

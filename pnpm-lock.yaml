@@ -16,8 +16,8 @@ importers:
   examples/cartridge-boilerplate:
     dependencies:
       '@mnemosyne_os/cartridge-sdk':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.4.4
+        version: 0.4.4
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -665,8 +665,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mnemosyne_os/cartridge-sdk@0.4.0':
-    resolution: {integrity: sha512-H58quNJ+rN4PXJGyoTi6gBFLG7Vg1XubqWvze9JcD/dUYpcO5WUsRPjmR9lirFjyihK+WA7Yu7+2JI/Hnqg2ng==}
+  '@mnemosyne_os/cartridge-sdk@0.4.4':
+    resolution: {integrity: sha512-k5gg+0VMTYGzEPfSUiylHTfVs88qqi5Ls5nOLK3yPay6b5x5l4Xb6LhCmYTu7aJkrgQnvQkN4NNhvhoTiYKx1Q==}
 
   '@modelcontextprotocol/sdk@1.30.0':
     resolution: {integrity: sha512-xKd8OIzlqNzcqcNumGAa6g+PW2kjD5vrpcKOnfldAUPP3j7lnqMPwlTXQm8gF+UwH72z0lqaRbjr9hqGz0eITA==}
@@ -2453,7 +2453,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mnemosyne_os/cartridge-sdk@0.4.0': {}
+  '@mnemosyne_os/cartridge-sdk@0.4.4': {}
 
   '@modelcontextprotocol/sdk@1.30.0(zod@3.25.76)':
     dependencies:
