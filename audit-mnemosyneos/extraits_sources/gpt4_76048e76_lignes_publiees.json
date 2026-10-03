@@ -1,0 +1,72 @@
+{
+  "source": "Mnemosyne-OS/MnemosyneOS---benchmarks@d69c78264c532eb27255a248be32ea235d7e7a64 (CC-BY 4.0 ; champs gold = LongMemEval, MIT)",
+  "question_id": "gpt4_76048e76",
+  "rows": {
+    "duel-full.rejudged.json": {
+      "id": "gpt4_76048e76",
+      "cat": "temporal-reasoning",
+      "gold": "bike",
+      "generated": "Based on the memory context, you took care of the bike first.\n\n*   **Bike:** In mid-February 2023, you took your hybrid bike for repairs because of gear shifting issues (Source 34).\n*   **Car:** On February 27, 2023, you washed the Toyota Corolla (Source 34).",
+      "nSrc": 35,
+      "nDream": 3,
+      "infra": false,
+      "judge": {
+        "heuristic": true,
+        "matchType": "exact",
+        "flexible": true,
+        "strict": true
+      }
+    },
+    "duel-full-lexfusion.json": {
+      "id": "gpt4_76048e76",
+      "cat": "temporal-reasoning",
+      "gold": "bike",
+      "generated": "Based on the memory context, you took care of your car first in February.\n\n*   **Car:** You washed your car on February 3rd (Source 5).\n*   **Bike:** You took your hybrid bike for repairs in mid-February due to gear shifting issues (Source 2, 3, 34).",
+      "nSrc": 35,
+      "nDream": 3,
+      "infra": false,
+      "judge": {
+        "heuristic": true,
+        "matchType": "exact",
+        "flexible": true,
+        "strict": true
+      }
+    },
+    "duel-full-lexfusion-r2.json": {
+      "id": "gpt4_76048e76",
+      "cat": "temporal-reasoning",
+      "gold": "bike",
+      "generated": "Based on the memory context, you took care of your car first in February.\n\nYou washed your car on February 3rd (Source 5). Your hybrid bike was taken in for repairs in \"mid-February\" (Source 2, 3, 34).",
+      "nSrc": 35,
+      "nDream": 3,
+      "infra": false,
+      "judge": {
+        "heuristic": true,
+        "matchType": "exact",
+        "flexible": true,
+        "strict": true
+      }
+    }
+  },
+  "recall": {
+    "recall-control.json": {
+      "id": "gpt4_76048e76",
+      "cat": "temporal-reasoning",
+      "evidence": 2,
+      "found": 1,
+      "all": false,
+      "locatable": true,
+      "chunk": true
+    },
+    "recall-fusion-persistent.json": {
+      "id": "gpt4_76048e76",
+      "cat": "temporal-reasoning",
+      "evidence": 2,
+      "found": 2,
+      "all": true,
+      "locatable": true,
+      "chunk": true
+    }
+  },
+  "ledger_strict": "{\"question_id\":\"gpt4_76048e76\",\"category\":\"temporal-reasoning\",\"correct\":true,\"match_type\":\"exact\",\"replay_stable\":true,\"baseline_correct\":true,\"generated\":\"Based on the memory context, you took care of your car first in February.\\n\\n*   **Car:** You washed your car on February 3rd (Source 5).\\n*   **Bike:** You took your hybrid bike for repairs in mid-February due to gear shif…\",\"expected\":\"bike\",\"runs\":[{\"log\":\"lexical-2026-08/runs/duel-full-lexfusion.json\",\"verdict\":\"HIT\",\"answer\":\"Based on the memory context, you took care of your car first in February.\\n\\n*   **Car:** You washed your car on February 3rd (Source 5).\\n*   **Bike:** You took your hybrid bike for repairs in mid-February due to gear shif…\"},{\"log\":\"lexical-2026-08/runs/duel-full-lexfusion-r2.json\",\"verdict\":\"HIT\",\"answer\":\"Based on the memory context, you took care of your car first in February.\\n\\nYou washed your car on February 3rd (Source 5). Your hybrid bike was taken in for repairs in \\\"mid-February\\\" (Source 2, 3, 34).\"}]}"
+}

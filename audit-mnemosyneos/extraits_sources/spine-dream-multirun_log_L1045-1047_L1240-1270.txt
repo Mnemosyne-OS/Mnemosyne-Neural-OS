@@ -1,0 +1,34 @@
+━━ aae3761f [multi-session] How many hours in total did I spend driving to my three road trip destinations combined?
+2026-07-13T22:31:30.770Z    expected: 15 hours for getting to the three destinations (or 30 hours for the round trip)
+2026-07-13T22:31:30.778Z   [sort] copied _fhr_ → _fhs_aae3761f.db
+[RAG-PIPELINE] [RETRIEVAL-PROFILE] topK=32 maxSourceChars=2400
+[VAULT-CORE] Haystack resolved — Spines: 0 | Raw Chars: 54634 | vault: DEV_VAULT
+[NEURAL-ENGINE] Local models unavailable — falling back to CLOUD
+[NEURAL-ENGINE] Routing to CLOUD (vertex:gemini-2.5-pro) — RAM free: 6795Mo
+[NEURAL-ENGINE] CLOUD response in 15074ms
+2026-07-13T23:39:26.916Z   [qa] BASELINE (raw, no dream)   : MISS (17s, 32src) — Based on the provided memory, the total driving time for two of your road trips is 11 hours. * **Washington D.C.:** You drove for 6 hours (Source 1). * **Mounta…
+[RAG-PIPELINE] Vector Search in DEV_VAULT (Persistent)
+[EMBEDDING-KERNEL] ✓ harness:e5 | 768D | 19ms
+[RAG-PIPELINE] [SPACE-CONSISTENCY] query embedded by the kernel (768D — corpus space)
+[RAG-PIPELINE] [TYPE-WEIGHTED] scope=GLOBAL mode=UNIFIED
+[RAG-PIPELINE] [RETRIEVAL-PROFILE] topK=32 maxSourceChars=2400
+[RAG-PIPELINE] [DREAM-LAYER] +3 consolidation ledger(s) appended (reserve=3)
+[VAULT-CORE] Haystack resolved — Spines: 0 | Raw Chars: 64694 | vault: DEV_VAULT
+[NEURAL-ENGINE] Local models unavailable — falling back to CLOUD
+[NEURAL-ENGINE] Routing to CLOUD (vertex:gemini-2.5-pro) — RAM free: 6795Mo
+[NEURAL-ENGINE] CLOUD response in 11618ms
+2026-07-13T23:39:39.747Z   [qa] DREAM    (raw + ledgers)   : MISS (13s, 35src) — Based on the memory context, the driving duration for two road trips can be confirmed: * **Trip 1:** 6 hours driving to Washington D.C. (Source 1). * **Trip 2:*…
+[RAG-PIPELINE] Vector Search in DEV_VAULT (Persistent)
+[EMBEDDING-KERNEL] ✓ harness:e5 | 768D | 18ms
+[RAG-PIPELINE] [SPACE-CONSISTENCY] query embedded by the kernel (768D — corpus space)
+[RAG-PIPELINE] [TYPE-WEIGHTED] scope=GLOBAL mode=UNIFIED
+[RAG-PIPELINE] [RETRIEVAL-PROFILE] topK=32 maxSourceChars=2400
+[RAG-PIPELINE] [DREAM-LAYER] +3 consolidation ledger(s) appended (reserve=3)
+[VAULT-CORE] Haystack resolved — Spines: 0 | Raw Chars: 64694 | vault: DEV_VAULT
+[NEURAL-ENGINE] Local models unavailable — falling back to CLOUD
+[NEURAL-ENGINE] Routing to CLOUD (vertex:gemini-2.5-pro) — RAM free: 6795Mo
+[NEURAL-ENGINE] CLOUD response in 15904ms
+2026-07-13T23:39:56.782Z   [qa] ALL      (sorted + ledgers): HIT (17s, 35src) — Based on the memory context, driving times are specified for two road trip destinations: * **Washington D.C.:** 6 hours (Source 1) * **Mountains in Tennessee:**…
+2026-07-13T23:39:56.792Z   ⏱ aae3761f total 68min
+2026-07-13T23:39:56.793Z 
+━━ e831120c [multi-session] How many weeks did it take me to watch all the Marvel Cinematic Universe movies and the main Star Wa…

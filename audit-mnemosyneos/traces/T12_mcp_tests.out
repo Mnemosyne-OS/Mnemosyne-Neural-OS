@@ -1,0 +1,5 @@
+
+> @mnemosyne_os/mcp@2.1.1 test /tmp/kab-0/-home-user-MNEOS-BENCH/089f4fbb-8628-5707-9685-173cff99be3d/scratchpad/mnos-work/packages/mcp
+> tsx --test "src/*.test.ts"
+
+ ELIFECYCLE  Test failed. See above for more details.

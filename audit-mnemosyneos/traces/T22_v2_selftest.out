@@ -1,0 +1,24 @@
+ok   [exact    ] want=true got=true  gt="Business Administration"  gen="you graduated with a degree in Business Administration."
+ok   [miss     ] want=false got=false  gt="45 minutes each way"  gen="your daily commute is one hour each way."
+ok   [miss     ] want=false got=false  gt="four"  gen="you have tried a total of 3 Korean restaurants."
+ok   [miss     ] want=false got=false  gt="3"  gen="you need to pick up or return a total of 2 items of clothing."
+ok   [exact    ] want=true got=true  gt="The Glass Menagerie"  gen="the play you attended was a production of "The Glass Menagerie"."
+ok   [miss     ] want=false got=false  gt="Tomatoes"  gen="the marigold seeds were started on March 3rd."
+ok   [miss     ] want=false got=false  gt="3"  gen="It took 30 days"
+ok   [miss     ] want=false got=false  gt="3"  gen="It took 13 days"
+ok   [miss     ] want=false got=false  gt="3"  gen="you acquired 2 plants (Source 33)."
+ok   [miss     ] want=false got=false  gt="3"  gen="about 3.5 hours"
+ok   [miss     ] want=false got=false  gt="3"  gen="you walked 3,000 steps"
+ok   [miss     ] want=false got=false  gt="5"  gen="about 2.5 hours"
+ok   [exact    ] want=true got=true  gt="3"  gen="you have a total of 3 clothing items to pick up."
+ok   [exact    ] want=true got=true  gt="$185"  gen="you have spent a total of $185.00 on bike expenses."
+ok   [miss     ] want=false got=false  gt="$185"  gen="you have spent a total of $185.50 on bike expenses."
+ok   [exact    ] want=true got=true  gt="1,200"  gen="about 1200 dollars"
+ok   [miss     ] want=false got=false  gt="1,200"  gen="about 11,200 dollars"
+ok   [precedence] heuristic HIT, judge NO: heuristic=true judge=false -> final=false (want false)
+ok   [precedence] heuristic miss, judge YES: heuristic=false judge=true -> final=true (want true)
+ok   [precedence] judge unreachable: heuristic=true judge=null -> final=null (want null)
+ok   [precedence] abstention expected (judge skipped): heuristic=true judge=true -> final=null (want null)
+ok   [precedence] empty answer (judge skipped): heuristic=false judge=true -> final=null (want null)
+
+self-test: 22/22 expected verdicts reproduced

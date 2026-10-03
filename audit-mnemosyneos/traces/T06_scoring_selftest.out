@@ -1,0 +1,8 @@
+ok   [exact    ] want=true got=true  gt="Business Administration"
+ok   [miss     ] want=false got=false  gt="45 minutes each way"
+ok   [miss     ] want=false got=false  gt="four"
+ok   [miss     ] want=false got=false  gt="3"
+ok   [exact    ] want=true got=true  gt="The Glass Menagerie"
+ok   [miss     ] want=false got=false  gt="Tomatoes"
+
+self-test: 6/6 expected verdicts reproduced

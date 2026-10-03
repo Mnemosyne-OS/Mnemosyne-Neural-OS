@@ -1,0 +1,175 @@
+{
+  "source": "Mnemosyne-OS/MnemosyneOS---benchmarks@d69c782 beam-2026-09/runs (CC-BY 4.0 ; question/rubric = BEAM, MIT)",
+  "classement": "RÉVISÉ : cas classés 'faux positifs nets' en version 1, classement INFIRMÉ par la confrontation aux conversations sources (voir E22, T20). Conservé pour traçabilité.",
+  "rows": [
+    {
+      "id": "100K/1/abstention/0",
+      "question": "How did the user feedback influence the UI/UX improvements I made before the public launch?",
+      "rubric": [
+        "Based on the provided chat, there is no information related to how user feedback influenced UI/UX improvements"
+      ],
+      "answer": "Based on user feedback gathered before the public launch, you decided to improve the UI/UX of your application. Specifically, feedback from beta tests on a redesigned dashboard prompted you to implement a dark mode toggle and a collapsible sidebar. These changes had already demonstrated a 15% improvement in user engagement during the beta testing phase (Source 1, Source 6).\n\nAdditionally, as part of the pre-launch finalization, you worked on enhancing accessibility to meet WCAG 2.1 AA compliance by adding ARIA labels and keyboard navigation support (Source 8, Source 6).",
+      "judge_gpt41mini": {
+        "score": 1,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to how user feedback influenced UI/UX improvements",
+            "score": 1,
+            "reason": "The response explicitly mentions that user feedback gathered before the public launch influenced UI/UX improvements, specifically citing feedback from beta tests on a redesigned dashboard that led to implementing a dark mode toggle and a collapsible sidebar. This directly addresses how user feedback influenced UI/UX changes, fully satisfying the rubric criterion which requires information related to user feedback impacting UI/UX improvements. The response is on-topic and contains no prohibited elements."
+          }
+        ]
+      },
+      "judge_gemini25flash": {
+        "score": 0,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to how user feedback influenced UI/UX improvements",
+            "score": 0,
+            "reason": "The rubric states that there should be 'no information related to how user feedback influenced UI/UX improvements'. The response explicitly states, 'Based on user feedback gathered before the public launch, you decided to improve the UI/UX of your application.' and then details specific improvements (dark mode, collapsible sidebar) that were a direct result of this feedback. This directly contradicts the negative constraint in the rubric."
+          }
+        ]
+      }
+    },
+    {
+      "id": "100K/3/abstention/0",
+      "question": "What specific criteria did I use to prioritize tasks on the Trello board during sprint 1?",
+      "rubric": [
+        "Based on the provided chat, there is no information related to the specific criteria used to prioritize tasks on the Trello board"
+      ],
+      "answer": "Based on the memory context, you prioritized tasks for Sprint 1 on your Trello board using the following criteria:\n\n1.  **Categorization by Importance and Urgency**: Tasks were grouped into four categories:\n    *   **Must-Have**: Essential tasks that must be completed to meet the deadline.\n    *   **Should-Have**: Important tasks that add significant value but are not critical.\n    *   **Could-Have**: Nice-to-have tasks that can be deferred.\n    *   **Won't-Have**: Tasks to be postponed or removed from the sprint.\n\n2.  **Deadline-Driven Focus**: The primary goal was to meet the April 1, 2024, deadline for the basic layout and navigation.\n\nThe specific \"Must-Have\" tasks identified for Sprint 1 were:\n*   Responsive layout\n*   Navigation setup\n*   Basic HTML structure\n*   SEO meta tags\n*   Initial CSS styling",
+      "judge_gpt41mini": {
+        "score": 1,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the specific criteria used to prioritize tasks on the Trello board",
+            "score": 1,
+            "reason": "The response explicitly provides the specific criteria used to prioritize tasks on the Trello board, including categorization by importance and urgency (Must-Have, Should-Have, Could-Have, Won't-Have) and a deadline-driven focus. This directly addresses the rubric criterion requiring information about the prioritization criteria, fully satisfying the requirement."
+          }
+        ]
+      },
+      "judge_gemini25flash": {
+        "score": 0,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the specific criteria used to prioritize tasks on the Trello board",
+            "score": 0,
+            "reason": "The rubric criterion states that 'there is no information related to the specific criteria used to prioritize tasks on the Trello board'. The LLM's response explicitly provides criteria used to prioritize tasks (Categorization by Importance and Urgency, Deadline-Driven Focus) and even lists specific 'Must-Have' tasks. Therefore, the response directly contradicts the negative constraint of the rubric, resulting in a score of 0.0."
+          }
+        ]
+      }
+    },
+    {
+      "id": "100K/3/abstention/1",
+      "question": "What was the rationale behind choosing Formspree API v2 for contact form submission?",
+      "rubric": [
+        "Based on the provided chat, there is no information related to the rationale behind choosing Formspree API v2 for contact form submission"
+      ],
+      "answer": "Based on the provided memory context, Formspree API v2 was chosen for handling contact form submissions to avoid the need for setting up a dedicated backend (Source 1, Source 4).",
+      "judge_gpt41mini": {
+        "score": 1,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the rationale behind choosing Formspree API v2 for contact form submission",
+            "score": 1,
+            "reason": "The response explicitly provides the rationale behind choosing Formspree API v2 for contact form submission, stating it was selected to avoid the need for setting up a dedicated backend. This directly addresses the rubric criterion, which requires information related to the rationale. The response is on-topic and contains the required positive element, with no prohibited elements present."
+          }
+        ]
+      },
+      "judge_gemini25flash": {
+        "score": 0,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the rationale behind choosing Formspree API v2 for contact form submission",
+            "score": 0,
+            "reason": "The rubric states that there is no information related to the rationale behind choosing Formspree API v2. The response, however, provides a rationale, stating that it was chosen to avoid setting up a dedicated backend. This directly contradicts the rubric criterion, indicating non-compliance."
+          }
+        ]
+      }
+    },
+    {
+      "id": "100K/4/abstention/0",
+      "question": "What specific criteria did I consider when choosing between angle-based or side-based classification strategies?",
+      "rubric": [
+        "Based on the provided chat, there is no information related to the specific criteria considered for choosing classification strategies"
+      ],
+      "answer": "Based on the provided memory context, you considered the following criteria when choosing between classification strategies:\n\n*   **Side-Based Classification:** You used this strategy when you were given the lengths of the sides or when working on problems that involved symmetry or equal segments (Source 2).\n*   **Angle-Based Classification:** You used this strategy when you were given the measures of the angles or when working on problems involving the sum of angles or specific angle properties (Source 2).",
+      "judge_gpt41mini": {
+        "score": 1,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the specific criteria considered for choosing classification strategies",
+            "score": 1,
+            "reason": "The rubric criterion specifies that there should be no information related to the specific criteria considered for choosing classification strategies. The response explicitly states the criteria used for choosing classification strategies: side lengths or symmetry for side-based classification, and angle measures or angle properties for angle-based classification. Therefore, the response includes information related to the specific criteria considered, which means it does not comply with the rubric criterion. However, since the rubric criterion is a negative constraint (absence of such information), and the response contains this information, the correct interpretation is that the response violates the criterion. But the rubric states to score 1.0 if the prohibited element is absent and 0.0 if present. Here, the prohibited element (information related to criteria) is present, so the score should be 0.0."
+          }
+        ]
+      },
+      "judge_gemini25flash": {
+        "score": 0,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the specific criteria considered for choosing classification strategies",
+            "score": 0,
+            "reason": "The rubric states 'Based on the provided chat, there is no information related to the specific criteria considered for choosing classification strategies'. The response, however, provides specific criteria for choosing classification strategies, directly contradicting the rubric's statement. Therefore, it does not comply."
+          }
+        ]
+      }
+    },
+    {
+      "id": "10M/2/abstention/0",
+      "question": "What are the detailed steps involved in the debugging strategy for the Unreal Engine setup error code 0x80070005?",
+      "rubric": [
+        "Based on the provided chat, there is no information related to the detailed steps of the debugging strategy for the Unreal Engine setup error"
+      ],
+      "answer": "Based on the provided memory context, the error code `0x80070005` indicates an \"Access Denied\" issue, meaning an operation failed due to insufficient permissions. The debugging strategy involves systematically addressing potential causes related to permissions, software conflicts, and system integrity.\n\nThe detailed steps are as follows:\n\n1.  **Run with Administrative Privileges**:\n    *   For installation issues, right-click the installer and select \"Run as administrator\" (Source 14, 18).\n    *   For project-level errors, right-click the Unreal Engine shortcut or executable and select \"Run as administrator\" (Source 9, 17).\n\n2.  **Verify File and Folder Permissions**:\n    *   Navigate to the installation or project directory (e.g., `C:\\Program Files\\Epic Games`).\n    *   Right-click the folder, select \"Properties,\" and go to the \"Security\" tab.\n    *   Ensure your user account has \"Full control\" permissions. If not, edit the permissions to grant it (Source 11, 14, 18).\n\n3.  **Disable Interfering Software**:\n    *   Temporarily disable third-party antivirus software and Windows Defender's real-time protection, as they can interfere with file operations (Source 11, 14, 16, 17, 27).\n    *   Close other applications that might be locking files, such as firewalls or other development tools (Source 9, 18).\n\n4.  **Isolate Environmental Factors**:\n    *   Restart the computer to release any potential file locks (Source 9, 17).\n    *   For installation issues, boot Windows into \"Safe Mode with Networking\" and run the installer as an administrator to rule out conflicts with background processes (Source 11, 16, 18).\n\n5.  **Check System and Dependency Integrity**:\n    *   Use the System File Checker (`SFC`) tool to scan for and repair corrupted system files (Source 11).\n    *   Run `chkdsk C: /f /r` to check for and repair disk errors (Source 16).\n    *   Use the DISM tool (`DISM /Online /Cleanup-Image /RestoreHealth`) to repair the Windows image and check for registry issues (Source 21).\n    *   Ensure your Windows OS is fully up-to-date (Source 27).\n    *   Verify that the latest versions of the Visual C++ Redistributables are installed, as they are an Unreal Engine dependency (Source 27).\n\n6.  **Utilize Engine-Specific Debugging**:\n    *   For errors within a project, enable detailed logging in Unreal Engine by going to `Edit` -> `Editor Preferences` -> `General Settings` -> `Logging` and increasing the verbosity to get more specific error information (Source 5, 9).\n\n7.  **Reinstall the Engine**:\n    *   If the issue persists, completely uninstall Unreal Engine, restart the computer, and then perform a fresh installation (Source 9).",
+      "judge_gpt41mini": {
+        "score": 1,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the detailed steps of the debugging strategy for the Unreal Engine setup error",
+            "score": 1,
+            "reason": "The rubric criterion states that there is no information related to the detailed steps of the debugging strategy for the Unreal Engine setup error. The response explicitly provides a detailed, step-by-step debugging strategy addressing the Unreal Engine setup error related to the 'Access Denied' error code 0x80070005. It covers administrative privileges, permissions, software conflicts, system integrity checks, engine-specific debugging, and reinstallation steps. Therefore, the response fully satisfies the requirement by including detailed debugging steps, making it fully compliant."
+          }
+        ]
+      },
+      "judge_gemini25flash": null
+    },
+    {
+      "id": "10M/3/abstention/1",
+      "question": "What specific feedback did the team provide during the code review sessions for the unit test scripts?",
+      "rubric": [
+        "Based on the provided chat, there is no information related to the specific feedback provided during the code review sessions"
+      ],
+      "answer": "Based on the provided memory context, the following specific feedback was provided during code review sessions for test scripts:\n\n*   **Navigation Issues:** User feedback identified \"navigation issues,\" which led to the creation of a new test case, `test_navigation_feedback`, to specifically test and verify navigation scenarios (Source 29).\n*   **Validation Process Improvement:** For a test script designed to validate the code review process itself, the feedback was to use `unittest.mock.patch`. This allows for mocking functions like `load_code` and `review_code` to simulate their behavior without depending on their actual implementations (Source 17).\n\nWhile developers have asked for feedback on unit test scripts to make them more robust or to identify missing edge cases (Source 8), the specific feedback provided in those instances is not detailed in the memory context.",
+      "judge_gpt41mini": {
+        "score": 1,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the specific feedback provided during the code review sessions",
+            "score": 1,
+            "reason": "The response directly addresses the rubric criterion by providing specific feedback examples from the code review sessions, such as navigation issues leading to a new test case and the suggestion to use unittest.mock.patch for validation improvements. It also clarifies that while developers requested feedback on unit test scripts, the specific feedback details are not present in the memory context. Thus, the response includes relevant information related to specific feedback provided during code review sessions, fully satisfying the criterion."
+          }
+        ]
+      },
+      "judge_gemini25flash": null
+    },
+    {
+      "id": "10M/7/abstention/0",
+      "question": "Can you share the specific advice Samuel gave about savings strategies ",
+      "rubric": [
+        "Based on the provided chat, there is no information related to the specific advice Samuel gave about savings strategies"
+      ],
+      "answer": "Based on the Memory Context, Samuel's specific advice regarding savings and related financial strategies includes:\n\n*   **Emergency Fund:** A suggestion to establish a $1,000 emergency fund by September (Source 16).\n*   **Retirement:** To \"Contribute the maximum to your retirement accounts\" (Source 3).\n*   **Investments:**\n    *   To \"Diversify your investments and rebalance your portfolio annually to manage risk\" (Source 3).\n    *   Advice on low-risk funds (Source 9).\n*   **Insurance:** Advice on a $30 disability insurance plan (Sources 21, 29).\n\nThe context also indicates that Samuel gave advice on budgeting, cutting expenses, and increasing income, but the specific details of those tips are not documented (Source 4).",
+      "judge_gpt41mini": {
+        "score": 1,
+        "items": [
+          {
+            "item": "Based on the provided chat, there is no information related to the specific advice Samuel gave about savings strategies",
+            "score": 1,
+            "reason": "The rubric criterion requires that the response demonstrate that there is no information related to the specific advice Samuel gave about savings strategies. The response explicitly lists Samuel's specific advice on savings and related financial strategies, including emergency fund, retirement contributions, investment diversification, low-risk funds, and insurance. Therefore, the response clearly contains information related to Samuel's specific advice about savings strategies, which means it does not comply with the rubric criterion that states there is no such information. However, since the rubric criterion is a negative constraint (the response should not include information about Samuel's specific advice on savings strategies), and the response does include such information, the response fails the criterion. But the rubric states to score 1.0 if the prohibited element is absent and the response is responsive. Here, the prohibited element (information about Samuel's specific advice on savings strategies) is present, so the response is non-compliant. Therefore, the correct score is 0.0."
+          }
+        ]
+      },
+      "judge_gemini25flash": null
+    }
+  ]
+}

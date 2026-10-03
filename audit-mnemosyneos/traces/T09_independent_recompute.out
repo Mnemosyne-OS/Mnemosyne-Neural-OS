@@ -1,0 +1,98 @@
+
+1. Intégrité des registres LongMemEval
+  [ok]   baseline-longmemeval-m-48q.jsonl: 48 ids uniques
+  [ok]   baseline-longmemeval-m-48q.jsonl: 'correct' booléen partout
+  [ok]   baseline-longmemeval-m-48q.jsonl: 31/48 = expected 31/48
+  [ok]   baseline-longmemeval-m-48q.jsonl: arrondi 64.58 -> 64.6
+  [ok]   engine-multisession-8q.jsonl: 8 ids uniques
+  [ok]   engine-multisession-8q.jsonl: 'correct' booléen partout
+  [ok]   engine-multisession-8q.jsonl: 5/8 = expected 5/8
+  [ok]   engine-multisession-8q.jsonl: arrondi 62.50 -> 62.5
+  [ok]   local-sovereign-12q.jsonl: 12 ids uniques
+  [ok]   local-sovereign-12q.jsonl: 'correct' booléen partout
+  [ok]   local-sovereign-12q.jsonl: 6/12 = expected 6/12
+  [ok]   local-sovereign-12q.jsonl: arrondi 50.00 -> 50
+  [ok]   lexical-baseline-strict-48q.jsonl: 48 ids uniques
+  [ok]   lexical-baseline-strict-48q.jsonl: 'correct' booléen partout
+  [ok]   lexical-baseline-strict-48q.jsonl: 29/48 = expected 29/48
+  [ok]   lexical-baseline-strict-48q.jsonl: arrondi 60.42 -> 60.4
+  [ok]   lexical-baseline-flexible-48q.jsonl: 48 ids uniques
+  [ok]   lexical-baseline-flexible-48q.jsonl: 'correct' booléen partout
+  [ok]   lexical-baseline-flexible-48q.jsonl: 34/48 = expected 34/48
+  [ok]   lexical-baseline-flexible-48q.jsonl: arrondi 70.83 -> 70.8
+  [ok]   lexical-fusion-strict-48q.jsonl: 48 ids uniques
+  [ok]   lexical-fusion-strict-48q.jsonl: 'correct' booléen partout
+  [ok]   lexical-fusion-strict-48q.jsonl: 37/48 = expected 37/48
+  [ok]   lexical-fusion-strict-48q.jsonl: arrondi 77.08 -> 77.1
+  [ok]   lexical-fusion-flexible-48q.jsonl: 48 ids uniques
+  [ok]   lexical-fusion-flexible-48q.jsonl: 'correct' booléen partout
+  [ok]   lexical-fusion-flexible-48q.jsonl: 39/48 = expected 39/48
+  [ok]   lexical-fusion-flexible-48q.jsonl: arrondi 81.25 -> 81.3
+
+2. Alignement registres ↔ fichiers bruts lexical-2026-08
+  [ok]   baseline strict: correct == brut.judge.strict
+  [ok]   fusion strict: correct == run1 ∧ run2
+  [ok]   fusion strict: baseline_correct cohérent
+  [ok]   baseline flexible: correct == brut.judge.flexible
+  [ok]   fusion flexible: correct == run1 ∧ run2
+  [ok]   fusion flexible: baseline_correct cohérent
+
+3. scoring.js publié reproduit-il les champs heuristic/matchType bruts ?
+  [ok]   heuristic reproduit sur 144 lignes (écarts: 0, écarts matchType seuls: 0)
+
+4. Verdict final en fonction de l'heuristique (constat, pas assertion)
+     base: heuristic∧strict=25 heuristic∧¬strict=3 ¬heuristic∧strict=4 ¬∧¬=16
+     r1: heuristic∧strict=34 heuristic∧¬strict=1 ¬heuristic∧strict=3 ¬∧¬=10
+     r2: heuristic∧strict=33 heuristic∧¬strict=2 ¬heuristic∧strict=4 ¬∧¬=9
+     -> ni OR ni AND : le verdict n'est pas une fonction de l'heuristique ; la règle de combinaison n'est pas publiée.
+     heuristique HIT renversée par le juge: 0a995998(gold="3"), 6d550036(gold="2"), 3a704032(gold="3"), 6d550036(gold="2"), 195a1a1b(gold="The user would prefer suggestions that involve relaxing activities that can be done in the evening, preferably before 9:30 pm. They would not prefer suggestions that involve using their phone or watching TV, as these activities have been affecting their sleep quality."), 6d550036(gold="2")
+
+5. gpt4_76048e76 (référence officielle "bike")
+     base: conclusion="bike" heuristic=true/exact strict=true flexible=true
+     r1: conclusion="car" heuristic=true/exact strict=true flexible=true
+     r2: conclusion="car" heuristic=true/exact strict=true flexible=true
+     registre fusion strict: correct=true match_type=exact baseline_correct=true
+
+6. Test du signe apparié (binomial exact bilatéral)
+  [ok]   +9/−1 -> p=0.0215 (publié 0.0215)
+     +7/−2 (flexible) -> p=0.1797
+     CONDITIONNEL si gpt4_76048e76 est reclassé MISS: +9/−2 -> p=0.0654
+     Unité = question ; 48 questions de 48 historiques distinctes (LongMemEval: une histoire par question) -> indépendance plausible des paires, mais échantillon de développement.
+
+7. Composition de 72,9 % et test empirique de la "borne inférieure"
+  [ok]   composition recalculée: 35/48
+  [ok]   mêmes 48 questions en juillet et août
+     Août, moteur complet (spine-sort + dream ledgers, topK32+3), vectoriel seul, juge flexible, UN run sur 48 q: 34/48 = 70.8 %
+     Borne inférieure annoncée en juillet (même juge flexible): 35/48 = 72.9 %
+     Parmi les 40 questions "reportées" (HIT juillet baseline) -> MISS en août: 1 [51a45a95]
+     Parmi les 40 reportées MISS juillet -> HIT août: 1 [08f4fc43]
+     Multi-session: juillet moteur 5/8 (règle de rejeu), août vectoriel seul 4/8 (un run)
+
+8. Pondération : échantillon 8×6 vs distribution officielle LongMemEval (500 q, dont 30 _abs)
+     baseline-longmemeval-m-48q.jsonl: brut 64.6 % -> repondéré (CALCUL CONDITIONNEL, n=8 par catégorie) 57.1 %
+     lexical-baseline-strict-48q.jsonl: brut 60.4 % -> repondéré (CALCUL CONDITIONNEL, n=8 par catégorie) 62.3 %
+     lexical-fusion-strict-48q.jsonl: brut 77.1 % -> repondéré (CALCUL CONDITIONNEL, n=8 par catégorie) 84.6 %
+     lexical-fusion-flexible-48q.jsonl: brut 81.3 % -> repondéré (CALCUL CONDITIONNEL, n=8 par catégorie) 86.1 %
+
+9. Calculs conditionnels (un seul verdict réexaminé, les autres non réévalués)
+     strict: 37/48 -> 36/48 = 75.0 % ; flexible: 39/48 -> 38/48 = 79.2 %
+
+10. BEAM : recalcul indépendant
+  [ok]   beam-100K-full.judged-gpt-4.1-mini.json: 61.68 % (publié 61.7) ; moyenne à plat 61.7 %
+  [ok]   beam-100K-full.judged-gpt-4.1-mini.json: judgeScore == moyenne des items de rubrique (règle BEAM post-correctif b2da22e, float)
+     valeurs de score par item: 0, 0.5, 1
+     CONDITIONNEL — barème BEAM antérieur au 2026-08-30 (int(score), 0.5 -> 0): 60.2 %
+  [ok]   beam-100K-full.judged-gpt-4.1-mini.json: mêmes ids que beam-100K-full.answers.json
+     abstention: 40 q ; notées >0 sans marqueur d'abstention dans la réponse (CANDIDATS à revue humaine): 16 -> 100K/1/abstention/0=1, 100K/2/abstention/0=1, 100K/2/abstention/1=1, 100K/3/abstention/0=1, 100K/3/abstention/1=1, 100K/4/abstention/0=1, 100K/6/abstention/0=1, 100K/6/abstention/1=1, 100K/7/abstention/0=1, 100K/7/abstention/1=1, 100K/10/abstention/0=1, 100K/11/abstention/0=1, 100K/12/abstention/1=1, 100K/14/abstention/1=1, 100K/16/abstention/0=1, 100K/17/abstention/0=1
+     CONDITIONNEL si ces candidats valaient 0: 57.7 %
+     variante event_ordering = finalScore (tau×F1) au lieu de tauNorm: 60.0 %
+  [ok]   beam-10M-v1.judged-gpt-4.1-mini.json: 49.18 % (publié 49.2) ; moyenne à plat 49.2 %
+  [ok]   beam-10M-v1.judged-gpt-4.1-mini.json: judgeScore == moyenne des items de rubrique (règle BEAM post-correctif b2da22e, float)
+     valeurs de score par item: 0, 0.5, 1
+     CONDITIONNEL — barème BEAM antérieur au 2026-08-30 (int(score), 0.5 -> 0): 48.5 %
+  [ok]   beam-10M-v1.judged-gpt-4.1-mini.json: mêmes ids que beam-10M-v1.answers.json
+     abstention: 20 q ; notées >0 sans marqueur d'abstention dans la réponse (CANDIDATS à revue humaine): 7 -> 10M/2/abstention/0=1, 10M/3/abstention/1=1, 10M/4/abstention/0=1, 10M/6/abstention/0=1, 10M/7/abstention/0=1, 10M/7/abstention/1=1, 10M/10/abstention/0=1
+     CONDITIONNEL si ces candidats valaient 0: 45.7 %
+     variante event_ordering = finalScore (tau×F1) au lieu de tauNorm: 47.4 %
+
+Toutes les assertions d'intégrité passent

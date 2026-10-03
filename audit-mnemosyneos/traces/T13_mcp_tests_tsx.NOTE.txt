@@ -1,0 +1,4 @@
+cmd: (cd packages/mcp && unshare -n tsx --test src/*.test.ts)  [lancé via trace.sh]
+cwd: mnos-work/packages/mcp
+exit_code: INTERROMPU (processus tué par pkill ; aucun .cmd/.rc écrit par trace.sh)
+note: résultat INVALIDE, échecs ENETUNREACH dus à la boucle locale inactive dans unshare -n (artefact du dispositif). Voir T15.

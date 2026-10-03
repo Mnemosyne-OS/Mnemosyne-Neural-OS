@@ -1,0 +1,68 @@
+mirror rows=500 unique=500
+mirror types: {"temporal-reasoning":133,"multi-session":133,"knowledge-update":78,"single-session-preference":30,"single-session-assistant":56,"single-session-user":70}
+Q 7161e7e2 [single-session-assistant] "I'm checking our previous chat about the shift rotation sheet for GM social media agents. Can you remind me what was the rotation for Admon on a Sunday?"
+Q c4f10528 [single-session-assistant] "I'm planning to visit Bandung again and I was wondering if you could remind me of the name of that restaurant in Cihampelas Walk that serves a great Nasi Goreng?"
+Q 89527b6b [single-session-assistant] "I'm going back to our previous conversation about the children's book on dinosaurs. Can you remind me what color was the scaly body of the Plesiosaur in the image?"
+Q e9327a54 [single-session-assistant] "I'm planning to revisit Orlando. I was wondering if you could remind me of that unique dessert shop with the giant milkshakes we talked about last time?"
+Q 4c36ccef [single-session-assistant] "Can you remind me of the name of the romantic Italian restaurant in Rome you recommended for dinner?"
+Q 6ae235be [single-session-assistant] "I remember you told me about the refining processes at CITGO's three refineries earlier. Can you remind me what kind of processes are used at the Lake Charles Refinery?"
+Q 7e00a6cb [single-session-assistant] "I'm planning my trip to Amsterdam again and I was wondering, what was the name of that hostel near the Red Light District that you recommended last time?"
+Q 1903aded [single-session-assistant] "I think we discussed work from home jobs for seniors earlier. Can you remind me what was the 7th job in the list you provided?"
+Q e47becba [single-session-user] "What degree did I graduate with?"
+Q 118b2229 [single-session-user] "How long is my daily commute to work?"
+Q 51a45a95 [single-session-user] "Where did I redeem a $5 coupon on coffee creamer?"
+Q 58bf7951 [single-session-user] "What play did I attend at the local community theater?"
+Q 1e043500 [single-session-user] "What is the name of the playlist I created on Spotify?"
+Q c5e8278d [single-session-user] "What was my last name before I changed it?"
+Q 6ade9755 [single-session-user] "Where do I take yoga classes?"
+Q 6f9b354f [single-session-user] "What color did I repaint my bedroom walls?"
+Q 6a1eabeb [knowledge-update] "What was my personal best time in the charity 5K run?"
+Q 6aeb4375 [knowledge-update] "How many Korean restaurants have I tried in my city?"
+Q 830ce83f [knowledge-update] "Where did Rachel move to after her recent relocation?"
+Q 852ce960 [knowledge-update] "What was the amount I was pre-approved for when I got my mortgage from Wells Fargo?"
+Q 945e3d21 [knowledge-update] "How often do I attend yoga classes to help with my anxiety?"
+Q d7c942c3 [knowledge-update] "Is my mom using the same grocery list method as me?"
+Q 71315a70 [knowledge-update] "How many hours have I spent on my abstract ocean sculpture?"
+Q 89941a93 [knowledge-update] "How many bikes do I currently own?"
+Q gpt4_2655b836 [temporal-reasoning] "What was the first issue I had with my new car after its first service?"
+Q gpt4_2487a7cb [temporal-reasoning] "Which event did I attend first, the 'Effective Time Management' workshop or the 'Data Analysis using Python' webinar?"
+Q gpt4_76048e76 [temporal-reasoning] "Which vehicle did I take care of first in February, the bike or the car?"
+Q gpt4_2312f94c [temporal-reasoning] "Which device did I got first, the Samsung Galaxy S22 or the Dell XPS 13?"
+Q 0bb5a684 [temporal-reasoning] "How many days before the team meeting I was preparing for did I attend the workshop on 'Effective Communication in the Workplace'?"
+Q 08f4fc43 [temporal-reasoning] "How many days had passed between the Sunday mass at St. Mary's Church and the Ash Wednesday service at the cathedral?"
+Q 2c63a862 [temporal-reasoning] "How many days did it take for me to find a house I loved after starting to work with Rachel?"
+Q gpt4_385a5000 [temporal-reasoning] "Which seeds were started first, the tomatoes or the marigolds?"
+Q 8a2466db [single-session-preference] "Can you recommend some resources where I can learn more about video editing?"
+Q 06878be2 [single-session-preference] "Can you suggest some accessories that would complement my current photography setup?"
+Q 75832dbd [single-session-preference] "Can you recommend some recent publications or conferences that I might find interesting?"
+Q 0edc2aef [single-session-preference] "Can you suggest a hotel for my upcoming trip to Miami?"
+Q 35a27287 [single-session-preference] "Can you recommend some interesting cultural events happening around me this weekend?"
+Q 32260d93 [single-session-preference] "Can you recommend a show or movie for me to watch tonight?"
+Q 195a1a1b [single-session-preference] "Can you suggest some activities that I can do in the evening?"
+Q afdc33df [single-session-preference] "My kitchen's becoming a bit of a mess again. Any tips for keeping it clean?"
+Q 0a995998 [multi-session] "How many items of clothing do I need to pick up or return from a store?"
+Q 6d550036 [multi-session] "How many projects have I led or am currently leading?"
+Q gpt4_59c863d7 [multi-session] "How many model kits have I worked on or bought?"
+Q b5ef892d [multi-session] "How many days did I spend on camping trips in the United States this year?"
+Q e831120c [multi-session] "How many weeks did it take me to watch all the Marvel Cinematic Universe movies and the main Star Wars films?"
+Q 3a704032 [multi-session] "How many plants did I acquire in the last month?"
+Q gpt4_d84a3211 [multi-session] "How much total money have I spent on bike-related expenses since the start of the year?"
+Q aae3761f [multi-session] "How many hours in total did I spend driving to my three road trip destinations combined?"
+
+dev48: missing=0 gold_mismatch=0 type_mismatch=0
+indices dans le fichier miroir: 230,231,232,233,234,235,236,237,286,287,288,289,290,291,292,293,122,123,124,125,126,127,128,129,0,1,2,3,4,5,6,7,200,201,202,203,204,205,206,207,60,61,62,63,64,65,66,67
+recall-hold-off.json: n=48 présents dans miroir=48 recouvrement avec dev48=0
+  types: {"single-session-assistant":8,"single-session-user":8,"single-session-preference":8,"multi-session":8,"knowledge-update":8,"temporal-reasoning":8}
+  indices: 240,257,278,244,256,248,283,277,330,312,350,326,351,332,353,343,210,227,213,229,212,228,226,221,90,460,485,476,477,499,467,107,150,135,193,181,132,199,138,191,361,424,368,8,384,409,386,381
+recall-control.json: n=48 présents dans miroir=48 recouvrement avec dev48=48
+  types: {"single-session-assistant":8,"single-session-user":8,"knowledge-update":8,"temporal-reasoning":8,"single-session-preference":8,"multi-session":8}
+  indices: 230,231,232,233,234,235,236,237,286,287,288,289,290,291,292,293,122,123,124,125,126,127,128,129,0,1,2,3,4,5,6,7,200,201,202,203,204,205,206,207,60,61,62,63,64,65,66,67
+
+=== gpt4_76048e76 (miroir) ===
+{
+ "question": "Which vehicle did I take care of first in February, the bike or the car?",
+ "gold": "bike",
+ "type": "temporal-reasoning",
+ "top_recall": "My car is a Toyota Corolla.",
+ "context_preview": "=== Agent Memory Context ===\n- I've been doing some maintenance on my current car myself, like washing and vacuuming, but I had to take it to the dealership for a routine checkup this Friday because my friend said the \"check engine\" light came on when she borrowed it.\n- I've been doing some maintenance on my current car myself, like washing and vacuuming, but I had to take it to the dealership for a routine checkup this Friday because my friend said the \"check engine\" light came on when she borr"
+}

@@ -1,0 +1,10 @@
+M1 verify.js après inversion d'un verdict: rc=1 (attendu 1)
+M2 independent_recompute après inversion: rc=1 (attendu 1)
+M3 independent_recompute après suppression d'une ligne brute: rc=1 (attendu !=0)
+M4 beam verify.js après un verdict 0->1: rc=1 (attendu 1 si l'arrondi à 0,1 bouge)
+   CONFORME A01 [adverse] want=false got=false/miss  gt="3"  gen="You have 30 items to return."  — 3 ≠ 30 (sous-chaîne numérique)
+   CONFORME A02 [adverse] want=false got=false/miss  gt="3"  gen="You have 2 clothing items to pick up (Source 9, Source 33)."  — 3 ≠ 2 ; « 3 » n'apparaît que dans « Source 33 » (forme publiée: 0a995998 baseline, heuristique=HIT)
+   CONFORME A05 [adverse] want=false got=false/miss  gt="four"  gen="You have tried fourteen restaurants."  — 4 ≠ 14 (sous-chaîne « four »)
+   CONFORME A06 [adverse] want=false got=false/miss  gt="4"  gen="You own 14 bikes."  — 4 ≠ 14 (sous-chaîne « 4 »)
+   CONFORME A14 [adverse] want=false got=false/miss  gt="3"  gen="On 2023/03/12 you acquired 2 plants."  — « 3 » n'apparaît que dans une date
+M5 cas numériques conformes après correctif local: 5/5 (attendu 5 : la cause racine est le repli includes(numericRaw))

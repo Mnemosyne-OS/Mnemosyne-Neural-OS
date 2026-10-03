@@ -1,0 +1,47 @@
+
+LongMemEval-M rerun 2026-10: recomputing every number from the raw files
+
+Salt and session ids
+   [ok]   SHA-256 of salt.txt is 8a5309dc094b2cd0…, the value the frozen protocol published
+   [ok]   29779 session ids in id-map.json, every one recomputed from the salt
+   [ok]   no dataset session id in any answer or verdict file
+   [ok]   12363 anonymized ids quoted in the run files, all present in id-map.json
+
+Run files
+   [ok]   dev fused pass 1: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [ok]   dev fused pass 2: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [ok]   dev vector pass 1: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [ok]   dev vector pass 2: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [ok]   holdout fused pass 1: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [ok]   holdout fused pass 2: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [ok]   holdout vector pass 1: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [ok]   holdout vector pass 2: 48 answers, 0 infrastructure failures, protocol build and settings, verdicts follow from the replies
+   [note] run logs name the monorepo commits f9cc5ba52, 4cdb41402, 1785e0abe, 419a8886e, e817b72c3; see PROTOCOL.md section 10
+
+Scores, holdout set (48 questions, a HIT on both passes)
+   [ok]   official fused  37/48 = 77.1%  (before the human audit: 37/48)
+   [ok]   official vector 38/48 = 79.2%  (before the human audit: 38/48)
+   [ok]   official fused vs vector: +2 / -3, exact sign test p = 1.000
+   [ok]   strict   fused  38/48 = 79.2%  (before the human audit: 38/48)
+   [ok]   strict   vector 37/48 = 77.1%  (before the human audit: 37/48)
+   [ok]   strict   fused vs vector: +3 / -2, exact sign test p = 1.000
+   [note] passes disagree on 7 (arm/judge/question): fused/official:09d032c9 fused/official:09ba9854 fused/official:10d9b85a fused/official:4dfccbf7 fused/strict:09ba9854 fused/strict:4dfccbf7 vector/strict:1a1907b4
+
+Scores, dev set (48 questions, a HIT on both passes)
+   [ok]   official fused  39/48 = 81.3%  (before the human audit: 39/48)
+   [ok]   official vector 38/48 = 79.2%  (before the human audit: 39/48)
+   [ok]   official fused vs vector: +1 / -0, exact sign test p = 1.000
+   [ok]   strict   fused  41/48 = 85.4%  (before the human audit: 42/48)
+   [ok]   strict   vector 38/48 = 79.2%  (before the human audit: 39/48)
+   [ok]   strict   fused vs vector: +3 / -0, exact sign test p = 0.250
+   [note] passes disagree on 5 (arm/judge/question): fused/official:35a27287 fused/official:afdc33df vector/official:afdc33df vector/strict:195a1a1b vector/strict:afdc33df
+
+Human audit: 5 overturned verdict(s), all listed in human-audit.json
+   dev gpt4_2487a7cb (strict) -> MISS: 4 run(s)
+   dev gpt4_76048e76 (official) -> MISS: 2 run(s)
+   holdout 0bc8ad93 (official+strict) -> MISS: 1 run(s)
+   holdout 0bc8ad93 (official) -> MISS: 1 run(s)
+   holdout 07741c45 (strict) -> MISS: 1 run(s)
+
+Every number of the rerun recomputes from the files in this folder.
+

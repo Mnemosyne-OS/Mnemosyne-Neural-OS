@@ -1,0 +1,41 @@
+1-2. Sel et table d'anonymisation
+  [ok]   sha256(sel) == hash gelé (8a5309dc094b…)
+  [ok]   id-map : 29779 entrées recalculées, 0 écart(s)
+  [ok]   id anonymisés uniques
+3. Fuite d'identifiants du jeu de données dans les réponses
+  [ok]   answers-dev-fused-p1.json : 48 réponses, identifiants du jeu trouvés : 0 []
+  [ok]   answers-dev-fused-p2.json : 48 réponses, identifiants du jeu trouvés : 0 []
+  [ok]   answers-dev-vector-p1.json : 48 réponses, identifiants du jeu trouvés : 0 []
+  [ok]   answers-dev-vector-p2.json : 48 réponses, identifiants du jeu trouvés : 0 []
+  [ok]   answers-holdout-fused-p1.json : 48 réponses, identifiants du jeu trouvés : 0 []
+  [ok]   answers-holdout-fused-p2.json : 48 réponses, identifiants du jeu trouvés : 0 []
+  [ok]   answers-holdout-vector-p1.json : 48 réponses, identifiants du jeu trouvés : 0 []
+  [ok]   answers-holdout-vector-p2.json : 48 réponses, identifiants du jeu trouvés : 0 []
+4-5. Juge officiel : prompt et règle de décision du code LongMemEval
+  [ok]   judged-dev-fused-p1.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+  [ok]   judged-dev-fused-p2.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+  [ok]   judged-dev-vector-p1.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+  [ok]   judged-dev-vector-p2.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+  [ok]   judged-holdout-fused-p1.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+  [ok]   judged-holdout-fused-p2.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+  [ok]   judged-holdout-vector-p1.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+  [ok]   judged-holdout-vector-p2.json : 48 prompts officiels identiques au code (0 écart), verdicts = règle « yes » (0 écart), modèle gpt-4o-2024-08-06
+6. Scores (deux passes requises), avant et après audit humain
+     holdout official fused 37/48 -> 37/48 après audit ; vector 38/48 -> 38/48
+     holdout strict   fused 38/48 -> 38/48 après audit ; vector 37/48 -> 37/48
+     dev     official fused 39/48 -> 39/48 après audit ; vector 39/48 -> 38/48
+     dev     strict   fused 42/48 -> 41/48 après audit ; vector 39/48 -> 38/48
+  [ok]   les 8 scores publiés (après audit) sont reproduits
+     holdout, juge officiel : fusion contre vector +2/−3
+     holdout fusion, juge officiel : 5 question(s) où les deux passes divergent
+7. Questions
+  [ok]   dev == les 48 questions auditées en août
+  [ok]   liste tierce : 500 ids, 452 hors dev
+  [ok]   holdout == règle publiée recalculée (48/48 communs) ; _abs dans le holdout : 5
+     recouvrement avec le holdout d'août : 48/48
+8. Build moteur
+  [ok]   coreDistSha256 identique au protocole dans les 8 runs
+     commits du monorepo dans les runs : ['1785e0abe', '419a8886e', '4cdb41402', 'e817b72c3', 'f9cc5ba52'] (déviation déclarée) ; valeurs auto-déclarées, moteur fermé
+  [ok]   échecs d'infrastructure finaux : 0
+
+Toutes les propriétés vérifiées

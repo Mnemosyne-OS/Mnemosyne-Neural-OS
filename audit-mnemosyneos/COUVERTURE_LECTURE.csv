@@ -1,0 +1,431 @@
+depot,commit,chemin,categorie,octets,sha256,niveau_inspection
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,AGENTS.md,documentation,7851,bd6337e5a1f74c78d062859ec9ac47378865dd961568ab279d04158bfdee3a13,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,LICENSE,autre,18659,5eebefd3682e32d661f307a28539b304e5e52fb1eb33ba214e61d7a57663e4f0,partiellement inspecté (en-tête)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,LICENSE-CODE,autre,1334,07a9ca113ea3f081fc31911ae4153b7ebadf15695c5db8fc8c9bcef8c6452bf8,non lu (licence MIT déclarée)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,README.md,documentation,9279,ac30af1e41a1714709483520d89151c972dc9e70b9eeb3381d2d1d18d2642b48,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/SUMMARY.md,documentation,6206,0be09600334c750fed4fbdd0f2faa00b3662e6b4b16d0bb234c1ae3e11720a55,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/runs/beam-100K-full.answers.json,données/résultats,745630,101419002e2e610098b5636d05dbfeaead7610b628bf2c0494a7d73931c4d4e7,"analysé par outil (recalcul, distribution, abstention lue intégralement T10)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/runs/beam-100K-full.evidence.json,données/résultats,13981,3b106ea5557a5474ee64a7835291e9f03cfb3122b3dd25111ccdfc83b67eefcd,"analysé par outil (recalcul, distribution, abstention lue intégralement T10)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/runs/beam-100K-full.judged-gemini-2.5-flash.json,données/résultats,658292,c1f85136943f10cc2cc4b800f3addcb0d4d468b0c55ca7c885dc0bea73b1b057,"analysé par outil (recalcul, distribution, abstention lue intégralement T10)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/runs/beam-100K-full.judged-gpt-4.1-mini.json,données/résultats,692354,7162f8ddb6eeee32142c1b29d995328513df584e1bd9c8f1b79c692b38133f6d,"analysé par outil (recalcul, distribution, abstention lue intégralement T10)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/runs/beam-10M-v1.answers.json,données/résultats,389496,bb8bf1c6185f35bca70cdbae1e84089ef0aa7d69831c5ebfa9def3df11d7fbe6,"analysé par outil (recalcul, distribution, abstention lue intégralement T10)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/runs/beam-10M-v1.evidence.json,données/résultats,148565,0e9e463be81faa1d98daf605b6e36b1e55e118c171d84e48d2539de0dbcd39d7,"analysé par outil (recalcul, distribution, abstention lue intégralement T10)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/runs/beam-10M-v1.judged-gpt-4.1-mini.json,données/résultats,392238,3cc3e68c95edbdc11021d4d89803b7c9036ea65b8549f6c93c2bd7548196b57f,"analysé par outil (recalcul, distribution, abstention lue intégralement T10)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,beam-2026-09/verify.js,code,8785,e789ee34065efa7c6ed98a8cc2d309f0fdb712491e46c844af87d1e5ebf549ac,lu intégralement + exécuté + mutation
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/SUMMARY.md,documentation,11411,bd155639179ba8cf13217b5967231d44f1af229ca4461253554f1d83ccb7f89e,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-master-all8-replay.log,journal brut,29608,aadf26f6f60226e242a5d0711c35fe0199b601ed2b69745d58181d33baa480f5,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-master-all8.log,journal brut,29629,5b19ab2f3af4990a96a313a9e6f695efa1c02648f48220c8ef09c69bd61a7602,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-reserve5.log,journal brut,11358,d3e7681ead69f58bd01931a5898835d81117ca0f5f1a7672d909eb3d30f56645,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-reserve8.log,journal brut,11357,8853e8046387ba80b6a7550701f059213f329889ae126afc3eec0ed1161fa7fa,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-slice-aae.log,journal brut,6557,4cde8ac97a85331b3e379929cb9f09e7ae805b485ad8a4f5c99178d39f627fb7,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-slice-all8-replay.log,journal brut,28776,0a2a7888cbefec196f44a4f457ee915eeaf6a13f31444345607143ed74025fe3,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-slice-all8.log,journal brut,43790,a18357ac9577a3e3869d6b600696366d1c7ba894c18f06955d16af1333d43d51,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/exp-verify.log,journal brut,29013,a9a82e3ae87779a1e8bb5600ee62204f87f1ab65ddc09c7e4f9a4f8281497db0,analysé par outil + lecture partielle
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/grand-run.log,journal brut,49720,22e6350a3b99f802a59adb033b4c2be9e2af7a5739c56b7375cd639a55d226fe,analysé par outil (48 lignes-verdict) + lecture partielle
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/spine-dream-flashab.log,journal brut,6405,a27ba1b351a212771cadab31ea23259e70c44368d386a089793a5ccc6aeae699,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/spine-dream-multirun.log,journal brut,132905,7d28aa174e126a417a17c06e3bfea9f4b1bbfdf5f38cd5ddc8eab3daf303dbb1,analysé par outil + lecture partielle (l. 1240-1270)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/spine-dream-preflight.log,journal brut,21486,cfad4ca128388d02003701c060683dd9374cc189c357d202e1f9843d43fb49d5,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/spine-dream-preflight2.log,journal brut,5948,86bc18f5c78087a16ff2daffa5306f71d63b911ecd39372be898b49b89d1342c,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/spine-dream-q2.log,journal brut,18839,ed1bdc69d21e6061bc150e5ead1ca649059d56a11e3ed3cbe56cf261ae5ffb6f,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/spine-dream-relations-test.log,journal brut,12245,62fcf8ea97e78092f629f6e8db4efc445053a429b3907217e7b7f5f7dd68e6f6,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,fullhaystack-2026-07/logs/spine-dream-temporal-riquiqui.log,journal brut,53572,37e917872f539ad0612f70573e4207721a7a607e1f50bc664414fd51601432c1,analysé par outil (extraction des verdicts par bras T18)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/SUMMARY.md,documentation,4070,e4528b0950ec908b7b852dc38d8d18b12ab242d165b2135569316e3b678557b4,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/extract-ledgers.mjs,code,8572,31d87f65b2075a1d77e5fbb4e739ef2ea72008016312d1fa29781d1b489a5f2e,lu intégralement + exécuté (sortie identique au dépôt)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/boost-off.json,données/résultats,16770,7224cfdaeb19ce53ef2c49519bade05d870e6141c76026dd2f020ccdd5d0954b,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/boost-on-v2.json,données/résultats,16767,5d73ff48b40dd79a24052ae02d755bbcb67488ab888d2f99879ffc29460d4e92,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/duel-full-lexfusion-r2.json,données/résultats,38884,aa34907c075ba513fd56367a320d2ac363b4d78e6fb8494c234b5bac5ec79e42,lu intégralement (T02) + analysé par outil
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/duel-full-lexfusion.json,données/résultats,39291,677af53beb6167e4f12b3093c8fa79491c754b82367e06d728af13763ca575e1,lu intégralement (T02) + analysé par outil
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/duel-full.rejudged.json,données/résultats,39253,25670d066caef45d66a149ce22677250d73cca08fbacef78faa6caa8d9e8ecc1,lu intégralement (tableau par question T02) + analysé par outil
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/recall-control.json,données/résultats,8597,9d5f72381e32da4894de540125662a3c568b6132991f2701b0e98a4e1a9f9358,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/recall-fusion-persistent.json,données/résultats,8597,c3a58f1951e0b42a0b45bc44fa01e22c299c586df3bc28fae4b9717bdbd3eb38,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/recall-fusion.json,données/résultats,8586,13cc41c800bfe001985eb21f9d8ca8857df4280064af1ea674797e16f0bb5260,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/recall-hold-off.json,données/résultats,8593,f5ed990bd0f9764adc94206c2afc675c1df68975b47f24d1578fc1ec50694cb5,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/recall-hold-on.json,données/résultats,8584,0d6170378e433988eca68d02aec0a6923b62b00779e2ff4e61a5abadab20c459,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,lexical-2026-08/runs/recall-post-fix.json,données/résultats,8599,090bc6d0195de9f1fec280510b4764bab5829392ca4af881471ce1527034217c,analysé par outil (via verify.js et recalcul)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/METHODOLOGY.md,documentation,9304,f46560c1d374d310e9870351ede969f45c127bdc15734ce191c8c4123e9b3c68,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/README.md,documentation,4047,fc64345b39e404ecbaabfa9579d92ce841dc1c1766148cf449d7ba680bb45983,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/RESULTS.md,documentation,4480,5ebdf1ca705e376982a72f7ff0aacfcc5bdfcc335b8eb2134de04bcc8ba0e8b0,lu intégralement
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/index.html,documentation,40870,5e71ae4d84ca1633f72fe02a7e3d927049d6c600dfd23d24471e02eda82f415e,analysé par outil (extraction de phrases clés)
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/results/baseline-longmemeval-m-48q.jsonl,données/résultats,11800,9d0b96e448c656e6be3f267acbc6e142d23d15087eff09a759a0af78695e93ce,"analysé par outil (recalcul indépendant, alignement brut)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/results/engine-multisession-8q.jsonl,données/résultats,8190,c9a1c1f01e5ce9ce0063f5c5855703e5b1ce6fc5a31a020f4c55779b2047e063,"analysé par outil (recalcul indépendant, alignement brut)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/results/lexical-baseline-flexible-48q.jsonl,données/résultats,33747,6072afb1317b5131b82343cbefdc900ee55d557d763b201524e624b0a250230c,"analysé par outil (recalcul indépendant, alignement brut)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/results/lexical-baseline-strict-48q.jsonl,données/résultats,33749,bbeff117aafca3aca5160af669fe5cedbf413c8d517e935e683db120c87959ab,"analysé par outil (recalcul indépendant, alignement brut)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/results/lexical-fusion-flexible-48q.jsonl,données/résultats,50954,080241fddf6a808b2b3fae5df1a892e1692cd94c5e895a488489a0dc81d3f750,"analysé par outil (recalcul indépendant, alignement brut)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/results/lexical-fusion-strict-48q.jsonl,données/résultats,50661,bb0e9b819d916c7c0ff12601a672675e8b8323d291e92111c34a70d2f359e752,"analysé par outil (recalcul indépendant, alignement brut)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/results/local-sovereign-12q.jsonl,données/résultats,3398,a86f2117ebd84458f33d1bf7e163e2821c46a04dab6f6e6bf65a1ceca52f207d,"analysé par outil (recalcul indépendant, alignement brut)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/scoring.js,code,7876,69dbe6fed051a17acc7a0cac10d88be95543877e292d6d0fe80cb3e6130ad6b0,"lu intégralement + exécuté + testé (adverse, mutation)"
+MnemosyneOS---benchmarks,d69c78264c532eb27255a248be32ea235d7e7a64,verification-kit/verify.js,code,12499,2097c7c00bebe3e2dbbe0b8dbadba3925f18f3961ce5cbec3506aa27022a8b7f,lu intégralement + exécuté + mutation
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.agents/workflows/push-to-public-gitbook.md,documentation,1806,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.dockerignore,autre,90,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/ISSUE_TEMPLATE/bug_report.yml,autre,2529,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/ISSUE_TEMPLATE/config.yml,autre,476,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/ISSUE_TEMPLATE/feature_request.md,documentation,625,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/codeql/codeql-config.yml,autre,473,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/workflows/attest-release.yml,autre,1806,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/workflows/ci.yml,autre,1508,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/workflows/context7-refresh.yml,autre,3112,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.github/workflows/sync-readme-release-badges.yml,autre,3612,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,.gitignore,autre,413,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,AGENTS.md,documentation,7625,,lu intégralement (objet d'audit)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,CITATION.cff,autre,1238,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,CODE_OF_CONDUCT.md,documentation,2294,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,CONTRIBUTING.md,documentation,2376,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,CONTRIBUTING_AI.md,documentation,14289,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,LICENSE,autre,1703,,lu intégralement
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,NEURAL_CODING.md,documentation,8729,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,README.md,documentation,55077,,recherche de mots-clés (non lu intégralement)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,RECIPES.md,documentation,786,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,ROADMAP.md,documentation,5336,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,SECURITY.md,documentation,5432,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/README.md,documentation,606,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/00-preface.md,documentation,5547,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/02-narcissus-chronicle.md,documentation,4013,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/03-chronicle-styles.md,documentation,4299,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/04-auto-chronicle.md,documentation,2825,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/05-resonance-projects.md,documentation,3086,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/06-nexus-graph.md,documentation,3595,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/07-soul-studio.md,documentation,6646,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/08-genesis-chronicles.md,documentation,4056,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/09-mnemohub.md,documentation,5609,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/10-the-architect-confesses.md,documentation,10540,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/11-mnemobrain.md,documentation,11027,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/12-ai-configuration.md,documentation,7261,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/13-mnemovault.md,documentation,8051,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/14-mnemoprompt.md,documentation,9588,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/15-architecture.md,documentation,15490,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/16-resonance-engine.md,documentation,17864,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/17-security-sovereignty.md,documentation,9743,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/18-llm-layer2.md,documentation,6840,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/19-multilanguage.md,documentation,4470,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/20-mnemohub.md,documentation,8667,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/README.md,documentation,5039,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,archive/mnemosyne-docs-beta/SUMMARY.md,documentation,1730,,exclu (archive déclarée historique)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/ai-configuration.jpg,binaire (image),138611,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/banner-mnemosyne-os.png,binaire (image),311998,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/flags/br.svg,binaire (image),473,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/flags/de.svg,binaire (image),487,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/flags/en.svg,binaire (image),654,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/flags/es.svg,binaire (image),419,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/flags/fr.svg,binaire (image),474,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/flags/ru.svg,binaire (image),487,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/flags/zh.svg,binaire (image),707,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/genesis-protocol.png,binaire (image),253086,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/infinite-canvas.gif,binaire (image),4310245,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/infinite-canvas.jpg,binaire (image),489418,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/infinite-canvas.mp4,autre,1178749,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/infinity-animated.svg,binaire (image),1418,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/labs-activated.png,binaire (image),311058,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/mnemohub-store.jpg,binaire (image),154569,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/mnemohub.png,binaire (image),836610,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/neural-map-torus.jpg,binaire (image),317190,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/neural-map.jpg,binaire (image),177110,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/nexus-graph.png,binaire (image),1483984,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/personality-forge.png,binaire (image),536898,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/soul-quiz.png,binaire (image),566068,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/soulstudio.png,binaire (image),547802,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/sovereign-notes.jpg,binaire (image),167668,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/strip-engines.png,binaire (image),110783,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,assets/strip-specs.png,binaire (image),111110,,exclu (image)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/.npmignore,autre,200,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/CHANGELOG.md,documentation,1278,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/LICENSE,autre,1087,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/README.md,documentation,11638,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/01-getting-started.md,documentation,1441,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/02-chronicle.md,documentation,2338,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/03-workspace.md,documentation,3077,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/04-neural-coding.md,documentation,5629,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/05-command-reference.md,documentation,4088,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/06-local-ai.md,documentation,2282,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/07-mcp-server.md,documentation,2523,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/08-project-history.md,documentation,3382,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/09-resonance-bridge.md,documentation,6021,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/09-soul-profiles.md,documentation,3165,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/10-canvas-rules.md,documentation,4766,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/21-ai-soul-passport.md,documentation,6856,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/ARCHITECTURE.md,documentation,5091,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/README.md,documentation,2352,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/docs/SUMMARY.md,documentation,564,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/package-lock.json,autre,118869,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/package.json,autre,1849,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/__tests__/chronicle-parser.test.ts,test,4018,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/__tests__/renderer.test.ts,test,3392,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/__tests__/resonance.test.ts,test,12722,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/cli.ts,code,8599,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/canvas.ts,code,7137,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/chronicle/index.ts,code,1021,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/chronicle/reader.ts,code,5065,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/chronicle/vault.ts,code,6489,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/chronicle/writer.ts,code,6127,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/config.ts,code,15937,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/dev/cursor-import.ts,code,9092,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/dev/index.ts,code,7250,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/forge.ts,code,6685,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/mnemosync.ts,code,8095,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/prompt.ts,code,10864,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/resonance.ts,code,15203,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/soul/generator.ts,code,2134,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/soul/index.ts,code,9228,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/soul/passport-cmd.ts,code,24026,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/soul/passport.ts,code,7137,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/soul/profiles.ts,code,4855,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/commands/workspace.ts,code,7849,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/canvas/canvas.ts,code,4853,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/canvas/renderer.ts,code,2638,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/canvas/templates/cli/files.ts,code,10027,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/chronicle-parser.ts,code,3422,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/chronicle-render.ts,code,2795,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/chronicle.ts,code,3572,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/dev-vault.ts,code,5375,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/i18n/en.ts,code,2370,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/i18n/es.ts,code,2389,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/i18n/fr.ts,code,2425,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/i18n/index.ts,code,2016,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/init-flow.ts,code,5427,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/lazy.ts,code,789,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/prompt-engine/renderer.ts,code,2617,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/prompt-engine/store.ts,code,9756,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/providers.ts,code,1910,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/resonance.ts,code,9681,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/sources/antigravity.ts,code,6041,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/sources/index.ts,code,2852,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/ui.ts,code,7644,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/lib/vault.ts,code,5913,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/mcp/server.ts,code,7925,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/templates/.cursorrules,autre,2373,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/templates/AGENT_INSTRUCTIONS.md,documentation,1937,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/src/templates/index.template.tsx,autre,1249,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,cli/tsconfig.json,autre,345,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,context7.json,autre,2881,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/ARCHITECTURE.md,documentation,6155,,recherche de mots-clés
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/CONCEPTS.md,documentation,7339,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/DESIGN_DECISIONS.md,documentation,6824,,recherche de mots-clés
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/GOVERNANCE.md,documentation,4853,,recherche de mots-clés
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/IPC_SECURITY_BRIDGE.md,documentation,6588,,recherche de mots-clés
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/PRIVACY_TELEMETRY.md,documentation,985,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/README.md,documentation,2886,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/RESONANCE_ENGINE_WHITEPAPER.md,documentation,29663,,recherche de mots-clés
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,doc/WHY.md,documentation,6153,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/AGENTS.md,documentation,30354,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/README.md,documentation,5702,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/index.html,autre,685,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/mnemo-plugin.json,autre,562,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/package.json,autre,911,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/src/App.test.tsx,autre,2714,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/src/App.tsx,autre,13678,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/src/main.tsx,autre,650,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/src/sdk/mnemo-sdk.ts,code,419,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/src/test-setup.ts,code,829,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/tsconfig.eslint.json,autre,1007,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/tsconfig.json,autre,997,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,examples/cartridge-boilerplate/vite.config.ts,code,1382,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,glama.json,autre,99,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/01-what-is-neural-coding.md,documentation,5676,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/02-the-three-pillars/01-intention-articulation.md,documentation,6010,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/02-the-three-pillars/02-architectural-judgment.md,documentation,5714,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/02-the-three-pillars/03-the-veto.md,documentation,14011,,recherche de mots-clés (l. 204-212 lues)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/03-anti-patterns.md,documentation,7118,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/04-ai-collaboration.md,documentation,10993,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/06-case-study-mnemosyne.md,documentation,11667,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/07-glossary.md,documentation,6316,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/08-neural-coding-with-mnemosyne.md,documentation,8041,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/09-the-method-and-the-machine.md,documentation,6706,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/11-pillar-4-resonance.md,documentation,6638,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/12-neural-coding-live.md,documentation,5422,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/README.md,documentation,6989,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/SUMMARY.md,documentation,824,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/mnemoforge/01-getting-started.md,documentation,1441,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/mnemoforge/02-chronicle.md,documentation,2338,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/mnemoforge/03-workspace.md,documentation,3077,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/mnemoforge/04-neural-coding.md,documentation,3908,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/mnemoforge/05-command-reference.md,documentation,3295,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,handbook/mnemoforge/SUMMARY.md,documentation,515,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,hooks/README.md,documentation,1170,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,hooks/mnemo-cockpit/HOOK.md,documentation,1096,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,hooks/mnemo-cockpit/handler.js,code,4500,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,llms.txt,documentation,32133,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,package.json,autre,738,,lu intégralement
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/README.md,documentation,2957,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/LICENSE,autre,1093,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/LICENSE-AFFiNE,autre,1117,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/NOTICE.md,documentation,2034,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/README.md,documentation,5423,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/package.json,autre,1582,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/cli.ts,code,4979,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/exportMarkdown.ts,code,11899,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/index.ts,code,1235,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/locate.ts,code,5132,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/nodeSqlite.ts,code,2236,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/read.ts,code,10347,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/stage.ts,code,2951,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/types.ts,code,3467,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/blocksuite-types.ts,code,933,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/delta-to-md/delta-converters.ts,code,2572,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/delta-to-md/delta-to-md.ts,code,3940,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/delta-to-md/index.ts,code,95,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/delta-to-md/utils/node.ts,code,1348,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/delta-to-md/utils/url.ts,code,188,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/parser.ts,code,14228,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/src/vendor/affine/types.ts,code,3259,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/tsconfig.build.json,autre,70,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/affine-reader/tsconfig.json,autre,780,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/LICENSE,autre,1093,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/README.md,documentation,8412,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/package.json,autre,1875,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/archive.test.ts,test,18120,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/archive.ts,code,23079,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connector.test.ts,test,13986,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connector.ts,code,26306,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/antigravity-ide-notes.json,autre,476,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/antigravity-ide.json,autre,1903,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/antigravity-notes.json,autre,1130,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/antigravity.expected.json,autre,911,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/antigravity.fixture.jsonl,autre,1020,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/antigravity.json,autre,3587,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/archiveFixtures.test.ts,test,4599,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/chatgpt-export.expected.json,autre,1323,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/chatgpt-export.fixture.json,autre,3752,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/chatgpt-export.json,autre,2739,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/kab-ai-export.expected.json,autre,1269,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/kab-ai-export.fixture.json,autre,2186,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/kab-ai-export.json,autre,2986,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/kab-code.expected.json,autre,1265,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/kab-code.fixture.jsonl,autre,1930,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/kab-code.json,autre,2842,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/kab-memory.json,autre,673,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/fixtures.test.ts,test,2716,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/gemini-takeout.expected.json,autre,2102,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/gemini-takeout.fixture.json,autre,2886,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/gemini-takeout.json,autre,3579,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/openclaw.expected.json,autre,2025,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/openclaw.fixture.jsonl,autre,8261,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/connectors/openclaw.json,autre,4935,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/discover.ts,code,4787,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/inbox.test.ts,test,6784,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/inbox.ts,code,7121,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/index.ts,code,5248,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/liveness.test.ts,test,6675,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/liveness.ts,code,6961,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/node.test.ts,test,6576,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/node.ts,code,9863,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/overlap.test.ts,test,7067,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/overlap.ts,code,8593,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/raw.d.ts,code,497,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/shellWrites.test.ts,test,4387,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/shellWrites.ts,code,5758,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/walk.test.ts,test,8415,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/src/walk.ts,code,6300,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/tsconfig.json,autre,407,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/agent-transcripts/vitest.config.ts,code,615,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/cartridge-sdk/LICENSE,autre,1093,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/cartridge-sdk/README.md,documentation,11138,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/cartridge-sdk/package.json,autre,1647,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/cartridge-sdk/src/index.test.ts,test,15569,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/cartridge-sdk/src/index.ts,code,26562,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/cartridge-sdk/tsconfig.json,autre,466,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/cartridge-sdk/vitest.config.ts,code,645,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/create-app/README.md,documentation,6317,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/create-app/bin/create.js,code,6287,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/create-app/package.json,autre,705,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/README.md,documentation,9085,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/examples/matrix-green.json,autre,1154,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/examples/ocean-dark.json,autre,985,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/examples/retrowave.json,autre,1216,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/package.json,autre,1479,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/skin-schema.json,autre,6079,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/src/built-ins.ts,code,5613,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/src/index.ts,code,1274,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/src/types.ts,code,5873,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/src/validate.ts,code,3731,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/design-sdk/tsconfig.json,autre,318,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/Dockerfile,autre,2200,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/LICENSE,autre,1093,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/README.md,documentation,34525,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/RECIPES.md,documentation,6789,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/package.json,autre,2138,,analysé par outil
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/skills/mnemosyne-memory/SKILL.md,documentation,5597,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/skills/mnemosyne-voice/SKILL.md,documentation,6598,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/agenda-edit-tool.test.ts,test,7892,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/agenda-edit-tool.ts,code,10518,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/agenda-tool.test.ts,test,4621,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/agenda-tool.ts,code,5384,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/agents.test.ts,test,20728,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/agents.ts,code,16464,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/annotations.test.ts,test,5996,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/annotations.ts,code,4721,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/app-only-tools.test.ts,test,8752,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/app-only-tools.ts,code,6441,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/cockpit-desktop.test.ts,test,3635,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/cockpit-detail.test.ts,test,2778,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/cockpit-hook.ts,code,5403,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/cockpit-tool.test.ts,test,7124,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/cockpit-tool.ts,code,9153,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/cockpitHook.ts,code,15350,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/covenant.test.ts,test,3227,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/covenant.ts,code,9267,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/format.test.ts,test,4178,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/format.ts,code,8240,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/index.ts,code,95863,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/install-hint.test.ts,test,3131,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/install-hint.ts,code,2561,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/local-time.test.ts,test,2411,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/local-time.ts,code,2715,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/manifest-identity.test.ts,test,2231,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/pheme-tool.test.ts,test,6441,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/pheme-tool.ts,code,8914,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/readme-tools.test.ts,test,4470,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/todo-edit-tool.test.ts,test,5767,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/todo-edit-tool.ts,code,9855,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/todo-tool.test.ts,test,4444,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/todo-tool.ts,code,5881,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/usage.test.ts,test,6030,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/usage.ts,code,5351,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/vault-target.test.ts,test,7057,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/vault-target.ts,code,8655,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/version.test.ts,test,3700,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/version.ts,code,1990,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/voice-format.test.ts,test,4112,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/ws-client.test.ts,test,13136,,"exécuté (suite de tests, T15)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/src/ws-client.ts,code,19543,,exécuté indirectement par les tests (non lu)
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/mcp/tsconfig.json,autre,602,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/public-contracts/LICENSE,autre,1093,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/public-contracts/README.md,documentation,3440,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/public-contracts/package.json,autre,1515,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/public-contracts/src/index.ts,code,1865,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/public-contracts/src/schemas.ts,code,5459,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/public-contracts/src/types.ts,code,7657,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/public-contracts/tsconfig.json,autre,324,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/README.md,documentation,19194,,recherche de mots-clés
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/docs/BRIDGE_API.md,documentation,6555,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/docs/MANIFEST.md,documentation,3936,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/examples/bridge-app/app.manifest.json,autre,366,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/examples/bridge-app/index.ts,code,3163,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/package.json,autre,2313,,analysé par outil
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/browser-client.ts,code,26298,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/browser.ts,code,1958,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/client.ts,code,27295,,lu intégralement
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/constants.ts,code,10107,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/index.ts,code,5055,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/jwt.ts,code,6670,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/manifest.ts,code,8213,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/src/types.ts,code,31808,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,packages/sdk/tsconfig.json,autre,432,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,pnpm-lock.yaml,autre,122244,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,pnpm-workspace.yaml,autre,44,,lu intégralement
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,server.json,autre,1526,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,skills/mnemosyne-memory/SKILL.md,documentation,5597,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,standards/ai-soul-passport/README.md,documentation,3277,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,standards/ai-soul-passport/soul-passport.schema.json,autre,3927,,non lu
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,tools/check-public-sync.mjs,code,7117,,"partiellement inspecté (l. 1-80 lues, reste par recherche ciblée)"
+Mnemosyne-Neural-OS,580f1fe9e220659907285bd56daa9d6ca1d4774d,tools/metrics.json,autre,321,,lu intégralement
+agent-memory-skill,a4014d43572e0e98d4c7fdaebe44869eb1d219d0,LICENSE,documentation,2413,cd57a82cb3bbb248b2a63e31ba900cb1d7ceb6e54f82b64049e9a2badb591cf2,recherche de mots-clés
+agent-memory-skill,a4014d43572e0e98d4c7fdaebe44869eb1d219d0,README.md,documentation,3540,440df90fbd4cedab79498ee951eb2d71e5c0c0543d69503d0452b2c4e2be64a5,recherche de mots-clés
+agent-memory-skill,a4014d43572e0e98d4c7fdaebe44869eb1d219d0,agent-memory/SKILL.md,documentation,7629,f9dc37e0ebbd047739b46865fa13d3f915fb88bf28a59f89f8fa7bffa64303da,recherche de mots-clés
+agent-memory-skill,a4014d43572e0e98d4c7fdaebe44869eb1d219d0,ai.txt,documentation,1652,86b2270c9d2471389a192b31458647219ac9796967f8fd35705bf9a6b1e0228d,recherche de mots-clés
+agent-memory-skill,a4014d43572e0e98d4c7fdaebe44869eb1d219d0,llms.txt,documentation,1652,86b2270c9d2471389a192b31458647219ac9796967f8fd35705bf9a6b1e0228d,recherche de mots-clés
+LongMemEval,9e0b455f4ef0e2ab8f2e582289761153549043fc,src/evaluation/evaluate_qa.py,référence,7436,ecce9c4c79dc89d99534ac17b383a5cbb5b9f0c69ee98adaf0684742e3d95251,lu intégralement
+BEAM,b2da22eac88bb0874c64665f13457eb99835774a,src/evaluation/compute_metrics.py,référence,19830,e72bf25d36d521d166862063ec94f8e7875328193142d1edddb9b4677d47780d,lu intégralement
+BEAM,b2da22eac88bb0874c64665f13457eb99835774a,src/evaluation/run_evaluation.py,référence,10458,518894ab65860043a24259457ddf3b1ab8ae18427b6e01e5aa90cd29c4256a3b,lu intégralement
+BEAM,b2da22eac88bb0874c64665f13457eb99835774a,src/evaluation/report_results.py,référence,3261,1486a44fac721717c0a9373b32f4487c277d2bf28044cf28f649a6a74e692c96,lu intégralement
+BEAM,b2da22eac88bb0874c64665f13457eb99835774a,src/llm.py,référence,2182,1ce32f8bf67935fc0fcf169963cce79b5f7ee4e63e25baf72b174c497d364c54,lu intégralement
+BEAM,b2da22eac88bb0874c64665f13457eb99835774a,src/prompts.py,référence,633361,81fe51ab2bcd7e8ad218b3a9a969a340c38d31f90ac2d93fa78a3bb890ba157b,partiellement inspecté (unified_llm_judge_base_prompt)
+BEAM,b2da22eac88bb0874c64665f13457eb99835774a,README.md,référence,14549,6eb38ece9322cdd96dba99a50f882187688e55e80b594068ad8827db5bc08020,recherche de mots-clés

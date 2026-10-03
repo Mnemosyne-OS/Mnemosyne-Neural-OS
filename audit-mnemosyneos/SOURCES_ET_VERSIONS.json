@@ -1,0 +1,202 @@
+{
+  "generated_utc": "2026-09-28T09:27:12.543Z",
+  "environment": {
+    "node": "v22.22.2",
+    "python": "Python 3.11.15",
+    "git": "git version 2.43.0",
+    "pnpm": "10.25.0",
+    "os": "Linux 6.18.44-fc-v37 x86_64",
+    "network": "proxy sortant ; huggingface.co, arxiv.org, mnemosyne-os.io/.com, docs.mnemosyne-os.io BLOQUÉS ; github.com et registry.npmjs.org accessibles ; exécutions de test sous unshare -n"
+  },
+  "repositories": [
+    {
+      "url": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
+      "role": "objet audité (SDK, CLI, docs)",
+      "branch": "main",
+      "commit": "580f1fe9e220659907285bd56daa9d6ca1d4774d",
+      "commit_date": "2026-09-24T01:45:34-04:00",
+      "clone": "complet",
+      "local_state": "propre (aucune modification)",
+      "retrieved_utc": "2026-09-28T09:0xZ (clone de session, voir traces)"
+    },
+    {
+      "url": "https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks",
+      "role": "objet audité (campagnes, registres, vérificateurs)",
+      "branch": "main",
+      "commit": "d69c78264c532eb27255a248be32ea235d7e7a64",
+      "commit_date": "2026-09-27T08:12:55-04:00",
+      "clone": "complet",
+      "local_state": "propre (aucune modification)",
+      "retrieved_utc": "2026-09-28T09:0xZ (clone de session, voir traces)"
+    },
+    {
+      "url": "https://github.com/Mnemosyne-OS/agent-memory-skill",
+      "role": "objet audité (skill documentaire)",
+      "branch": "main",
+      "commit": "a4014d43572e0e98d4c7fdaebe44869eb1d219d0",
+      "commit_date": "2026-08-31T21:29:42-04:00",
+      "clone": "complet",
+      "local_state": "propre (aucune modification)",
+      "retrieved_utc": "2026-09-28T09:0xZ (clone de session, voir traces)"
+    },
+    {
+      "url": "https://github.com/xiaowu0162/LongMemEval",
+      "role": "référence primaire LongMemEval (code d'évaluation)",
+      "branch": "main",
+      "commit": "9e0b455f4ef0e2ab8f2e582289761153549043fc",
+      "commit_date": "2026-05-11T15:49:24-07:00",
+      "clone": "shallow (--depth 1)",
+      "local_state": "propre (aucune modification)",
+      "retrieved_utc": "2026-09-28T09:0xZ (clone de session, voir traces)"
+    },
+    {
+      "url": "https://github.com/mohammadtavakoli78/BEAM",
+      "role": "référence primaire BEAM (code d'évaluation, données)",
+      "branch": "main",
+      "commit": "b2da22eac88bb0874c64665f13457eb99835774a",
+      "commit_date": "2026-08-30T20:12:10-06:00",
+      "clone": "complet",
+      "local_state": "propre (aucune modification)",
+      "retrieved_utc": "2026-09-28T09:0xZ (clone de session, voir traces)"
+    },
+    {
+      "url": "https://github.com/snap-research/locomo",
+      "role": "référence primaire LoCoMo (non utilisée : aucune campagne LoCoMo publiée trouvée)",
+      "branch": "main",
+      "commit": "3eb6f2c585f5e1699204e3c3bdf7adc5c28cb376",
+      "commit_date": "2024-08-12T23:21:21-04:00",
+      "clone": "shallow (--depth 1)",
+      "local_state": "propre (aucune modification)",
+      "retrieved_utc": "2026-09-28T09:0xZ (clone de session, voir traces)"
+    },
+    {
+      "url": "https://github.com/JordanMcCann/agentmemory",
+      "role": "SOURCE SECONDAIRE : texte des questions LongMemEval (recoupé sur les 48 références)",
+      "branch": "main",
+      "commit": "3aa3b8389896f81dd813fdf9176ef3ca122d809e",
+      "commit_date": "2026-03-26T15:58:38-04:00",
+      "clone": "shallow (--depth 1)",
+      "local_state": "propre (aucune modification)",
+      "retrieved_utc": "2026-09-28T09:0xZ (clone de session, voir traces)"
+    }
+  ],
+  "benchmark_repo_file_sha256": {
+    "AGENTS.md": "bd6337e5a1f74c78d062859ec9ac47378865dd961568ab279d04158bfdee3a13",
+    "LICENSE": "5eebefd3682e32d661f307a28539b304e5e52fb1eb33ba214e61d7a57663e4f0",
+    "LICENSE-CODE": "07a9ca113ea3f081fc31911ae4153b7ebadf15695c5db8fc8c9bcef8c6452bf8",
+    "README.md": "ac30af1e41a1714709483520d89151c972dc9e70b9eeb3381d2d1d18d2642b48",
+    "beam-2026-09/SUMMARY.md": "0be09600334c750fed4fbdd0f2faa00b3662e6b4b16d0bb234c1ae3e11720a55",
+    "beam-2026-09/runs/beam-100K-full.answers.json": "101419002e2e610098b5636d05dbfeaead7610b628bf2c0494a7d73931c4d4e7",
+    "beam-2026-09/runs/beam-100K-full.evidence.json": "3b106ea5557a5474ee64a7835291e9f03cfb3122b3dd25111ccdfc83b67eefcd",
+    "beam-2026-09/runs/beam-100K-full.judged-gemini-2.5-flash.json": "c1f85136943f10cc2cc4b800f3addcb0d4d468b0c55ca7c885dc0bea73b1b057",
+    "beam-2026-09/runs/beam-100K-full.judged-gpt-4.1-mini.json": "7162f8ddb6eeee32142c1b29d995328513df584e1bd9c8f1b79c692b38133f6d",
+    "beam-2026-09/runs/beam-10M-v1.answers.json": "bb8bf1c6185f35bca70cdbae1e84089ef0aa7d69831c5ebfa9def3df11d7fbe6",
+    "beam-2026-09/runs/beam-10M-v1.evidence.json": "0e9e463be81faa1d98daf605b6e36b1e55e118c171d84e48d2539de0dbcd39d7",
+    "beam-2026-09/runs/beam-10M-v1.judged-gpt-4.1-mini.json": "3cc3e68c95edbdc11021d4d89803b7c9036ea65b8549f6c93c2bd7548196b57f",
+    "beam-2026-09/verify.js": "e789ee34065efa7c6ed98a8cc2d309f0fdb712491e46c844af87d1e5ebf549ac",
+    "fullhaystack-2026-07/SUMMARY.md": "bd155639179ba8cf13217b5967231d44f1af229ca4461253554f1d83ccb7f89e",
+    "fullhaystack-2026-07/logs/exp-master-all8-replay.log": "aadf26f6f60226e242a5d0711c35fe0199b601ed2b69745d58181d33baa480f5",
+    "fullhaystack-2026-07/logs/exp-master-all8.log": "5b19ab2f3af4990a96a313a9e6f695efa1c02648f48220c8ef09c69bd61a7602",
+    "fullhaystack-2026-07/logs/exp-reserve5.log": "d3e7681ead69f58bd01931a5898835d81117ca0f5f1a7672d909eb3d30f56645",
+    "fullhaystack-2026-07/logs/exp-reserve8.log": "8853e8046387ba80b6a7550701f059213f329889ae126afc3eec0ed1161fa7fa",
+    "fullhaystack-2026-07/logs/exp-slice-aae.log": "4cde8ac97a85331b3e379929cb9f09e7ae805b485ad8a4f5c99178d39f627fb7",
+    "fullhaystack-2026-07/logs/exp-slice-all8-replay.log": "0a2a7888cbefec196f44a4f457ee915eeaf6a13f31444345607143ed74025fe3",
+    "fullhaystack-2026-07/logs/exp-slice-all8.log": "a18357ac9577a3e3869d6b600696366d1c7ba894c18f06955d16af1333d43d51",
+    "fullhaystack-2026-07/logs/exp-verify.log": "a9a82e3ae87779a1e8bb5600ee62204f87f1ab65ddc09c7e4f9a4f8281497db0",
+    "fullhaystack-2026-07/logs/grand-run.log": "22e6350a3b99f802a59adb033b4c2be9e2af7a5739c56b7375cd639a55d226fe",
+    "fullhaystack-2026-07/logs/spine-dream-flashab.log": "a27ba1b351a212771cadab31ea23259e70c44368d386a089793a5ccc6aeae699",
+    "fullhaystack-2026-07/logs/spine-dream-multirun.log": "7d28aa174e126a417a17c06e3bfea9f4b1bbfdf5f38cd5ddc8eab3daf303dbb1",
+    "fullhaystack-2026-07/logs/spine-dream-preflight.log": "cfad4ca128388d02003701c060683dd9374cc189c357d202e1f9843d43fb49d5",
+    "fullhaystack-2026-07/logs/spine-dream-preflight2.log": "86bc18f5c78087a16ff2daffa5306f71d63b911ecd39372be898b49b89d1342c",
+    "fullhaystack-2026-07/logs/spine-dream-q2.log": "ed1bdc69d21e6061bc150e5ead1ca649059d56a11e3ed3cbe56cf261ae5ffb6f",
+    "fullhaystack-2026-07/logs/spine-dream-relations-test.log": "62fcf8ea97e78092f629f6e8db4efc445053a429b3907217e7b7f5f7dd68e6f6",
+    "fullhaystack-2026-07/logs/spine-dream-temporal-riquiqui.log": "37e917872f539ad0612f70573e4207721a7a607e1f50bc664414fd51601432c1",
+    "lexical-2026-08/SUMMARY.md": "e4528b0950ec908b7b852dc38d8d18b12ab242d165b2135569316e3b678557b4",
+    "lexical-2026-08/extract-ledgers.mjs": "31d87f65b2075a1d77e5fbb4e739ef2ea72008016312d1fa29781d1b489a5f2e",
+    "lexical-2026-08/runs/boost-off.json": "7224cfdaeb19ce53ef2c49519bade05d870e6141c76026dd2f020ccdd5d0954b",
+    "lexical-2026-08/runs/boost-on-v2.json": "5d73ff48b40dd79a24052ae02d755bbcb67488ab888d2f99879ffc29460d4e92",
+    "lexical-2026-08/runs/duel-full-lexfusion-r2.json": "aa34907c075ba513fd56367a320d2ac363b4d78e6fb8494c234b5bac5ec79e42",
+    "lexical-2026-08/runs/duel-full-lexfusion.json": "677af53beb6167e4f12b3093c8fa79491c754b82367e06d728af13763ca575e1",
+    "lexical-2026-08/runs/duel-full.rejudged.json": "25670d066caef45d66a149ce22677250d73cca08fbacef78faa6caa8d9e8ecc1",
+    "lexical-2026-08/runs/recall-control.json": "9d5f72381e32da4894de540125662a3c568b6132991f2701b0e98a4e1a9f9358",
+    "lexical-2026-08/runs/recall-fusion-persistent.json": "c3a58f1951e0b42a0b45bc44fa01e22c299c586df3bc28fae4b9717bdbd3eb38",
+    "lexical-2026-08/runs/recall-fusion.json": "13cc41c800bfe001985eb21f9d8ca8857df4280064af1ea674797e16f0bb5260",
+    "lexical-2026-08/runs/recall-hold-off.json": "f5ed990bd0f9764adc94206c2afc675c1df68975b47f24d1578fc1ec50694cb5",
+    "lexical-2026-08/runs/recall-hold-on.json": "0d6170378e433988eca68d02aec0a6923b62b00779e2ff4e61a5abadab20c459",
+    "lexical-2026-08/runs/recall-post-fix.json": "090bc6d0195de9f1fec280510b4764bab5829392ca4af881471ce1527034217c",
+    "verification-kit/METHODOLOGY.md": "f46560c1d374d310e9870351ede969f45c127bdc15734ce191c8c4123e9b3c68",
+    "verification-kit/README.md": "fc64345b39e404ecbaabfa9579d92ce841dc1c1766148cf449d7ba680bb45983",
+    "verification-kit/RESULTS.md": "5ebdf1ca705e376982a72f7ff0aacfcc5bdfcc335b8eb2134de04bcc8ba0e8b0",
+    "verification-kit/index.html": "5e71ae4d84ca1633f72fe02a7e3d927049d6c600dfd23d24471e02eda82f415e",
+    "verification-kit/results/baseline-longmemeval-m-48q.jsonl": "9d0b96e448c656e6be3f267acbc6e142d23d15087eff09a759a0af78695e93ce",
+    "verification-kit/results/engine-multisession-8q.jsonl": "c9a1c1f01e5ce9ce0063f5c5855703e5b1ce6fc5a31a020f4c55779b2047e063",
+    "verification-kit/results/lexical-baseline-flexible-48q.jsonl": "6072afb1317b5131b82343cbefdc900ee55d557d763b201524e624b0a250230c",
+    "verification-kit/results/lexical-baseline-strict-48q.jsonl": "bbeff117aafca3aca5160af669fe5cedbf413c8d517e935e683db120c87959ab",
+    "verification-kit/results/lexical-fusion-flexible-48q.jsonl": "080241fddf6a808b2b3fae5df1a892e1692cd94c5e895a488489a0dc81d3f750",
+    "verification-kit/results/lexical-fusion-strict-48q.jsonl": "bb0e9b819d916c7c0ff12601a672675e8b8323d291e92111c34a70d2f359e752",
+    "verification-kit/results/local-sovereign-12q.jsonl": "a86f2117ebd84458f33d1bf7e163e2821c46a04dab6f6e6bf65a1ceca52f207d",
+    "verification-kit/scoring.js": "69dbe6fed051a17acc7a0cac10d88be95543877e292d6d0fe80cb3e6130ad6b0",
+    "verification-kit/verify.js": "2097c7c00bebe3e2dbbe0b8dbadba3925f18f3961ce5cbec3506aa27022a8b7f"
+  },
+  "other_file_sha256": {
+    "LongMemEval/src/evaluation/evaluate_qa.py": "ecce9c4c79dc89d99534ac17b383a5cbb5b9f0c69ee98adaf0684742e3d95251",
+    "BEAM/src/evaluation/compute_metrics.py": "e72bf25d36d521d166862063ec94f8e7875328193142d1edddb9b4677d47780d",
+    "BEAM/src/evaluation/report_results.py": "1486a44fac721717c0a9373b32f4487c277d2bf28044cf28f649a6a74e692c96",
+    "BEAM/src/llm.py": "1ce32f8bf67935fc0fcf169963cce79b5f7ee4e63e25baf72b174c497d364c54",
+    "Mnemosyne-Neural-OS/packages/sdk/src/client.ts": "7b68e0b23ee6d10ea5f675865e1fcf505e438dbcbc9b238a10238d2db6eeed8f",
+    "Mnemosyne-Neural-OS/tools/metrics.json": "7fc70e28773ad25339a4ef817926bd30f77b000f9380879fa0d978a89d05c24e",
+    "Mnemosyne-Neural-OS/tools/check-public-sync.mjs": "71ccc47b8ee692c9704641912e4150e1d0a0c729450a6cae10f8a4254fd4fd61",
+    "Mnemosyne-Neural-OS/AGENTS.md": "e3b285bfebc34ec491ebe7f09b02528bd88b41547e0657a93c3598c86cdff974",
+    "Mnemosyne-Neural-OS/README.md": "5c4cd3b25ae36effb57af1fc8071b667700b07dc5f174c0b485960a30b3fa6b6",
+    "mirror_JordanMcCann_agentmemory/longmemeval_results_opus6.json": "678c16e138664f4ab869a6dc2b3d3bbddf020f6ac000355c12827a21f84e32eb"
+  },
+  "datasets": [
+    {
+      "name": "LongMemEval oracle (cleaned)",
+      "uri": "hf://datasets/xiaowu0162/longmemeval-cleaned/longmemeval_oracle.json",
+      "size": 15388478,
+      "sha256": "NON CALCULÉ (huggingface.co bloqué ; lecture par le connecteur HF, octets 0-119999, élément gpt4_76048e76)",
+      "updated": "2025-09-19 (métadonnées Hub)"
+    },
+    {
+      "name": "LongMemEval oracle (original)",
+      "uri": "hf://datasets/xiaowu0162/longmemeval/longmemeval_oracle",
+      "size": 15388478,
+      "sha256": "NON CALCULÉ (idem)"
+    },
+    {
+      "name": "LongMemEval M cleaned / original",
+      "uri": "hf://datasets/xiaowu0162/longmemeval-cleaned/longmemeval_m_cleaned.json ; hf://datasets/xiaowu0162/longmemeval/longmemeval_m",
+      "size": "2737100077 / 2745274681",
+      "sha256": "NON RÉCUPÉRÉ"
+    },
+    {
+      "name": "BEAM (chats 100K/500K/1M/10M)",
+      "uri": "https://github.com/mohammadtavakoli78/BEAM @ b2da22e (répertoire chats/)",
+      "note": "non utilisé pour recalcul ; rubriques et questions lues dans les fichiers Mnemosyne"
+    },
+    {
+      "name": "BEAM paper",
+      "uri": "hf://papers/2510.27246/paper.md (arXiv 2510.27246v1, 2025-10-31)",
+      "sha256": "NON CALCULÉ (lu par le connecteur HF)"
+    }
+  ],
+  "web_pages": [
+    {
+      "url": "https://mnemosyne-os.io/",
+      "status": "BLOQUÉ par le proxy"
+    },
+    {
+      "url": "https://mnemosyne-os.com/",
+      "status": "BLOQUÉ"
+    },
+    {
+      "url": "https://docs.mnemosyne-os.io/",
+      "status": "BLOQUÉ"
+    },
+    {
+      "url": "https://mnemosyne-os.github.io/MnemosyneOS---benchmarks/verification-kit/",
+      "status": "non consulté ; source index.html lue dans le dépôt @ d69c782"
+    }
+  ]
+}

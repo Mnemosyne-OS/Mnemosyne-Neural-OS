@@ -1,0 +1,1300 @@
+TAP version 13
+# Subtest: a read prints the id and says to use it, never the title
+ok 1 - a read prints the id and says to use it, never the title
+  ---
+  duration_ms: 1.143812
+  type: 'test'
+  ...
+# Subtest: a series appears once, with its cadence and its next occurrence
+ok 2 - a series appears once, with its cadence and its next occurrence
+  ---
+  duration_ms: 0.362034
+  type: 'test'
+  ...
+# Subtest: an event with nothing left says so rather than showing its old start as a future
+ok 3 - an event with nothing left says so rather than showing its old start as a future
+  ---
+  duration_ms: 0.952852
+  type: 'test'
+  ...
+# Subtest: an empty window names the window as the reason, and counts what is outside it
+ok 4 - an empty window names the window as the reason, and counts what is outside it
+  ---
+  duration_ms: 0.309865
+  type: 'test'
+  ...
+# Subtest: a removal is named by title and time, and says it cannot be undone
+ok 5 - a removal is named by title and time, and says it cannot be undone
+  ---
+  duration_ms: 0.346926
+  type: 'test'
+  ...
+# Subtest: an unreadable date REFUSES, and the sentence says the old value was kept
+ok 6 - an unreadable date REFUSES, and the sentence says the old value was kept
+  ---
+  duration_ms: 0.130616
+  type: 'test'
+  ...
+# Subtest: an unknown cadence is refused, not quietly turned into a one-off
+ok 7 - an unknown cadence is refused, not quietly turned into a one-off
+  ---
+  duration_ms: 0.244426
+  type: 'test'
+  ...
+# Subtest: a stale id is nameable inside a batch
+ok 8 - a stale id is nameable inside a batch
+  ---
+  duration_ms: 0.312223
+  type: 'test'
+  ...
+# Subtest: agendaEditOps keeps null (clear) apart from absent (leave alone)
+ok 9 - agendaEditOps keeps null (clear) apart from absent (leave alone)
+  ---
+  duration_ms: 2.157703
+  type: 'test'
+  ...
+# Subtest: removing without ids refuses, and says to read the calendar first
+ok 10 - removing without ids refuses, and says to read the calendar first
+  ---
+  duration_ms: 0.705377
+  type: 'test'
+  ...
+# Subtest: removing accepts a single id as a string, and trims it
+ok 11 - removing accepts a single id as a string, and trims it
+  ---
+  duration_ms: 0.459022
+  type: 'test'
+  ...
+# Subtest: agendaListParams reads ISO or epoch, as a number or a numeric string
+ok 12 - agendaListParams reads ISO or epoch, as a number or a numeric string
+  ---
+  duration_ms: 0.583699
+  type: 'test'
+  ...
+# Subtest: an unreadable bound REFUSES the read instead of silently widening the window
+ok 13 - an unreadable bound REFUSES the read instead of silently widening the window
+  ---
+  duration_ms: 0.442507
+  type: 'test'
+  ...
+# Subtest: window bounds follow the host frame: no offset is local, a bare date is local midnight
+ok 14 - window bounds follow the host frame: no offset is local, a bare date is local midnight
+  ---
+  duration_ms: 0.325801
+  type: 'test'
+  ...
+# Subtest: stamp says nothing about a number nobody measured, and prints LOCAL time
+ok 15 - stamp says nothing about a number nobody measured, and prints LOCAL time
+  ---
+  duration_ms: 0.157566
+  type: 'test'
+  ...
+# Subtest: an answer that prints a time names the frame, once
+ok 16 - an answer that prints a time names the frame, once
+  ---
+  duration_ms: 0.301831
+  type: 'test'
+  ...
+# Subtest: agendaParams carries only the recognised fields, renamed to the wire shape
+ok 17 - agendaParams carries only the recognised fields, renamed to the wire shape
+  ---
+  duration_ms: 2.087491
+  type: 'test'
+  ...
+# Subtest: agendaParams reads a missing/non-array events field as empty
+ok 18 - agendaParams reads a missing/non-array events field as empty
+  ---
+  duration_ms: 0.244822
+  type: 'test'
+  ...
+# Subtest: a success names the count
+ok 19 - a success names the count
+  ---
+  duration_ms: 0.262492
+  type: 'test'
+  ...
+# Subtest: what did not land is said next to what did, and an absent count says nothing (G3)
+ok 20 - what did not land is said next to what did, and an absent count says nothing (G3)
+  ---
+  duration_ms: 0.251837
+  type: 'test'
+  ...
+# Subtest: a host that cannot reach a calendar does not tell anyone to start the app
+ok 21 - a host that cannot reach a calendar does not tell anyone to start the app
+  ---
+  duration_ms: 0.214212
+  type: 'test'
+  ...
+# Subtest: every failure says nothing was written
+ok 22 - every failure says nothing was written
+  ---
+  duration_ms: 0.236171
+  type: 'test'
+  ...
+# Subtest: a success says which way the write went, and only when it was the file
+ok 23 - a success says which way the write went, and only when it was the file
+  ---
+  duration_ms: 0.152601
+  type: 'test'
+  ...
+# Subtest: handleAgendaAdd calls sdk.agenda.add with the app id and renders the answer
+ok 24 - handleAgendaAdd calls sdk.agenda.add with the app id and renders the answer
+  ---
+  duration_ms: 0.204565
+  type: 'test'
+  ...
+# Subtest: handleAgendaAdd refuses an empty plan without calling the host
+ok 25 - handleAgendaAdd refuses an empty plan without calling the host
+  ---
+  duration_ms: 0.350541
+  type: 'test'
+  ...
+# Subtest: sessionsRoots
+    # Subtest: prefers the folder the human declared in their own MCP config
+    ok 1 - prefers the folder the human declared in their own MCP config
+      ---
+      duration_ms: 1.095044
+      type: 'test'
+      ...
+    # Subtest: looks for every shipped harness by default, not only its own
+    ok 2 - looks for every shipped harness by default, not only its own
+      ---
+      duration_ms: 0.376092
+      type: 'test'
+      ...
+    1..2
+ok 26 - sessionsRoots
+  ---
+  duration_ms: 2.49826
+  type: 'suite'
+  ...
+# Subtest: lastSeen
+    # Subtest: is elapsed time, never a status
+    ok 1 - is elapsed time, never a status
+      ---
+      duration_ms: 0.741022
+      type: 'test'
+      ...
+    # Subtest: says an absent timestamp is absent
+    ok 2 - says an absent timestamp is absent
+      ---
+      duration_ms: 0.305856
+      type: 'test'
+      ...
+    1..2
+ok 27 - lastSeen
+  ---
+  duration_ms: 1.324976
+  type: 'suite'
+  ...
+# Subtest: mnemosyne_agent_collisions
+    # Subtest: names the two sessions sharing a branch, and what it costs
+    ok 1 - names the two sessions sharing a branch, and what it costs
+      ---
+      duration_ms: 14.319408
+      type: 'test'
+      ...
+    # Subtest: never claims the machine is quiet, only that nothing was readable
+    ok 2 - never claims the machine is quiet, only that nothing was readable
+      ---
+      duration_ms: 1.59155
+      type: 'test'
+      ...
+    # Subtest: ignores a session that has gone quiet
+    ok 3 - ignores a session that has gone quiet
+      ---
+      duration_ms: 1.501266
+      type: 'test'
+      ...
+    1..3
+ok 28 - mnemosyne_agent_collisions
+  ---
+  duration_ms: 17.705899
+  type: 'suite'
+  ...
+# Subtest: mnemosyne_agent_list
+    # Subtest: lists sessions as metadata, and never as a status
+    ok 1 - lists sessions as metadata, and never as a status
+      ---
+      duration_ms: 1.523498
+      type: 'test'
+      ...
+    # Subtest: never carries what the human typed
+    ok 2 - never carries what the human typed
+      ---
+      duration_ms: 3.316569
+      type: 'test'
+      ...
+    # Subtest: scopes to one project when asked
+    ok 3 - scopes to one project when asked
+      ---
+      duration_ms: 1.288684
+      type: 'test'
+      ...
+    # Subtest: says the folder is missing rather than answering "no sessions"
+    ok 4 - says the folder is missing rather than answering "no sessions"
+      ---
+      duration_ms: 0.400799
+      type: 'test'
+      ...
+    1..4
+ok 29 - mnemosyne_agent_list
+  ---
+  duration_ms: 6.744163
+  type: 'suite'
+  ...
+# Subtest: mnemosyne_agent_files
+    # Subtest: lists paths with how each one is known
+    ok 1 - lists paths with how each one is known
+      ---
+      duration_ms: 1.786594
+      type: 'test'
+      ...
+    # Subtest: filters on a path fragment, folder names included
+    ok 2 - filters on a path fragment, folder names included
+      ---
+      duration_ms: 1.147322
+      type: 'test'
+      ...
+    1..2
+ok 30 - mnemosyne_agent_files
+  ---
+  duration_ms: 3.11224
+  type: 'suite'
+  ...
+# Subtest: every answer
+    # Subtest: says which folder it read and how much of it
+    ok 1 - says which folder it read and how much of it
+      ---
+      duration_ms: 1.779187
+      type: 'test'
+      ...
+    1..1
+ok 31 - every answer
+  ---
+  duration_ms: 1.855855
+  type: 'suite'
+  ...
+# Subtest: across harnesses
+    # Subtest: lists sessions from both harnesses, each named
+    ok 1 - lists sessions from both harnesses, each named
+      ---
+      duration_ms: 1.909796
+      type: 'test'
+      ...
+    # Subtest: names every folder it opened, one line per harness
+    ok 2 - names every folder it opened, one line per harness
+      ---
+      duration_ms: 1.513913
+      type: 'test'
+      ...
+    # Subtest: refuses to place a session whose harness records no project, and SAYS so
+    ok 3 - refuses to place a session whose harness records no project, and SAYS so
+      ---
+      duration_ms: 1.144737
+      type: 'test'
+      ...
+    # Subtest: says which harness is absent rather than pretending it looked
+    ok 4 - says which harness is absent rather than pretending it looked
+      ---
+      duration_ms: 1.347741
+      type: 'test'
+      ...
+    1..4
+ok 32 - across harnesses
+  ---
+  duration_ms: 6.117653
+  type: 'suite'
+  ...
+# Subtest: knowing which session is asking
+    # Subtest: counts the OTHERS and marks the reader
+    ok 1 - counts the OTHERS and marks the reader
+      ---
+      duration_ms: 1.840096
+      type: 'test'
+      ...
+    # Subtest: stays neutral when it does not know who is asking
+    ok 2 - stays neutral when it does not know who is asking
+      ---
+      duration_ms: 1.006141
+      type: 'test'
+      ...
+    # Subtest: stays neutral when the id matches nothing it read
+    ok 3 - stays neutral when the id matches nothing it read
+      ---
+      duration_ms: 1.03915
+      type: 'test'
+      ...
+    # Subtest: SAYS the variable never arrived, so the config gap is findable
+    ok 4 - SAYS the variable never arrived, so the config gap is findable
+      ---
+      duration_ms: 2.908072
+      type: 'test'
+      ...
+    # Subtest: SAYS when the id it carries matches nothing, and quotes it
+    ok 5 - SAYS when the id it carries matches nothing, and quotes it
+      ---
+      duration_ms: 1.217149
+      type: 'test'
+      ...
+    # Subtest: says NOTHING about it once the reader is identified
+    ok 6 - says NOTHING about it once the reader is identified
+      ---
+      duration_ms: 1.038218
+      type: 'test'
+      ...
+    # Subtest: says NOTHING about it when the reader was read but collides with nobody
+    ok 7 - says NOTHING about it when the reader was read but collides with nobody
+      ---
+      duration_ms: 2.131689
+      type: 'test'
+      ...
+    1..7
+ok 33 - knowing which session is asking
+  ---
+  duration_ms: 11.542338
+  type: 'suite'
+  ...
+# Subtest: the deck parsed from index.ts is non-empty, so a parse failure cannot pass green
+ok 34 - the deck parsed from index.ts is non-empty, so a parse failure cannot pass green
+  ---
+  duration_ms: 0.771824
+  type: 'test'
+  ...
+# Subtest: every registered tool declares a title
+ok 35 - every registered tool declares a title
+  ---
+  duration_ms: 1.11086
+  type: 'test'
+  ...
+# Subtest: no title is declared for a tool the server does not register
+ok 36 - no title is declared for a tool the server does not register
+  ---
+  duration_ms: 0.166528
+  type: 'test'
+  ...
+# Subtest: a tool is never both read-only and destructive
+ok 37 - a tool is never both read-only and destructive
+  ---
+  duration_ms: 0.128478
+  type: 'test'
+  ...
+# Subtest: every tool named destructive is one the server actually registers
+ok 38 - every tool named destructive is one the server actually registers
+  ---
+  duration_ms: 0.168041
+  type: 'test'
+  ...
+# Subtest: every registered tool is served with a title and an applicable hint
+ok 39 - every registered tool is served with a title and an applicable hint
+  ---
+  duration_ms: 0.271248
+  type: 'test'
+  ...
+# Subtest: a reader declares readOnlyHint and no destructiveHint, which would mean nothing on it
+ok 40 - a reader declares readOnlyHint and no destructiveHint, which would mean nothing on it
+  ---
+  duration_ms: 0.11842
+  type: 'test'
+  ...
+# Subtest: a writer that only adds says so explicitly rather than staying silent
+ok 41 - a writer that only adds says so explicitly rather than staying silent
+  ---
+  duration_ms: 0.071461
+  type: 'test'
+  ...
+# Subtest: every tool that can take something away is flagged destructive
+ok 42 - every tool that can take something away is flagged destructive
+  ---
+  duration_ms: 0.47674
+  type: 'test'
+  ...
+# Subtest: an unlisted tool is left untouched rather than given a guessed hint
+ok 43 - an unlisted tool is left untouched rather than given a guessed hint
+  ---
+  duration_ms: 0.392579
+  type: 'test'
+  ...
+# Subtest: annotating does not mutate the tool it was given
+ok 44 - annotating does not mutate the tool it was given
+  ---
+  duration_ms: 0.21763
+  type: 'test'
+  ...
+# Subtest: every registered tool is either in TOOL_RPC or declared backend-less — a new tool cannot slip past
+ok 45 - every registered tool is either in TOOL_RPC or declared backend-less — a new tool cannot slip past
+  ---
+  duration_ms: 1.675297
+  type: 'test'
+  ...
+# Subtest: every method a tool sends exists in ws-client.ts, and DAEMON_METHODS is exactly what daemon.ts dispatches
+ok 46 - every method a tool sends exists in ws-client.ts, and DAEMON_METHODS is exactly what daemon.ts dispatches
+  ---
+  duration_ms: 0.8209
+  type: 'test'
+  ...
+# Subtest: DAEMON_METHODS declares exactly what daemon.ts dispatches
+ok 47 - DAEMON_METHODS declares exactly what daemon.ts dispatches # SKIP daemon.ts is not in this checkout (the public mirror does not carry it)
+  ---
+  duration_ms: 0.1006
+  type: 'test'
+  ...
+# Subtest: the app-only set is exactly the tools with a method the daemon does not serve
+ok 48 - the app-only set is exactly the tools with a method the daemon does not serve # SKIP daemon.ts is not in this checkout (the public mirror does not carry it)
+  ---
+  duration_ms: 0.077897
+  type: 'test'
+  ...
+# Subtest: needsRunningApp answers by name and treats an unknown tool as servable
+ok 49 - needsRunningApp answers by name and treats an unknown tool as servable
+  ---
+  duration_ms: 0.197612
+  type: 'test'
+  ...
+# Subtest: every To-do/calendar/cockpit description carries the platform caveat, and no app-only description promises "app CLOSED"
+ok 50 - every To-do/calendar/cockpit description carries the platform caveat, and no app-only description promises "app CLOSED"
+  ---
+  duration_ms: 0.52833
+  type: 'test'
+  ...
+# Subtest: every To-do/calendar description and README row carries FILE_PATH_CAVEAT, and never the app-only caveat
+ok 51 - every To-do/calendar description and README row carries FILE_PATH_CAVEAT, and never the app-only caveat
+  ---
+  duration_ms: 0.479645
+  type: 'test'
+  ...
+# Subtest: the board name travels exactly as the human wrote it
+ok 52 - the board name travels exactly as the human wrote it
+  ---
+  duration_ms: 2.198787
+  type: 'test'
+  ...
+# Subtest: no board asked for sends no field at all
+ok 53 - no board asked for sends no field at all
+  ---
+  duration_ms: 0.609658
+  type: 'test'
+  ...
+# Subtest: a board that took the cards is named back
+ok 54 - a board that took the cards is named back
+  ---
+  duration_ms: 0.350137
+  type: 'test'
+  ...
+# Subtest: an unknown name lists the boards that exist, and leaves the card alone
+ok 55 - an unknown name lists the boards that exist, and leaves the card alone
+  ---
+  duration_ms: 0.119906
+  type: 'test'
+  ...
+# Subtest: two boards of one name send the agent to rename, not to respell
+ok 56 - two boards of one name send the agent to rename, not to respell
+  ---
+  duration_ms: 0.171955
+  type: 'test'
+  ...
+# Subtest: boards that could not be read never claim the board is missing
+ok 57 - boards that could not be read never claim the board is missing
+  ---
+  duration_ms: 0.157838
+  type: 'test'
+  ...
+# Subtest: a card the human removed says nothing about a board
+ok 58 - a card the human removed says nothing about a board
+  ---
+  duration_ms: 0.207409
+  type: 'test'
+  ...
+# Subtest: the line names the PROJECT, not the subfolder a cd left the shell in
+ok 59 - the line names the PROJECT, not the subfolder a cd left the shell in
+  ---
+  duration_ms: 4.899791
+  type: 'test'
+  ...
+# Subtest: a cwd under no repository keeps its own name, since it joined nothing
+ok 60 - a cwd under no repository keeps its own name, since it joined nothing
+  ---
+  duration_ms: 1.389384
+  type: 'test'
+  ...
+# Subtest: nothing to read means no line, never an invented one
+ok 61 - nothing to read means no line, never an invented one
+  ---
+  duration_ms: 3.681765
+  type: 'test'
+  ...
+# Subtest: cockpitParams takes the session from the harness, the tree from the cwd, and only what was said
+ok 62 - cockpitParams takes the session from the harness, the tree from the cwd, and only what was said
+  ---
+  duration_ms: 4.475448
+  type: 'test'
+  ...
+# Subtest: the harness id wins over an explicit "session"; "session" is the fallback; no session at all is refused
+ok 63 - the harness id wins over an explicit "session"; "session" is the fallback; no session at all is refused
+  ---
+  duration_ms: 0.469173
+  type: 'test'
+  ...
+# Subtest: a cwd outside any git tree sends no tree — the host then says the card has no mailbox
+ok 64 - a cwd outside any git tree sends no tree — the host then says the card has no mailbox
+  ---
+  duration_ms: 0.227428
+  type: 'test'
+  ...
+# Subtest: the answer says where the card is, and hands over the mail to act on
+ok 65 - the answer says where the card is, and hands over the mail to act on
+  ---
+  duration_ms: 1.103616
+  type: 'test'
+  ...
+# Subtest: every refusal is a sentence, and NO_WINDOW says to start the app
+ok 66 - every refusal is a sentence, and NO_WINDOW says to start the app
+  ---
+  duration_ms: 0.324957
+  type: 'test'
+  ...
+# Subtest: a refusal still says what is waiting in the mailbox, and renders any mail it was handed
+ok 67 - a refusal still says what is waiting in the mailbox, and renders any mail it was handed
+  ---
+  duration_ms: 0.25354
+  type: 'test'
+  ...
+# Subtest: handleCockpitUpdate calls sdk.cockpit.update with the app id and renders the answer
+ok 68 - handleCockpitUpdate calls sdk.cockpit.update with the app id and renders the answer
+  ---
+  duration_ms: 0.434223
+  type: 'test'
+  ...
+# Subtest: handleCockpitUpdate explains a missing session without calling the host
+ok 69 - handleCockpitUpdate explains a missing session without calling the host
+  ---
+  duration_ms: 0.267642
+  type: 'test'
+  ...
+# Subtest: renderCovenant carries the identity, tenet, protection and sandbox principle
+ok 70 - renderCovenant carries the identity, tenet, protection and sandbox principle
+  ---
+  duration_ms: 0.996659
+  type: 'test'
+  ...
+# Subtest: renderCovenant injects this install's vault layout
+ok 71 - renderCovenant injects this install's vault layout
+  ---
+  duration_ms: 0.280867
+  type: 'test'
+  ...
+# Subtest: renderCovenant handles a single-vault install without dangling "others"
+ok 72 - renderCovenant handles a single-vault install without dangling "others"
+  ---
+  duration_ms: 0.220681
+  type: 'test'
+  ...
+# Subtest: renderCovenant never calls the config list "reachable"
+ok 73 - renderCovenant never calls the config list "reachable"
+  ---
+  duration_ms: 0.13576
+  type: 'test'
+  ...
+# Subtest: MNEMOSYNE_ABOUT exposes the structured facts used by the renderer
+ok 74 - MNEMOSYNE_ABOUT exposes the structured facts used by the renderer
+  ---
+  duration_ms: 0.177682
+  type: 'test'
+  ...
+# Subtest: unwrapContent returns .raw from a SemanticChunker envelope
+ok 75 - unwrapContent returns .raw from a SemanticChunker envelope
+  ---
+  duration_ms: 0.997316
+  type: 'test'
+  ...
+# Subtest: unwrapContent passes plain text through unchanged
+ok 76 - unwrapContent passes plain text through unchanged
+  ---
+  duration_ms: 0.217021
+  type: 'test'
+  ...
+# Subtest: accepts a chronicle whose spineType is RESONANCE
+ok 77 - accepts a chronicle whose spineType is RESONANCE
+  ---
+  duration_ms: 0.106971
+  type: 'test'
+  ...
+# Subtest: accepts a position chronicle starting with the update_position marker
+ok 78 - accepts a position chronicle starting with the update_position marker
+  ---
+  duration_ms: 0.212385
+  type: 'test'
+  ...
+# Subtest: REJECTS source code that merely mentions the [RESONANCE: token (189KB-blob regression)
+ok 79 - REJECTS source code that merely mentions the [RESONANCE: token (189KB-blob regression)
+  ---
+  duration_ms: 0.145388
+  type: 'test'
+  ...
+# Subtest: selectResonances filters out the impostor and keeps the real one
+ok 80 - selectResonances filters out the impostor and keeps the real one
+  ---
+  duration_ms: 1.286819
+  type: 'test'
+  ...
+# Subtest: extracts id, phase and age from a real update_position body
+ok 81 - extracts id, phase and age from a real update_position body
+  ---
+  duration_ms: 0.469123
+  type: 'test'
+  ...
+# Subtest: caps a malformed giant body so the output can never explode again
+ok 82 - caps a malformed giant body so the output can never explode again
+  ---
+  duration_ms: 1.000583
+  type: 'test'
+  ...
+# Subtest: unwraps the envelope before extracting fields
+ok 83 - unwraps the envelope before extracting fields
+  ---
+  duration_ms: 0.412658
+  type: 'test'
+  ...
+# Subtest: the three states are three different sentences, never two
+ok 84 - the three states are three different sentences, never two
+  ---
+  duration_ms: 0.983845
+  type: 'test'
+  ...
+# Subtest: every state says WHY the app is needed — a bare "cannot connect" leaves no next step
+ok 85 - every state says WHY the app is needed — a bare "cannot connect" leaves no next step
+  ---
+  duration_ms: 0.249476
+  type: 'test'
+  ...
+# Subtest: only the states that could need a download carry the link
+ok 86 - only the states that could need a download carry the link
+  ---
+  duration_ms: 0.146295
+  type: 'test'
+  ...
+# Subtest: an absent directory is reported as a HINT, never as proof it is not installed
+ok 87 - an absent directory is reported as a HINT, never as proof it is not installed
+  ---
+  duration_ms: 0.374945
+  type: 'test'
+  ...
+# Subtest: the unknown state accuses nothing and offers both branches
+ok 88 - the unknown state accuses nothing and offers both branches
+  ---
+  duration_ms: 0.18507
+  type: 'test'
+  ...
+# Subtest: each sentence names the directory it actually looked at
+ok 89 - each sentence names the directory it actually looked at
+  ---
+  duration_ms: 0.140176
+  type: 'test'
+  ...
+# Subtest: installState reads the app home, and a throwing check is unknown rather than absent
+ok 90 - installState reads the app home, and a throwing check is unknown rather than absent
+  ---
+  duration_ms: 1.20453
+  type: 'test'
+  ...
+# Subtest: the app-only message stops at WHY and leaves the action to installHint
+ok 91 - the app-only message stops at WHY and leaves the action to installHint
+  ---
+  duration_ms: 7.632651
+  type: 'test'
+  ...
+# Subtest: the zone pin took — this file proves nothing on a UTC clock
+ok 92 - the zone pin took — this file proves nothing on a UTC clock
+  ---
+  duration_ms: 0.97554
+  type: 'test'
+  ...
+# Subtest: localStamp prints the local wall clock, never UTC with the Z cut off
+ok 93 - localStamp prints the local wall clock, never UTC with the Z cut off
+  ---
+  duration_ms: 0.261139
+  type: 'test'
+  ...
+# Subtest: what the answer prints, the host reads back to the same instant
+ok 94 - what the answer prints, the host reads back to the same instant
+  ---
+  duration_ms: 0.296577
+  type: 'test'
+  ...
+# Subtest: parseAgentDate follows the host rule: local when no offset, absolute when one is given
+ok 95 - parseAgentDate follows the host rule: local when no offset, absolute when one is given
+  ---
+  duration_ms: 0.183674
+  type: 'test'
+  ...
+# Subtest: a bare date is LOCAL midnight, not UTC midnight
+ok 96 - a bare date is LOCAL midnight, not UTC midnight
+  ---
+  duration_ms: 0.376601
+  type: 'test'
+  ...
+# Subtest: epoch ms as a number OR as a numeric string; anything unreadable is null, never NaN
+ok 97 - epoch ms as a number OR as a numeric string; anything unreadable is null, never NaN
+  ---
+  duration_ms: 0.224692
+  type: 'test'
+  ...
+# Subtest: the note names the frame and asks for it back
+ok 98 - the note names the frame and asks for it back
+  ---
+  duration_ms: 0.223746
+  type: 'test'
+  ...
+# Subtest: the app id is unchanged — it is what the human granted scopes to
+ok 99 - the app id is unchanged — it is what the human granted scopes to
+  ---
+  duration_ms: 1.000397
+  type: 'test'
+  ...
+# Subtest: the declared name keeps the OS
+ok 100 - the declared name keeps the OS
+  ---
+  duration_ms: 0.294869
+  type: 'test'
+  ...
+# Subtest: phemeOps keeps well-formed ops only and refuses an empty batch
+ok 101 - phemeOps keeps well-formed ops only and refuses an empty batch
+  ---
+  duration_ms: 1.927492
+  type: 'test'
+  ...
+# Subtest: handlePhemeWatch calls sdk.pheme.watch with the appId and the cleaned ops
+ok 102 - handlePhemeWatch calls sdk.pheme.watch with the appId and the cleaned ops
+  ---
+  duration_ms: 0.655991
+  type: 'test'
+  ...
+# Subtest: renderPhemeWatch says each outcome in its own words, and the closed-window case
+ok 103 - renderPhemeWatch says each outcome in its own words, and the closed-window case
+  ---
+  duration_ms: 0.25002
+  type: 'test'
+  ...
+# Subtest: renderPhemeRadar leads with WHEN, orders as given, and says a missing radar is not an empty one
+ok 104 - renderPhemeRadar leads with WHEN, orders as given, and says a missing radar is not an empty one
+  ---
+  duration_ms: 0.588416
+  type: 'test'
+  ...
+# Subtest: handlePhemeRadar forwards only a known tier and a numeric limit
+ok 105 - handlePhemeRadar forwards only a known tier and a numeric limit
+  ---
+  duration_ms: 0.558888
+  type: 'test'
+  ...
+# Subtest: the deck is non-empty, so a parse failure cannot pass as a green test
+ok 106 - the deck is non-empty, so a parse failure cannot pass as a green test
+  ---
+  duration_ms: 0.550839
+  type: 'test'
+  ...
+# Subtest: every registered tool is documented in the README
+ok 107 - every registered tool is documented in the README
+  ---
+  duration_ms: 1.036673
+  type: 'test'
+  ...
+# Subtest: the README documents no tool the server does not register
+ok 108 - the README documents no tool the server does not register
+  ---
+  duration_ms: 0.195237
+  type: 'test'
+  ...
+# Subtest: the tools heading states the always-on count
+ok 109 - the tools heading states the always-on count
+  ---
+  duration_ms: 0.198836
+  type: 'test'
+  ...
+# Subtest: the total quoted under that heading counts every gated tool
+ok 110 - the total quoted under that heading counts every gated tool
+  ---
+  duration_ms: 0.177473
+  type: 'test'
+  ...
+# Subtest: a read prints the id in brackets and says to use it, not the text
+ok 111 - a read prints the id in brackets and says to use it, not the text
+  ---
+  duration_ms: 1.057679
+  type: 'test'
+  ...
+# Subtest: "nothing matched" and "nothing was returned" are different sentences
+ok 112 - "nothing matched" and "nothing was returned" are different sentences
+  ---
+  duration_ms: 0.337816
+  type: 'test'
+  ...
+# Subtest: a cut announces itself rather than letting a count imply it
+ok 113 - a cut announces itself rather than letting a count imply it
+  ---
+  duration_ms: 0.146871
+  type: 'test'
+  ...
+# Subtest: the answer says when it went straight to the file, so a closed app is visible
+ok 114 - the answer says when it went straight to the file, so a closed app is visible
+  ---
+  duration_ms: 0.101761
+  type: 'test'
+  ...
+# Subtest: a removal says whether it can be undone — the two are not the same act
+ok 115 - a removal says whether it can be undone — the two are not the same act
+  ---
+  duration_ms: 0.268658
+  type: 'test'
+  ...
+# Subtest: a refused list removal carries the count that is in the way
+ok 116 - a refused list removal carries the count that is in the way
+  ---
+  duration_ms: 0.101985
+  type: 'test'
+  ...
+# Subtest: a stale id is nameable, not folded into a single "failed"
+ok 117 - a stale id is nameable, not folded into a single "failed"
+  ---
+  duration_ms: 0.243902
+  type: 'test'
+  ...
+# Subtest: a batch where everything was refused does not read as a success
+ok 118 - a batch where everything was refused does not read as a success
+  ---
+  duration_ms: 0.096129
+  type: 'test'
+  ...
+# Subtest: ops past the cap are reported as NEVER LOOKED AT, not as failures
+ok 119 - ops past the cap are reported as NEVER LOOKED AT, not as failures
+  ---
+  duration_ms: 0.259573
+  type: 'test'
+  ...
+# Subtest: each file failure sends the reader somewhere different
+ok 120 - each file failure sends the reader somewhere different
+  ---
+  duration_ms: 0.354036
+  type: 'test'
+  ...
+# Subtest: a TIMEOUT is an UNKNOWN outcome, never an asserted "nothing was changed"
+ok 121 - a TIMEOUT is an UNKNOWN outcome, never an asserted "nothing was changed"
+  ---
+  duration_ms: 0.118121
+  type: 'test'
+  ...
+# Subtest: a due date is local time, and the answer names the frame once
+ok 122 - a due date is local time, and the answer names the frame once
+  ---
+  duration_ms: 0.254463
+  type: 'test'
+  ...
+# Subtest: todoListParams trims the list name and never invents one
+ok 123 - todoListParams trims the list name and never invents one
+  ---
+  duration_ms: 1.457637
+  type: 'test'
+  ...
+# Subtest: todoParams carries tasks, the trimmed list name and create_list as a boolean
+ok 124 - todoParams carries tasks, the trimmed list name and create_list as a boolean
+  ---
+  duration_ms: 2.756775
+  type: 'test'
+  ...
+# Subtest: a success names the list, the count and whether it was created
+ok 125 - a success names the list, the count and whether it was created
+  ---
+  duration_ms: 0.444987
+  type: 'test'
+  ...
+# Subtest: LIST_NOT_FOUND hands over the lists that exist and the way forward
+ok 126 - LIST_NOT_FOUND hands over the lists that exist and the way forward
+  ---
+  duration_ms: 0.217808
+  type: 'test'
+  ...
+# Subtest: a host that cannot reach a backlog does not tell anyone to start the app
+ok 127 - a host that cannot reach a backlog does not tell anyone to start the app
+  ---
+  duration_ms: 0.371831
+  type: 'test'
+  ...
+# Subtest: every failure says nothing was written
+ok 128 - every failure says nothing was written
+  ---
+  duration_ms: 0.223233
+  type: 'test'
+  ...
+# Subtest: a success SAYS what the plan lost, and which way the write went
+ok 129 - a success SAYS what the plan lost, and which way the write went
+  ---
+  duration_ms: 0.628269
+  type: 'test'
+  ...
+# Subtest: handleTodoAdd calls sdk.todo.add with the app id and renders the answer
+ok 130 - handleTodoAdd calls sdk.todo.add with the app id and renders the answer
+  ---
+  duration_ms: 0.308897
+  type: 'test'
+  ...
+# Subtest: handleTodoAdd refuses an empty plan without calling the host
+ok 131 - handleTodoAdd refuses an empty plan without calling the host
+  ---
+  duration_ms: 0.142876
+  type: 'test'
+  ...
+# Subtest: localDay
+    # Subtest: names the LOCAL day, not the UTC one
+    ok 1 - names the LOCAL day, not the UTC one
+      ---
+      duration_ms: 5.373633
+      type: 'test'
+      ...
+    # Subtest: pads month and day
+    ok 2 - pads month and day
+      ---
+      duration_ms: 4.4876
+      type: 'test'
+      ...
+    1..2
+ok 132 - localDay
+  ---
+  duration_ms: 10.864776
+  type: 'suite'
+  ...
+# Subtest: recordCall
+    # Subtest: appends one line per call, in the local day file
+    ok 1 - appends one line per call, in the local day file
+      ---
+      duration_ms: 7.943562
+      type: 'test'
+      ...
+# [mnemosyne] usage counter disabled (EEXIST: file already exists, mkdir '/tmp/mnemo-usage-VOWzit/.mnemosyne/mcp-usage')
+    # Subtest: never rejects when the directory cannot be created
+    ok 2 - never rejects when the directory cannot be created
+      ---
+      duration_ms: 5.281948
+      type: 'test'
+      ...
+    # Subtest: separates calls made on different local days
+    ok 3 - separates calls made on different local days
+      ---
+      duration_ms: 5.187148
+      type: 'test'
+      ...
+    1..3
+ok 133 - recordCall
+  ---
+  duration_ms: 18.852433
+  type: 'suite'
+  ...
+# Subtest: readUsage
+    # Subtest: returns null when nothing was ever recorded
+    ok 1 - returns null when nothing was ever recorded
+      ---
+      duration_ms: 3.03466
+      type: 'test'
+      ...
+    # Subtest: adds up per tool across days
+    ok 2 - adds up per tool across days
+      ---
+      duration_ms: 10.34026
+      type: 'test'
+      ...
+    # Subtest: ignores days outside the window
+    ok 3 - ignores days outside the window
+      ---
+      duration_ms: 3.30325
+      type: 'test'
+      ...
+    # Subtest: skips a truncated last line without calling the day unreadable
+    ok 4 - skips a truncated last line without calling the day unreadable
+      ---
+      duration_ms: 5.663748
+      type: 'test'
+      ...
+    # Subtest: counts a day it cannot read as unreadable, never as empty
+    ok 5 - counts a day it cannot read as unreadable, never as empty
+      ---
+      duration_ms: 5.416811
+      type: 'test'
+      ...
+    # Subtest: ignores lines that carry no tool name
+    ok 6 - ignores lines that carry no tool name
+      ---
+      duration_ms: 2.766424
+      type: 'test'
+      ...
+    # Subtest: ignores files that are not day logs
+    ok 7 - ignores files that are not day logs
+      ---
+      duration_ms: 30.567483
+      type: 'test'
+      ...
+    1..7
+ok 134 - readUsage
+  ---
+  duration_ms: 62.068752
+  type: 'suite'
+  ...
+# Subtest: toVaultToken collapses a host id path to its last segment
+ok 135 - toVaultToken collapses a host id path to its last segment
+  ---
+  duration_ms: 1.126365
+  type: 'test'
+  ...
+# Subtest: toVaultToken accepts Windows backslashes and a trailing separator
+ok 136 - toVaultToken accepts Windows backslashes and a trailing separator
+  ---
+  duration_ms: 0.25541
+  type: 'test'
+  ...
+# Subtest: toVaultToken leaves a bare name alone, aliasing spaces and hyphens
+ok 137 - toVaultToken leaves a bare name alone, aliasing spaces and hyphens
+  ---
+  duration_ms: 0.111479
+  type: 'test'
+  ...
+# Subtest: toVaultToken returns empty for nothing usable
+ok 138 - toVaultToken returns empty for nothing usable
+  ---
+  duration_ms: 0.094218
+  type: 'test'
+  ...
+# Subtest: resolveVaultTarget accepts the path-shaped id that used to be refused
+ok 139 - resolveVaultTarget accepts the path-shaped id that used to be refused
+  ---
+  duration_ms: 4.148546
+  type: 'test'
+  ...
+# Subtest: resolveVaultTarget falls back to the deployment default when empty
+ok 140 - resolveVaultTarget falls back to the deployment default when empty
+  ---
+  duration_ms: 0.174283
+  type: 'test'
+  ...
+# Subtest: resolveVaultTarget honours a declared token that carries a hyphen
+ok 141 - resolveVaultTarget honours a declared token that carries a hyphen
+  ---
+  duration_ms: 0.151497
+  type: 'test'
+  ...
+# Subtest: resolveVaultTarget refuses locally, naming what is reachable
+ok 142 - resolveVaultTarget refuses locally, naming what is reachable
+  ---
+  duration_ms: 0.351542
+  type: 'test'
+  ...
+# Subtest: resolveVaultTarget never silently retargets an unreachable vault
+ok 143 - resolveVaultTarget never silently retargets an unreachable vault
+  ---
+  duration_ms: 0.313646
+  type: 'test'
+  ...
+# Subtest: a measured refusal offers only vaults that exist
+ok 144 - a measured refusal offers only vaults that exist
+  ---
+  duration_ms: 0.581803
+  type: 'test'
+  ...
+# Subtest: a measured refusal never offers a vault the host has but this MCP is not scoped for
+ok 145 - a measured refusal never offers a vault the host has but this MCP is not scoped for
+  ---
+  duration_ms: 0.218359
+  type: 'test'
+  ...
+# Subtest: an unmeasured census is an UNKNOWN, never an empty world
+ok 146 - an unmeasured census is an UNKNOWN, never an empty world
+  ---
+  duration_ms: 0.328773
+  type: 'test'
+  ...
+# Subtest: a declared list that matches nothing says so instead of pointing nowhere
+ok 147 - a declared list that matches nothing says so instead of pointing nowhere
+  ---
+  duration_ms: 0.250266
+  type: 'test'
+  ...
+# Subtest: presence never widens or narrows what is ACCEPTED
+ok 148 - presence never widens or narrows what is ACCEPTED
+  ---
+  duration_ms: 0.113912
+  type: 'test'
+  ...
+# Subtest: PKG_VERSION is the manifest version, read and not retyped
+ok 149 - PKG_VERSION is the manifest version, read and not retyped
+  ---
+  duration_ms: 0.690165
+  type: 'test'
+  ...
+# Subtest: PKG_VERSION never reports the placeholder on a healthy tree
+ok 150 - PKG_VERSION never reports the placeholder on a healthy tree
+  ---
+  duration_ms: 0.158065
+  type: 'test'
+  ...
+# Subtest: index.ts states no version literal of its own
+ok 151 - index.ts states no version literal of its own
+  ---
+  duration_ms: 1.321314
+  type: 'test'
+  ...
+# Subtest: both announcement sites use the constant
+ok 152 - both announcement sites use the constant
+  ---
+  duration_ms: 0.299345
+  type: 'test'
+  ...
+# Subtest: server.json states the version package.json states, in every place it states one
+ok 153 - server.json states the version package.json states, in every place it states one # SKIP server.json is not in this checkout
+  ---
+  duration_ms: 0.138098
+  type: 'test'
+  ...
+# Subtest: a render still running is never reported as a finished one
+ok 154 - a render still running is never reported as a finished one
+  ---
+  duration_ms: 1.235981
+  type: 'test'
+  ...
+# Subtest: the eta is spoken in minutes, and only when there is one
+ok 155 - the eta is spoken in minutes, and only when there is one
+  ---
+  duration_ms: 0.270425
+  type: 'test'
+  ...
+# Subtest: a finished render leads with the path, because that is the deliverable
+ok 156 - a finished render leads with the path, because that is the deliverable
+  ---
+  duration_ms: 0.147591
+  type: 'test'
+  ...
+# Subtest: an unreadable length says unknown rather than zero
+ok 157 - an unreadable length says unknown rather than zero
+  ---
+  duration_ms: 0.234512
+  type: 'test'
+  ...
+# Subtest: a clone warning survives all the way to the agent
+ok 158 - a clone warning survives all the way to the agent
+  ---
+  duration_ms: 0.174885
+  type: 'test'
+  ...
+# Subtest: a failed render says where it stopped and that no file exists
+ok 159 - a failed render says where it stopped and that no file exists
+  ---
+  duration_ms: 0.132522
+  type: 'test'
+  ...
+# Subtest: a cancelled render is its own state, not a failure
+ok 160 - a cancelled render is its own state, not a failure
+  ---
+  duration_ms: 0.207268
+  type: 'test'
+  ...
+# Subtest: UNKNOWN_CLONE tells the agent to ASK, not to guess again
+ok 161 - UNKNOWN_CLONE tells the agent to ASK, not to guess again
+  ---
+  duration_ms: 0.111063
+  type: 'test'
+  ...
+# Subtest: each host code gets the one next move that is actually right
+ok 162 - each host code gets the one next move that is actually right
+  ---
+  duration_ms: 0.370635
+  type: 'test'
+  ...
+# Subtest: an unrecognized code is passed through rather than dressed up
+ok 163 - an unrecognized code is passed through rather than dressed up
+  ---
+  duration_ms: 0.35619
+  type: 'test'
+  ...
+# Subtest: connect() registers and stores a token
+ok 164 - connect() registers and stores a token
+  ---
+  duration_ms: 25.476735
+  type: 'test'
+  ...
+# Subtest: connect() rejects with a clear message when nothing is listening
+ok 165 - connect() rejects with a clear message when nothing is listening
+  ---
+  duration_ms: 2.510132
+  type: 'test'
+  ...
+# Subtest: connect() rejects when sdk.register replies without a token
+ok 166 - connect() rejects when sdk.register replies without a token
+  ---
+  duration_ms: 5.93835
+  type: 'test'
+  ...
+# Subtest: [SECURITY] a backend that ANSWERS and refuses is told apart from one that is absent
+ok 167 - [SECURITY] a backend that ANSWERS and refuses is told apart from one that is absent
+  ---
+  duration_ms: 3.791726
+  type: 'test'
+  ...
+# Subtest: nothing listening is NOT reported as a refusal
+ok 168 - nothing listening is NOT reported as a refusal
+  ---
+  duration_ms: 1.411265
+  type: 'test'
+  ...
+# Subtest: the MCP checks for a refusal BEFORE it spawns anything
+ok 169 - the MCP checks for a refusal BEFORE it spawns anything
+  ---
+  duration_ms: 0.820582
+  type: 'test'
+  ...
+# Subtest: a typed RPC (query) round-trips through the real wire contract
+ok 170 - a typed RPC (query) round-trips through the real wire contract
+  ---
+  duration_ms: 5.758197
+  type: 'test'
+  ...
+# Subtest: forget() sends sdk.forget with the three params the host requires
+ok 171 - forget() sends sdk.forget with the three params the host requires
+  ---
+  duration_ms: 3.771624
+  type: 'test'
+  ...
+# Subtest: forget() reports a refusal instead of claiming the chronicle is gone
+ok 172 - forget() reports a refusal instead of claiming the chronicle is gone
+  ---
+  duration_ms: 3.216492
+  type: 'test'
+  ...
+# Subtest: a server error reply rejects the caller with that message
+ok 173 - a server error reply rejects the caller with that message
+  ---
+  duration_ms: 3.840225
+  type: 'test'
+  ...
+# Subtest: an RPC that never gets a reply times out and releases its pending slot
+ok 174 - an RPC that never gets a reply times out and releases its pending slot
+  ---
+  duration_ms: 204.265906
+  type: 'test'
+  ...
+# Subtest: a socket the server closes mid-call rejects the pending RPC instead of hanging forever
+ok 175 - a socket the server closes mid-call rejects the pending RPC instead of hanging forever
+  ---
+  duration_ms: 4.451088
+  type: 'test'
+  ...
+# Subtest: close() eventually rejects a pending RPC rather than leaving it unsettled forever
+ok 176 - close() eventually rejects a pending RPC rather than leaving it unsettled forever
+  ---
+  duration_ms: 3.923763
+  type: 'test'
+  ...
+1..176
+# tests 202
+# suites 11
+# pass 199
+# fail 0
+# cancelled 0
+# skipped 3
+# todo 0
+# duration_ms 2887.936883

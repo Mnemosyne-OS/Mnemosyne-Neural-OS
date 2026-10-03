@@ -1,0 +1,27 @@
+Journal                              verdicts par bras (HIT/total)
+exp-master-all8-replay.log           DREAM=4/8 ALL=5/8
+exp-master-all8.log                  DREAM=4/8 ALL=4/8
+exp-reserve5.log                     DREAM=0/3 ALL=0/3
+exp-reserve8.log                     DREAM=0/3 ALL=1/3
+exp-slice-aae.log                    DREAM=1/1 ALL=1/1
+exp-slice-all8-replay.log            DREAM=5/8 ALL=5/8
+exp-slice-all8.log                   DREAM=4/8 ALL=5/8
+exp-verify.log                       DREAM=4/8 ALL=5/8
+grand-run.log                        GRAND=31/48
+spine-dream-flashab.log              DREAM=0/1 ALL=0/1
+spine-dream-multirun.log             BASELINE=1/6 DREAM=4/6 ALL=6/6
+spine-dream-preflight.log            BASELINE=0/1 DREAM=0/1 ALL=0/1
+spine-dream-preflight2.log           DREAM=1/1 ALL=1/1
+spine-dream-q2.log                   BASELINE=0/1 DREAM=0/1 ALL=0/1
+spine-dream-relations-test.log       DREAM=1/2 ALL=0/2
+spine-dream-temporal-riquiqui.log    BASELINE=2/2 DREAM=1/2 ALL=1/2
+
+baseline 48q vs grand-run.log : 48/48 verdicts concordants
+  TEXTE non retrouvé 3a704032 exp-verify.log
+     registre: "Based on the provided memory context, you acquired a total of 3 plants in the last month."
+     journal : ["Based on the provided memory context, you acquired a total of 3 plants in the last month (April-May 2023). The acquisitions are detailed in the \"Dream consolida"]
+  TEXTE non retrouvé aae3761f spine-dream-multirun.log
+     registre: "Based on the memory context, driving times are specified for two road trip destinations: Washington D.C. 6 hours, Mountains in Tennessee... total 15 hours."
+     journal : ["Based on the memory context, driving times are specified for two road trip destinations: * **Washington D.C.:** 6 hours (Source 1) * **Mountains in Tennessee:**"]
+engine 8q : 16 runs cités ; verdicts discordants avec le bras ALL = 0 ; textes de réponse non retrouvés dans le journal = 2
+exp-verify.log : DREAM 4/8, ALL 5/8 (le registre publie ALL = "sorted + ledgers")

@@ -1,0 +1,144 @@
+
+✓ LongMemEval-M full-haystack, baseline (retrieval only, no consolidation engine)
+  dataset: LongMemEval-M · full-haystack (~480 distractor sessions per question)
+  answer model: gemini-2.5-pro · judge: gemini-2.5-flash (flexible)
+  recomputed from 48 published rows: 31/48 = 64.6%
+  claimed headline:                        31/48 = 64.6%
+  match: total ok · hits ok · accuracy ok
+  per-category:
+    knowledge-update           6/8
+    multi-session              1/8
+    single-session-assistant   8/8
+    single-session-preference  5/8
+    single-session-user        6/8
+    temporal-reasoning         5/8
+
+✓ LongMemEval-M full-haystack, full engine (spine-sort + per-topic consolidation ledgers + dream-tier retrieval) — multi-session category
+  dataset: LongMemEval-M · full-haystack (~480 distractor sessions per question)
+  answer model: gemini-2.5-pro · judge: gemini-2.5-flash (flexible)
+  recomputed from 8 published rows: 5/8 = 62.5%
+  claimed headline:                        5/8 = 62.5%
+  match: total ok · hits ok · accuracy ok
+  per-category:
+    multi-session              5/8
+  replay rule: 2 first-run HIT(s) did NOT reproduce → scored MISS:
+    gpt4_59c863d7    judge noise (false positive). The engine gave the SAME answer — 6 kits — in both runs; the ground truth is five. The first run's judge scored it HIT, the replay scored it MISS. Scored MISS here per the replay rule.
+    aae3761f         answer variance (not judge noise). The first run answered 15 hours and was correctly scored HIT; the replay answered 11 hours — it found only two of the three trips — and was correctly scored MISS. The verdict did not reproduce, so it is scored MISS here per the replay rule.
+  scope: THIS LEDGER COVERS ONLY THE MULTI-SESSION CATEGORY (8 of the 48 questions). The other 40 questions were never re-run with the engine — see composition_note.
+
+✓ LongMemEval-M full-haystack, full engine (spine-sort + dream ledgers), vector-only retrieval — FLEXIBLE judge
+  dataset: LongMemEval-M · full-haystack (~480 distractor sessions per question)
+  answer model: gemini-2.5-pro (Vertex) · judge: gemini-2.5-flash (flexible)
+  recomputed from 48 published rows: 34/48 = 70.8%
+  claimed headline:                        34/48 = 70.8%
+  match: total ok · hits ok · accuracy ok
+  per-category:
+    knowledge-update           6/8
+    multi-session              4/8
+    single-session-assistant   8/8
+    single-session-preference  5/8
+    single-session-user        5/8
+    temporal-reasoning         6/8
+
+✓ LongMemEval-M full-haystack, full engine (spine-sort + dream ledgers), vector-only retrieval — STRICT judge
+  dataset: LongMemEval-M · full-haystack (~480 distractor sessions per question)
+  answer model: gemini-2.5-pro (Vertex) · judge: gemini-2.5-flash (strict)
+  recomputed from 48 published rows: 29/48 = 60.4%
+  claimed headline:                        29/48 = 60.4%
+  match: total ok · hits ok · accuracy ok
+  per-category:
+    knowledge-update           6/8
+    multi-session              3/8
+    single-session-assistant   8/8
+    single-session-preference  1/8
+    single-session-user        5/8
+    temporal-reasoning         6/8
+
+✓ LongMemEval-M full-haystack, full engine + LEXICAL CHANNEL (BM25 over a persistent inverted index, fused by Reciprocal Rank Fusion) — FLEXIBLE judge, two independent runs
+  dataset: LongMemEval-M · full-haystack (~480 distractor sessions per question)
+  answer model: gemini-2.5-pro (Vertex) · judge: gemini-2.5-flash (flexible)
+  recomputed from 48 published rows: 37/48 = 77.1%
+  claimed headline:                        37/48 = 77.1%
+  match: total ok · hits ok · accuracy ok
+  per-category:
+    knowledge-update           8/8
+    multi-session              6/8
+    single-session-assistant   8/8
+    single-session-preference  3/8
+    single-session-user        5/8
+    temporal-reasoning         7/8
+  replay rule: 3 first-run HIT(s) did NOT reproduce → scored MISS:
+    6ade9755         the two runs disagree after the human audit (lexical-2026-08/human-audit.json); scored by the conjunction
+    06878be2         flexible verdict differed between the two runs; scored by the conjunction, both verdicts kept visible in the committed run files
+    0edc2aef         flexible verdict differed between the two runs; scored by the conjunction, both verdicts kept visible in the committed run files
+
+✓ LongMemEval-M full-haystack, full engine + LEXICAL CHANNEL (BM25 over a persistent inverted index, fused by Reciprocal Rank Fusion) — STRICT judge, two independent runs
+  dataset: LongMemEval-M · full-haystack (~480 distractor sessions per question)
+  answer model: gemini-2.5-pro (Vertex) · judge: gemini-2.5-flash (strict)
+  recomputed from 48 published rows: 35/48 = 72.9%
+  claimed headline:                        35/48 = 72.9%
+  match: total ok · hits ok · accuracy ok
+  per-category:
+    knowledge-update           8/8
+    multi-session              6/8
+    single-session-assistant   8/8
+    single-session-preference  1/8
+    single-session-user        5/8
+    temporal-reasoning         7/8
+  replay rule: 1 first-run HIT(s) did NOT reproduce → scored MISS:
+    6ade9755         the two runs disagree after the human audit (lexical-2026-08/human-audit.json); scored by the conjunction
+
+✓ Local sovereign — fully on-device, zero cloud
+  dataset: LongMemEval-M · oracle-evidence vaults (12q sample)
+  answer model: Qwen2.5-3B (local, Vulkan GPU) · judge: gemini-2.5-flash (flexible)
+  recomputed from 12 published rows: 6/12 = 50.0%
+  claimed headline:                        6/12 = 50%
+  match: total ok · hits ok · accuracy ok
+  per-category:
+    knowledge-update           1/2
+    multi-session              0/2
+    single-session-assistant   1/2
+    single-session-preference  1/2
+    single-session-user        1/2
+    temporal-reasoning         2/2
+
+✓ COMPOSED HEADLINE — full engine, LongMemEval-M full-haystack
+  This number is COMPOSED from two ledgers, not measured in one 48q run:
+    30/40  carried unchanged from the baseline ledger (5 categories NEVER re-run with the engine)
+     5/8   measured with the engine (multi-session only)
+    35/48  = 72.9%   recomputed
+          claimed: 35/48 = 72.9%  → ok
+  It must not be quoted as a measured 48-question engine result. Until 2026-09-28 it
+  was also called a LOWER BOUND. That claim is withdrawn: nothing shows a full re-run
+  can only raise it, and the August full-engine run of the same 48 questions under the
+  same flexible judge scored 34/48 (lexical-baseline-flexible-48q.jsonl).
+
+! HUMAN AUDIT — 2 judge verdict(s) overturned (lexical-2026-08/human-audit.json)
+    gpt4_76048e76    MISS in duel-full-lexfusion.json + duel-full-lexfusion-r2.json: expected "bike", answer says "you took care of your car first"
+                     found by Julien Gelee (Koperateur), 2026-09-27
+    6ade9755         MISS in duel-full-lexfusion-r2.json: expected "Serenity Yoga", answer says "the information from 2023/05/29 indicating you are currently searching for a studio supersedes the earlier mention of attending Serenity Yoga"
+                     found by Mnemosyne OS maintainers, human audit prompted by Julien Gelee's report, 2026-09-28
+    0edc2aef         reviewed, judge verdict kept
+
+✓ LEXICAL CHANNEL — paired strict delta (answer side, development sample)
+  recomputed from the rows' baseline_correct field: +9 gained / −3 regressed (claimed +9/−3)
+  29/48 → 35/48 under the both-runs replay rule; exact binomial on 9-vs-3 flips gives p = 0.146.
+  Not significant at 0.05. Published at 29/48 → 37/48, p = 0.0215 until the audit of
+  2026-09-27/28 overturned two verdicts (see HUMAN AUDIT above).
+  ⚠ The vector-only arm (29/48) is ONE run, never replayed. Only the fused arm has two.
+  ⚠ This 48-question sample was used during development and runs ~13 points easier than
+    its parent set. The transfer evidence is the deterministic holdout below, not this pair.
+
+✓ LEXICAL CHANNEL — the same runs under the FLEXIBLE judge (July's grader)
+  34/48 = 70.8% → 37/48 = 77.1%, same both-runs replay rule
+  paired: +7 gained / −4 regressed (p = 0.549) — a weaker signal than the strict pair above.
+  3 question(s) disagreed between the two runs and were scored by the conjunction.
+  Both leniencies are published because a score without its judge is not a result:
+  the strict number is the one we lead with, the flexible one is what July would have said.
+✓ LEXICAL CHANNEL — deterministic retrieval (no LLM in the loop)
+  development sample: evidence sessions 38/48 → 41/48 · answer chunk 25/35 → 30/35 (matches the published 38→41 and 25→30)
+  storage equivalence: persistent index reproduces the in-memory ranking on all 48 questions → ok
+  app-isolation fix: CORE-mode ranking unchanged on all 48 questions → ok
+  HOLDOUT (48 questions never seen during development): sessions +4/−0, answer chunks +2/−0 → zero regressions, as published
+
+✓ ALL LEDGERS CONSISTENT — every published headline, including the composed one, is the exact sum of the published rows.

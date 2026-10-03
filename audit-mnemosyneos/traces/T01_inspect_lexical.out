@@ -1,0 +1,33 @@
+== duel-full.rejudged.json
+  top-level: {"engine":"full","topK":32,"reserve":"3"}
+  rows=48 unique_ids=48 row_keys=id,cat,gold,generated,nSrc,nDream,infra,judge judge_keys=heuristic,matchType,flexible,strict
+  cats: {"single-session-assistant":8,"single-session-user":8,"knowledge-update":8,"temporal-reasoning":8,"single-session-preference":8,"multi-session":8}
+  strict hits=29 flexible hits=34 heuristic hits=28
+  matchType counts: {"exact":24,"fuzzy":4,"miss":13,"abstained":7}
+  heuristic=true but strict/flex not true: 3
+  strict=true but flexible false: 0 
+  infra=true: 0 empty generated: 0 non-boolean verdicts: 0
+  nSrc values: 35 nDream values: 3
+== duel-full-lexfusion.json
+  top-level: {"engine":"full","topK":32,"reserve":"3"}
+  rows=48 unique_ids=48 row_keys=id,cat,gold,generated,nSrc,nDream,infra,judge judge_keys=heuristic,matchType,flexible,strict
+  cats: {"single-session-assistant":8,"single-session-user":8,"knowledge-update":8,"temporal-reasoning":8,"single-session-preference":8,"multi-session":8}
+  strict hits=37 flexible hits=39 heuristic hits=35
+  matchType counts: {"exact":31,"fuzzy":4,"miss":12,"abstained":1}
+  heuristic=true but strict/flex not true: 1
+  strict=true but flexible false: 1 0edc2aef
+  infra=true: 0 empty generated: 0 non-boolean verdicts: 0
+  nSrc values: 35 nDream values: 3
+== duel-full-lexfusion-r2.json
+  top-level: {"engine":"full","topK":32,"reserve":"3"}
+  rows=48 unique_ids=48 row_keys=id,cat,gold,generated,nSrc,nDream,infra,judge judge_keys=heuristic,matchType,flexible,strict
+  cats: {"single-session-assistant":8,"single-session-user":8,"knowledge-update":8,"temporal-reasoning":8,"single-session-preference":8,"multi-session":8}
+  strict hits=37 flexible hits=41 heuristic hits=35
+  matchType counts: {"exact":31,"fuzzy":4,"miss":10,"abstained":3}
+  heuristic=true but strict/flex not true: 2
+  strict=true but flexible false: 0 
+  infra=true: 0 empty generated: 0 non-boolean verdicts: 0
+  nSrc values: 35 nDream values: 3
+
+ids identiques entre les 3 runs: true
+r1 vs r2: réponses byte-identiques=1/48, désaccords strict=0, désaccords flexible=2

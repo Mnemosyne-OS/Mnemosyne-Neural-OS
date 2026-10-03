@@ -1,0 +1,6 @@
+wrote lexical-baseline-strict-48q.jsonl: 48 rows
+wrote lexical-fusion-strict-48q.jsonl: 48 rows
+  strict: baseline 29/48 → fusion 37/48 (both-runs rule) · paired +9/−1 · run disagreements: 0
+wrote lexical-baseline-flexible-48q.jsonl: 48 rows
+wrote lexical-fusion-flexible-48q.jsonl: 48 rows
+  flexible: baseline 34/48 → fusion 39/48 (both-runs rule) · paired +7/−2 · run disagreements: 2
