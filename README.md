@@ -257,7 +257,9 @@ been answered before. The run uses the hybrid mode: embeddings and search run on
 the machine, and a cloud model, gemini-3.8-flash, writes the answers. It measures
 the SDK and MCP door that agents use.
 
-In September an outside audit found a wrong verdict in our August result. The
+In September an [outside audit by Julien Gelee](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/pull/47) found a wrong verdict in our
+August result. It covered the published files, ledgers and arithmetic, and did
+not evaluate the product or the closed engine. The
 [erratum](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/blob/main/ERRATUM.md) corrects it to 35/48 (72.9 %) under the strict judge and
 37/48 (77.1 %) under the flexible one. We then ran the whole benchmark again.
 July's composed 72.9 % stays archived under its DOI. The reader, the engine and
