@@ -432,25 +432,9 @@ The open surface of Mnemosyne OS is **MIT-licensed** and free to build on:
 
 - **Layer-2 SDK** (`/packages`) is the integration surface above: connect apps, build
   skins, scaffold projects, evaluate against the Gateway.
-- **MnemoForge CLI** (`/cli`) is the sovereign developer tool: give any AI agent
-  persistent memory, a behavioral identity, and an automated publish pipeline.
-
-```bash
-npm install -g @mnemosyne_os/forge
-mnemoforge
-```
-
-| Feature | Command |
-|---|---|
-| 🪬 Soul Protocol, a persistent personality profile for your agent (tone, values, behavioral rules as a structured system-prompt), injected straight into your IDE | `mnemoforge soul inject` |
-| 📋 Canvas Rules, living ruleset persisted across sessions | vault-based, auto-applied |
-| 🗂️ Chronicle System, structured AI memory files | `mnemoforge chronicle write` |
-| 🔌 MCP Server, expose vault tools to any agent | `mnemoforge serve` |
-| 🖥️ Responsive dashboard | `mnemoforge` |
-
-[![npm version](https://img.shields.io/npm/v/@mnemosyne_os/forge?color=8b5cf6&label=%40mnemosyne_os%2Fforge)](https://www.npmjs.com/package/@mnemosyne_os/forge)
-
-→ **[CLI Documentation](https://mnemosyne-os.gitbook.io/mnemosyne-os-cli)** · **[npm package](https://www.npmjs.com/package/@mnemosyne_os/forge)** · **[Release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)**
+- **MnemoForge CLI** (`/cli`) is a separate developer tool with its own docs: see
+  [`cli/README.md`](cli/README.md). To give a coding agent memory, use the
+  [MCP server](packages/mcp) instead.
 
 ---
 
