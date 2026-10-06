@@ -53,20 +53,19 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 
 <br/>
 
-<img src="assets/strip-specs.png" width="100%" alt="100% local, your memory never leaves your machine · 8 GB RAM, enough to start, fully local from 16 GB · 7 languages, EN FR ES DE PT RU ZH · Windows, macOS, Linux, code-signed builds, auto-update" />
+<img src="assets/strip-specs.png" width="100%" alt="100% local, your memory never leaves your machine · 8 GB RAM to start, 40 GB to run all local · 7 languages, EN FR ES DE PT RU ZH · Windows, macOS, Linux, code-signed builds, auto-update" />
 
 </div>
 
 ---
 
 > [!IMPORTANT]
-> **🤖 New in 1.6.0: MnemoHermes, your memory on Telegram and by voice (beta).**
-> MnemoHermes installs [Hermes Agent](https://github.com/NousResearch/hermes-agent)
-> with one button and connects it to your vaults. Create your own Telegram bot and ask
-> your memory from your phone, typed or by voice note. In the app, say "ask Hermes to …"
-> and the orb hands it the task.
+> **🖐️ New in 1.7.0 · The Hands.** Drive your board with your hands through your webcam
+> (beta), and with your voice through the orb. A second pass checks a chat answer against
+> its sources. Your coding agents appear as cards on your board, through
+> [herdr](https://github.com/herdrdev/herdr), and you can pair your own machines.
 >
-> **[→ See how it works: mnemosyne-os.io/hermes](https://mnemosyne-os.io/hermes)** · [The cartridge on GitHub](https://github.com/Mnemosyne-OS/MnemoHermes)
+> **[→ The release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.7.0-infinity)** · [MnemoHermes, your memory on Telegram](https://mnemosyne-os.io/hermes)
 
 <div align="center">
 <a href="https://mnemosyne-os.io/hermes"><img src="https://raw.githubusercontent.com/Mnemosyne-OS/MnemoHermes/main/docs/tour.gif" width="80%" alt="The MnemoHermes cockpit opening from the Mnemosyne OS dock, then its Tasks, Agents, Tools, Skills, Memory inbox and Settings tabs" /></a>
@@ -75,6 +74,15 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 > [!TIP]
 > **📖 The user documentation is live at [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)**, with every engine explained step by step, in
 > [English](https://docs.mnemosyne-os.io/) · [Français](https://docs.mnemosyne-os.io/fr/) · [Español](https://docs.mnemosyne-os.io/es/).
+
+## For developers
+
+| | |
+|---|---|
+| 🔌 **Give your coding agent a memory** | `npx -y @mnemosyne_os/mcp` connects Claude Code, Cursor or Claude Desktop to your vaults. [Setup guide](https://docs.mnemosyne-os.io/connect-claude-mcp) |
+| 🧩 **Build an app on the memory** | `npm create @mnemosyne_os/app` scaffolds a cartridge that talks to the SDK. [Build on Mnemosyne OS](#build-on-mnemosyne-os) |
+| 📖 **Learn from real cartridges** | Their full source is public. [Clone one](#the-cartridges-are-real-and-readable) |
+| 🧠 **Index your agent's own notes** | Point a vault at `.claude`, `.cursor` or `.aider`. [Two doors between your IDE and your memory](#two-doors-between-your-ide-and-your-memory) |
 
 ## 🌍 Fully multilingual: the OS speaks your language
 
@@ -179,6 +187,10 @@ executes, what's stored, and what syncs.
 | 🧠 **Adaptive RAG** | Retrieval depth and ranking scale to the model you're running, laptop LLM to frontier cloud model |
 | 🔑 **Sovereign Wallet & Engramm License** | A local Web3 wallet drives licensing (verified on Base), pseudonym claims, and cloud credits, no account, no password, no gas fees |
 | 🎨 **Spatial Canvas** | Widgets live on a 2D canvas, not stacked tabs, position carries meaning |
+| 🛩️ **Agent control room** | Your coding agents appear as cards on the canvas, through herdr. A risky command waits for your approval on a card |
+| 🖐️ **Voice and gestures** | Talk to the orb, or move windows with your hands through your webcam (beta). Speech and hand tracking run locally |
+| 📚 **Memory cartridges** | Public knowledge fetched from its official source into your memory: laws, medicine, science, world history, known vulnerabilities, trademarks |
+| 🕸️ **Synaptic P2P** | Pair your machines on your local network, share a vault read-only or keep one together (beta) |
 
 ### Under the hood: the engines
 
@@ -197,7 +209,7 @@ Not one big "AI" black box. Several independent, purpose-built engines:
 - **Dream State**: two-speed consolidation. A fast, low-latency tier extracts facts
   during active use; a heavier tier runs at idle/night to resolve contradictions and
   link memories across sessions. Output is appended alongside raw retrieval, never
-  silently replacing it. See the [benchmark results](#proven-on-longmemeval-m--not-just-a-pitch) below.
+  silently replacing it. See the [benchmark results](#proven-on-longmemeval-m-not-just-a-pitch) below.
 - **Adaptive RAG (the "gearbox")**: rather than injecting every retrieved candidate,
   context selection (top-k / MMR / low-discrepancy sampling) scales to both the model
   tier you're running and the thinking mode you pick.
@@ -640,6 +652,9 @@ bound to the founder's research identity, ORCID
 ### Shipped
 - [x] 🚀 **Infinity Edition, 26 public releases**, now at [**v1.7.0 · The Hands**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.7.0-infinity)
 - [x] 🖼️ **Theia, image memory and visual recall**: Mnemosyne's sister engine (named for the Titaness of sight) gives every vault an eye: your images are embedded **locally** (SigLIP 2, no cloud, no API), recall answers with thumbnails under the reply, and a living gallery shows them with categories the engine discovers on its own: categories you can rate, correct, rename or teach, because the human's word always outranks the model's guess. Off by default; one Settings toggle installs, downloads pinned weights and indexes.
+- [x] 🕸️ **Synaptic P2P** (beta, since v1.5.0): two installs connect directly over libp2p, with no cloud relay. Give someone a vault to read, send mail between installs, keep one vault together, and give each of your machines a role
+- [x] 📚 **Memory cartridges**: public knowledge fetched from its official source into your memory, starting with laws, medicine, science, world history, known vulnerabilities and trademarks
+- [x] 🖐️ **Voice and gestures** (v1.7.0): drive the canvas with your voice and your hands
 - [x] 🧩 **MnemoHub**: signed cartridge marketplace, community submission pipeline, live publishing
 - [x] 🪪 **Sovereign identity**: claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State**: a consolidation engine that replays and links your memories while you're away
@@ -650,8 +665,7 @@ bound to the founder's research identity, ORCID
 ### What's next
 - [ ] 🗜️ **Context compression, on by default**: the Octave engine is already aboard (see *Shipped*). While your machine is idle, every memory is prepared at several resolutions, strictly extractive, offset-provable, never a paraphrase. What remains is serving those compressed forms on the answer path for everyone, gated behind the full measurement campaign, so a lifetime of accumulated memory stays cheap to carry into the small **context windows** of on-device models. Memory that keeps growing must stay cheap to carry, this is what keeps Mnemosyne sovereign on modest hardware.
 - [ ] 📱 **Mobile companion app**: take notes and reach Mnemosyne OS running on your desktop remotely. Capture on the go, sync back into your local vault, chat with your own memory away from the machine
-- [ ] 🔗 **Synaptic P2P**: a sovereign libp2p mesh (`mnemosync-p2p`) so your Mnemosyne OS can reach a trusted peer's vault directly: no cloud relay, no VPS, no account. Built for teams who want to share a deliberate slice of memory (an architecture decision, an API contract, a chronicle) without exposing the rest, and, eventually, direct messages between instances. Authentication reuses your existing sovereign wallet; nothing leaves your vault unless you explicitly publish it.
-- [ ] 👥 Team features, shared vaults, multi-agent coordination
+- [ ] 👥 Team features: memory shared across a whole team, beyond one shared vault
 - [ ] 🖥️ Self-hosted sync server
 - [ ] 🕸️ **Permaweb archival**: pay-once, permanent memory storage on Arweave, no subscription and no server that can disappear. [Psyche](https://psyche.mnemosyne-os.io) (souls for any AI agent) is the vehicle; bringing it into Mnemosyne OS as a cartridge is the path to making permanent archival a native option for chronicles, and eventually vault backups
 - [ ] 💰 Creator economy, paid visibility for cartridges, revenue flowing back to builders
