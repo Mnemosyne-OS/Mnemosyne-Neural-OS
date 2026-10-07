@@ -53,7 +53,7 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 
 <br/>
 
-<img src="assets/strip-specs.png" width="100%" alt="100% local, your memory never leaves your machine · 8 GB RAM to start, 40 GB to run all local · 7 languages, EN FR ES DE PT RU ZH · Windows, macOS, Linux, code-signed builds, auto-update" />
+<img src="assets/strip-specs.png" width="100%" alt="100% local, your memory never leaves your machine · 8 GB RAM to start, 32 GB to run all local · 7 languages, EN FR ES DE PT RU ZH · Windows, macOS, Linux, code-signed builds, auto-update" />
 
 </div>
 
