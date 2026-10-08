@@ -119,6 +119,35 @@ renders when the app runs outside the OS (plain `vite dev`). To observe without
 applying, `onHostConfig(cfg => …, { apply: false })`; it returns an
 unsubscribe. `applyDesignTokens(tokens)` is exported for manual control.
 
+## Your version, and its updates
+
+The OS tells your open app which version is installed. It also says whether a
+newer one is published. Both arrive in the same `onHostConfig` message as the
+theme. The OS checks the way its Hub does, at most once a day, so your app does
+not fetch its own manifest from GitHub.
+
+```ts
+import { MnemoCartridgeSDK, onHostConfig } from '@mnemosyne_os/cartridge-sdk';
+
+const sdk = new MnemoCartridgeSDK('@you/your-app');
+
+onHostConfig((cfg) => {
+  showBadge(cfg.version);                    // the installed version
+  if (cfg.update?.state === 'newer') {
+    showLine(cfg.update.latestVersion, cfg.update.critical === true);
+  }
+});
+
+// Opens the Mnemosyne Hub on your app's page, where the update is offered.
+// It installs nothing. opened is false when no Hub answered.
+const { opened } = await sdk.showUpdateInHub();
+```
+
+`update.state` is `newer`, `current` or `unknown`. Show nothing extra for
+`unknown`, and never "up to date": the check may not have happened. A copy in
+development receives `version` and no `update`. Needs Mnemosyne OS with doc 142
+support; an older host sends neither field.
+
 ## Choosing the memory a generation leans on
 
 The host injects the retrieved memory **main-side**: the model sees it, your

@@ -176,7 +176,28 @@ export interface MnemoHostConfig {
    * render the normal view, never a degraded one on a guess.
    */
   zoom?: number;
+  /**
+   * The version of this cartridge the host has INSTALLED, read from the
+   * installed manifest (doc 142). Show it in a badge. Absent on an older host:
+   * fall back to the version your bundle was built with.
+   */
+  version?: string;
+  /**
+   * What the host knows about a newer version of THIS cartridge (doc 142). The
+   * host asks at most once a day, with the same rules as the Hub: the version
+   * is read where an install would take it, from the source recorded at
+   * install. Absent = not asked (a dev or linked copy, an older host).
+   *
+   * 🎭 `unknown` is never « up to date »: draw nothing extra for it.
+   */
+  update?: MnemoUpdateState;
 }
+
+/** The host's answer about a newer version of the cartridge (doc 142 §4.1). */
+export type MnemoUpdateState =
+  | { state: 'newer'; latestVersion: string; checkedAt: string; critical?: boolean }
+  | { state: 'current'; checkedAt: string }
+  | { state: 'unknown'; reason: string };
 
 /** Writes host design tokens onto this document's `<html>` as inline custom
  *  properties, so every `var(--…)` in the cartridge resolves to the shell's
@@ -218,7 +239,7 @@ export function onHostConfig(
     // to the type and to the host's broadcast but not to this line, so it was
     // dropped in transit and the feature could never fire — a declared field
     // that never arrives is worse than an absent one, because it looks done.
-    cb?.({ theme: d.theme, lang: d.lang, tokens: d.tokens, zoom: d.zoom });
+    cb?.({ theme: d.theme, lang: d.lang, tokens: d.tokens, zoom: d.zoom, version: d.version, update: d.update });
   };
   window.addEventListener('message', listener);
   return () => window.removeEventListener('message', listener);
@@ -266,7 +287,22 @@ export interface MnemoGestureSubscription {
   off: () => void;
 }
 
-const GESTURE_KINDS: readonly string[] = ['orbit', 'pan', 'depth', 'zoom', 'recenter', 'point', 'select', 'next', 'prev', 'action'];
+/** One hand-to-mouth contact (doc 139 §5): when it began (epoch ms) and how
+ *  long the hand stayed at the mouth (ms). Nothing else leaves the host. */
+export interface MnemoMouthContact {
+  at: number;
+  ms: number;
+}
+
+export interface MnemoMouthSubscription {
+  /** Resolves once the host granted it, with whether the camera is on now;
+   *  rejects with the reason it refused (no `camera:observe`, denied, no host). */
+  ready: Promise<{ camera: boolean }>;
+  /** Stop receiving. Safe to call more than once. */
+  off: () => void;
+}
+
+const GESTURE_KINDS: readonly string[] =['orbit', 'pan', 'depth', 'zoom', 'recenter', 'point', 'select', 'next', 'prev', 'action'];
 
 export class MnemoCartridgeSDK {
   private pluginId: string;
@@ -452,6 +488,17 @@ export class MnemoCartridgeSDK {
   }
 
   /** Fetches the current host model configuration. */
+  /**
+   * Opens the Mnemosyne Hub on this cartridge's own page, where its update is
+   * offered (doc 142 §4.2). Installs nothing. Ungated; the id comes from the
+   * bridge, so a cartridge can only open its own page. `opened: false` when no
+   * Hub answered (a cartridge in its own window): tell the person to open the
+   * Hub themselves.
+   */
+  public showUpdateInHub(): Promise<{ opened: boolean }> {
+    return this.invoke<{ opened: boolean }>('hub.showUpdate');
+  }
+
   public getModelConfig(): Promise<any> {
     return this.invoke('model.getConfig');
   }
@@ -728,6 +775,82 @@ export class MnemoCartridgeSDK {
       );
     }
     window.parent.postMessage({ type: 'MNEMO_GESTURE_SUBSCRIBE', pluginId: this.pluginId, requestId }, MNEMO_HOST_ORIGIN);
+    return { ready, off };
+  }
+
+  /**
+   * Hand-to-mouth contacts seen by the host camera (doc 139 §5). Needs
+   * `camera:observe` in the manifest's `permissions`; the host asks the
+   * person once, in its own dialog.
+   *
+   * The cartridge never sees the camera, an image or a hand. It receives one
+   * {@link MnemoMouthContact} per contact (a hand held at the mouth for a
+   * moment), and judges for itself what a series of them means. Contacts
+   * arrive whether or not the cartridge's window is in front, while that
+   * window is open. The camera only runs while the person has turned it on
+   * in Settings › Gestures: `onCamera` says when that changes.
+   */
+  public onMouthWatch(
+    handlers: { contact: (c: MnemoMouthContact) => void; onCamera?: (on: boolean) => void },
+    timeoutMs: number = DEFAULT_INVOKE_TIMEOUT_MS,
+  ): MnemoMouthSubscription {
+    const requestId = Math.random().toString(36).substring(7);
+    let stopped = false;
+    let timer: number | undefined;
+    let settle: { resolve: (v: { camera: boolean }) => void; reject: (e: Error) => void } | null = null;
+    const ready = new Promise<{ camera: boolean }>((resolve, reject) => { settle = { resolve, reject }; });
+    ready.catch(() => undefined);
+
+    const finish = (fn: (s: NonNullable<typeof settle>) => void) => {
+      if (timer !== undefined) { window.clearTimeout(timer); timer = undefined; }
+      const s = settle;
+      settle = null;
+      if (s) fn(s);
+    };
+
+    const listener = (event: MessageEvent) => {
+      // SECURITY: only the host frame (our parent) may send observations.
+      if (event.source !== window.parent) return;
+      const d = event.data;
+      if (!d || typeof d.type !== 'string' || d.requestId !== requestId) return;
+      if (d.type === 'MNEMO_MOUTH_READY') {
+        finish(s => s.resolve({ camera: d.camera === true }));
+      } else if (d.type === 'MNEMO_MOUTH_REFUSED') {
+        window.removeEventListener('message', listener);
+        finish(s => s.reject(new Error(typeof d.error === 'string' ? d.error : 'The host refused the camera observation')));
+      } else if (d.type === 'MNEMO_MOUTH_CAMERA' && !stopped) {
+        try { handlers.onCamera?.(d.camera === true); } catch (err) { console.error('[MnemoCartridgeSDK] the onCamera handler threw:', err); }
+      } else if (d.type === 'MNEMO_MOUTH_CONTACT' && !stopped) {
+        const c = d.contact as MnemoMouthContact | undefined;
+        if (!c || !Number.isFinite(c.at) || !Number.isFinite(c.ms)) return;
+        try { handlers.contact({ at: c.at, ms: c.ms }); } catch (err) { console.error('[MnemoCartridgeSDK] the contact handler threw:', err); }
+      }
+    };
+
+    const off = () => {
+      if (stopped) return;
+      stopped = true;
+      window.removeEventListener('message', listener);
+      finish(s => s.reject(new Error('The observation was turned off before the host answered')));
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'MNEMO_MOUTH_UNSUBSCRIBE', pluginId: this.pluginId, requestId }, MNEMO_HOST_ORIGIN);
+      }
+    };
+
+    if (window.parent === window) {
+      stopped = true;
+      finish(s => s.reject(new Error('No Mnemosyne host: the camera observation was asked outside the shell.')));
+      return { ready, off };
+    }
+
+    window.addEventListener('message', listener);
+    if (timeoutMs > 0) {
+      timer = window.setTimeout(
+        () => finish(s => s.reject(new Error(`Host did not answer the camera observation request within ${Math.round(timeoutMs / 1000)}s`))),
+        timeoutMs,
+      );
+    }
+    window.parent.postMessage({ type: 'MNEMO_MOUTH_SUBSCRIBE', pluginId: this.pluginId, requestId }, MNEMO_HOST_ORIGIN);
     return { ready, off };
   }
 

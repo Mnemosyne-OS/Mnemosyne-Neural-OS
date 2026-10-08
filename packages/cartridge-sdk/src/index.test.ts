@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { MnemoCartridgeSDK, applyDesignTokens, onHostConfig } from './index.js';
+import { MnemoCartridgeSDK, applyDesignTokens, onHostConfig, type MnemoHostConfig } from './index.js';
 
 describe('applyDesignTokens', () => {
   afterEach(() => {
@@ -49,6 +49,19 @@ describe('onHostConfig', () => {
     // event sourced from `window` passes the same guard the real host does.
     window.dispatchEvent(new MessageEvent('message', { data, source: window }));
   }
+
+  it('forwards EVERY field of MnemoHostConfig to the callback (zoom was once dropped on that line)', () => {
+    const cb = vi.fn();
+    subscribe(cb, { apply: false });
+    const config = {
+      theme: 'light', lang: 'fr', tokens: { '--accent': '#123456' }, zoom: 0.5, version: '1.2.0',
+      update: { state: 'newer', latestVersion: '1.3.0', checkedAt: '2026-10-08T10:00:00.000Z', critical: true },
+    } satisfies Required<MnemoHostConfig>;
+    postFromHost({ type: 'MNEMO_CONFIG_UPDATE', ...config });
+    expect(cb).toHaveBeenCalledWith(config);
+    // A field added to the type and not to the forwarding line fails here.
+    expect(Object.keys(cb.mock.calls[0]![0]).sort()).toEqual(Object.keys(config).sort());
+  });
 
   it('ignores a message whose source is not window.parent', () => {
     const cb = vi.fn();
@@ -311,6 +324,7 @@ describe('MnemoCartridgeSDK — embedded', () => {
     // `(action)` and `(action, undefined)` are different call shapes).
     it.each([
       ['getModelConfig', 'model.getConfig'],
+      ['showUpdateInHub', 'hub.showUpdate'],
       ['status', 'mnemosyne.status'],
       ['scanTree', 'vault.scanTree'],
       ['getLinkedDev', 'plugins.getLinkedDev'],
@@ -430,5 +444,64 @@ describe('onGestures outside the shell', () => {
   it('rejects at once with the reason, and asks nothing', async () => {
     const sub = new MnemoCartridgeSDK('p').onGestures({});
     await expect(sub.ready).rejects.toThrow('No Mnemosyne host');
+  });
+});
+
+describe('onMouthWatch (doc 139 §5)', () => {
+  let hostWin: Window;
+  let postSpy: ReturnType<typeof vi.spyOn>;
+  let parentDescriptor: PropertyDescriptor | undefined;
+
+  beforeEach(() => {
+    const frame = document.createElement('iframe');
+    document.body.appendChild(frame);
+    hostWin = frame.contentWindow as Window;
+    postSpy = vi.spyOn(hostWin, 'postMessage').mockImplementation(() => {});
+    parentDescriptor = Object.getOwnPropertyDescriptor(window, 'parent');
+    Object.defineProperty(window, 'parent', { configurable: true, get: () => hostWin });
+  });
+
+  afterEach(() => {
+    if (parentDescriptor) Object.defineProperty(window, 'parent', parentDescriptor);
+    else delete (window as unknown as { parent?: unknown }).parent;
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+  });
+
+  const request = () => postSpy.mock.calls[0]![0] as { type: string; pluginId: string; requestId: string };
+  const fromHost = (data: unknown, source: Window | null = hostWin) =>
+    window.dispatchEvent(new MessageEvent('message', { data, source }));
+
+  it('asks once, says whether the camera is on, then delivers contacts and camera changes', async () => {
+    const contact = vi.fn();
+    const onCamera = vi.fn();
+    const sub = new MnemoCartridgeSDK('ember').onMouthWatch({ contact, onCamera });
+    expect(request()).toMatchObject({ type: 'MNEMO_MOUTH_SUBSCRIBE', pluginId: 'ember' });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_MOUTH_READY', requestId, camera: true });
+    await expect(sub.ready).resolves.toEqual({ camera: true });
+    fromHost({ type: 'MNEMO_MOUTH_CONTACT', requestId, contact: { at: 1000, ms: 1500, extra: 'dropped' } });
+    expect(contact).toHaveBeenCalledWith({ at: 1000, ms: 1500 });
+    fromHost({ type: 'MNEMO_MOUTH_CAMERA', requestId, camera: false });
+    expect(onCamera).toHaveBeenCalledWith(false);
+    sub.off();
+  });
+
+  it('ignores anything but the host frame, another subscription, or a malformed contact', async () => {
+    const contact = vi.fn();
+    const sub = new MnemoCartridgeSDK('ember').onMouthWatch({ contact });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_MOUTH_CONTACT', requestId, contact: { at: 1, ms: 1 } }, null);
+    fromHost({ type: 'MNEMO_MOUTH_CONTACT', requestId: 'other', contact: { at: 1, ms: 1 } });
+    fromHost({ type: 'MNEMO_MOUTH_CONTACT', requestId, contact: { at: 'x', ms: 1 } });
+    expect(contact).not.toHaveBeenCalled();
+    sub.off();
+  });
+
+  it('a refusal rejects ready with the host reason', async () => {
+    const sub = new MnemoCartridgeSDK('ember').onMouthWatch({ contact: vi.fn() });
+    const { requestId } = request();
+    fromHost({ type: 'MNEMO_MOUTH_REFUSED', requestId, error: '"camera:observe" is not in the manifest' });
+    await expect(sub.ready).rejects.toThrow('camera:observe');
   });
 });
