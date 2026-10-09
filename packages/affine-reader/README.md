@@ -1,12 +1,30 @@
 **@mnemosyne_os/affine-reader**: Read a local AFFiNE workspace (SQLite + Yjs) and render its documents to Markdown. No BlockSuite at runtime, no native module, read-only.
 
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS. Your memory. Your machine. Your rules." />
+
+**Product** [mnemosyne-os.io](https://mnemosyne-os.io) · **Company, press and labs** [mnemosyne-os.com](https://mnemosyne-os.com) · **Documentation** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)
+
+</div>
+
 # @mnemosyne_os/affine-reader
 
 Read a local [AFFiNE](https://github.com/toeverything/AFFiNE) workspace and render its
-documents to Markdown, without running AFFiNE, without BlockSuite, without a server.
+documents to Markdown. AFFiNE does not need to run. No BlockSuite, no server.
 
-**Read-only, in every direction.** Two processes writing one CRDT corrupt it, so this
-package copies the database before it reads and never writes back.
+**Read-only, in every direction.** Two processes writing one CRDT corrupt it. This
+package copies the database before it reads, and never writes back.
+
+## Quick start: one command
+
+```bash
+npx @mnemosyne_os/affine-reader ./out
+```
+
+This writes one Markdown file per document, plus its images, for every AFFiNE
+workspace on this machine. It needs Node 22.13+ or 23.4+ (see
+[Bring your own SQLite](#bring-your-own-sqlite)).
 
 ## Install
 
@@ -44,13 +62,13 @@ for (const ref of findWorkspaces()) {
 ```
 
 `findWorkspaces()` returning `[]` and `affineDataDir()` returning `null` are **different
-answers**. One says there is nothing to read, the other says AFFiNE is not
+answers**. The first says there is nothing to read. The second says AFFiNE is not
 installed. Both are reported.
 
 ### Bring your own SQLite
 
-`openNodeSqlite` uses Node's built-in `node:sqlite`, which runs without a flag from
-**Node 22.13** and **23.4** onward. It exists from 22.5 behind `--experimental-sqlite`.
+`openNodeSqlite` uses Node's built-in `node:sqlite`. It runs without a flag from
+**Node 22.13** and **23.4** onward, and exists from 22.5 behind `--experimental-sqlite`.
 Electron 31 ships Node 20 and has none, so a host passes its own adapter:
 
 ```ts
@@ -66,27 +84,57 @@ readWorkspace({ prepare: (sql) => raw.prepare(sql), close: () => raw.close() });
 | | |
 |---|---|
 | Location | `<app-data>/AFFiNE*/<workspaces\|userspaces>/<peer>/<id>/storage.db` |
-| Channels | every one you have installed. AFFiNE's build names the folder `AFFiNE` for a stable release and `AFFiNE-canary`, `AFFiNE-beta`, `AFFiNE-internal` otherwise, and most of their releases are canary |
+| Channels | Every one you have installed. AFFiNE names the folder `AFFiNE` for a stable release, and `AFFiNE-canary`, `AFFiNE-beta` or `AFFiNE-internal` otherwise. Most of their releases are canary |
 | Schema | nbstore `v2` (`snapshots` + `updates` + `blobs`), and the legacy `v1` shape |
 | Content | Yjs history replayed into a document, rendered by AFFiNE's own MIT parser |
 
-Headings, lists, checkboxes, bold/italic, links, code, tables, database views, LaTeX and
-images all survive the trip. Images come out as blob files with links that point at them.
+Headings, lists, checkboxes, bold and italic, links, code, tables, database views, LaTeX
+and images all survive the trip. Images come out as blob files, with links that point
+at them.
 
 ## Two things that will bite you
 
 **The content may live in the `-wal`, not in `storage.db`.** Measured on one running
-0.27.4 install: at 14:28 `storage.db` was 4 KB next to a 1.8 MB `-wal`; at 14:46, same
+0.27.4 install: at 14:28, `storage.db` was 4 KB next to a 1.8 MB `-wal`. At 14:46, same
 app still running, the journal had been checkpointed away and `storage.db` was 1.14 MB
 with no sidecar at all. A reader that copies only `storage.db` sees an **empty
 workspace** in the first state and cannot tell. `stageDatabase()` copies the sidecars
 when they exist and reports which ones it took.
 
 **A snapshot alone is stale.** A document typed one minute earlier decoded to **2
-characters** from its snapshot row and **323** once its 16 `updates` rows were replayed.
-Long-settled documents give the same answer either way, so a test written on those
+characters** from its snapshot row, and to **323** once its 16 `updates` rows were
+replayed. Older documents give the same answer either way. A test written on those
 passes while the reader loses everything the user just wrote. Every load here replays
 the updates.
+
+---
+
+## Your AFFiNE notes, searchable in Mnemosyne OS
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
+
+This package was built for [Mnemosyne OS](https://mnemosyne-os.io), a memory system
+that runs on your own machine. Its desktop app uses this reader to bring an AFFiNE
+workspace into memory:
+
+1. Open **Settings › Vaults › Import from AFFiNE**.
+2. Choose a folder. Each document becomes one Markdown file, with its images.
+3. Point a vault at that folder. You can then ask the chat about your notes, or reach
+   them from Claude, Cursor or any MCP agent through
+   [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp).
+
+AFFiNE itself is only read, never written to. Run the import again after you edit:
+renamed, deleted or trashed documents leave the folder too.
+
+<div align="center">
+
+### [⬇ Download Mnemosyne OS](https://mnemosyne-os.io/download)
+
+Free download for Windows, macOS and Linux
+
+</div>
+
+---
 
 ## The `@mnemosyne_os` packages
 
@@ -106,9 +154,20 @@ All of them live under one npm organization:
 | [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI**: scaffold, list chronicles, import and export |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
 
+## Where Mnemosyne OS lives
+
+Published by XPACEGEMS LLC. Its official addresses:
+
+- Product site: <https://mnemosyne-os.io>
+- Organizations: <https://mnemosyne-os.com>
+- Documentation: <https://docs.mnemosyne-os.io>
+- Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
+- Packages: <https://www.npmjs.com/org/mnemosyne_os>
+
 ---
 
 ## Licence
 
-MIT. Includes MIT-licensed source vendored from AFFiNE. See [NOTICE.md](./NOTICE.md).
-BlockSuite (MPL-2.0) is **not** included and is not required at runtime.
+MIT © [Tony Trochet / XPACEGEMS LLC](https://mnemosyne-os.com). Includes MIT-licensed
+source vendored from AFFiNE, see [NOTICE.md](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/packages/affine-reader/NOTICE.md). BlockSuite (MPL-2.0) is
+**not** included and is not required at runtime.
