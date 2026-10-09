@@ -60,12 +60,12 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 ---
 
 > [!IMPORTANT]
-> **🖐️ New in 1.7.0 · The Hands.** Drive your board with your hands through your webcam
-> (beta), and with your voice through the orb. A second pass checks a chat answer against
-> its sources. Your coding agents appear as cards on your board, through
-> [herdr](https://github.com/herdrdev/herdr), and you can pair your own machines.
+> **📚 New in 1.8.0 · The Library.** Knowledge apps in the MnemoHub download public
+> knowledge into vaults of their own: laws, history, health, science and languages. You
+> ask the chat, and it answers from them. Hand gestures are out of beta. Every app in the
+> Hub has its own page, and a Dev section plugs your coding agents into your memory.
 >
-> **[→ The release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.7.0-infinity)** · [MnemoHermes, your memory on Telegram](https://mnemosyne-os.io/hermes)
+> **[→ The release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.8.0-infinity)** · [MnemoHermes, your memory on Telegram](https://mnemosyne-os.io/hermes)
 
 <div align="center">
 <a href="https://mnemosyne-os.io/hermes"><img src="https://raw.githubusercontent.com/Mnemosyne-OS/MnemoHermes/main/docs/tour.gif" width="80%" alt="The MnemoHermes cockpit opening from the Mnemosyne OS dock, then its Tasks, Agents, Tools, Skills, Memory inbox and Settings tabs" /></a>
@@ -650,11 +650,11 @@ bound to the founder's research identity, ORCID
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition, 26 public releases**, now at [**v1.7.0 · The Hands**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.7.0-infinity)
+- [x] 🚀 **Infinity Edition, 27 public releases**, now at [**v1.8.0 · The Library**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.8.0-infinity)
 - [x] 🖼️ **Theia, image memory and visual recall**: Mnemosyne's sister engine (named for the Titaness of sight) gives every vault an eye: your images are embedded **locally** (SigLIP 2, no cloud, no API), recall answers with thumbnails under the reply, and a living gallery shows them with categories the engine discovers on its own: categories you can rate, correct, rename or teach, because the human's word always outranks the model's guess. Off by default; one Settings toggle installs, downloads pinned weights and indexes.
 - [x] 🕸️ **Synaptic P2P** (beta, since v1.5.0): two installs connect directly over libp2p, with no cloud relay. Give someone a vault to read, send mail between installs, keep one vault together, and give each of your machines a role
 - [x] 📚 **Memory cartridges**: public knowledge fetched from its official source into your memory, starting with laws, medicine, science, world history, known vulnerabilities and trademarks
-- [x] 🖐️ **Voice and gestures** (v1.7.0): drive the canvas with your voice and your hands
+- [x] 🖐️ **Voice and gestures** (v1.7.0, gestures out of beta in v1.8.0): drive the canvas with your voice and your hands
 - [x] 🧩 **MnemoHub**: signed cartridge marketplace, community submission pipeline, live publishing
 - [x] 🪪 **Sovereign identity**: claim a public pseudonym bound to your wallet, no account, no password
 - [x] 💤 **Dream State**: a consolidation engine that replays and links your memories while you're away
@@ -693,6 +693,7 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 
 | Date | Release | In one line |
 |------|---------|-------------|
+| **Oct 8, 2026** | [**v1.8.0 · The Library**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.8.0-infinity) | The knowledge memories open. **Knowledge apps in the MnemoHub** download public knowledge into vaults of their own: laws, history, health, science and languages. You ask the chat, and it answers from them. Hand gestures are out of beta. Every app in the Hub has its own page, with photos, reviews and its version, and a Dev section plugs Claude Code, Codex, Antigravity or Cursor into your memory. Ask the chat about a period, and MnemoClio opens on that year. Also new: apps on a desktop of their own, starter questions in an empty chat, the weather from the orb, and spending split by route in the wallet. |
 | **Oct 2, 2026** | [**v1.7.0 · The Hands**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.7.0-infinity) | You can now drive your board with your hands, through your webcam (beta). Pinch a window’s corner to move it, spread your fingers for full screen, or hold a fist to close it. A second pass can check a chat answer against its sources. Your coding agents appear as cards on your board, through herdr. Also new: web search through Hermes, formulas in the chat and layers in the image studio. And an arcade on the neural map, data widgets (beta) and larger local models. |
 | **Sep 23, 2026** | [**v1.6.0 · The Assistant**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.6.0-infinity) | Mnemosyne OS can now run an assistant that works for you. **Hermes Agent installs in one click** (beta) through the MnemoHermes cartridge, reads your memory, and answers you on Telegram, by voice if you like. Before a risky command, it asks you on a card on your board, and you answer once, for the session, or always. Voice notes are transcribed on your machine. Say "Hermes, …" to the orb and it hands the request over. Exact-word search now reads seven languages, and a file name in your question finds that file. Also new: OpenRouter as a provider, Tailscale in the P2P screen to reach a peer on another network, and every call listed in the wallet. |
 | **Sep 19, 2026** | [**v1.5.1 · The Key Found Again**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.5.1-infinity) | A fix for Mac. Changing network renamed the machine, and the sovereign wallet closed with your credits inside it. The app now finds the key again at startup and reseals it, and the offline licence holds through the same rename. |
