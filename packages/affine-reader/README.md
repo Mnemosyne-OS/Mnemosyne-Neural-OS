@@ -111,7 +111,16 @@ the updates.
 
 ## Your AFFiNE notes, searchable in Mnemosyne OS
 
-<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/infinite-canvas.jpg" width="100%" alt="Mnemosyne OS Infinity Edition: the infinite canvas, the image gallery, MnemoHub and the living memory" />
+<table>
+<tr>
+<td width="50%"><img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/affine-note.jpg" width="100%" alt="A Markdown note open in Mnemosyne OS Sovereign Notes, with its vault, classification and statistics" /></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/affine-neural-map.jpg" width="100%" alt="The Mnemosyne OS Neural Map: every vault drawn as a cluster of linked notes" /></td>
+</tr>
+<tr>
+<td align="center"><sub>Each document opens as a note</sub></td>
+<td align="center"><sub>The Neural Map draws every vault and its links</sub></td>
+</tr>
+</table>
 
 This package was built for [Mnemosyne OS](https://mnemosyne-os.io), a memory system
 that runs on your own machine. Its desktop app uses this reader to bring an AFFiNE
