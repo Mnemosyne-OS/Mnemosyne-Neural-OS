@@ -1,5 +1,13 @@
 **@mnemosyne_os/agent-transcripts**: Read what coding agents already write on disk: a declarative connector format, an interpreter that never evaluates it, and the liveness rules that keep "last seen" from becoming "working".
 
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS. Your memory. Your machine. Your rules." />
+
+**Product** [mnemosyne-os.io](https://mnemosyne-os.io) · **Company, press and labs** [mnemosyne-os.com](https://mnemosyne-os.com) · **Documentation** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)
+
+</div>
+
 # @mnemosyne_os/agent-transcripts
 
 Coding agents already write a transcript of everything they do, on your disk, in
@@ -160,5 +168,25 @@ All of them live under one npm organization:
 Extracted from [Mnemosyne OS](https://mnemosyne-os.io), a local-first memory
 system, where it feeds a screen and an MCP server from this one implementation.
 It stands alone and has no dependency on the app.
+
+<div align="center">
+
+### [⬇ Download Mnemosyne OS](https://mnemosyne-os.io/download)
+
+Free download for Windows, macOS and Linux
+
+</div>
+
+## Where Mnemosyne OS lives
+
+Published by XPACEGEMS LLC. Its official addresses:
+
+- Product site: <https://mnemosyne-os.io>
+- Organizations: <https://mnemosyne-os.com>
+- Documentation: <https://docs.mnemosyne-os.io>
+- Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
+- Packages: <https://www.npmjs.com/org/mnemosyne_os>
+
+---
 
 MIT © Tony Trochet

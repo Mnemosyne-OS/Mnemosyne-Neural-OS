@@ -1,5 +1,13 @@
 **@mnemosyne_os/public-contracts**: Public types, Zod schemas and interfaces for Mnemosyne OS. No business logic, just the official integration surface.
 
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Mnemosyne-OS/Mnemosyne-Neural-OS/main/assets/banner-mnemosyne-os.png" width="100%" alt="Mnemosyne OS. Your memory. Your machine. Your rules." />
+
+**Product** [mnemosyne-os.io](https://mnemosyne-os.io) · **Company, press and labs** [mnemosyne-os.com](https://mnemosyne-os.com) · **Documentation** [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)
+
+</div>
+
 # @mnemosyne_os/public-contracts
 
 Public types, Zod schemas and interfaces for **Mnemosyne OS**. This is the
@@ -65,6 +73,33 @@ All of them live under one npm organization:
 | [`@mnemosyne_os/affine-reader`](https://www.npmjs.com/package/@mnemosyne_os/affine-reader) | Read a local **AFFiNE workspace** and render its documents to Markdown |
 | [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | **CLI**: scaffold, list chronicles, import and export |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | The name of the **P2P layer to come**. A placeholder today, not the library |
+
+---
+
+## Get Mnemosyne OS
+
+These contracts describe the shapes the desktop app speaks. To run it, install
+[Mnemosyne OS](https://mnemosyne-os.io), a memory system that runs on your own machine.
+
+<div align="center">
+
+### [⬇ Download Mnemosyne OS](https://mnemosyne-os.io/download)
+
+Free download for Windows, macOS and Linux
+
+</div>
+
+---
+
+## Where Mnemosyne OS lives
+
+Published by XPACEGEMS LLC. Its official addresses:
+
+- Product site: <https://mnemosyne-os.io>
+- Organizations: <https://mnemosyne-os.com>
+- Documentation: <https://docs.mnemosyne-os.io>
+- Source: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS>
+- Packages: <https://www.npmjs.com/org/mnemosyne_os>
 
 ---
 
