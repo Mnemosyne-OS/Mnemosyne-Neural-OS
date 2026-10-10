@@ -140,7 +140,7 @@ export default function App() {
         </div>
       </header>
 
-      <main style={styles.main}>
+      <main className="g-grid" style={styles.main}>
         {errorMsg && (
           <div style={styles.errorBox}>
             <span style={{ fontWeight: 600 }}>⚠️ Security/API Alert:</span> {errorMsg}
@@ -151,7 +151,7 @@ export default function App() {
         )}
 
         {/* ── The sandbox vault: the reason this platform exists ─────────── */}
-        <section style={styles.card}>
+        <section className="glass" style={styles.card}>
           <h2 style={styles.cardTitle}>Your Sandbox Vault</h2>
           <p style={styles.cardDesc}>
             This cartridge owns exactly one vault. It is isolated from federated search,
@@ -181,7 +181,8 @@ export default function App() {
             <button
               onClick={handleSaveNote}
               disabled={busy || !vault || !note.trim()}
-              style={busy || !vault || !note.trim() ? { ...styles.btnPrimary, opacity: 0.5 } : styles.btnPrimary}
+              className="primary"
+              style={styles.btnPrimary}
             >
               Remember
             </button>
@@ -198,7 +199,7 @@ export default function App() {
         </section>
 
         {/* Model Config Section */}
-        <section style={styles.card}>
+        <section className="glass" style={styles.card}>
           <h2 style={styles.cardTitle}>System Model Integrations</h2>
           {modelConfig ? (
             <div style={styles.statsRow}>
@@ -217,7 +218,7 @@ export default function App() {
         </section>
 
         {/* Native OS Dialog Integration */}
-        <section style={styles.card}>
+        <section className="glass" style={styles.card}>
           <h2 style={styles.cardTitle}>OS Native Dialog Integration</h2>
           <p style={styles.cardDesc}>Request access to local storage directories through host permission gates.</p>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -231,14 +232,14 @@ export default function App() {
         </section>
 
         {/* Hand gestures (doc 106 §32): see GestureCube.tsx and mnemo-plugin.json */}
-        <section style={styles.card}>
+        <section className="glass" style={styles.card}>
           <h2 style={styles.cardTitle}>Hand Gestures</h2>
           <p style={styles.cardDesc}>Turn and enter a 3D object with your hand. The host sends intentions, never the camera.</p>
           <GestureCube sdk={sdk} />
         </section>
 
         {/* AI Playground Section */}
-        <section style={styles.card}>
+        <section className="glass" style={styles.card}>
           <h2 style={styles.cardTitle}>AI Playground</h2>
           <textarea
             value={prompt}
@@ -250,7 +251,8 @@ export default function App() {
           <button
             onClick={handleInference}
             disabled={inferring}
-            style={inferring ? { ...styles.btnPrimary, opacity: 0.6 } : styles.btnPrimary}
+            className="primary"
+            style={styles.btnPrimary}
           >
             {inferring ? 'Running Inference...' : '✨ Run AI Query'}
           </button>
@@ -272,8 +274,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column' as const,
     height: '100%',
-    backgroundColor: '#0a0a0c',
-    color: '#f3f4f6',
+    color: 'var(--g-text)',
     boxSizing: 'border-box' as const,
     padding: '24px',
     overflowY: 'auto' as const,
@@ -310,16 +311,11 @@ const styles = {
     color: '#9ca3af',
     margin: '2px 0 0 0',
   },
-  main: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '16px',
-  },
+  // The cards use the whole width: side by side as soon as two fit (see .g-grid in glass.css).
+  main: {},
+  // The look is the .glass class (glass.css); only the layout stays here.
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    borderRadius: '12px',
-    padding: '16px',
+    padding: '18px 20px',
     display: 'flex',
     flexDirection: 'column' as const,
     gap: '12px',
@@ -372,38 +368,16 @@ const styles = {
     border: '1px solid rgba(16, 185, 129, 0.15)',
     wordBreak: 'break-all' as const,
   },
+  // Fields and buttons are glass by default (glass.css); the main action adds className="primary".
   textarea: {
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '8px',
-    color: '#f3f4f6',
-    padding: '10px 12px',
     fontSize: '13px',
-    fontFamily: 'inherit',
-    outline: 'none',
     resize: 'vertical' as const,
   },
   btnPrimary: {
-    backgroundColor: '#2563eb',
-    color: '#ffffff',
-    border: 'none',
-    borderRadius: '8px',
-    padding: '10px 16px',
     fontSize: '13px',
-    fontWeight: 500,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
   },
   btnSecondary: {
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    color: '#e5e7eb',
-    border: '1px solid rgba(255, 255, 255, 0.12)',
-    borderRadius: '8px',
-    padding: '8px 14px',
     fontSize: '12px',
-    fontWeight: 500,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
   },
   errorBox: {
     backgroundColor: 'rgba(239, 68, 68, 0.08)',

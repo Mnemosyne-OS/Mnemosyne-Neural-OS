@@ -1,0 +1,77 @@
+/*
+ * The default look of a Mnemosyne OS cartridge: liquid glass.
+ *
+ * Every button, field, card and badge is the same glass: a tint of light, what
+ * is behind it blurred, a sheen on the top edge. Nothing is a solid block of
+ * colour. The main action is the same glass tinted green; what is chosen is
+ * green with a check. The tokens follow the host theme (the OS broadcasts its
+ * variables, see main.tsx) and fall back to a dark look on their own.
+ *
+ * Use: `className="glass"` on a card or a panel; buttons, inputs, selects and
+ * textareas are glass by default; `className="primary"` on the main action;
+ * `chip-tile glass` + `chosen` for a choice; `segmented` + `icon-btn` for a
+ * view switch drawn with icons; `g-grid` for cards that use the whole width.
+ */
+:root {
+  --g-text: var(--text-primary, #e9e7e2);
+  --g-muted: var(--text-muted, #9a958c);
+  --g-chosen: var(--success, #3fa66a);
+  --g-error: var(--error, #d0503f);
+  --glass-fill: color-mix(in srgb, var(--g-text) 7%, transparent);
+  --glass-fill-hover: color-mix(in srgb, var(--g-text) 11%, transparent);
+  --glass-edge: color-mix(in srgb, var(--g-text) 16%, transparent);
+  --glass-shine: color-mix(in srgb, #fff 22%, transparent);
+  --glass-blur: blur(18px) saturate(170%);
+  --g-radius: 18px;
+}
+
+.glass {
+  position: relative;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--g-radius);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 1px 0 var(--glass-shine), inset 0 -1px 0 color-mix(in srgb, #000 12%, transparent), 0 10px 30px -12px color-mix(in srgb, #000 45%, transparent);
+}
+
+button, input, textarea, select {
+  font: inherit;
+  color: inherit;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 1px 0 var(--glass-shine);
+}
+button { border-radius: 999px; padding: 8px 16px; cursor: pointer; transition: background .2s, border-color .2s, transform .2s; }
+button:hover:not(:disabled) { background: var(--glass-fill-hover); border-color: color-mix(in srgb, var(--g-text) 30%, transparent); }
+button:active:not(:disabled) { transform: scale(.98); }
+button:disabled { opacity: .45; cursor: default; }
+input, textarea, select { border-radius: 12px; padding: 9px 12px; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g-chosen); background: var(--glass-fill-hover); }
+
+/* The main action: the same glass, tinted green, found first without a solid block. */
+button.primary { background: color-mix(in srgb, var(--g-chosen) 24%, var(--glass-fill)); border-color: color-mix(in srgb, var(--g-chosen) 60%, transparent); font-weight: 500; }
+button.primary:hover:not(:disabled) { background: color-mix(in srgb, var(--g-chosen) 34%, var(--glass-fill)); border-color: var(--g-chosen); }
+button.link { background: none; border: 0; box-shadow: none; backdrop-filter: none; padding: 0 4px; text-decoration: underline; border-radius: 0; }
+
+/* A choice among a few: a tile; the chosen one is green, with a check. */
+.chip-tile { display: grid; gap: 2px; padding: 11px 16px; border-radius: 14px; text-align: left; }
+.chosen { position: relative; border-color: var(--g-chosen) !important; background: color-mix(in srgb, var(--g-chosen) 26%, transparent) !important; box-shadow: 0 0 0 2px var(--g-chosen), 0 6px 22px color-mix(in srgb, var(--g-chosen) 35%, transparent), inset 0 1px 0 var(--glass-shine) !important; }
+.chip-tile.chosen::after { content: "✓"; position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--g-chosen); color: #fff; font-size: 12px; font-weight: 700; }
+
+/* A view switch (sizes, modes): icons the way a file browser draws them; the word goes in title and aria-label. */
+.segmented { display: inline-flex; padding: 4px; gap: 2px; border-radius: 999px; }
+.segmented button { border: 0; background: transparent; box-shadow: none; backdrop-filter: none; padding: 7px 14px; }
+.segmented button.on, .segmented button[aria-pressed="true"] { background: color-mix(in srgb, var(--g-text) 14%, transparent); box-shadow: inset 0 1px 0 var(--glass-shine); }
+.icon-btn { display: grid; place-items: center; color: var(--g-muted); }
+.icon-btn.on, .icon-btn[aria-pressed="true"] { color: var(--g-text); }
+
+/* The whole width: cards side by side as soon as two fit, one column on a phone. */
+.g-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); align-items: start; }
+.g-grid > .full { grid-column: 1 / -1; }
+@media (max-width: 600px) {
+  .segmented { display: flex; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .segmented button { flex: 0 0 auto; white-space: nowrap; }
+}
