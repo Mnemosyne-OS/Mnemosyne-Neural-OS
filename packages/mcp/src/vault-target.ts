@@ -59,6 +59,70 @@ export type VaultResolution =
   | { ok: false; error: string };
 
 /**
+ * The names the host routes specially (`BUILTIN_VAULT_IDS` in pulse-router.ts).
+ * `DEV` is not a vault: it lands on whichever sub-vault mounted first.
+ */
+export const RESERVED_VAULTS: readonly string[] = ['DEV', 'PERSONAL', 'SOCIAL'];
+
+/** What this server may reach, derived from its two env vars. */
+export interface VaultGrant {
+  /** Where a call that names no vault goes. */
+  defaultVault:    string;
+  /** A human named the default (MNEMO_DEFAULT_VAULT), rather than a fallback. */
+  defaultDeclared: boolean;
+  /** Every token this server declares scopes for, and the only ones it accepts. */
+  declared:        string[];
+  /** MNEMO_VAULTS was set, so it is the whole grant. */
+  listed:          boolean;
+}
+
+/**
+ * Said wherever a refusal sends someone to edit the list. It names no vault on
+ * purpose: a refusal only offers vaults it has measured (see reachableLine).
+ */
+export const GRANT_RULE =
+  'MNEMO_VAULTS is the whole grant once it is set: list every vault the agent needs, ' +
+  'built-in names included.';
+
+/**
+ * Reads MNEMO_DEFAULT_VAULT and MNEMO_VAULTS into the grant.
+ *
+ * THE BUG THIS EXISTS TO KILL
+ * --------------------------
+ * The three reserved names were added to every list. `MNEMO_VAULTS=NOTES`
+ * still reached DEV, PERSONAL and SOCIAL, while the README, server.json and the
+ * .mcpb told people that leaving a vault out kept it out. Someone who left their
+ * personal vault out for an autonomous agent got no protection at all.
+ *
+ * - List set: exactly those vaults, plus MNEMO_DEFAULT_VAULT when it is set.
+ *   With no default named, the first listed vault is the default, so an
+ *   unnamed read never lands outside the list.
+ * - List unset or empty: unchanged, the default plus DEV, PERSONAL, SOCIAL.
+ *   Empty counts as unset because the .mcpb passes '' for a blank field.
+ */
+export function vaultGrant(env: { MNEMO_DEFAULT_VAULT?: string; MNEMO_VAULTS?: string }): VaultGrant {
+  const named  = (env.MNEMO_DEFAULT_VAULT ?? '').trim().toUpperCase();
+  const tokens = (env.MNEMO_VAULTS ?? '').split(',').map(v => v.trim().toUpperCase()).filter(Boolean);
+
+  if (tokens.length === 0) {
+    const defaultVault = named || 'DEV';
+    return {
+      defaultVault,
+      defaultDeclared: Boolean(named),
+      declared:        Array.from(new Set([defaultVault, ...RESERVED_VAULTS])),
+      listed:          false,
+    };
+  }
+
+  return {
+    defaultVault:    named || tokens[0]!,
+    defaultDeclared: Boolean(named),
+    declared:        Array.from(new Set([...(named ? [named] : []), ...tokens])),
+    listed:          true,
+  };
+}
+
+/**
  * The refusal for a PERMANENT write that named no vault, on a deployment that
  * declared no default either.
  *
@@ -90,6 +154,18 @@ export function refuseUndeclaredWriteTarget(
     `Pass one explicitly as \`vault\`, or set MNEMO_DEFAULT_VAULT in the MCP server config and restart it. ` +
     `Call mnemosyne_vault_list if you need to see what each one holds first.`
   );
+}
+
+/**
+ * The vault to send when a call names none, for host calls whose own default
+ * is DEV (`sdk.spine.assignments` asserts `vault:read:DEV` when given nothing).
+ *
+ * `undefined` keeps the host's default, which is what that call always did.
+ * A grant without DEV gets the deployment default instead: the host's default
+ * could only answer SCOPE_DENIED there.
+ */
+export function vaultForHostDefault(grant: VaultGrant): string | undefined {
+  return grant.declared.includes('DEV') ? undefined : grant.defaultVault;
 }
 
 /**
@@ -183,6 +259,6 @@ export function resolveVaultTarget(
       `has no scope for. ${reachableLine(declared, present)} ` +
       `Pass the vault TOKEN (folder name, uppercased, spaces and hyphens as underscores), not the ` +
       `path-shaped id. If this vault should be reachable, add its token to MNEMO_VAULTS in the MCP ` +
-      `server config and restart it.`,
+      `server config and restart it. ${GRANT_RULE}`,
   };
 }

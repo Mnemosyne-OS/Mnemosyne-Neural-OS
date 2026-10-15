@@ -224,12 +224,20 @@ The MCP speaks standard JSON-RPC over stdio.
 
 ## Configure your vaults
 
-Mnemosyne OS Infinity exposes **one vault per tracked folder** (the folder name uppercased), plus three reserved names: `DEV`, `PERSONAL`, `SOCIAL`. Tell the MCP which ones you want your agent to reach via two env vars:
+Mnemosyne OS Infinity exposes **one vault per tracked folder**, named after the
+folder in uppercase. It also routes three reserved names: `DEV`, `PERSONAL` and
+`SOCIAL`. `DEV` reaches whichever folder vault mounted first. Two env vars tell
+the MCP which vaults your agent may reach:
 
-| Env var | Purpose | Default |
+| Env var | Purpose | When unset |
 |---|---|---|
-| `MNEMO_DEFAULT_VAULT` | Vault used when the agent does not specify one. | `DEV` |
-| `MNEMO_VAULTS` | Comma-separated list of vaults the MCP declares scopes for. | `DEV,PERSONAL,SOCIAL` |
+| `MNEMO_DEFAULT_VAULT` | Vault used when the agent does not name one. It is always reachable. | The first vault of `MNEMO_VAULTS`, or `DEV` when there is no list |
+| `MNEMO_VAULTS` | Comma-separated list of the vaults your agent may reach. | `DEV`, `PERSONAL` and `SOCIAL` |
+
+Once you set `MNEMO_VAULTS`, it is the whole list. Your agent reaches those
+vaults and the default vault, and nothing else. Add `DEV`, `PERSONAL` or
+`SOCIAL` to the list if your agent needs them. Up to 2.1.2, these three names
+stayed reachable whatever the list said.
 
 ### Examples
 
@@ -251,7 +259,9 @@ Mnemosyne OS Infinity exposes **one vault per tracked folder** (the folder name 
 }
 ```
 
-> If your agent queries a vault that is not in `MNEMO_VAULTS`, the server returns `SCOPE_DENIED`. Add the vault name to the list and restart your MCP client.
+> If your agent asks for a vault outside the list, the server refuses it with
+> `UNREACHABLE_VAULT` and names the vaults it can reach. Add the vault name to
+> the list and restart your MCP client.
 
 ---
 
@@ -356,6 +366,9 @@ cheap enough to actually do.
   "MNEMO_AGENT_SESSIONS": "C:/Users/you/.claude/projects",
   "MNEMO_AGENT_SESSIONS_ANTIGRAVITY": "…",
   "MNEMO_AGENT_SESSIONS_ANTIGRAVITY_IDE": "…",
+  // OpenClaw has no usual folder: read only when you name the folder holding
+  // your `openclaw sessions export-trajectory` exports.
+  "MNEMO_AGENT_SESSIONS_OPENCLAW": "…",
   // Restrict to a subset. Absent means all of them.
   "MNEMO_AGENT_SOURCES": "claude-code,antigravity"
 }
@@ -511,15 +524,17 @@ Next session
 
 Mnemosyne OS Infinity is not running. Launch it. The MCP retries on every tool call, so once Infinity is up, the next query will succeed.
 
-### Agent gets `SCOPE_DENIED` on a vault
+### Agent gets `UNREACHABLE_VAULT` or `SCOPE_DENIED` on a vault
 
-The vault is not in `MNEMO_VAULTS`. Edit your MCP client config, add the name (uppercased), restart the client.
+The vault is not in `MNEMO_VAULTS`. Edit your MCP client config, add the name
+(uppercased), restart the client. The list is the whole grant, so keep every
+vault the agent already uses.
 
 ### Which vaults can my agent see?
 
 Ask the agent to run **`mnemosyne_vault_list`**. It lists every vault
 Mnemosyne OS exposes, with its id, name and chronicle count, and it flags the
-ones outside your `MNEMO_VAULTS` config. Those return `SCOPE_DENIED` until you
+ones outside your `MNEMO_VAULTS` config. Those are refused until you
 add them.
 
 ### Tool result is too large for my context window

@@ -57,3 +57,11 @@ test('the app-only message stops at WHY and leaves the action to installHint', a
     'the action belongs to installHint, which alone knows if the app was ever run here');
   assert.match(APP_NOT_RUNNING_MESSAGE, /needs the app itself/, 'it must still say WHY');
 });
+
+test('a vault that does not exist yet points at the setup, any other error gets nothing', async () => {
+  const { setupHint } = await import('./install-hint.js');
+  assert.match(setupHint('VAULT_NOT_READY'), /first-run setup is not finished/);
+  assert.match(setupHint('NO_VAULT_ROOT: none'), /setup\.state, then setup\.propose/);
+  assert.equal(setupHint('SCOPE_DENIED: "vault:read:DEV"'), '');
+  assert.equal(setupHint('MY_VAULT_NOT_READY_ish'), '');
+});

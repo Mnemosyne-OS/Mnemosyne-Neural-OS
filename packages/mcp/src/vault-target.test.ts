@@ -8,11 +8,11 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { toVaultToken, resolveVaultTarget } from './vault-target.js';
+import { toVaultToken, resolveVaultTarget, vaultGrant, vaultForHostDefault } from './vault-target.js';
 
 /**
- * What the MCP config DECLARES. It carries the three host built-ins because
- * the server declares scopes for them unconditionally — that part is fine.
+ * What the MCP config DECLARES on an install with no MNEMO_VAULTS list, the
+ * case where the three host built-ins are declared too.
  */
 const DECLARED = ['DEVELOPPEMENT', 'DEV', 'PERSONAL', 'SOCIAL', 'NOTES', 'MNEMOSYNE_OS'];
 
@@ -149,4 +149,60 @@ test('presence never widens or narrows what is ACCEPTED', () => {
     false,
     'a vault present on the host but undeclared must still be refused',
   );
+});
+
+// ── The grant: what MNEMO_VAULTS lets this server reach ────────────────────────
+
+test('a set list is exactly those vaults: the reserved names are not added', () => {
+  // The bug: MNEMO_VAULTS=NOTES still declared DEV, PERSONAL and SOCIAL, so
+  // leaving the personal vault out for an autonomous agent protected nothing.
+  const g = vaultGrant({ MNEMO_VAULTS: 'NOTES,RESEARCH' });
+  assert.deepEqual(g.declared, ['NOTES', 'RESEARCH']);
+  assert.equal(g.listed, true);
+  assert.equal(resolveVaultTarget('PERSONAL', g.declared, g.defaultVault).ok, false, 'PERSONAL is still reachable');
+  assert.equal(resolveVaultTarget('DEV', g.declared, g.defaultVault).ok, false, 'DEV is still reachable');
+});
+
+test('with no default named, an unnamed call lands inside the list', () => {
+  const g = vaultGrant({ MNEMO_VAULTS: 'NOTES,RESEARCH' });
+  assert.equal(g.defaultVault, 'NOTES');
+  assert.equal(g.defaultDeclared, false, 'a fallback must not unlock unnamed writes (refuseUndeclaredWriteTarget)');
+});
+
+test('a named default joins the list, in front', () => {
+  const g = vaultGrant({ MNEMO_DEFAULT_VAULT: 'agent_work', MNEMO_VAULTS: 'notes' });
+  assert.deepEqual(g.declared, ['AGENT_WORK', 'NOTES']);
+  assert.equal(g.defaultVault, 'AGENT_WORK');
+  assert.equal(g.defaultDeclared, true);
+});
+
+test('no list keeps the declaration every install had before 2.1.3', () => {
+  assert.deepEqual(vaultGrant({}).declared, ['DEV', 'PERSONAL', 'SOCIAL']);
+  assert.equal(vaultGrant({}).defaultVault, 'DEV');
+  assert.deepEqual(vaultGrant({ MNEMO_DEFAULT_VAULT: 'NOTES' }).declared, ['NOTES', 'DEV', 'PERSONAL', 'SOCIAL']);
+});
+
+test('an empty list is no list, because the .mcpb passes "" for a blank field', () => {
+  assert.equal(vaultGrant({ MNEMO_VAULTS: '' }).listed, false);
+  assert.equal(vaultGrant({ MNEMO_VAULTS: ' , ' }).listed, false);
+  assert.deepEqual(vaultGrant({ MNEMO_VAULTS: ' , ' }).declared, ['DEV', 'PERSONAL', 'SOCIAL']);
+});
+
+test('an empty default falls back instead of declaring an empty vault', () => {
+  // Before 2.1.3, MNEMO_DEFAULT_VAULT="" gave a default of "" and a scope "vault:read:".
+  assert.equal(vaultGrant({ MNEMO_DEFAULT_VAULT: '' }).defaultVault, 'DEV');
+  assert.equal(vaultGrant({ MNEMO_DEFAULT_VAULT: '  ', MNEMO_VAULTS: 'NOTES' }).defaultVault, 'NOTES');
+});
+
+test('a grant without DEV never leans on the host default, which needs DEV', () => {
+  assert.equal(vaultForHostDefault(vaultGrant({})), undefined, 'the host default stays the host default');
+  assert.equal(vaultForHostDefault(vaultGrant({ MNEMO_VAULTS: 'NOTES' })), 'NOTES');
+  assert.equal(vaultForHostDefault(vaultGrant({ MNEMO_VAULTS: 'DEV,NOTES' })), undefined);
+});
+
+test('a refusal says the list is the whole grant once set', () => {
+  // Adding one token to an install with no list drops DEV, PERSONAL and SOCIAL.
+  const r = resolveVaultTarget('ARCHIPEL', ['NOTES'], 'NOTES');
+  assert.equal(r.ok, false);
+  assert.match((r as { error: string }).error, /whole grant/);
 });

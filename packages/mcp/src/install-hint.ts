@@ -55,3 +55,18 @@ export function installHint(state: InstallState = installState()): string {
       return `${WHY} Whether it is installed here could not be checked. If it is, start it; if it is not, it is at ${DOWNLOAD_URL}.`;
   }
 }
+
+/**
+ * The sentence to append when the app answers but has no vault yet: its
+ * first-run setup is not finished (doc 155 lot 3). Empty for any other error,
+ * so a refusal that is not about setup never grows a misleading tail.
+ *
+ * The person's coding agent can finish the setup itself through the app's
+ * own actions server, when the app wrote it into the agent's config.
+ */
+export function setupHint(message: string): string {
+  if (!/\b(VAULT_NOT_READY|NO_VAULT_ROOT)\b/.test(message)) return '';
+  return ' Mnemosyne OS is installed but its first-run setup is not finished.'
+    + ' If the os_find and os_run tools are available, call setup.state, then setup.propose.'
+    + ' Otherwise ask the person to finish the setup in the app; its first screen offers "Set up with my coding agent".';
+}

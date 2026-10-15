@@ -8,7 +8,7 @@
  */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync, truncateSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { handleAgentTool, lastSeen, sessionsRoots } from './agents.js';
@@ -253,6 +253,62 @@ describe('mnemosyne_agent_files', () => {
   });
 });
 
+describe('mnemosyne_agent_files — what the list does not show is said (doc 93 pass, 05/10)', () => {
+  it('a list cut at `limit` says how many more matched', async () => {
+    const f = fixture({
+      'one.jsonl': transcript({
+        title: 'one', project: project(), branch: 'main', at: minutesAgo(1),
+        writes: ['C:/repo/a.ts', 'C:/repo/b.ts', 'C:/repo/c.ts'],
+      }),
+    });
+    try {
+      const out = await handleAgentTool('mnemosyne_agent_files', { limit: 2 }, f.env, NOW);
+      assert.match(out, /^2 file\(s\)/);
+      assert.match(out, /and 1 more file\(s\) matched past limit 2/);
+    } finally { f.cleanup(); }
+  });
+
+  it('a file with no date of its own is « date unknown », never its session\'s time', async () => {
+    const body = transcript({ title: 'one', project: project(), branch: 'main', at: minutesAgo(120) })
+      + line({
+        type: 'assistant', cwd: project(), gitBranch: 'main', sessionId: 'one',
+        message: { role: 'assistant', content: [{ type: 'tool_use', name: 'Write', input: { file_path: 'C:/repo/undated.ts' } }] },
+      });
+    const f = fixture({ 'one.jsonl': body });
+    try {
+      const out = await handleAgentTool('mnemosyne_agent_files', {}, f.env, NOW);
+      assert.match(out, /undated\.ts · recorded · date unknown/);
+    } finally { f.cleanup(); }
+  });
+});
+
+describe('what could not be read, and live_only (doc 93 pass, 05/10)', () => {
+  it('a transcript that cannot be opened is COUNTED in the provenance, never swallowed', async () => {
+    const f = fixture({ 'one.jsonl': transcript({ title: 'one', project: project(), branch: 'main', at: minutesAgo(1) }) });
+    // A transcript past the 50 MB ceiling (sparse: costs nothing on disk).
+    const dirs = readdirSync(f.root);
+    const big = join(f.root, dirs[0]!, 'huge.jsonl');
+    writeFileSync(big, '');
+    truncateSync(big, 51 * 1024 * 1024);
+    try {
+      const out = await handleAgentTool('mnemosyne_agent_list', {}, f.env, NOW);
+      assert.match(out, /1 transcript\(s\) could not be opened\. First reason: huge\.jsonl is larger than 50MB/);
+    } finally { f.cleanup(); }
+  });
+
+  it('live_only keeps only the sessions inside the live window', async () => {
+    const f = fixture({
+      'fresh.jsonl': transcript({ title: 'fresh', project: project(), branch: 'main', at: minutesAgo(1) }),
+      'old.jsonl': transcript({ title: 'old', project: project(), branch: 'main', at: minutesAgo(600) }),
+    });
+    try {
+      const out = await handleAgentTool('mnemosyne_agent_list', { live_only: true }, f.env, NOW);
+      assert.match(out, /fresh/);
+      assert.doesNotMatch(out, /\bold\b/);
+    } finally { f.cleanup(); }
+  });
+});
+
 describe('every answer', () => {
   it('says which folder it read and how much of it', async () => {
     const f = fixture({
@@ -347,6 +403,18 @@ describe('across harnesses', () => {
     try {
       const out = await handleAgentTool('mnemosyne_agent_list', {}, f.env, NOW);
       assert.match(out, /Not present on this machine: antigravity-ide/);
+    } finally { f.cleanup(); }
+  });
+
+  // A path the human typed wrong is not "that agent is not installed".
+  it('names a DECLARED folder that does not exist, with the path typed', async () => {
+    const f = twoHarnesses();
+    try {
+      const typo = join(tmpdir(), 'no-such-antigravity-ide-folder');
+      const env = { ...f.env, MNEMO_AGENT_SESSIONS_ANTIGRAVITY_IDE: typo };
+      const out = await handleAgentTool('mnemosyne_agent_list', {}, env, NOW);
+      assert.match(out, /Declared folder for antigravity-ide does not exist: .*no-such-antigravity-ide-folder/);
+      assert.doesNotMatch(out, /Not present on this machine: antigravity-ide/);
     } finally { f.cleanup(); }
   });
 });

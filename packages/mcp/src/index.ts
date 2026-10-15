@@ -42,7 +42,7 @@ import { BackendRefusedError, MnemoWsClient, type VoiceJob } from './ws-client.j
 import { unwrapContent, selectResonances, toResonanceView, voiceError, renderReport, freshnessLine } from './format.js';
 import { renderCovenant } from './covenant.js';
 import { recordCall } from './usage.js';
-import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget } from './vault-target.js';
+import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget, vaultGrant, vaultForHostDefault, GRANT_RULE } from './vault-target.js';
 import { AGENT_TOOLS, handleAgentTool, sessionsRoots } from './agents.js';
 import { annotated } from './annotations.js';
 import { handleTodoAdd } from './todo-tool.js';
@@ -51,7 +51,7 @@ import { handleAgendaList, handleAgendaRemove, handleAgendaUpdate } from './agen
 import { handleCockpitUpdate } from './cockpit-tool.js';
 import { handleAgendaAdd } from './agenda-tool.js';
 import { handlePhemeRadar, handlePhemeWatch } from './pheme-tool.js';
-import { installHint } from './install-hint.js';
+import { installHint, setupHint } from './install-hint.js';
 import { needsRunningApp, FILE_PATH_CAVEAT, APP_NOT_RUNNING_MESSAGE } from './app-only-tools.js';
 import { spawn }         from 'node:child_process';
 import { existsSync }    from 'node:fs';
@@ -68,38 +68,37 @@ import { dirname, join } from 'node:path';
 // env vars set in the host's MCP config (claude_desktop_config.json, .mcp.json…):
 //
 //   MNEMO_DEFAULT_VAULT=DEVELOPPEMENT          ← default vault for query/ingest
-//   MNEMO_VAULTS=DEVELOPPEMENT,NOTES,RECHERCHE ← extra vaults to declare scopes for
+//   MNEMO_VAULTS=DEVELOPPEMENT,NOTES,RECHERCHE ← the vaults this server may reach
 //
 // The Infinity Edition exposes one vault per tracked folder, so users typically
 // list their main code/notes/research folders here.
 //
-// Two names ARE hard-coded below, and the comment that used to sit here claimed
-// the opposite. DEV / PERSONAL / SOCIAL are not a leftover of a fixed-vault era:
-// the host still routes them specially today (`BUILTIN_VAULT_IDS` in
-// pulse-router.ts), so this server keeps declaring scopes for them — an install
-// where they exist must stay reachable. What they are NOT is guaranteed to
-// exist: `devVault` / `personalVault` / `socialVault` are all optional on the
-// host, and on the install where this was found only SOCIAL was mounted.
+// A list, once set, is the whole grant (vaultGrant in vault-target.ts). Until
+// 2.1.3 the reserved DEV / PERSONAL / SOCIAL were added to every list, so
+// leaving a personal vault out did not keep it out. With no list, those three
+// stay declared as before: the host still routes them specially
+// (`BUILTIN_VAULT_IDS` in pulse-router.ts), and an install that relies on them
+// must stay reachable. They are NOT guaranteed to exist: `devVault` /
+// `personalVault` / `socialVault` are all optional on the host, and on the
+// install where this was found only SOCIAL was mounted.
 //
-// So the three names stay ACCEPTABLE and stop being ADVERTISED. A declared
+// So the three names stay ACCEPTABLE and are never ADVERTISED. A declared
 // scope says "I am allowed to ask for this"; only a census says "this exists".
 // Conflating the two is what handed agents two addresses that cannot answer.
+
+const GRANT = vaultGrant({
+  MNEMO_DEFAULT_VAULT: process.env['MNEMO_DEFAULT_VAULT'],
+  MNEMO_VAULTS:        process.env['MNEMO_VAULTS'],
+});
 
 // Whether a human actually NAMED the default, or whether we are falling back.
 // The two are not the same promise: a declared default is a place someone
 // chose, the fallback is the host's "first mounted sub-vault" alias. Writes are
 // allowed to rely on the first and refuse the second — see
 // refuseUndeclaredWriteTarget in vault-target.ts.
-const DEFAULT_VAULT_DECLARED = Boolean((process.env['MNEMO_DEFAULT_VAULT'] ?? '').trim());
-const DEFAULT_VAULT = (process.env['MNEMO_DEFAULT_VAULT'] ?? 'DEV').toUpperCase();
-const RESERVED_VAULTS = ['DEV', 'PERSONAL', 'SOCIAL']; // host built-ins, may or may not be mounted
-const EXTRA_VAULTS    = (process.env['MNEMO_VAULTS'] ?? '')
-  .split(',').map(v => v.trim().toUpperCase()).filter(Boolean);
-const DECLARED_VAULTS = Array.from(new Set([
-  DEFAULT_VAULT,
-  ...RESERVED_VAULTS,
-  ...EXTRA_VAULTS,
-]));
+const DEFAULT_VAULT_DECLARED = GRANT.defaultDeclared;
+const DEFAULT_VAULT          = GRANT.defaultVault;
+const DECLARED_VAULTS        = GRANT.declared;
 
 /**
  * What the host actually exposes, once measured. `null` means nobody has
@@ -353,7 +352,7 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Vault to reason over, case-insensitive. Default for this deployment: "${DEFAULT_VAULT}". A vault this server was not configured for is refused with SCOPE_DENIED.`,
+          description: `Vault to reason over, case-insensitive. Default for this deployment: "${DEFAULT_VAULT}". A vault this server is not scoped for is refused.`,
           default:     DEFAULT_VAULT,
         },
       },
@@ -1198,7 +1197,8 @@ class MnemoMcpServer {
         if (VOICE_TOOL_NAMES.has(name)) {
           return { content: [{ type: 'text', text: voiceError(msg) }] };
         }
-        throw new McpError(ErrorCode.InternalError, `Mnemosyne OS error: ${msg}`);
+        // A fresh install answers VAULT_NOT_READY until its wizard is done (doc 155).
+        throw new McpError(ErrorCode.InternalError, `Mnemosyne OS error: ${msg}${setupHint(msg)}`);
       }
     });
   }
@@ -1337,8 +1337,9 @@ class MnemoMcpServer {
       // ── mnemosyne_spine_assignments ──────────────────────────────────────────
       case 'mnemosyne_spine_assignments': {
         // Absent stays absent — the host picks its own default here, and forcing
-        // ours would silently narrow a deliberately unscoped listing.
-        let vault: string | undefined;
+        // ours would silently narrow a deliberately unscoped listing. Except on
+        // a grant without DEV, where that host default can only be refused.
+        let vault: string | undefined = vaultForHostDefault(GRANT);
         if (args['vault'] !== undefined) {
           const target = await targetVault(client, args['vault']);
           if ('refusal' in target) return text(target.refusal);
@@ -1393,6 +1394,7 @@ class MnemoMcpServer {
         if (vaults.length === 0) return text('No vaults are currently exposed by Mnemosyne OS.');
 
         const reachable = new Set(DECLARED_VAULTS);
+        let outside = 0;
         const rows = vaults.map((v) => {
           const name  = v.name && v.name !== v.id ? ` (${v.name})` : '';
           const count = typeof v.chronicleCount === 'number' ? ` · ${v.chronicleCount} chronicles` : '';
@@ -1400,7 +1402,9 @@ class MnemoMcpServer {
           // matched nothing, so this warning used to fire on EVERY vault —
           // including the reachable ones. Compare the derived token instead.
           const token = toVaultToken(String(v.id)) || toVaultToken(String(v.name ?? ''));
-          const scope = reachable.has(token) ? '' : ' · ⚠️ not in MNEMO_VAULTS (add its token there to reach it)';
+          const inGrant = reachable.has(token);
+          if (!inGrant) outside++;
+          const scope = inGrant ? '' : ' · ⚠️ not reachable by this server (its token is not in MNEMO_VAULTS)';
           // Governance flags an agent must honor (see mnemosyne_about).
           const gov: string[] = [];
           if (v.protection === 'MAXIMUM') gov.push('🔒 MAXIMUM (private: do not read for cross-vault work, mix, or write unless asked)');
@@ -1413,7 +1417,10 @@ class MnemoMcpServer {
           return `- **${token}**${name}${count}${scope}\n    id: \`${v.id}\`${govLine}`;
         }).join('\n');
 
-        return text(`# Vaults exposed by Mnemosyne OS\n\n${rows}\n\n_Pass the bold **token** above as the \`vault\` argument to mnemosyne_memory_query / mnemosyne_memory_ask / mnemosyne_memory_ingest. The \`id\` line is the host's internal path, shown for reference only. Honor the governance flags; see mnemosyne_about._`);
+        // Adding a token is the user's config change, and on an install with no
+        // list it also drops DEV, PERSONAL and SOCIAL: say so where it is offered.
+        const grantNote = outside > 0 ? ` To reach a ⚠️ vault, the user adds its token to MNEMO_VAULTS and restarts the server. ${GRANT_RULE}` : '';
+        return text(`# Vaults exposed by Mnemosyne OS\n\n${rows}\n\n_Pass the bold **token** above as the \`vault\` argument to mnemosyne_memory_query / mnemosyne_memory_ask / mnemosyne_memory_ingest. The \`id\` line is the host's internal path, shown for reference only. Honor the governance flags; see mnemosyne_about.${grantNote}_`);
       }
 
       // ── mnemosyne_memory_ingest ─────────────────────────────────────────────────────

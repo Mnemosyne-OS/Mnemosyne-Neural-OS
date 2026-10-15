@@ -96,9 +96,10 @@ It speaks JSON-RPC over stdio, so any MCP client can use it.
 
 ## Choose which vaults your agent can reach
 
-A vault is one isolated store per life domain. The agent only sees what you list;
-anything else answers `SCOPE_DENIED`, and that refusal is not something the agent
-can route around.
+A vault is one isolated store per life domain. The agent reaches the vaults you
+list, plus the default vault. Any other vault is refused with
+`UNREACHABLE_VAULT`, and the agent cannot route around that refusal. With no
+list at all, the agent reaches `DEV`, `PERSONAL` and `SOCIAL`.
 
 ```json
 "env": {

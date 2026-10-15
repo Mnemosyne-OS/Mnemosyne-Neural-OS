@@ -33,7 +33,7 @@
  * so the narrator cannot be the subject it observes (doc 93 §2). Every answer
  * here is phrased as *last seen*, and the reader concludes.
  */
-import { LIVE_MINUTES, collisionReport, findSelf, minutesSince } from '@mnemosyne_os/agent-transcripts';
+import { LIVE_MINUTES, collisionReport, findSelf, lastSeen, minutesSince } from '@mnemosyne_os/agent-transcripts';
 import {
   attemptedRoots,
   readAllSources,
@@ -67,7 +67,7 @@ export async function loadAgents(
       // No folder opened at all is NOT an idle machine. Returning "no sessions"
       // here would tell an agent the coast is clear on the strength of a
       // mistyped path or an agent that simply is not installed.
-      const looked = out.missing.map(m => `  ${m.id}: ${m.root}`).join('\n');
+      const looked = out.missing.map(m => `  ${m.id}: ${m.root}${m.declared ? ' (declared, does not exist)' : ''}`).join('\n');
       return {
         error: [
           'No agent transcript folder found. Nothing was read.',
@@ -84,15 +84,9 @@ export async function loadAgents(
   }
 }
 
-/** How long ago, in words. Never a status. */
-export function lastSeen(iso: string | null, now = Date.now()): string {
-  const m = minutesSince(iso, now);
-  if (!Number.isFinite(m)) return 'never (no timestamp in this transcript)';
-  if (m < 1) return 'under a minute ago';
-  if (m < 60) return `${Math.round(m)} min ago`;
-  if (m < 24 * 60) return `${Math.round(m / 60)} h ago`;
-  return `${Math.round(m / (24 * 60))} days ago`;
-}
+// `lastSeen` lives in the shared package: the commit hook printed its own
+// copy, which said "1440 min ago" for a day. Re-exported for this file's tests.
+export { lastSeen };
 
 /** One session as a line. Metadata only — see the file header. */
 export function renderSession(row: SourcedSession, now = Date.now()): string {
@@ -123,7 +117,16 @@ export function renderProvenance(v: ReadAllResult): string {
     // Not an error: most machines run one agent. But "that folder was never
     // opened" and "nobody is there" are different answers, and only one of
     // them is true here.
-    lines.push(`Not present on this machine: ${v.missing.map(m => m.id).join(', ')}.`);
+    // A folder the human DECLARED is named with its path: "not present" would
+    // read as "that agent is not installed" when the path is simply mistyped.
+    const declared = v.missing.filter(m => m.declared);
+    const absent = v.missing.filter(m => !m.declared);
+    for (const m of declared) {
+      lines.push(`Declared folder for ${m.id} does not exist: ${m.root}. Check the path you set.`);
+    }
+    if (absent.length > 0) {
+      lines.push(`Not present on this machine: ${absent.map(m => m.id).join(', ')}.`);
+    }
   }
   lines.push(`"Live" means a line was written in the last ${LIVE_MINUTES} minutes. It does NOT mean the agent is working: a crashed agent and an idle one fall equally silent.`);
   if (v.unreadable) {
@@ -287,10 +290,16 @@ export async function handleAgentTool(
   // mtime filter runs on the directory listing, before any file is opened, so
   // asking for every recent transcript instead of the newest 40 costs nothing.
   const wantsAll = name === 'mnemosyne_agent_collisions';
+  // `limit` on agent_files caps the FILES listed, not the transcripts read: as
+  // one number, `limit: 5` read five transcripts per harness and then listed
+  // up to five files of those.
+  const sessionsToRead = name === 'mnemosyne_agent_files'
+    ? DEFAULT_LIMIT
+    : (Number.isFinite(asked) ? asked : DEFAULT_LIMIT);
   const view = await loadAgents(
     wantsAll
       ? { limit: MAX_LIMIT, maxAgeMinutes: LIVE_MINUTES }
-      : { limit: Number.isFinite(asked) ? asked : DEFAULT_LIMIT },
+      : { limit: sessionsToRead },
     env,
   );
   if ('error' in view) return view.error;
@@ -331,6 +340,9 @@ export async function handleAgentTool(
   const cap = Math.min(Math.max(Number(args['limit'] ?? DEFAULT_LIMIT) || DEFAULT_LIMIT, 1), MAX_LIMIT);
   const rows: string[] = [];
   const seen = new Set<string>();
+  // Every match is COUNTED, only `cap` are listed: a list cut under no count
+  // read as complete (41 files, « 40 file(s) », nothing about the 41st).
+  let matched = 0;
 
   for (const r of view.sessions) {
     if (project && !contains(r.session.projectPath, project)) continue;
@@ -339,11 +351,13 @@ export async function handleAgentTool(
       const key = norm(a.path);
       if (seen.has(key)) continue;
       seen.add(key);
+      matched++;
+      if (rows.length >= cap) continue;
       const origin = a.origin === 'shell' ? 'from a command' : 'recorded';
-      rows.push(`- ${a.path} · ${origin} · ${lastSeen(a.at ?? r.session.lastEventAt, now)} · ${r.session.title ?? r.session.sessionId ?? r.session.file} (${r.agent})`);
-      if (rows.length >= cap) break;
+      // 🎭 A file with no date of its own is « date unknown », never its session's time.
+      const when = a.at ? lastSeen(a.at, now) : 'date unknown';
+      rows.push(`- ${a.path} · ${origin} · ${when} · ${r.session.title ?? r.session.sessionId ?? r.session.file} (${r.agent})`);
     }
-    if (rows.length >= cap) break;
   }
 
   if (rows.length === 0) {
@@ -355,6 +369,7 @@ export async function handleAgentTool(
     `${rows.length} file(s), newest session first. Paths only: this tool never returns file contents.`,
     '',
     ...rows,
+    matched > rows.length ? `\n…and ${matched - rows.length} more file(s) matched past limit ${cap}. Raise \`limit\` (up to ${MAX_LIMIT}) or narrow with \`contains\`.` : '',
     capped > 0 ? `\n${capped} session(s) hit their own file ceiling, so their lists are short by whatever they wrote past it.` : '',
     renderProvenance(view),
   ].filter(Boolean).join('\n');

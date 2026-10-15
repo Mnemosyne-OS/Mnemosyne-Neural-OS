@@ -29,14 +29,14 @@ recipe for every major client is in the
 [package README](https://www.npmjs.com/package/@mnemosyne_os/mcp).
 
 Configuration is deliberately the human's gesture, because it *is* the scope grant:
-the `MNEMO_VAULTS` list decides which vaults this agent may reach (vaults outside it
-return `SCOPE_DENIED`). Suggest keeping the grant narrow and pointing the default
-write vault at a vault dedicated to agent work.
+the `MNEMO_VAULTS` list decides which vaults this agent may reach, plus the default vault.
+A vault outside it is refused (`UNREACHABLE_VAULT`). Suggest keeping the grant narrow and
+pointing the default write vault at a vault dedicated to agent work.
 
 ## The covenant — non-negotiable rules
 
 1. **Discover before you target.** Call `mnemosyne_vault_list` before choosing a vault.
-   Never guess a vault id. `SCOPE_DENIED` means the human did not grant it — say so
+   Never guess a vault id. `UNREACHABLE_VAULT` or `SCOPE_DENIED` means the human did not grant it — say so
    and stop; never try to route around it.
 2. **Read before you write.** Operate as an observer first: query, learn the shape of
    the human's memory, and only persist once you understand where a memory belongs.
