@@ -94,7 +94,7 @@ different sentences, because they are two different problems.
 
 ### Claude Desktop, one click
 
-Download **[Mnemosyne-OS-MCP-2.1.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.5.1-infinity/Mnemosyne-OS-MCP-2.1.0.mcpb)**
+Download **[Mnemosyne-OS-MCP-2.1.3.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.9.0-infinity/Mnemosyne-OS-MCP-2.1.3.mcpb)**
 (4.1 MB), then open Claude Desktop → **Settings → Extensions** and drop the
 file into that panel. That is the whole install. The 25 tools appear straight away, and the same
 panel offers the three optional settings: default vault, other vaults, and the
