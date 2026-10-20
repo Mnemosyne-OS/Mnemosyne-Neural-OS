@@ -245,6 +245,41 @@ export function onHostConfig(
   return () => window.removeEventListener('message', listener);
 }
 
+// ── The orb and the room's sound ───────────────────────────────────────────
+
+/** What the host says about the voice assistant (the orb). */
+export interface MnemoOrbState {
+  /**
+   * `true` from the moment the orb's microphone opens until its spoken answer
+   * is over (or the orb closes). A cartridge that plays sound should lower it
+   * while this is true: the microphone hears the room, and music turns into
+   * words nobody said.
+   */
+  active: boolean;
+}
+
+/**
+ * Subscribes to the orb's state. The host posts it at every change and again
+ * at every new turn, so the same value can arrive twice: treat it as a level,
+ * not an event. A late `false` is always safe. The host releases the state on
+ * its own after a while without news, so a cartridge is never left lowered.
+ * Returns an unsubscribe.
+ *
+ * @example
+ * onOrbState(({ active }) => setDucked(active));
+ */
+export function onOrbState(cb: (state: MnemoOrbState) => void): () => void {
+  const listener = (event: MessageEvent) => {
+    // SECURITY: only the host frame (our parent) speaks for the orb.
+    if (event.source !== window.parent) return;
+    const d = event.data;
+    if (!d || d.type !== 'MNEMO_ORB_STATE') return;
+    cb({ active: d.active === true });
+  };
+  window.addEventListener('message', listener);
+  return () => window.removeEventListener('message', listener);
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any --
  * The loose wrappers deliberately return `any`: this package replaces ten
  * historical per-app copies whose contract WAS `Promise<any>`, and tightening
@@ -277,6 +312,21 @@ export type MnemoGesture =
 export type MnemoGestureHandlers = {
   [K in MnemoGesture['kind']]?: (g: Extract<MnemoGesture, { kind: K }>) => void;
 };
+
+/**
+ * What your cartridge does when an agent calls one of its declared actions
+ * (doc 149). The arguments are already checked by the host against the
+ * action's schema in `mnemo-plugin.json`. Return the answer (any JSON); throw
+ * to refuse — the message goes back to the agent.
+ */
+export type MnemoAgentHandlers = Record<string, (args: Record<string, unknown>) => unknown>;
+
+export interface MnemoAgentSubscription {
+  /** Resolves with the actions the host serves for you; rejects with the reason it refused. */
+  ready: Promise<{ actions: string[] }>;
+  /** Stop taking calls. Safe to call more than once. */
+  off: () => void;
+}
 
 export interface MnemoGestureSubscription {
   /** Resolves with the gestures the host will send once it granted them;
@@ -775,6 +825,100 @@ export class MnemoCartridgeSDK {
       );
     }
     window.parent.postMessage({ type: 'MNEMO_GESTURE_SUBSCRIBE', pluginId: this.pluginId, requestId }, MNEMO_HOST_ORIGIN);
+    return { ready, off };
+  }
+
+  // ── Agent actions (doc 149) ────────────────────────────────────────────
+
+  /**
+   * Let an agent (Claude Code, another IDE, the assistant) drive your
+   * cartridge while it is open. Declare each action in `mnemo-plugin.json`:
+   *
+   * ```json
+   * "agentActions": [{
+   *   "id": "validateScene", "summary": "Put a scene on the website",
+   *   "effect": "write",
+   *   "params": { "sceneId": { "type": "string", "description": "The scene id" } },
+   *   "required": ["sceneId"]
+   * }]
+   * ```
+   *
+   * `effect` is `read`, `write`, or `spend` (credits: the person grants it
+   * separately). The host checks the arguments, then calls your handler in
+   * this window, so the person sees the action happen. A job longer than a
+   * minute answers « started » and offers a status action.
+   *
+   * @example
+   * sdk.onAgentActions({
+   *   validateScene: async ({ sceneId }) => { await validate(String(sceneId)); return { online: true }; },
+   * });
+   */
+  public onAgentActions(handlers: MnemoAgentHandlers, timeoutMs: number = DEFAULT_INVOKE_TIMEOUT_MS): MnemoAgentSubscription {
+    const requestId = Math.random().toString(36).substring(7);
+    let stopped = false;
+    let timer: number | undefined;
+    let settle: { resolve: (v: { actions: string[] }) => void; reject: (e: Error) => void } | null = null;
+    const ready = new Promise<{ actions: string[] }>((resolve, reject) => { settle = { resolve, reject }; });
+    ready.catch(() => undefined);
+    const finish = (fn: (s: NonNullable<typeof settle>) => void) => {
+      if (timer !== undefined) { window.clearTimeout(timer); timer = undefined; }
+      const s = settle;
+      settle = null;
+      if (s) fn(s);
+    };
+    const answer = (callId: string, body: { ok: boolean; result?: unknown; error?: string }) => {
+      window.parent.postMessage({ type: 'MNEMO_AGENT_RESULT', pluginId: this.pluginId, requestId, callId, ...body }, MNEMO_HOST_ORIGIN);
+    };
+
+    const listener = (event: MessageEvent) => {
+      // SECURITY: only the host frame (our parent) may call.
+      if (event.source !== window.parent) return;
+      const d = event.data;
+      if (!d || typeof d.type !== 'string' || d.requestId !== requestId) return;
+      if (d.type === 'MNEMO_AGENT_READY') {
+        finish(s => s.resolve({ actions: Array.isArray(d.actions) ? d.actions.filter((a: unknown) => typeof a === 'string') : [] }));
+        return;
+      }
+      if (d.type === 'MNEMO_AGENT_REFUSED') {
+        window.removeEventListener('message', listener);
+        finish(s => s.reject(new Error(typeof d.error === 'string' ? d.error : 'The host refused the agent actions')));
+        return;
+      }
+      if (d.type === 'MNEMO_AGENT_CALL' && typeof d.callId === 'string' && !stopped) {
+        const handler = typeof d.action === 'string' ? handlers[d.action] : undefined;
+        if (!handler) { answer(d.callId, { ok: false, error: `this window has no handler for "${String(d.action)}"` }); return; }
+        Promise.resolve()
+          .then(() => handler(d.args && typeof d.args === 'object' ? d.args : {}))
+          .then(
+            (result) => answer(d.callId, { ok: true, result: result === undefined ? null : result }),
+            (err: unknown) => answer(d.callId, { ok: false, error: err instanceof Error ? err.message : String(err) }),
+          );
+      }
+    };
+
+    const off = () => {
+      if (stopped) return;
+      stopped = true;
+      window.removeEventListener('message', listener);
+      finish(s => s.reject(new Error('Agent actions were turned off before the host answered')));
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'MNEMO_AGENT_UNSUBSCRIBE', pluginId: this.pluginId, requestId }, MNEMO_HOST_ORIGIN);
+      }
+    };
+
+    if (window.parent === window) {
+      stopped = true;
+      finish(s => s.reject(new Error('No Mnemosyne host: agent actions were asked outside the shell.')));
+      return { ready, off };
+    }
+    window.addEventListener('message', listener);
+    if (timeoutMs > 0) {
+      timer = window.setTimeout(
+        () => finish(s => s.reject(new Error(`Host did not answer the agent actions within ${Math.round(timeoutMs / 1000)}s`))),
+        timeoutMs,
+      );
+    }
+    window.parent.postMessage({ type: 'MNEMO_AGENT_SUBSCRIBE', pluginId: this.pluginId, requestId, actions: Object.keys(handlers) }, MNEMO_HOST_ORIGIN);
     return { ready, off };
   }
 

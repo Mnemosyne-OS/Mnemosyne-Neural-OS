@@ -119,6 +119,63 @@ renders when the app runs outside the OS (plain `vite dev`). To observe without
 applying, `onHostConfig(cfg => …, { apply: false })`; it returns an
 unsubscribe. `applyDesignTokens(tokens)` is exported for manual control.
 
+## Lowering your sound while the voice assistant listens
+
+If your app plays sound, the voice assistant's microphone hears it. The OS
+says when the assistant is listening or speaking, so you can turn your sound
+down and bring it back after:
+
+```ts
+import { onOrbState } from '@mnemosyne_os/cartridge-sdk';
+
+onOrbState(({ active }) => setDucked(active));
+```
+
+The same value can arrive twice: treat it as a level. The OS releases it on
+its own after two minutes without news, so your app is never left quiet.
+
+## Letting an agent drive your app
+
+An agent can call actions in your app while it is open. The voice assistant
+uses the same door when the person speaks to it. Declare each action in
+`mnemo-plugin.json`:
+
+```json
+"agentActions": [{
+  "id": "flyTo",
+  "summary": "Fly the camera to a place",
+  "effect": "write",
+  "params": {
+    "query": { "type": "string", "description": "A place name", "maxLength": 120 }
+  },
+  "required": ["query"]
+}]
+```
+
+`effect` is `read`, `write` or `spend`. The person grants `spend` separately,
+because it uses their credits. The host checks the arguments before your
+handler runs.
+
+Then serve the actions from your app:
+
+```ts
+sdk.onAgentActions({
+  flyTo: async ({ query }) => {
+    const res = await flyTo(String(query));
+    if (!res.ok) throw new Error(res.reason);
+    return { arrived: true };
+  },
+});
+```
+
+Throw to report a failure. The host reports a returned value as done.
+
+Keep each summary and description under 300 characters. The host refuses the
+whole list when one declaration is invalid.
+
+The voice assistant reads a `say` field from your result aloud, word for word.
+Write it in the person's language.
+
 ## Your version, and its updates
 
 The OS tells your open app which version is installed. It also says whether a

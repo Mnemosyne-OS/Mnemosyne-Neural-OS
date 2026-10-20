@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { MnemoCartridgeSDK, applyDesignTokens, onHostConfig, type MnemoHostConfig } from './index.js';
+import { MnemoCartridgeSDK, applyDesignTokens, onHostConfig, onOrbState, type MnemoHostConfig } from './index.js';
 
 describe('applyDesignTokens', () => {
   afterEach(() => {
@@ -503,5 +503,106 @@ describe('onMouthWatch (doc 139 §5)', () => {
     const { requestId } = request();
     fromHost({ type: 'MNEMO_MOUTH_REFUSED', requestId, error: '"camera:observe" is not in the manifest' });
     await expect(sub.ready).rejects.toThrow('camera:observe');
+  });
+});
+
+describe('onAgentActions (doc 149)', () => {
+  let hostWin: Window;
+  let postSpy: ReturnType<typeof vi.spyOn>;
+  let parentDescriptor: PropertyDescriptor | undefined;
+
+  beforeEach(() => {
+    const frame = document.createElement('iframe');
+    document.body.appendChild(frame);
+    hostWin = frame.contentWindow as Window;
+    postSpy = vi.spyOn(hostWin, 'postMessage').mockImplementation(() => {});
+    parentDescriptor = Object.getOwnPropertyDescriptor(window, 'parent');
+    Object.defineProperty(window, 'parent', { configurable: true, get: () => hostWin });
+  });
+  afterEach(() => {
+    if (parentDescriptor) Object.defineProperty(window, 'parent', parentDescriptor);
+    else delete (window as unknown as { parent?: unknown }).parent;
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+  });
+
+  const sent = () => postSpy.mock.calls.map((c) => c[0] as Record<string, unknown>);
+  const fromHost = (data: unknown, source: Window | null = hostWin) => window.dispatchEvent(new MessageEvent('message', { data, source }));
+
+  it('subscribes with its handler names, runs a call and answers with its result', async () => {
+    const validate = vi.fn(async (args: Record<string, unknown>) => ({ online: args.sceneId }));
+    const sub = new MnemoCartridgeSDK('studio').onAgentActions({ validate });
+    expect(sent()[0]).toMatchObject({ type: 'MNEMO_AGENT_SUBSCRIBE', pluginId: 'studio', actions: ['validate'] });
+    const requestId = sent()[0]!.requestId;
+    fromHost({ type: 'MNEMO_AGENT_READY', requestId, actions: ['validate'] });
+    await expect(sub.ready).resolves.toEqual({ actions: ['validate'] });
+    fromHost({ type: 'MNEMO_AGENT_CALL', requestId, callId: 'c1', action: 'validate', args: { sceneId: 's1' } });
+    await vi.waitFor(() => expect(sent().some((m) => m.type === 'MNEMO_AGENT_RESULT')).toBe(true));
+    expect(sent().find((m) => m.type === 'MNEMO_AGENT_RESULT')).toMatchObject({ callId: 'c1', ok: true, result: { online: 's1' } });
+    sub.off();
+  });
+
+  it('a handler that throws answers the refusal, an unknown action is refused, and only the host may call', async () => {
+    const boom = vi.fn(() => { throw new Error('NO_FOLDER'); });
+    const sub = new MnemoCartridgeSDK('studio').onAgentActions({ boom });
+    const requestId = sent()[0]!.requestId;
+    fromHost({ type: 'MNEMO_AGENT_CALL', requestId, callId: 'x', action: 'boom', args: {} }, null);
+    expect(boom).not.toHaveBeenCalled();
+    fromHost({ type: 'MNEMO_AGENT_CALL', requestId, callId: 'c1', action: 'boom', args: {} });
+    fromHost({ type: 'MNEMO_AGENT_CALL', requestId, callId: 'c2', action: 'nope', args: {} });
+    await vi.waitFor(() => expect(sent().filter((m) => m.type === 'MNEMO_AGENT_RESULT')).toHaveLength(2));
+    const results = sent().filter((m) => m.type === 'MNEMO_AGENT_RESULT');
+    expect(results.find((m) => m.callId === 'c1')).toMatchObject({ ok: false, error: 'NO_FOLDER' });
+    expect(results.find((m) => m.callId === 'c2')).toMatchObject({ ok: false, error: expect.stringContaining('no handler') });
+    sub.off();
+  });
+
+  it('a refusal rejects ready with the reason', async () => {
+    const sub = new MnemoCartridgeSDK('studio').onAgentActions({ a: () => 1 });
+    fromHost({ type: 'MNEMO_AGENT_REFUSED', requestId: sent()[0]!.requestId, error: 'none of these actions is declared' });
+    await expect(sub.ready).rejects.toThrow('none of these actions is declared');
+  });
+});
+
+describe('onOrbState', () => {
+  let unsub: (() => void) | null = null;
+  afterEach(() => { unsub?.(); unsub = null; });
+
+  // jsdom at the top level: window.parent === window, so `source: window` passes the guard.
+  const post = (data: unknown, source: MessageEventSource | null = window) =>
+    window.dispatchEvent(new MessageEvent('message', { data, source }));
+
+  it('forwards the orb state from the host', () => {
+    const cb = vi.fn();
+    unsub = onOrbState(cb);
+    post({ type: 'MNEMO_ORB_STATE', active: true });
+    post({ type: 'MNEMO_ORB_STATE', active: false });
+    expect(cb.mock.calls).toEqual([[{ active: true }], [{ active: false }]]);
+  });
+
+  it('ignores a message that does not come from the host frame', () => {
+    const cb = vi.fn();
+    unsub = onOrbState(cb);
+    post({ type: 'MNEMO_ORB_STATE', active: true }, null);
+    expect(cb).not.toHaveBeenCalled();
+  });
+
+  it('reads anything but a literal true as inactive (never lowered on a guess)', () => {
+    const cb = vi.fn();
+    unsub = onOrbState(cb);
+    post({ type: 'MNEMO_ORB_STATE', active: 'yes' });
+    post({ type: 'MNEMO_ORB_STATE' });
+    expect(cb.mock.calls).toEqual([[{ active: false }], [{ active: false }]]);
+  });
+
+  it('ignores other messages, and stops after unsubscribe', () => {
+    const cb = vi.fn();
+    unsub = onOrbState(cb);
+    post({ type: 'MNEMO_CONFIG_UPDATE', theme: 'dark' });
+    expect(cb).not.toHaveBeenCalled();
+    unsub();
+    unsub = null;
+    post({ type: 'MNEMO_ORB_STATE', active: true });
+    expect(cb).not.toHaveBeenCalled();
   });
 });
