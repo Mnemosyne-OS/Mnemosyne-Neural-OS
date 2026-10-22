@@ -314,7 +314,8 @@ Twenty-two of the 25 are in the table below. The table also lists
 `mnemosyne_memory_forget`, the erasure tool, which is not one of the 25: it
 appears only when you set `MNEMO_FORGET=1`. The three that read the other agents
 on this machine have their own section further down. Setting `MNEMO_VOICE=1`
-adds the three voice tools documented further up, for 29 in all.
+adds the three voice tools documented further up, and `MNEMO_FORGET=1` adds the
+erasure tool, for 29 in all.
 
 Eight of them read or write the To-do backlog and the calendar. All eight carry
 the same requirement:
