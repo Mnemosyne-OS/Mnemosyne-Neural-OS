@@ -25,7 +25,7 @@ Rendering pixels *inside* Mnemosyne → **Cartridge**. A *separate process* → 
 
 Never start from a blank page:
 
-- **Scaffold:** `npm create @mnemosyne_os/app` — or copy this boilerplate (`examples/cartridge-boilerplate`, the folder this file lives in).
+- **Scaffold:** copy this boilerplate (`examples/cartridge-boilerplate`, the folder this file lives in). ⛔ Not `npm create @mnemosyne_os/app`: that scaffolds a Layer 2 app (a separate process, no `mnemo-plugin.json`), and MnemoHub refuses to link it.
 - **Reference implementation to read first:** [MnemoReader](https://github.com/Mnemosyne-OS/MnemoReader---MnemosyneOS) (a real, shipped cartridge). Match its patterns.
 
 A cartridge is a React/Vite web app loaded in a **sandboxed iframe** inside the host. It has **no** Node, Electron, filesystem, or network-to-host access. It reaches the host **only** through the SDK's `postMessage` bridge.
@@ -45,7 +45,7 @@ A cartridge is a React/Vite web app loaded in a **sandboxed iframe** inside the 
 
 - `name` — must match the id you pass to the SDK (below).
 - `permissions[]` — declare **only** what you call (§2). The user grants them at install.
-- `entrypoints.renderer` — a **relative** path (`index.html`), never a dev `localhost` URL.
+- `entrypoints.renderer` — a **relative** path (`index.html`) in the manifest you **publish**. This boilerplate's own `mnemo-plugin.json` points at `http://localhost:5185/index.html` so that the dev server works while you build; the store preflight rejects that URL, so swap it to `index.html` before you submit.
 
 ### Client
 
@@ -61,20 +61,31 @@ Every host call is `await sdk.invoke('<action>', payload)`. The complete, author
 
 Permissions are declared in the manifest and granted by the user at install. Each action's required permission is the middle column of the §3 table. Vocabulary:
 
-`vault:read` · `vault:write` · `model:infer` · `dialog:open` · `metrics:read` · `settings:read` · `settings:write` · `scout:run` · `wallet:read` · `net:lan` · `watch:background` · `hermes:control` · `agenda:write` · `gesture:receive` · `license:admin`
+`vault:read` · `vault:write` · `model:infer` · `dialog:open` · `metrics:read` · `settings:read` · `settings:write` · `scout:run` · `wallet:read` · `net:lan` · `watch:background` · `hermes:control` · `cockpit:pin` · `agent:export` · `git:read` · `breach:lookup` · `agenda:write` · `feedback:send` · `gesture:receive` · `vulns:mirror` · `marks:registry` · `marks:mirror` · `license:admin` · `image:generate` · `video:generate` · `site:publish`
 
 - Request the **minimum**. Over-declaring gets a cartridge rejected at review.
 - `license:admin` is founder-only — you will not have it; do not build against it.
-- The last six are narrow and rarely what you want. `wallet:read` reads a
+- The permissions explained here are narrow and rarely what you want. `wallet:read` reads a
   credit balance, `net:lan` reads one device on the user's own network,
   `watch:background` lets the host keep polling your feeds while your window
-  is closed, and `hermes:control` drives a local agent install. `agenda:write`
-  adds appointments to the host calendar (`agenda.add`) so they ring with your
-  window closed; it is add-only and never reads, moves or deletes one.
-  `gesture:receive` lets your window receive the hand gestures the person
-  makes while it is in full screen (`sdk.onGestures`, see below): intentions
-  such as « turn by 12 px », never the camera nor the hand. Declaring one you
-  do not call is over-declaring, and it gets a cartridge rejected.
+  is closed, `hermes:control` drives a local agent install, `cockpit:pin`
+  lets the user pin small status cards you publish (`cockpit.*`) on their
+  canvas — presence on the shell, never a read — and `agent:export` writes ONE
+  agent session out as a readable document, in that session's own folder beside
+  the transcript it came from; it is deliberately not part of `dialog:open`.
+  `vulns:mirror` downloads the public OSV vulnerability database (~200 MB, the
+  size shown first) into the app's own cache folder and reads it back by
+  package name (MnemoVulns). `marks:registry` keeps the keys a person gets from
+  trademark offices sealed in the host (the cartridge can store and check one,
+  never read it back); `marks:mirror` downloads public trademark registers
+  (~440 MB for IP Australia, the size shown first) into the app's own cache
+  folder and searches them by name (MnemoMarks). `agenda:write` adds appointments to the
+  host calendar (`agenda.add`) so they ring with your window closed; it is
+  add-only and never reads, moves or deletes one. `gesture:receive` lets your
+  window receive the hand gestures the person makes while it is in full
+  screen (`sdk.onGestures`, see below): intentions such as « turn by 12 px »,
+  never the camera nor the hand. Declaring one you do not call is
+  over-declaring, and it gets a cartridge rejected.
 - Some actions are **ungated** (no permission) — they are still listed in §3.
 
 ### Hand gestures (`gesture:receive`)
@@ -123,17 +134,34 @@ OS. The example is `src/GestureCube.tsx` in this boilerplate.
 `await sdk.invoke(action, payload)`. This table is generated from the host registry and guarded by a drift test — it cannot lie or lag.
 
 <!-- GENERATED:CARTRIDGE-ACTIONS:START -->
-_185 actions. Generated by `pnpm actions` — do not edit by hand._
+_299 actions. Generated by `pnpm actions` — do not edit by hand._
 
 | Action | Permission | What it does | Source |
 |---|---|---|---|
 | `agenda.add` | `agenda:write` | A cartridge puts an appointment in the host calendar, so it rings on the canvas even with the cartridge closed (doc 124 §3.3). Its own permission: it WRITES int | `pluginBridgeHandlers.ts` |
+| `agent.exportConversation` | `agent:export` | The only cockpit-family action that writes to the disk, so it carries its own permission instead of riding `cockpit:pin` — which is about presence on the canvas | `pluginBridgeHandlers.ts` |
+| `agent.keepConversations` | `vault:write` |  | `pluginBridgeHandlers.ts` |
+| `agent.keepDestinations` | `vault:read` | Keep agent sessions in memory (doc 132 lot 1). The list rides `vault:read` (it names vaults, like `mnemosyne.status`); the keep rides `vault:write`, because wri | `pluginBridgeHandlers.ts` |
+| `agent.keepRuleRevoke` | `vault:write` |  | `pluginBridgeHandlers.ts` |
+| `agent.keepRuleRun` | `vault:write` |  | `pluginBridgeHandlers.ts` |
+| `agent.keepRules` | `vault:read` | The standing rule (doc 132 lot 2). Asking for one rides `vault:write`, but only a yes in the HOST's native dialog creates it: a cartridge alone never sets a rul | `pluginBridgeHandlers.ts` |
+| `agent.keepRuleSet` | `vault:write` |  | `pluginBridgeHandlers.ts` |
 | `app.clone` | `dialog:open` | One-click clone of a GitHub repo into the user's app space, after the cartridge collected explicit user consent in its own UI. The main-side handler (dialog:clo | `pluginCartridgeActions.ts` |
+| `breach.keyState` | `breach:lookup` | Breach Watch (doc 141 §4): whether the person's own HIBP key is stored, when and how it is sealed. Never the key: there is no action that returns it. | `pluginCartridgeActions.ts` |
+| `breach.lookup` | `breach:lookup` | Which known breaches one email is in, sent to Have I Been Pwned with the person's key. Main refuses (NOT_DECLARED) any email this cartridge did not save in its  | `pluginCartridgeActions.ts` |
+| `breach.removeKey` | `breach:lookup` | Deletes the sealed key file. | `pluginCartridgeActions.ts` |
+| `breach.setKey` | `breach:lookup` | The key, typed once in the cartridge and sealed in main. Rejects with EMPTY · HAS_WHITESPACE · LOOKS_LIKE_URL · SEAL_REFUSED. | `pluginCartridgeActions.ts` |
 | `browseModelFile` | `dialog:open` |  | `pluginBridgeHandlers.ts` |
 | `cancelDownload` | `model:infer` |  | `pluginBridgeHandlers.ts` |
+| `canvas.leaveBoard` | _(none)_ | Back from a cartridge's board to the desktop its board was opened from (this session). Same gesture rule and the same throttle as opening: switching the board i | `pluginCartridgeActions.ts` |
+| `canvas.openBoard` | _(none)_ | A cartridge lays its OWN declared windows out on ITS OWN desktop (named after it, found or created empty) and the camera frames them: MnemoClio's exploded view. | `pluginCartridgeActions.ts` |
 | `catalog.get` | `license:admin` | Signed store catalog (public data) — lets the triage view flag a submission whose appId is ALREADY LIVE as an update of that entry, with the live version next t | `pluginBridgeHandlers.ts` |
 | `catalog.syncVersions` | `license:admin` | Founder-only: re-sign the live catalog with the versions the standalone repos serve at HEAD — what installs actually pull. Version fields of already-listed apps | `pluginBridgeHandlers.ts` |
-| `conversation.delete` | `vault:write` |  | `pluginBridgeHandlers.ts` |
+| `cockpit.pin` | `cockpit:pin` | Pin one card (a human gesture in the cartridge). `card` may carry the card itself so it appears in the same frame; `level` defaults to 'hud'. | `pluginBridgeHandlers.ts` |
+| `cockpit.publish` | `cockpit:pin` | Cockpit (doc 110): small status cards a module publishes about something alive elsewhere (an agent session, a job), which the human pins on the canvas — on scre | `pluginBridgeHandlers.ts` |
+| `cockpit.state` | _(none)_ | Which of THIS cartridge's card ids are pinned. Ungated on purpose: it reads only what the cartridge itself published, and a cartridge must be able to ask at boo | `pluginBridgeHandlers.ts` |
+| `cockpit.unpin` | `cockpit:pin` |  | `pluginBridgeHandlers.ts` |
+| `conversation.delete` | `vault:write` | C9 (accepted by Tony 2026-09-05): a `vault:write` cartridge may delete or vectorize ANY of the human's conversations, not only its own. The manifest scope is th | `pluginBridgeHandlers.ts` |
 | `conversation.get` | `vault:read` |  | `pluginBridgeHandlers.ts` |
 | `conversation.list` | `vault:read` |  | `pluginBridgeHandlers.ts` |
 | `conversation.save` | `vault:write` |  | `pluginBridgeHandlers.ts` |
@@ -160,12 +188,28 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `dialog.selectFolder` | `dialog:open` | `startIn` is a HOME-RELATIVE hint: it decides where the picker opens, and is resolved main-side. The cartridge never receives a path from it — only what the hum | `pluginBridgeHandlers.ts` |
 | `dialog.writeFile` | `dialog:open` |  | `pluginBridgeHandlers.ts` |
 | `downloadModel` | `model:infer` |  | `pluginBridgeHandlers.ts` |
+| `feedback.broadcast.list` | `license:admin` | Announcements to every install (doc 101 §15): main signs the words in every language; the gate checks that signer is the validator who authenticated. Read back  | `pluginBridgeHandlers.ts` |
+| `feedback.broadcast.publish` | `license:admin` | Publish to every install; main signs the words in every language. | `pluginBridgeHandlers.ts` |
+| `feedback.broadcast.retract` | `license:admin` | Withdraw one; it leaves every install at their next look. | `pluginBridgeHandlers.ts` |
+| `feedback.delete` | `license:admin` |  | `pluginBridgeHandlers.ts` |
+| `feedback.export` | `license:admin` | Hand a bug report to the agent that will fix it: main writes the queue to a file and answers with the path. The console passes a FILTER and nothing else — no ro | `pluginBridgeHandlers.ts` |
+| `feedback.list` | `license:admin` | What people wrote about the app: the avis and the bug reports (doc 101). Same license:admin gate as the other console rails; the gate re-checks VALIDATOR_WALLET | `pluginBridgeHandlers.ts` |
+| `feedback.reply` | `license:admin` | Answer under a row (doc 101 §14). Main signs the WORDS with the sovereign wallet; the gate checks that signer is the validator who authenticated and that the au | `pluginBridgeHandlers.ts` |
+| `feedback.requestCountry` | `feedback:send` | "Add my country" from a cartridge (doc 134 lot 5). The cartridge hands one ISO country code and nothing else: the host checks it and writes the words itself, so | `pluginCartridgeActions.ts` |
+| `feedback.resolve` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `getActiveEmbedModel` | `model:infer` |  | `pluginBridgeHandlers.ts` |
 | `getGlobalConfig` | `settings:read` |  | `pluginBridgeHandlers.ts` |
 | `getStatus` | _(none)_ |  | `pluginBridgeHandlers.ts` |
 | `getSystemMetrics` | `metrics:read` |  | `pluginBridgeHandlers.ts` |
 | `getTopologyMap` | `vault:read` |  | `pluginBridgeHandlers.ts` |
 | `getWatchedFolders` | `vault:read` |  | `pluginBridgeHandlers.ts` |
+| `git.declareRepo` | `git:read` | The history of a repository the HUMAN declared (doc 140 §7). The folder is picked in main's native dialog, and every call names it by an id from THIS cartridge' | `pluginCartridgeActions.ts` |
+| `git.forgetRepo` | `git:read` |  | `pluginCartridgeActions.ts` |
+| `git.log` | `git:read` |  | `pluginCartridgeActions.ts` |
+| `git.repos` | `git:read` |  | `pluginCartridgeActions.ts` |
+| `github.token.clear` | `license:admin` |  | `pluginBridgeHandlers.ts` |
+| `github.token.set` | `license:admin` |  | `pluginBridgeHandlers.ts` |
+| `github.token.state` | `license:admin` | 🚨 There is no `getGithubToken` here, and there never will be: the console can learn THAT a token exists and how it is sealed, never what it is. | `pluginBridgeHandlers.ts` |
 | `hermes.agentProfileCreate` | `hermes:control` | Create a full second agent via `hermes profile create <name>` — their managed layer owns the scaffolding; we never imitate it. | `pluginHermesActions.ts` |
 | `hermes.agentProfiles` | `hermes:control` | The agent army: default agent + every Hermes profile with its env facts (telegram token present, api port) and gateway-managed flag. | `pluginHermesActions.ts` |
 | `hermes.agentProfileTelegram` | `hermes:control` | Per-profile Telegram keys (validated shapes, backup first). BotFather stays the human's flow — the cockpit guides, takes the token, never pretends to automate T | `pluginHermesActions.ts` |
@@ -174,8 +218,10 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `hermes.channelSetTelegram` | `hermes:control` | Write the Telegram bot token / allowed user ids into the install's .env on the human's click — validated shapes only, backup first. | `pluginHermesActions.ts` |
 | `hermes.chat` | `hermes:control` | One chat turn with the local Hermes Agent through its api_server. The conversation is caller-supplied and stateless host-side; auth uses the key from Hermes' ow | `pluginHermesActions.ts` |
 | `hermes.chatStream` | `hermes:control` | The streaming twin of hermes.chat (first consumer of the sdk.stream primitive): the agent's reply fills the bubble token by token instead of arriving buffered.  | `pluginHermesActions.ts` |
+| `hermes.connectorMoliProbe` | `hermes:control` | What answers at the Moli OS address the person typed (GET /api/health on their LAN). "Refused" or "no answer" is a verdict in the data, not a throw; only a malf | `pluginHermesActions.ts` |
 | `hermes.connectors` | `hermes:control` | Data connectors (Apify): linked or not — never the key itself. | `pluginHermesActions.ts` |
 | `hermes.connectorSetApify` | `hermes:control` | Link Apify with the person's own key (their account, their bill), or unlink it with `token: null`. Shape-checked in main, backup first. | `pluginHermesActions.ts` |
+| `hermes.connectorSetMoli` | `hermes:control` | Link Moli OS at an IP address of the person's network (`mcp_servers.moli`, backup first), or unlink it with `address: null`. Checked in main: an IP literal on a | `pluginHermesActions.ts` |
 | `hermes.gatewayLogs` | `hermes:control` | The gateway log ring (oldest first) — the honest answer to "I clicked start and nothing happens": the process's own words, crash included. | `pluginHermesActions.ts` |
 | `hermes.gatewayStart` | `hermes:control` | Start a Hermes gateway as a child of Mnemosyne — the human's click, zero terminal. profile '' = the default agent; each profile is its own process with its own  | `pluginHermesActions.ts` |
 | `hermes.gatewayStop` | `hermes:control` | Stop a cockpit-managed gateway (kills that profile's process tree). | `pluginHermesActions.ts` |
@@ -220,9 +266,17 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `hermes.watchAct` | `hermes:control` | Create / remove / pause / resume / run now a watch, or switch keep-awake. Every field is checked again in main; this only shapes the request. | `pluginHermesActions.ts` |
 | `hermes.watches` | `hermes:control` | Nightly watches (2026-10-02): Hermes cron jobs narrowed to web search, their runs priced by the proxy's tagged calls, the search engine Hermes will really call, | `pluginHermesActions.ts` |
 | `hermes.watchReport` | `hermes:control` | One report's text: the latest, or the file the cockpit names. | `pluginHermesActions.ts` |
+| `hub.showUpdate` | _(none)_ | Opens the Mnemosyne Hub on this cartridge's own page, where its update is offered (doc 142 §4.2). Installs nothing; the id is the bridge's, never the payload's. | `pluginCartridgeActions.ts` |
+| `image.depth` | `dialog:open` | The relative depth of one picture (absolute path inside the home), on this machine, no credit spent. Answers a NEW grey PNG beside the source (`<name>-depth.png | `pluginStudioActions.ts` |
+| `image.depthStatus` | `dialog:open` | Whether the image engine is installed and the depth model is on disk, with the download's size. The install is in Settings > Images. | `pluginStudioActions.ts` |
+| `image.generate` | `image:generate` | Draw one picture on the Mnemosyne credit route (never the person's own key). `editImagePath` is a picture to change in place, `refImagePaths` (up to 4) pictures | `pluginStudioActions.ts` |
+| `image.removeBackground` | `dialog:open` | Lift the subject of one picture (absolute path inside the home) off its background, on this machine, no credit spent: Theia's matte, the canvas's « Supprimer le | `pluginStudioActions.ts` |
+| `image.upscale` | `dialog:open` | Enlarge one picture (absolute path inside the home) by `scale` (1.25 to 4, of its own width), on this machine, no credit spent. Answers the NEW file, written be | `pluginStudioActions.ts` |
+| `image.upscaleStatus` | `dialog:open` | Whether the image engine is installed and the upscaler's weights are on disk, with the download's size in bytes. Nothing is downloaded by a cartridge: the insta | `pluginStudioActions.ts` |
 | `irinaHealthCheck` | _(none)_ |  | `pluginBridgeHandlers.ts` |
 | `lan.fetch` | `net:lan` | Read ONE device on the user's own network (doc 94). The cartridge id comes from the bridge, never the payload, so an app cannot spend another one's grants; main | `pluginCartridgeActions.ts` |
 | `lan.grants` | `net:lan` | The doors THIS cartridge holds, so it can show them and explain a refusal. Scoped to the caller: an app learns nothing about what any other was given. | `pluginCartridgeActions.ts` |
+| `license.admin.status` | `license:admin` | The airdrop console's own state: owner key stored, 2FA active, session unlocked. | `pluginBridgeHandlers.ts` |
 | `license.airdrop` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `license.confirmTotp` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `license.offer` | _(none)_ | Open the wallet, where a license is bought or asked for. The cartridge calls it from its own "get a license" button; the host decides what the wallet shows, the | `pluginCartridgeActions.ts` |
@@ -233,9 +287,19 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `license.setupTotp` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `license.status` | _(none)_ | Whether this install holds an Engramm license, as ONE word: active, inactive or unknown (nobody could check — never read it as a refusal). No wallet, no token,  | `pluginCartridgeActions.ts` |
 | `license.unlock` | `license:admin` |  | `pluginBridgeHandlers.ts` |
+| `marks.keyClear` | `marks:registry` |  | `pluginCartridgeActions.ts` |
+| `marks.keySet` | `marks:registry` |  | `pluginCartridgeActions.ts` |
+| `marks.keyState` | _(none)_ | The key is sealed in main; no action ever returns it. Ungated, like vulns.mirrorStatus: asked when the window opens, it reveals only THAT a key is stored, and a | `pluginCartridgeActions.ts` |
+| `marks.mirrorCancel` | `marks:mirror` |  | `pluginCartridgeActions.ts` |
+| `marks.mirrorDownload` | `marks:mirror` |  | `pluginCartridgeActions.ts` |
+| `marks.mirrorPlan` | `marks:mirror` |  | `pluginCartridgeActions.ts` |
+| `marks.mirrorRemove` | `marks:mirror` |  | `pluginCartridgeActions.ts` |
+| `marks.mirrorStatus` | _(none)_ | Ungated, like vulns.mirrorStatus: it reveals only whether a public register is on disk. | `pluginCartridgeActions.ts` |
+| `marks.search` | `marks:mirror` |  | `pluginCartridgeActions.ts` |
+| `marks.verify` | `marks:registry` |  | `pluginCartridgeActions.ts` |
 | `metrics.get` | `metrics:read` |  | `pluginBridgeHandlers.ts` |
 | `mnemosyne.focus` | `vault:read` |  | `pluginCartridgeActions.ts` |
-| `mnemosyne.ingest` | `vault:write` | Write one chronicle into a vault and return its chronicleId. Same pipeline as social.ingest: routePulse, PromptShield, SHA-256 dedup, persistence. (It formerly  | `pluginCartridgeActions.ts` |
+| `mnemosyne.ingest` | `vault:write` |  | `pluginCartridgeActions.ts` |
 | `mnemosyne.prime` | `vault:read` |  | `pluginCartridgeActions.ts` |
 | `mnemosyne.query` | `vault:read` | Routes cartridge requests to existing preload APIs. query/prime → model.infer \| status → vault.memoryStats focus → vault.scanTree \| ingest → conversation.vect | `pluginCartridgeActions.ts` |
 | `mnemosyne.status` | `vault:read` |  | `pluginCartridgeActions.ts` |
@@ -245,12 +309,14 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `model.infer` | `model:infer` | An inference may have spent cloud credits, so the cached balance is dropped afterwards (win or fail — a failed call can still have been metered). | `pluginBridgeHandlers.ts` |
 | `model.warmLocal` | `model:infer` | Preload a specific local model (spawn worker + load into memory) so a cartridge can surface a load failure — e.g. a model too heavy for the available RAM — BEFO | `pluginCartridgeActions.ts` |
 | `openDirectoryDialog` | `dialog:open` |  | `pluginBridgeHandlers.ts` |
+| `orb.summon` | _(none)_ | Bring the orb onto the board, listening (doc 123: the microphone stays with the host, so a cartridge with a voice of its own hands it to her). Ungated like the  | `pluginCartridgeActions.ts` |
 | `payment.balance` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `payment.exportKey` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `payment.generate` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `payment.reset` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `payment.status` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `permissions.refresh` | _(none)_ | Re-read this cartridge's manifest from disk and REPORT which of the asked permissions it now holds. Enforcement uses the registry built at startup, so a manifes | `pluginCartridgeActions.ts` |
+| `plugins.detach` | _(none)_ | A cartridge opens one more window of ITSELF (Parts detaches a model into its own window). Ungated: the id is the trusted caller's, never the payload's, so no ca | `pluginCartridgeActions.ts` |
 | `plugins.getInstalled` | `vault:read` |  | `pluginCartridgeActions.ts` |
 | `plugins.getLinkedDev` | `vault:read` | Dev-link bridge (Muse): a builder cartridge scaffolds a REAL cartridge in the user's app space, so it must be able to link that folder and open it in its own Mn | `pluginCartridgeActions.ts` |
 | `plugins.install` | `vault:write` |  | `pluginCartridgeActions.ts` |
@@ -273,7 +339,20 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `scout.stop` | `scout:run` |  | `pluginBridgeHandlers.ts` |
 | `sendPulse` | _(none)_ |  | `pluginBridgeHandlers.ts` |
 | `setEmbedModel` | `model:infer` |  | `pluginBridgeHandlers.ts` |
+| `settings.open` | _(none)_ | Opens Mnemosyne's Settings on the page where a feature this cartridge uses is installed ('theia' = Images, 'ocr'). Only from a click in the frame, and only thos | `pluginCartridgeActions.ts` |
 | `shell.openExternal` | _(none)_ | Open a URL in the OS browser. Sandboxed cartridge iframes have no 'allow-popups', so target="_blank" is blocked — they route external links here instead. The ho | `pluginBridgeHandlers.ts` |
+| `site.addDomain` | `site:publish` | Attaches a domain the person owns to the project (buying one is not here). Requires the frame to have focus. | `pluginStudioActions.ts` |
+| `site.declareFolder` | `site:publish` | Ask the person to pick the folder of a website in the system's own dialog. The cartridge gets an id and a name, never the path. | `pluginStudioActions.ts` |
+| `site.deploy` | `site:publish` | Publish a declared site folder to the person's Vercel account under a project name; main uploads with the sealed token and answers Vercel's own state (READY, ER | `pluginStudioActions.ts` |
+| `site.folders` | `site:publish` | The site folders this cartridge declared, with `missing` when one was moved or deleted. | `pluginStudioActions.ts` |
+| `site.forgetFolder` | `site:publish` | Forget a declared site folder. The files stay on disk: they are the person's. | `pluginStudioActions.ts` |
+| `site.hosting` | `site:publish` | A Vercel project's own addresses (doc 145 §10.14): each domain she attached, whether Vercel accepts it and whether it points there, and the DNS records to write | `pluginStudioActions.ts` |
+| `site.removeDomain` | `site:publish` | Detaches a domain from the project; it stays hers at her registrar. Requires the frame to have focus. | `pluginStudioActions.ts` |
+| `site.removeToken` | `site:publish` | Deletes the sealed hosting token. Requires the frame to have focus. | `pluginStudioActions.ts` |
+| `site.saveAsset` | `site:publish` | Write one file into a declared site folder, by relative name (`assets/a.webp`, `index.html`). Pictures, mp4/webm clips and the text files of a static site; main | `pluginStudioActions.ts` |
+| `site.setToken` | `site:publish` | The hosting token, typed once in the cartridge and sealed in main. Rejects with EMPTY · HAS_WHITESPACE · LOOKS_LIKE_URL · TOO_LONG · SEAL_REFUSED. Requires the  | `pluginStudioActions.ts` |
+| `site.tokenState` | `site:publish` | Whether the person's hosting token (Vercel) is stored, when, and how this machine seals it. Never the token: no action returns it. | `pluginStudioActions.ts` |
+| `site.traffic` | `site:publish` | The project's visits over 7, 30 or 90 days: by day, by referring site, by country. A part Vercel did not answer is null, never an empty list. | `pluginStudioActions.ts` |
 | `social.fetch` | `vault:read` |  | `pluginCartridgeActions.ts` |
 | `social.ingest` | `vault:write` | Real vault ingest/query + host-side fetch for the multi-network hub. | `pluginCartridgeActions.ts` |
 | `social.query` | `vault:read` |  | `pluginCartridgeActions.ts` |
@@ -284,19 +363,55 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `spine.llmScan.start` | `vault:write` | Start the LLM spine classifier (Spine Sense) on one vault's unsorted bucket: batched excerpts → the Settings model → existing-taxon assignment or governed creat | `pluginBridgeHandlers.ts` |
 | `spine.llmScan.status` | `vault:read` | Progress snapshot of the running (or last finished) spine scan job. | `pluginBridgeHandlers.ts` |
 | `spine.llmScan.stop` | `vault:write` | Ask the running spine scan to stop after the current batch (resumable later). | `pluginBridgeHandlers.ts` |
+| `splat.align` | `dialog:open` | Put two objects of the same place, filmed at two dates, in one frame ({ refId, movedId }, doc 163 lot 5): the moved object's frames are placed in the reference' | `pluginStudioActions.ts` |
+| `splat.alignCancel` | `dialog:open` | Stop the alignment: COLMAP is killed and its work folder erased. | `pluginStudioActions.ts` |
+| `splat.alignStatus` | `dialog:open` | The alignment running now (its step and, when done, its numbers), or null. | `pluginStudioActions.ts` |
+| `splat.cancel` | `dialog:open` | Stop the job ({ id }): the tool is killed and its folder erased. | `pluginStudioActions.ts` |
+| `splat.continue` | `dialog:open` | « Continue anyway » after a short turn ({ id }), on the person's click. | `pluginStudioActions.ts` |
+| `splat.frames` | `dialog:open` | The frame files of one folder of an object, or of the job making it ({ id, dir }): 'all' every frame read (while the video is read too), 'frames' the kept ones, | `pluginStudioActions.ts` |
+| `splat.free` | `dialog:open` | Send one category of an object to the recycle bin ({ id, category }), on a click only: framesAll, framesMasked, video, or work (the job's scratch; the placement | `pluginStudioActions.ts` |
+| `splat.list` | `dialog:open` | The objects already made, newest first: id, date, quality, object or scene, frames placed, turn filmed, scene file and size (+ the kept .ply), a frame for the c | `pluginStudioActions.ts` |
+| `splat.pickPhotos` | `dialog:open` | Ask the person for a folder of photos in the system's own dialog; answers its path, or null when they closed it. No deadline: the dialog stays open while they c | `pluginStudioActions.ts` |
+| `splat.pickVideo` | `dialog:open` | Ask the person for a video in the system's own dialog; answers its path, or null when they closed it. No deadline: the dialog stays open while they choose. | `pluginStudioActions.ts` |
+| `splat.read` | `dialog:open` | One piece (≤ 8 MB, base64) of an object's file ({ id, file, offset?, length? }): scene.spz, scene.ply, cameras.json, manifest.json, a frame (frames/, frames-all | `pluginStudioActions.ts` |
+| `splat.redo` | `dialog:open` | Redo an object already made with other settings ({ id, quality, scope? }), on a click only. Its frames, placement and cut-outs are reused; a new object. | `pluginStudioActions.ts` |
+| `splat.remember` | `dialog:open` | Put an object in a vault ({ id }), on the person's click (doc 163 §10): its note and thumbnail go to the capture flow on the board, which asks which vault. The  | `pluginStudioActions.ts` |
+| `splat.setMain` | `dialog:open` | This finished object becomes the main version of its object ({ id }), on a click only: the version its card shows. Without a choice, the newest is. | `pluginStudioActions.ts` |
+| `splat.start` | `dialog:open` | A video, or a folder of photos, becomes a 3D object, on a click only ({ videoPath or photosDir, quality: 'preview' \| 'full', scope?: 'object' \| 'scene' }). 'o | `pluginStudioActions.ts` |
+| `splat.status` | `dialog:open` | The engine's state, whether « the object alone » can run (objectOnly: ready · noEngine · noMatte) and the job. Nothing here downloads (rule of 2026-10-09): COLM | `pluginStudioActions.ts` |
 | `state.get` | _(none)_ | Ungated on purpose: this is the cartridge's OWN blob, namespaced by the caller's id and size-capped — the same trust level as the localStorage it backs up, with | `pluginCartridgeActions.ts` |
 | `state.set` | _(none)_ |  | `pluginCartridgeActions.ts` |
+| `stats.activity` | `license:admin` | The org's public GitHub activity — who starred and when, forks, comments, discussions, releases, traffic. Public data, admin-scoped for the same reason as the d | `pluginBridgeHandlers.ts` |
 | `stats.downloads` | `license:admin` | Release download counts as GitHub keeps them (per asset, auto-updates included) — the Founders Console's adoption view. Read-only public data, admin-scoped beca | `pluginBridgeHandlers.ts` |
+| `stats.downloadSnapshots` | `license:admin` | One snapshot of GitHub's release counters per UTC day, taken by the gate's cron: the curve that exists even on days the console stayed closed. | `pluginBridgeHandlers.ts` |
+| `stats.installs` | `license:admin` | Cartridge installs counted by the gate (doc 39 §1.2): one row per catalog app. Founder-signed in main; the gate re-checks VALIDATOR_WALLETS. | `pluginBridgeHandlers.ts` |
+| `stats.issueWatch` | `license:admin` | GitHub threads the founder is waiting on: an issue opened on someone else's tracker gets its answer days later, on a page nobody reloads. Read only, admin-scope | `pluginBridgeHandlers.ts` |
+| `stats.issueWatchSeen` | `license:admin` |  | `pluginBridgeHandlers.ts` |
+| `stats.npm` | `license:admin` | npm's own download counters for the project's published packages — the other half of the adoption view, and the only one with a dated daily axis. | `pluginBridgeHandlers.ts` |
+| `stats.opsSnapshots` | `license:admin` | The gate's daily record of repo counters and credit-program totals. | `pluginBridgeHandlers.ts` |
+| `stats.searchConsole` | `license:admin` | Search Console clicks + impressions through the founder's service account. | `pluginBridgeHandlers.ts` |
+| `stats.searchConsoleKey` | `license:admin` | The service-account key's state; `import` opens a native picker in main. | `pluginBridgeHandlers.ts` |
+| `stats.siteTraffic` | `license:admin` | The .io's visitors per day and by referrer / utm_source (Vercel Web Analytics). | `pluginBridgeHandlers.ts` |
+| `stats.stripeHistory` | `license:admin` | Sales, abandoned checkouts and refunds per month, summed from Stripe. | `pluginBridgeHandlers.ts` |
 | `submissions.preflight` | `license:admin` | Static preflight of a submitted repo (download + inspect, never execute). Founders-only; enforcement is main-side (isFounder) in plugins:preflightRepo. | `pluginBridgeHandlers.ts` |
 | `submissions.review.decide` | `license:admin` |  | `pluginBridgeHandlers.ts` |
 | `submissions.review.list` | `license:admin` | Real enforcement is SERVER-side: each call is signed with the sovereign wallet in main and the gate requires VALIDATOR_WALLETS membership — the permission gate  | `pluginBridgeHandlers.ts` |
+| `system.agentPort` | `metrics:read` | Same family as the metrics above — a reading about the machine, not about the memory — so it rides the same permission rather than inventing one. NOT ungated li | `pluginBridgeHandlers.ts` |
+| `takeaway.copyFrom` | `dialog:open` | Copy one of the person's files (from their home) into an export folder; main copies it, nothing crosses as base64. | `pluginStudioActions.ts` |
+| `takeaway.copyTo` | `dialog:open` | Copy a file of an import folder into the person's home, under a new name (never over an existing file). | `pluginStudioActions.ts` |
+| `takeaway.list` | `dialog:open` | The entries of a picked folder, or of a folder inside it. | `pluginStudioActions.ts` |
+| `takeaway.pickFolder` | `dialog:open` | The person picks a folder (a USB key, another disk) in the system's own dialog; the cartridge gets an id and a name. `purpose: 'export'` makes a subfolder named | `pluginStudioActions.ts` |
+| `takeaway.read` | `dialog:open` | A text file of a picked folder (a copy's records). | `pluginStudioActions.ts` |
+| `takeaway.write` | `dialog:open` | Write one file (text, or bytes as base64) into an export folder, by relative name. | `pluginStudioActions.ts` |
 | `translator.translate` | `vault:read` | Non-streaming translation: sends text + language pair, returns translated text. | `pluginCartridgeActions.ts` |
+| `ui.openInNotes` | `dialog:open` |  | `pluginBridgeHandlers.ts` |
 | `updateWatchedFolders` | `vault:write` |  | `pluginBridgeHandlers.ts` |
 | `vault.create` | `vault:write` |  | `pluginBridgeHandlers.ts` |
 | `vault.delete` | `vault:write` | Destroy a vault's memory (and, with deleteDocs, its folder). Symmetric with vault.create — a benchmark/sandbox cartridge (MnemoArena) uses it to wipe its own is | `pluginBridgeHandlers.ts` |
 | `vault.getConfig` | `vault:read` |  | `pluginBridgeHandlers.ts` |
 | `vault.getScannedPapers` | `vault:read` |  | `pluginBridgeHandlers.ts` |
 | `vault.memoryStats` | _(none)_ |  | `pluginBridgeHandlers.ts` |
+| `vault.pack.ensure` | `vault:write` | The vault of one Memory Pack (doc 135 §6.6.2): `<knowledge root>/<app>/ kp-<app>-<pack>/`, created on first call. The cartridge names the PACK and nothing else; | `pluginCartridgeActions.ts` |
 | `vault.reclassify` | `vault:write` |  | `pluginBridgeHandlers.ts` |
 | `vault.removeDocWatch` | `vault:write` |  | `pluginBridgeHandlers.ts` |
 | `vault.rescan` | `vault:write` |  | `pluginBridgeHandlers.ts` |
@@ -308,12 +423,22 @@ _185 actions. Generated by `pnpm actions` — do not edit by hand._
 | `vault.setDocWatch` | `vault:write` |  | `pluginBridgeHandlers.ts` |
 | `vault.spineStats` | `vault:read` |  | `pluginBridgeHandlers.ts` |
 | `vault.updateManifest` | `vault:write` |  | `pluginBridgeHandlers.ts` |
+| `video.generate` | `video:generate` | Start one Veo clip from a first and an optional last picture (4, 6 or 8 s, 16:9 or 9:16), billed per second. Answers a job at once; follow it with video.status. | `pluginStudioActions.ts` |
+| `video.joinFilm` | `dialog:open` | The film's parts ({ path, in?, out? }, absolute paths inside the home), each from its cut, joined into `outBase` + .mp4 (.webm when the machine has no H.264 enc | `pluginStudioActions.ts` |
+| `video.status` | `video:generate` | The state of a clip THIS cartridge started (running, done with its path, failed with its cause). Another app's clip answers UNKNOWN_JOB. | `pluginStudioActions.ts` |
+| `video.toolsStatus` | `dialog:open` | Whether ffmpeg is installed (from Settings > Video, never by a cartridge) and how big its download is. | `pluginStudioActions.ts` |
+| `vulns.mirrorCancel` | `vulns:mirror` |  | `pluginCartridgeActions.ts` |
+| `vulns.mirrorDownload` | `vulns:mirror` |  | `pluginCartridgeActions.ts` |
+| `vulns.mirrorDumpSize` | `vulns:mirror` |  | `pluginCartridgeActions.ts` |
+| `vulns.mirrorQuery` | `vulns:mirror` |  | `pluginCartridgeActions.ts` |
+| `vulns.mirrorStatus` | _(none)_ | Download and update return at once; the cartridge polls the status. A refusal from main is thrown, never answered as an empty state. Ungated on purpose, like co | `pluginCartridgeActions.ts` |
+| `vulns.mirrorUpdate` | `vulns:mirror` |  | `pluginCartridgeActions.ts` |
 | `watch.clearInbox` | `watch:background` |  | `pluginCartridgeActions.ts` |
 | `watch.inbox` | `watch:background` |  | `pluginCartridgeActions.ts` |
 | `watch.register` | `watch:background` | A cartridge is an iframe: it cannot notice what arrived while closed. These four let it hand the host a declarative watch and read the result. The cartridge id  | `pluginCartridgeActions.ts` |
 | `watch.unregister` | `watch:background` |  | `pluginCartridgeActions.ts` |
 
-**Ungated actions (no permission gate — run on any loaded cartridge):** `getStatus`, `irinaHealthCheck`, `license.offer`, `license.status`, `permissions.refresh`, `sendPulse`, `shell.openExternal`, `state.get`, `state.set`, `vault.memoryStats`
+**Ungated actions (no permission gate — run on any loaded cartridge):** `canvas.leaveBoard`, `canvas.openBoard`, `cockpit.state`, `getStatus`, `hub.showUpdate`, `irinaHealthCheck`, `license.offer`, `license.status`, `marks.keyState`, `marks.mirrorStatus`, `orb.summon`, `permissions.refresh`, `plugins.detach`, `sendPulse`, `settings.open`, `shell.openExternal`, `state.get`, `state.set`, `vault.memoryStats`, `vulns.mirrorStatus`.
 <!-- GENERATED:CARTRIDGE-ACTIONS:END -->
 
 **Rules:**

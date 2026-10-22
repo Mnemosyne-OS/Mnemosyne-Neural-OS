@@ -143,7 +143,7 @@ anything you remember about it.
   current headline, a pre-registered rerun of September 2026 ([every answer](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10));
   **85.4 %** (41/48) on the dev (tuning) set under the **strict** judge, same rerun;
   the August figures, corrected by an [erratum](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/blob/main/ERRATUM.md): **72.9 %** (35/48) strict,
-  **77.1 %** (37/48) flexible; July's composed **72.9 %** (35/48), still DOI-pinned. Plus **572** IPC channels between the sealed engine and the
+  **77.1 %** (37/48) flexible; July's composed **72.9 %** (35/48), still DOI-pinned. Plus **851** IPC channels between the sealed engine and the
     interface. That one is generated, not typed: the monorepo tooling copies it
     from a commit on its `main` into [`tools/metrics.json`](tools/metrics.json),
     stamped with that commit, and

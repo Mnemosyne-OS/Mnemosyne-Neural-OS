@@ -310,13 +310,14 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 
 ## The 25 tools your agent gets
 
-Twenty-two are in the table below. The three that read the other agents on this
-machine have their own section further down. Setting `MNEMO_VOICE=1` adds the
-three voice tools documented further up, and `MNEMO_FORGET=1` adds the erasure
-tool, for 29 in all.
+Twenty-two of the 25 are in the table below. The table also lists
+`mnemosyne_memory_forget`, the erasure tool, which is not one of the 25: it
+appears only when you set `MNEMO_FORGET=1`. The three that read the other agents
+on this machine have their own section further down. Setting `MNEMO_VOICE=1`
+adds the three voice tools documented further up, for 29 in all.
 
-Six of them read or write the To-do backlog and the calendar. All six carry the
-same requirement:
+Eight of them read or write the To-do backlog and the calendar. All eight carry
+the same requirement:
 
 Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running.
 
@@ -327,7 +328,7 @@ Works with the app closed on a dev install (the headless daemon reads the file);
 | **`mnemosyne_memory_ask`** | Ask a question, get a synthesized prose answer grounded in the vault, plus its source chronicles. Use it for why, who and how questions that span many memories. It runs the full RAG pipeline, which also makes it the better retriever, and it is slower than `query`. |
 | **`mnemosyne_vault_list`** | List the vaults Mnemosyne OS exposes, with each one's token, name and chronicle count. Call it to discover valid `vault` targets. |
 | **`mnemosyne_memory_forget`** | Erase one chronicle for good, by the id `mnemosyne_memory_query` returned. Absent unless you set `MNEMO_FORGET=1`, and the app wants the `FORGET` intent on top of that. You arm erasure by hand, because writing a new chronicle cannot undo it. |
-| **`mnemosyne_memory_ingest`** | Persist a memory. Pick a `spine_type`: ARCHITECTURE, DECISION, BUGFIX, FEATURE, NOTE, SESSION, RESONANCE or CUSTOM. |
+| **`mnemosyne_memory_ingest`** | Persist a memory. Pick a `spine_type`: ARCHITECTURE, DECISION, DEBUG, BUGFIX, FEATURE, NOTE, SESSION, RESONANCE or CUSTOM. |
 | **`mnemosyne_todo_add`** | Put tasks into the user's **To-do backlog**, in order and optionally under named steps. Name the `list`, or pass `create_list: true`. An unknown name is refused with the lists that exist. With a window open the write goes through the widget's own store; on macOS with the window closed the app writes the file directly. Scope `todo:write`. |
 | **`mnemosyne_cockpit_update`** | Your own **status card** on the user's canvas: `state` working, waiting, done, blocked or closed, a `title`, one `status` line, up to 4 `detail` lines. You declare the state, and the app prints it next to the time since your last call, so call at real milestones. "waiting" and "blocked" make the card pulse and the taskbar flash. The answer carries the messages the user left on your card. Send `desktop` once, with the name of a board the user gives you, and this session’s cards go there for the rest of the conversation; leave it out and they go to whichever board answers for this project. Needs the app window open. Scope `cockpit:write`. |
 | **`mnemosyne_pheme_watch`** | Add a subreddit, a Hacker News query or a topic to the user's **Pheme radar**, or take one off. The lists are theirs. An operation that would empty one is refused, each one reports its own outcome, and the user gets a receipt in Pheme naming the agent and what changed. It posts nowhere. Needs the app running, though Pheme itself can be closed. Scope `pheme:profile`. |

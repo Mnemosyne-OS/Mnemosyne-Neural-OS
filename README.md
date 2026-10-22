@@ -80,7 +80,7 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 | | |
 |---|---|
 | 🔌 **Give your coding agent a memory** | `npx -y @mnemosyne_os/mcp` connects Claude Code, Cursor or Claude Desktop to your vaults. [Setup guide](https://docs.mnemosyne-os.io/connect-claude-mcp) |
-| 🧩 **Build an app on the memory** | `npm create @mnemosyne_os/app` scaffolds a cartridge that talks to the SDK. [Build on Mnemosyne OS](#build-on-mnemosyne-os) |
+| 🧩 **Build an app on the memory** | Copy the [cartridge boilerplate](examples/cartridge-boilerplate) for an app inside the Mnemosyne window, or run `npm create @mnemosyne_os/app` for a separate program (a Layer 2 app). [Build on Mnemosyne OS](#build-on-mnemosyne-os) |
 | 📖 **Learn from real cartridges** | Their full source is public. [Clone one](#the-cartridges-are-real-and-readable) |
 | 🧠 **Index your agent's own notes** | Point a vault at `.claude`, `.cursor` or `.aider`. [Two doors between your IDE and your memory](#two-doors-between-your-ide-and-your-memory) |
 
@@ -393,19 +393,20 @@ and never exposed.
 
 Two ways in:
 
-- 🛠️ **Build on it**: scaffold an app and you're talking to the memory vault in minutes.
+- 🛠️ **Build on it**: copy the [cartridge boilerplate](examples/cartridge-boilerplate) for an app inside the Mnemosyne window, or scaffold a separate program and you're talking to the memory vault in minutes.
 - 💾 **Run it**: install the flagship desktop app, [Infinity Edition](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/latest).
 
 ```bash
-npm create @mnemosyne_os/app
+npm create @mnemosyne_os/app   # a Layer 2 app: a separate process, not a cartridge
 ```
 
 | Package | What it does |
 |---|---|
-| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Connect an app to the local AI memory runtime (WebSocket / Electron IPC) |
+| [`@mnemosyne_os/cartridge-sdk`](https://www.npmjs.com/package/@mnemosyne_os/cartridge-sdk) | Build a cartridge: an app inside the Mnemosyne window, in a sandboxed iframe |
+| [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk) | Connect a separate program (a Layer 2 app) to the local AI memory runtime (WebSocket / Electron IPC) |
 | [`@mnemosyne_os/public-contracts`](https://www.npmjs.com/package/@mnemosyne_os/public-contracts) | Shared types & Zod schemas, the integration contract |
 | [`@mnemosyne_os/design-sdk`](https://www.npmjs.com/package/@mnemosyne_os/design-sdk) | Build custom UI skins in pure JSON, zero TypeScript |
-| [`@mnemosyne_os/create-app`](packages/create-app) | Scaffold a new Mnemosyne OS app in one command |
+| [`@mnemosyne_os/create-app`](packages/create-app) | Scaffold a Layer 2 app in one command. Not a cartridge: MnemoHub refuses to link it |
 
 Start from the [cartridge boilerplate](examples/cartridge-boilerplate) and you're
 ingesting and querying the vault, under FGAC, scoped, and consent-gated, in minutes.

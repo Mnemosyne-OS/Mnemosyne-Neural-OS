@@ -20,7 +20,7 @@ on any copy that reimplements the transport.
 
 > Building an **external process** (own window, WebSocket `:7799`) instead of
 > an in-app cartridge? Use [`@mnemosyne_os/sdk`](https://www.npmjs.com/package/@mnemosyne_os/sdk).
-> Routing guide: `docs/architecture/51_developer-surfaces-routing.md`.
+> Routing guide: the "What you can build" table of [`llms.txt`](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/llms.txt).
 
 ## Install
 
@@ -51,7 +51,7 @@ await sdk.socialIngest(sb.vault, 'Contact: Léa. …', 'SOCIAL_CONTACT');
 ```
 
 Every call goes through `invoke(action, payload?, timeoutMs?)`, where an action
-whitelisted by the host registry (`docs/architecture/52` lists them all).
+whitelisted by the host registry ([`llms.txt`](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/llms.txt) at the root of the public repo lists them all).
 Unknown/denied actions reject immediately (the host replies to every request);
 outside a host iframe, calls reject immediately too. The default timeout is
 5 minutes and is deliberately human-paced: the FIRST call of a permission-gated
@@ -176,6 +176,19 @@ whole list when one declaration is invalid.
 The voice assistant reads a `say` field from your result aloud, word for word.
 Write it in the person's language.
 
+### Which agents can call them
+
+The voice assistant calls them directly. An external agent calls them through
+the actions MCP server that ships inside the Mnemosyne OS app (Mnemosyne OS
+1.9.0 or later). That server is not published on npm. Its `os_find` tool lists
+the actions of the installed apps that match a request, and `os_run` with
+`cartridge.run` calls one. A Hermes install managed by the app is connected to
+it automatically.
+
+The public [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp)
+server does not expose cartridge actions. An agent connected only to it cannot
+call them.
+
 ## Taking spoken sentences
 
 The person can talk to the voice assistant while your app is open. List the
@@ -208,7 +221,8 @@ handlers were never called.
 Two more fields help the assistant pick the right action:
 
 - `agentGuide` tells every agent how to drive your app, in your words. The
-  voice assistant, Claude Code and Hermes all receive it with your actions. It
+  voice assistant receives it with your actions, and so does any agent
+  connected to the actions MCP server described above. It
   is a string or a list of lines, at most 1,500 characters. The host skips a
   longer guide and keeps your actions.
 - `voiceVocabulary` lists the words of your app that speech recognition gets
@@ -381,7 +395,8 @@ not ask on your behalf.
 - Your app id is bound host-side (trusted `pluginId`): sandbox operations can
   only ever reach **your own** vault.
 - Sandbox vaults are walled off (no federated RAG, no neural map, no Dream
-  State) until the human unlocks permanence. See `docs/architecture/58`.
+  State) until the human unlocks permanence in the Vault Manager. Your app
+  cannot unlock it, and neither can an agent.
 - **Synaptic P2P.** The owner may GIVE your vault to a contact to read (nothing
   is written on your side; no declaration needed). Your vault may become a
   SHARED COPY between people only if your manifest says so:

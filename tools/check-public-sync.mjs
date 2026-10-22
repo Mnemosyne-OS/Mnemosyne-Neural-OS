@@ -32,6 +32,8 @@ const PACKAGES = {
 const errors = []
 const warnings = []
 const rows = []
+/** The version npm serves for each package the loop below could reach. */
+const served = {}
 
 const readJSON = (p) => JSON.parse(readFileSync(resolve(root, p), 'utf8'))
 
@@ -79,6 +81,7 @@ for (const [name, path] of Object.entries(PACKAGES)) {
     continue
   }
 
+  served[name] = latest.version
   const d = cmpVersion(pkg.version, latest.version)
   let status
   if (d < 0) {
@@ -91,6 +94,46 @@ for (const [name, path] of Object.entries(PACKAGES)) {
     status = 'ok'
   }
   rows.push([name, pkg.version, latest.version, status])
+}
+
+// ── The boilerplate's SDK range must admit what npm serves ──────────────────
+//
+// The docs tell every developer to copy examples/cartridge-boilerplate. On
+// 2026-10-22 it still asked for `^0.4.4` while npm served 0.6.1: in 0.x a caret
+// never crosses a minor, so a fresh copy installed 0.4.x and missed every API
+// the cartridge-sdk README documents after it. Nothing complained, because the
+// loop above checks the PACKAGE, never the template that depends on it.
+
+/** Does a `^x.y.z` range admit `version`? null when the range is not a caret. */
+function caretAdmits(range, version) {
+  const m = /^\^(\d+)\.(\d+)\.(\d+)$/.exec(String(range ?? '').trim())
+  if (!m) return null
+  const [lo, v] = [m.slice(1).map(Number), String(version).split('-')[0].split('.').map(Number)]
+  if (cmpVersion(v.join('.'), lo.join('.')) < 0) return false
+  if (lo[0] > 0) return v[0] === lo[0]
+  if (lo[1] > 0) return v[0] === 0 && v[1] === lo[1]
+  return v[0] === 0 && v[1] === 0 && v[2] === lo[2]
+}
+
+try {
+  const SDK = '@mnemosyne_os/cartridge-sdk'
+  const range = readJSON('examples/cartridge-boilerplate/package.json').dependencies?.[SDK]
+  const latest = served[SDK]
+  if (latest === undefined) {
+    warnings.push(`examples/cartridge-boilerplate: ${SDK} range not checked (npm version unknown)`)
+  } else {
+    const ok = caretAdmits(range, latest)
+    if (ok === null) {
+      warnings.push(`examples/cartridge-boilerplate: ${SDK} is "${range}", not a caret range — not checked`)
+    } else if (!ok) {
+      errors.push(
+        `examples/cartridge-boilerplate: ${SDK} is "${range}" but npm serves ${latest}, which that range excludes. ` +
+          `A copy of the boilerplate would install an older SDK than the README documents. Raise it to "^${latest}".`,
+      )
+    }
+  }
+} catch (e) {
+  warnings.push('examples/cartridge-boilerplate range check skipped: ' + e.message)
 }
 
 // README quickstart must resolve to a published scope.

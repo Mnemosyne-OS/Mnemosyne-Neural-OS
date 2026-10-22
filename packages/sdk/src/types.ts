@@ -91,6 +91,8 @@ export type MnemoVault = 'DEV' | 'SOCIAL' | 'PERSONAL' | 'FINANCE' | 'RESEARCH' 
 /** Semantic spine types */
 export type SpineType =
   | 'GIT' | 'ARCHITECTURE' | 'DECISION' | 'DEBUG' | 'FEATURE'
+  /** The host stores it like any other; the MCP server's ingest tool offers it too. */
+  | 'BUGFIX'
   | 'REDDIT_POST' | 'LINKEDIN_POST' | 'SOCIAL_NODE'
   | 'DOCUMENT' | 'NOTE' | 'CUSTOM'
   /** Created by the Cockpit or via sdk.resonances.list */

@@ -38,7 +38,7 @@ model answers on the machine, a cloud model is a call you configured.
 | [`@mnemosyne_os/mcp`](https://www.npmjs.com/package/@mnemosyne_os/mcp) | latest | MCP server: plug Claude, Cursor or any MCP agent into your vault |
 | [`@mnemosyne_os/forge`](https://www.npmjs.com/package/@mnemosyne_os/forge) | `1.4.7` | CLI: scaffold, chronicles, MCP server |
 | [`@mnemosyne_os/sync`](https://www.npmjs.com/package/@mnemosyne_os/sync) | `0.0.1` | P2P: multi-agent synchronization |
-| **`@mnemosyne_os/sdk`** | **`1.3.0`** | **SDK: build Layer 2 apps** |
+| **`@mnemosyne_os/sdk`** | **latest** | **SDK: build Layer 2 apps** |
 
 ---
 
@@ -77,7 +77,7 @@ npm install @mnemosyne_os/sdk
   "id": "my-layer2-app",
   "name": "My Layer 2 App",
   "version": "1.0.0",
-  "mnemosyne_sdk": "^1.2.0",
+  "mnemosyne_sdk": "^1.5.0",
   "scopes": ["vault:read:DEV", "vault:write:DEV"],
   "vaults": ["DEV"],
   "intents": ["INGEST", "QUERY"]
@@ -92,7 +92,7 @@ import type { AppManifest, Chronicle } from '@mnemosyne_os/sdk';
 
 const MANIFEST: AppManifest = {
   id: 'my-layer2-app', name: 'My Layer 2 App', version: '1.0.0',
-  mnemosyne_sdk: '^1.1.0',
+  mnemosyne_sdk: '^1.5.0',
   scopes: ['vault:read:DEV', 'vault:write:DEV'],
   vaults: ['DEV'],
   intents: ['INGEST', 'QUERY'],
@@ -256,7 +256,8 @@ type MnemoScope =
   | 'neural:graph:read'    // NeuralGraph access
   | 'bridge:read'          // Perpetual Memory Bridges (getBridgeHistory / computeResonance)
   | 'nft:validate'         // reserved, not answered yet; see ‘Engramm licence’ below
-  | 'llm:query';           // Direct LLM queries (premium)
+  | 'llm:query'            // Direct LLM queries (premium)
+  | 'voice:speak';         // sensitive: never auto-granted, the human is asked by name
 ```
 
 ---
@@ -288,7 +289,7 @@ MNEMOSYNE_METHODS.FORGET           // 'sdk.forget'
 
 ```typescript
 type SpineType =
-  | 'GIT' | 'ARCHITECTURE' | 'DECISION' | 'DEBUG' | 'FEATURE'
+  | 'GIT' | 'ARCHITECTURE' | 'DECISION' | 'DEBUG' | 'BUGFIX' | 'FEATURE'
   | 'REDDIT_POST' | 'LINKEDIN_POST' | 'SOCIAL_NODE'
   | 'DOCUMENT' | 'NOTE' | 'CUSTOM'
   | 'RESONANCE'        // cognitive workspace node
@@ -378,7 +379,7 @@ and cached; your app never touches the licence plumbing.
 > **That was never shipped.** The manifest is still `app.manifest.json` with
 > `mnemosyne_sdk`, `vaults`, and `intents` (the source of truth is the Zod
 > validator in `src/manifest.ts`). `getBridgeSessions()` was likewise never
-> implemented. There is no `2.0.0` on npm; the current version line is `1.3.x`.
+> implemented. There is no `2.0.0` on npm; the version line is still `1.x`.
 
 ### v1.2.0, 2026-06-07: Semantic Bridge
 

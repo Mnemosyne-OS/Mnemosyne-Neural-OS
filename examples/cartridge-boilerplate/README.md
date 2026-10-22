@@ -5,8 +5,11 @@ sandbox vault, writes and reads memory, calls the host's model, and opens a
 native folder dialog.
 
 > **This template is meant to be copied anywhere.** Its dependency on
-> `@mnemosyne_os/cartridge-sdk` is a real npm range (`^0.1.0`), not a workspace
-> link — so `pnpm install` works the moment you copy it out of this repo.
+> `@mnemosyne_os/cartridge-sdk` is a real npm range (see `package.json`), not a
+> workspace link — so `pnpm install` works the moment you copy it out of this
+> repo. In `0.x` a caret range never crosses a minor version (`^0.4.4` stops
+> before `0.5.0`), so check `npm view @mnemosyne_os/cartridge-sdk version` and
+> raise the range when a newer minor is out.
 
 ## What a cartridge is
 
