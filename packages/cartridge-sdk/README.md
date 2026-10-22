@@ -176,6 +176,79 @@ whole list when one declaration is invalid.
 The voice assistant reads a `say` field from your result aloud, word for word.
 Write it in the person's language.
 
+## Taking spoken sentences
+
+The person can talk to the voice assistant while your app is open. List the
+sentences your app takes in `mnemo-plugin.json`, one list per language:
+
+```json
+"voiceCommands": {
+  "en": ["start the timer", "stop the timer", "show today's hours"],
+  "fr": ["lance le chrono", "arrête le chrono", "montre les heures du jour"]
+}
+```
+
+Write each sentence without the assistant's name. Beside your open window, the
+OS shows a card with your sentences. It puts the name the person gave their
+assistant in front of each one. The card uses the person's language, else
+English. It shows your first 10 sentences, each cut at 120 characters.
+
+The assistant also routes on these sentences. When your app is open and a
+sentence starts with the same two words as one of yours, the sentence goes to
+your app first. Small words such as "the", "my" or "a" are skipped. So "stop
+the timer for Northwind" reaches your app. "Pause the timer" does not, because
+no sentence of yours starts with "pause timer". Declare each way people say
+it. Each sentence needs two words that count, so "stop" alone routes nothing.
+
+A fast model then reads your `agentActions` and picks the steps. When the model
+finds no step, the sentence goes back to the assistant's usual answer, most
+often the chat. That answer can sound like the action happened, but your
+handlers were never called.
+
+Two more fields help the assistant pick the right action:
+
+- `agentGuide` tells every agent how to drive your app, in your words. The
+  voice assistant, Claude Code and Hermes all receive it with your actions. It
+  is a string or a list of lines, at most 1,500 characters. The host skips a
+  longer guide and keeps your actions.
+- `voiceVocabulary` lists the words of your app that speech recognition gets
+  wrong, such as client or project names. One list per language, at most 80
+  words of 40 characters each. The OS uses them to fix a sentence that is
+  already going to your app.
+
+```json
+"agentGuide": [
+  "One timer runs at a time.",
+  "stopTimer stops the running timer and saves the entry."
+],
+"voiceVocabulary": { "en": ["Northwind", "Contoso"] }
+```
+
+Needs Mnemosyne OS 1.9.0 or later.
+
+### When a spoken sentence does nothing
+
+The OS logs each step in one file per day. The date in the name is in UTC.
+
+- Windows: `%LOCALAPPDATA%\Mnemosyne OS\logs\main-YYYY-MM-DD.log`
+- macOS: `~/Library/Caches/Mnemosyne OS/logs/main-YYYY-MM-DD.log`
+- Linux: `~/.cache/mnemosyne-os/logs/main-YYYY-MM-DD.log`
+
+Search the file for these lines:
+
+1. `[voice-commands]` lists the open apps and how many sentences the OS read
+   for each one, for example `en @you/your-app:3`. A `0` means the OS found no
+   sentence of yours in that language or in English.
+2. `[voice] routed as` tells where the sentence went. A `[voice] drive` line
+   after it means the sentence reached the apps. Without one, the chat or the
+   local agent answered it.
+3. `[ORB-DRIVE]` shows the sentence, the result, the apps and the steps, for
+   example `→ ok … steps=stopTimer`. A step without a mark ran: your handler
+   was called and returned. A `✗` after an action name is a refusal, with its
+   reason. `NO_STEPS` means the model found no step, and the sentence went
+   back to the assistant's usual answer. `(recipe)` means the OS replayed a
+   plan that worked before for the same words, without the model.
+
 ## Your version, and its updates
 
 The OS tells your open app which version is installed. It also says whether a

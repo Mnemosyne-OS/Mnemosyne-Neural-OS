@@ -191,6 +191,12 @@ export interface MnemoHostConfig {
    * 🎭 `unknown` is never « up to date »: draw nothing extra for it.
    */
   update?: MnemoUpdateState;
+  /**
+   * The name the person gave their assistant at onboarding (« Mnemosyne » by
+   * default). Call her by it on a button that summons her (`orb.summon`).
+   * Absent on an older host: say « the orb ».
+   */
+  assistantName?: string;
 }
 
 /** The host's answer about a newer version of the cartridge (doc 142 §4.1). */
@@ -235,11 +241,18 @@ export function onHostConfig(
       if (d.theme) document.documentElement.setAttribute('data-theme', d.theme);
       if (d.tokens) applyDesignTokens(d.tokens);
     }
-    // Every field of MnemoHostConfig has to be forwarded here. `zoom` was added
-    // to the type and to the host's broadcast but not to this line, so it was
-    // dropped in transit and the feature could never fire — a declared field
-    // that never arrives is worse than an absent one, because it looks done.
-    cb?.({ theme: d.theme, lang: d.lang, tokens: d.tokens, zoom: d.zoom, version: d.version, update: d.update });
+    // Every field of MnemoHostConfig has to be forwarded here. `zoom`, then
+    // `assistantName`, were added to the type and to the host's broadcast but
+    // not to this line, so they were dropped in transit — a declared field that
+    // never arrives is worse than an absent one, because it looks done. The
+    // mapped type makes tsc refuse a field left out (the test that pinned it is
+    // never type-checked: tsconfig excludes *.test.ts).
+    const forwarded: { [K in keyof Required<MnemoHostConfig>]: MnemoHostConfig[K] | undefined } = {
+      theme: d.theme, lang: d.lang, tokens: d.tokens, zoom: d.zoom, version: d.version, update: d.update,
+      assistantName: d.assistantName,
+    };
+    // Unread fields travel as undefined, as they always did.
+    cb?.(forwarded as MnemoHostConfig);
   };
   window.addEventListener('message', listener);
   return () => window.removeEventListener('message', listener);

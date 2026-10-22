@@ -56,6 +56,7 @@ describe('onHostConfig', () => {
     const config = {
       theme: 'light', lang: 'fr', tokens: { '--accent': '#123456' }, zoom: 0.5, version: '1.2.0',
       update: { state: 'newer', latestVersion: '1.3.0', checkedAt: '2026-10-08T10:00:00.000Z', critical: true },
+      assistantName: 'Irina',
     } satisfies Required<MnemoHostConfig>;
     postFromHost({ type: 'MNEMO_CONFIG_UPDATE', ...config });
     expect(cb).toHaveBeenCalledWith(config);
