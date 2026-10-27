@@ -573,7 +573,9 @@ ecosystem built around a proprietary core.
 | **Mnemosyne Neural OS** (platform) | Proprietary | © 2026 XPACEGEMS LLC, All rights reserved |
 
 The **SDK** and **MnemoForge CLI** are MIT licensed. Fork them, build on them, ship
-your own apps. The **Mnemosyne Neural OS platform**, the desktop application, Neural
+your own apps. The root [`LICENSE`](./LICENSE) file is the plain MIT text and covers
+`cli/`, `packages/`, `examples/` and `handbook/`; the desktop application is not covered
+by it. The **Mnemosyne Neural OS platform**, the desktop application, Neural
 Map, MnemoHub, Dream State, Vaults, and associated services, is **proprietary
 software**. No part of the platform may be copied, modified, or distributed without
 explicit written permission from XPACEGEMS LLC.
