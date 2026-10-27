@@ -61,7 +61,7 @@
     "release:major": "npm run typecheck && npm run build && npm version major --no-git-tag-version && npm publish --access public"
   },
   "dependencies": {
-    "zod": "^3.22.4"
+    "zod": "^4.6.6"
   },
   "optionalDependencies": {
     "ws": "^8.16.0"
