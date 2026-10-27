@@ -19,23 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-## Scope of this License
-
-This MIT license applies to:
-- The **MnemoForge CLI** source code and documentation (`cli/`)
-- The **Developer SDK** packages (`packages/`) and examples (`examples/`)
-- The **Neural Coding Handbook** (`handbook/`)
-
-## Mnemosyne OS Desktop — Proprietary License
-
-The **Mnemosyne OS Desktop application** (Windows / macOS native app) is
-proprietary software. All rights reserved.
-
-Source code, binaries, and internal architecture of the desktop application
-are NOT covered by this MIT license.
-
-For licensing inquiries regarding the desktop application:
-→ dev@mnemosyne-os.com
