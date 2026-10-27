@@ -70,8 +70,8 @@ import { dirname, join } from 'node:path';
 //   MNEMO_DEFAULT_VAULT=DEVELOPPEMENT          ← default vault for query/ingest
 //   MNEMO_VAULTS=DEVELOPPEMENT,NOTES,RECHERCHE ← the vaults this server may reach
 //
-// The Infinity Edition exposes one vault per tracked folder, so users typically
-// list their main code/notes/research folders here.
+// In the Infinity Edition the user creates vaults and watched folders feed them,
+// so users typically list their main code/notes/research vaults here.
 //
 // A list, once set, is the whole grant (vaultGrant in vault-target.ts). Until
 // 2.1.3 the reserved DEV / PERSONAL / SOCIAL were added to every list, so

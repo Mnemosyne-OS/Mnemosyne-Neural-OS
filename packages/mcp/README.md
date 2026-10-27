@@ -224,9 +224,10 @@ The MCP speaks standard JSON-RPC over stdio.
 
 ## Configure your vaults
 
-Mnemosyne OS Infinity exposes **one vault per tracked folder**, named after the
-folder in uppercase. It also routes three reserved names: `DEV`, `PERSONAL` and
-`SOCIAL`. `DEV` reaches whichever folder vault mounted first. Two env vars tell
+In Mnemosyne OS Infinity you create vaults, and **watched folders feed them**.
+Each vault is stored in a folder of its own, and its token is that folder's name
+in uppercase. The app also routes three reserved names: `DEV`, `PERSONAL` and
+`SOCIAL`. `DEV` reaches whichever vault mounted first. Two env vars tell
 the MCP which vaults your agent may reach:
 
 | Env var | Purpose | When unset |
