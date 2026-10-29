@@ -69,7 +69,7 @@ function startRegisteringServer(
 ) {
   return startServer((ws, msg) => {
     if (msg.method === 'sdk.register') {
-      ws.send(JSON.stringify({ id: msg.id, result: { token: 'test-token', expiresAt: Date.now() + 60_000, appId: 'test-app' } }));
+      ws.send(JSON.stringify({ id: msg.id, result: { token: 'not-a-credential', expiresAt: Date.now() + 60_000, appId: 'test-app' } }));
       return;
     }
     extra?.(ws, msg);
