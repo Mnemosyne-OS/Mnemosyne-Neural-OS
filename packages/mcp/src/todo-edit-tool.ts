@@ -28,6 +28,15 @@ export interface TodoTaskView {
   dueAt?: number;
   hasAlarm?: boolean;
   pinned?: boolean;
+  /** The short number a person and an op can name it by (#42). */
+  num?: number;
+  kind?: 'note';
+  status?: 'doing' | 'waiting' | 'someday';
+  priority?: 'high' | 'low';
+  origin?: { by: string; name?: string };
+  triage?: boolean;
+  /** Names always; a path only when include_paths was asked. Never a folder's content. */
+  attachments?: Array<{ kind: 'file' | 'dir'; name: string; path?: string }>;
 }
 
 export interface TodoListView {
@@ -35,6 +44,9 @@ export interface TodoListView {
   name: string;
   open: number;
   done: number;
+  /** Done tasks of this list now in the archive. Absent when none. */
+  archivedDone?: number;
+  notes?: number;
 }
 
 export interface TodoReadResult {
@@ -99,7 +111,10 @@ export function renderTodoList(result: TodoReadResult): string {
   const v = result.view;
   const where = result.via === 'file' ? ' (read straight from the file: the app is not open)' : '';
   const lists = v.lists.length
-    ? v.lists.map(l => `- ${l.name} [key: ${l.key}] - ${l.open} open, ${l.done} done`).join('\n')
+    ? v.lists.map(l => `- ${l.name} [key: ${l.key}] - ${l.open} open, ${l.done + (l.archivedDone ?? 0)} done`
+      // The archive's done work is progress: said apart, so an agent knows where it is.
+      + (l.archivedDone ? ` (${l.archivedDone} of them archived)` : '')
+      + (l.notes ? `, ${l.notes} note(s)` : '')).join('\n')
     : '- (no lists)';
 
   if (v.tasks.length === 0) {
@@ -111,11 +126,24 @@ export function renderTodoList(result: TodoReadResult): string {
   }
 
   const tasks = v.tasks.map(task => {
-    const flags = [task.done ? 'done' : null, task.hasAlarm ? 'reminder' : null, task.pinned ? 'pinned' : null]
-      .filter(Boolean).join(', ');
-    return `- [${task.id}] ${task.text}${whenText(task.dueAt)}\n    list: ${task.list}`
+    const flags = [
+      task.kind === 'note' ? 'note (context, not to do)' : null,
+      task.done ? 'done' : null,
+      task.status ? `status: ${task.status}` : null,
+      task.priority ? `priority: ${task.priority}` : null,
+      task.triage ? 'waits in triage' : null,
+      task.origin?.by === 'agent' ? `filed by ${task.origin.name ?? 'an agent'}` : null,
+      task.hasAlarm ? 'reminder' : null,
+      task.pinned ? 'pinned' : null,
+    ].filter(Boolean).join(', ');
+    const files = task.attachments?.length
+      ? `\n    files: ${task.attachments.map(a => `${a.name}${a.kind === 'dir' ? '/' : ''}${a.path ? ` (${a.path})` : ''}`).join(', ')}`
+      : '';
+    const num = typeof task.num === 'number' ? ` #${task.num}` : '';
+    return `- [${task.id}]${num} ${task.text}${whenText(task.dueAt)}\n    list: ${task.list}`
       + (task.group ? ` | step: ${task.group}` : '')
-      + (flags ? ` | ${flags}` : '');
+      + (flags ? ` | ${flags}` : '')
+      + files;
   }).join('\n');
 
   const cut = v.truncated > 0
@@ -125,7 +153,7 @@ export function renderTodoList(result: TodoReadResult): string {
   const frame = v.tasks.some(t => localStamp(t.dueAt) !== '') ? `\n${LOCAL_TIME_NOTE}` : '';
   return `Lists${where}:\n${lists}\n\nTasks (${v.tasks.length} of ${v.total}):\n${tasks}${cut}${frame}`
     + `\n\nArchived (not listed here): ${v.archived}.`
-    + '\nUse the id in brackets with mnemosyne_todo_update, never the text.';
+    + '\nUse the id in brackets (or the #number) with mnemosyne_todo_update, never the text.';
 }
 
 export interface TodoOpOutcome {
@@ -136,6 +164,7 @@ export interface TodoOpOutcome {
   count?: number;
   permanent?: boolean;
   list?: string;
+  num?: number;
 }
 
 export interface TodoApplyResult {
@@ -153,7 +182,7 @@ export interface TodoApplyResult {
  * single "failed" it can only re-send whole.
  */
 export function renderOutcome(r: TodoOpOutcome): string {
-  const what = r.subject ? ` "${r.subject}"` : '';
+  const what = (typeof r.num === 'number' ? ` #${r.num}` : '') + (r.subject ? ` "${r.subject}"` : '');
   if (r.ok) {
     switch (r.op) {
       case 'remove':
@@ -163,6 +192,8 @@ export function renderOutcome(r: TodoOpOutcome): string {
       case 'move':        return `- moved${what} to "${r.list ?? 'another list'}"`;
       case 'complete':    return `- ticked or un-ticked${what}`;
       case 'edit':        return `- edited${what}`;
+      case 'attach':      return `- attached a path to${what} (only the path is stored)`;
+      case 'detach':      return `- took the attachment off${what} (the file itself is untouched)`;
       case 'list.create': return `- created the list${what}`;
       case 'list.edit':   return `- renamed or recoloured the list${what}`;
       case 'list.remove': return `- removed the list${what}`;
@@ -178,6 +209,12 @@ export function renderOutcome(r: TodoOpOutcome): string {
     case 'NAME_EMPTY':      return `- ${r.op}: a list needs a name.`;
     case 'TEXT_EMPTY':      return `- ${r.op}: a task cannot be left with no text${what}.`;
     case 'NO_CHANGE':       return `- ${r.op}: already in that state${what}; nothing was written.`;
+    case 'IS_NOTE':         return `- ${r.op}:${what || ' that task'} is a note, and a note is not ticked. Turn it back into a task first (edit, kind: "task").`;
+    case 'BAD_STATUS':      return `- ${r.op}: status must be "doing", "waiting", "someday" or null${what}.`;
+    case 'BAD_PRIORITY':    return `- ${r.op}: priority must be "high", "low" or null${what}.`;
+    case 'BAD_PATH':        return `- ${r.op}: the path must be ABSOLUTE (C:\\... or /...)${what}. Nothing was attached.`;
+    case 'TOO_MANY_ATTACHMENTS': return `- ${r.op}:${what} already holds ${r.count ?? 'the maximum of'} attachments. Attach their folder instead.`;
+    case 'ATTACHMENT_NOT_FOUND': return `- ${r.op}: no attachment with that path${what}. Read the backlog with include_paths: true to see them.`;
     case 'BAD_OP':          return `- ${r.op}: not an operation this door knows.`;
     default:                return `- ${r.op}: refused (${r.error ?? 'unknown'})${what}.`;
   }
@@ -207,6 +244,7 @@ export function todoListParams(appId: string, args: Record<string, unknown>): Re
   const list = args['list'];
   if (typeof list === 'string' && list.trim()) out['list'] = list.trim();
   if (typeof args['limit'] === 'number') out['limit'] = args['limit'];
+  if (args['include_paths'] === true) out['includePaths'] = true;
   return out;
 }
 

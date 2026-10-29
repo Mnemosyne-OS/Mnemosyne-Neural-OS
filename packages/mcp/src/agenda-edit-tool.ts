@@ -34,6 +34,8 @@ export interface AgendaEventView {
   location?: string;
   description?: string;
   repeats?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  /** An RFC 5545 rule, for a series the four cadences cannot say. */
+  repeatsRule?: string;
   repeatsUntil?: number;
   /** Next occurrence at or after now. ABSENT when there is none left. */
   nextAt?: number;
@@ -80,7 +82,7 @@ export function renderAgendaList(result: AgendaReadResult): string {
     // original start as though it were still coming.
     const next = e.nextAt !== undefined ? `next ${stamp(e.nextAt)}` : 'no occurrence left';
     const bits = [
-      e.repeats ? `repeats ${e.repeats}` : null,
+      e.repeats ? `repeats ${e.repeats}` : e.repeatsRule ? `repeats ${e.repeatsRule}` : null,
       e.repeatsUntil !== undefined ? `until ${stamp(e.repeatsUntil)}` : null,
       e.allDay ? 'all day' : null,
       e.location ? `at ${e.location}` : null,

@@ -39,8 +39,12 @@ export interface DiscoveredSource {
 }
 
 /** Session connectors, in the order a listing shows them. Document connectors
- *  (notes) are not session sources and never appear here. */
-const SESSION_SOURCES: ConnectorId[] = ['claude-code', 'antigravity', 'antigravity-ide'];
+ *  (notes) are not session sources and never appear here.
+ *
+ *  `openclaw` has no `folderHint` (its exports land under whatever workspace
+ *  the human named), so it is never probed: it is read only when
+ *  `MNEMO_AGENT_SESSIONS_OPENCLAW` declares the folder. */
+const SESSION_SOURCES: ConnectorId[] = ['claude-code', 'antigravity', 'antigravity-ide', 'openclaw'];
 
 /** `MNEMO_AGENT_SESSIONS_ANTIGRAVITY_IDE` for `antigravity-ide`. */
 function envKeyFor(id: ConnectorId): string {
@@ -99,11 +103,11 @@ export function discoverSources(env: NodeJS.ProcessEnv = process.env): Discovere
  * Needed for the "nothing found" message: telling someone no folder was found
  * is only useful if you say which ones you looked for.
  */
-export function attemptedRoots(env: NodeJS.ProcessEnv = process.env): { id: ConnectorId; root: string }[] {
-  const out: { id: ConnectorId; root: string }[] = [];
+export function attemptedRoots(env: NodeJS.ProcessEnv = process.env): { id: ConnectorId; root: string; declared: boolean }[] {
+  const out: { id: ConnectorId; root: string; declared: boolean }[] = [];
   for (const id of SESSION_SOURCES) {
     const where = rootFor(id, env);
-    if (where) out.push({ id, root: where.root });
+    if (where) out.push({ id, root: where.root, declared: where.declared });
   }
   return out;
 }

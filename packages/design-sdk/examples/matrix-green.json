@@ -24,6 +24,6 @@
     "--text-accent":        "#00ff41",
     "--font-mono":          "'Courier New', 'Lucida Console', monospace",
     "--shadow-accent":      "0 0 30px rgba(0, 255, 65, 0.25)",
-    "--border-accent":      "1px solid rgba(0, 255, 65, 0.30)"
+    "--border-accent":      "rgba(0, 255, 65, 0.30)"
   }
 }

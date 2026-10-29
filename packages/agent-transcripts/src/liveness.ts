@@ -49,6 +49,17 @@ export function minutesSince(iso: string | null, now: number = Date.now()): numb
   return (now - at) / 60_000;
 }
 
+/** How long ago, in English words, for agents and terminals. Never a status:
+ *  a crashed agent and an idle one fall equally silent. */
+export function lastSeen(iso: string | null, now = Date.now()): string {
+  const m = minutesSince(iso, now);
+  if (!Number.isFinite(m)) return 'never (no timestamp in this transcript)';
+  if (m < 1) return 'under a minute ago';
+  if (m < 60) return `${Math.round(m)} min ago`;
+  if (m < 24 * 60) return `${Math.round(m / 60)} h ago`;
+  return `${Math.round(m / (24 * 60))} days ago`;
+}
+
 /** Wrote something within the recency window. NOT "is working". */
 export function isRecent(s: LiveLike, now: number = Date.now()): boolean {
   return minutesSince(s.lastEventAt, now) < LIVE_MINUTES;

@@ -25,6 +25,6 @@
     "--text-accent":        "#ff2d78",
     "--shadow-accent":      "0 0 30px rgba(255, 45, 120, 0.28)",
     "--shadow-panel":       "0 8px 32px rgba(0,0,0,0.8), 0 0 2px rgba(255,45,120,0.1)",
-    "--border-accent":      "1px solid rgba(255, 45, 120, 0.35)"
+    "--border-accent":      "rgba(255, 45, 120, 0.35)"
   }
 }

@@ -406,6 +406,8 @@ export function readSession(conn: Connector, file: string, path: string, text: s
   };
   const lines = completeLines(text);
   const seenArtifacts = new Set<string>();
+  /** The most recent line that SAYS whether this is a side chain decides it. */
+  let sidechainRead = false;
 
   for (let i = lines.length - 1; i >= 0; i--) {
     let o: unknown;
@@ -417,13 +419,21 @@ export function readSession(conn: Connector, file: string, path: string, text: s
 
     if (!st.lastEventAt) {
       const ts = pick(o, conn.fields?.timestamp);
-      if (typeof ts === 'string') {
-        st.lastEventAt = ts;
-        st.sessionId = asString(pick(o, conn.fields?.sessionId));
-        st.projectPath = asString(pick(o, conn.fields?.projectPath));
-        st.branch = asString(pick(o, conn.fields?.branch));
-        st.isSidechain = pick(o, conn.fields?.isSidechain) === true;
-      }
+      if (typeof ts === 'string') st.lastEventAt = ts;
+    }
+    // 🚨 Each field from the most recent line that CARRIES it, not from the
+    // last timestamped line whatever it is: Claude Code's `queue-operation`
+    // lines (a message queued while the agent works) carry a timestamp and a
+    // session id but no cwd and no branch. Latched together, a LIVE session
+    // read « neither project nor branch » every time a queued message was its
+    // last line — measured on this machine, 8 % of a session's life — and its
+    // collision vanished from the screen, the MCP and the commit hook.
+    if (st.sessionId === null) st.sessionId = asString(pick(o, conn.fields?.sessionId));
+    if (st.branch === null) st.branch = asString(pick(o, conn.fields?.branch));
+    if (st.projectPath === null) st.projectPath = asString(pick(o, conn.fields?.projectPath));
+    if (!sidechainRead) {
+      const side = pick(o, conn.fields?.isSidechain);
+      if (typeof side === 'boolean') { st.isSidechain = side; sidechainRead = true; }
     }
     // Walking backwards, every timestamped line overwrites this, so the last
     // one written is the earliest line in the file.

@@ -121,3 +121,53 @@ test('todoListParams trims the list name and never invents one', () => {
   assert.deepEqual(todoListParams('mcp', {}), { appId: 'mcp', includeDone: false });
   assert.deepEqual(todoListParams('mcp', { list: '   ' }), { appId: 'mcp', includeDone: false });
 });
+
+// ── Doc 170: numbers, notes, triage, files ─────────────────────────────────
+
+test('a task is printed with its number, its status, its note kind and its triage', () => {
+  const out = renderTodoList(view({
+    lists: [{ key: 'wip', name: 'En cours', open: 1, done: 0, notes: 1 }],
+    tasks: [
+      { id: 't1', text: 'Ship it', list: 'En cours', listKey: 'wip', done: false, num: 42, status: 'doing', priority: 'high', triage: true, origin: { by: 'agent', name: 'Claude Code' } },
+      { id: 'n1', text: 'Never trust 3 %', list: 'En cours', listKey: 'wip', done: false, num: 43, kind: 'note' },
+    ],
+    total: 2,
+  }));
+  assert.match(out, /\[t1\] #42 Ship it/);
+  assert.match(out, /status: doing, priority: high, waits in triage, filed by Claude Code/);
+  assert.match(out, /\[n1\] #43 Never trust 3 %[\s\S]*note \(context, not to do\)/);
+  assert.match(out, /1 open, 0 done, 1 note\(s\)/);
+  assert.match(out, /or the #number/);
+});
+
+test('attachments are named, and a path is printed only when the host sent one', () => {
+  const named = renderTodoList(view({
+    tasks: [{ id: 't1', text: 'Pay', list: 'En cours', listKey: 'wip', done: false, attachments: [{ kind: 'dir', name: 'Factures' }, { kind: 'file', name: 'a.pdf' }] }],
+  }));
+  assert.match(named, /files: Factures\/, a\.pdf/);
+  assert.doesNotMatch(named, /C:\\/);
+  const withPaths = renderTodoList(view({
+    tasks: [{ id: 't1', text: 'Pay', list: 'En cours', listKey: 'wip', done: false, attachments: [{ kind: 'dir', name: 'Factures', path: 'C:\\Users\\me\\Factures' }] }],
+  }));
+  assert.match(withPaths, /Factures\/ \(C:\\Users\\me\\Factures\)/);
+});
+
+test('include_paths travels as includePaths, and only when true', () => {
+  assert.equal(todoListParams('app', { include_paths: true })['includePaths'], true);
+  assert.equal(todoListParams('app', { include_paths: 'yes' })['includePaths'], undefined);
+  assert.equal(todoListParams('app', {})['includePaths'], undefined);
+});
+
+test('the new refusals each say what to do next', () => {
+  assert.match(renderOutcome({ op: 'complete', ok: false, error: 'IS_NOTE', subject: 'x', num: 3 }), /#3 "x" is a note[\s\S]*kind: "task"/);
+  assert.match(renderOutcome({ op: 'attach', ok: false, error: 'BAD_PATH' }), /ABSOLUTE/);
+  assert.match(renderOutcome({ op: 'detach', ok: false, error: 'ATTACHMENT_NOT_FOUND' }), /include_paths: true/);
+  assert.match(renderOutcome({ op: 'attach', ok: true, subject: 'x', num: 9 }), /attached a path to #9 "x" \(only the path is stored\)/);
+});
+
+test('a list counts its done work in the archive, and says it is there (doc 170 §10)', () => {
+  const s = renderTodoList(view({ lists: [{ key: 'c-x', name: 'Octave', open: 4, done: 1, archivedDone: 6 }] }));
+  assert.match(s, /- Octave \[key: c-x\] - 4 open, 7 done \(6 of them archived\)/);
+  const none = renderTodoList(view({ lists: [{ key: 'wip', name: 'WIP', open: 2, done: 1 }] }));
+  assert.match(none, /- WIP \[key: wip\] - 2 open, 1 done$/m);
+});

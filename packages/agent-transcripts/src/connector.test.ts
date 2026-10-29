@@ -5,9 +5,10 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  readSession, readDoc, completeLines, describeConnector, MAX_ARTIFACTS,
+  readSession, readDoc, completeLines, describeConnector, MAX_ARTIFACTS, asString,
   type Connector,
 } from './connector';
+import claudeCode from './connectors/claude-code.json';
 
 const JSONL: Connector = {
   id: 'test', displayName: 'Test', version: '1.0.0',
@@ -352,5 +353,45 @@ describe('describeConnector', () => {
       filePattern: '.md', fields: {}, frontmatter: { name: 'name', type: 'metadata.type' },
     };
     expect(describeConnector(md)).toEqual(['name', 'type']);
+  });
+});
+
+describe('a session whose last line is a queued message (doc 93 verification pass, 05/10)', () => {
+  // The real shape of Claude Code's transcript: a `queue-operation` line has a
+  // timestamp and a session id, and NO cwd and NO branch.
+  const shipped = claudeCode as unknown as Connector;
+  const real = [
+    JSON.stringify({ type: 'user', timestamp: '2026-10-05T01:00:00.000Z', sessionId: 's1', cwd: '/repo', gitBranch: 'main', isSidechain: false, message: { role: 'user', content: 'hi' } }),
+    JSON.stringify({ type: 'queue-operation', operation: 'enqueue', timestamp: '2026-10-05T01:00:05.000Z', sessionId: 's1' }),
+    JSON.stringify({ type: 'queue-operation', operation: 'dequeue', timestamp: '2026-10-05T01:00:06.000Z', sessionId: 's1' }),
+  ].join('\n') + '\n';
+
+  it('keeps its project and branch (it read « neither project nor branch » and its collision vanished)', () => {
+    const st = readSession(shipped, 's1.jsonl', '/home/x/.claude/projects/p/s1.jsonl', real, real.length);
+    expect(st?.projectPath).toBe('/repo');
+    expect(st?.branch).toBe('main');
+    expect(st?.sessionId).toBe('s1');
+    expect(st?.lastEventAt).toBe('2026-10-05T01:00:06.000Z');
+  });
+});
+
+
+// A harness writes `"gitBranch": null` outside a repository. Coerced, that is
+// the text "null" in the branch column, which reads as a real branch name.
+describe('an absent field stays absent', () => {
+  it('never turns null into the text "null"', () => {
+    expect(asString(null)).toBeNull();
+    expect(asString('')).toBeNull();
+    expect(asString(42)).toBeNull();
+    expect(asString('main')).toBe('main');
+  });
+
+  it('reads a null branch as unknown, not as a branch called "null"', () => {
+    const line = JSON.stringify({
+      type: 'user', timestamp: '2026-10-05T10:00:00.000Z', sessionId: 's1',
+      cwd: '/repo', gitBranch: null, message: { role: 'user', content: 'hi' },
+    }) + '\n';
+    const st = readSession(claudeCode as Connector, 's1.jsonl', '/x/s1.jsonl', line, line.length);
+    expect(st?.branch).toBeNull();
   });
 });

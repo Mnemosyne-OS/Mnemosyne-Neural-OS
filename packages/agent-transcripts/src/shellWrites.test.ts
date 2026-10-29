@@ -104,3 +104,13 @@ describe('looksLikePath', () => {
     }
   });
 });
+
+// `> $OUT` writes to whatever the variable held, which the command line does
+// not say. Listing "$OUT" as a written file would name a file that does not
+// exist under that name.
+describe('a target the command line does not name', () => {
+  it('skips a target held in a variable', () => {
+    expect(shellWriteTargets('echo hi > $OUT')).toEqual([]);
+    expect(shellWriteTargets('echo hi > "$HOME/x.txt"')).toEqual([]);
+  });
+});

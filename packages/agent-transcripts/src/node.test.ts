@@ -3,7 +3,7 @@
  * depends on being correct.
  */
 import { describe, it, expect } from 'vitest';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, utimesSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, utimesSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readSessionsFromDisk, workingTreeOf, nodeReadDir } from './node';
@@ -63,6 +63,21 @@ describe('readSessionsFromDisk', () => {
       isSidechain: false, message: { content: 'hello' },
     }), 'utf-8');
   };
+
+  // Linux only: /proc/self/mem stats as a regular file and refuses every read (EIO).
+  it.runIf(process.platform === 'linux')('a transcript that fails to read is COUNTED, never swallowed (doc 93 pass, 05/10)', async () => {
+    const t = tmp();
+    try {
+      const proj = join(t.root, 'proj');
+      mkdirSync(proj, { recursive: true });
+      write(proj, 'a.jsonl', 'C:/w', '2026-08-29T10:00:00.000Z');
+      symlinkSync('/proc/self/mem', join(proj, 'broken.jsonl'));
+      const out = await readSessionsFromDisk(t.root, CONN);
+      expect(out.sessions.map(s => s.file)).toEqual(['a.jsonl']);
+      expect(out.unreadable?.count).toBe(1);
+      expect(out.unreadable?.firstReason).toMatch(/EIO|i\/o/i);
+    } finally { t.cleanup(); }
+  });
 
   it('reads a folder of transcripts, newest first, and says what it read', async () => {
     const t = tmp();

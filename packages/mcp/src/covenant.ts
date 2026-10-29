@@ -139,7 +139,7 @@ export function renderCovenant(opts: { defaultVault: string; declaredVaults: str
     // does measure. Naming a vault here that is not mounted sent agents to
     // addresses that could not answer (DEV and PERSONAL, found 2026-08-31).
     `- Vaults this MCP is scoped for (config, not a census, so some may not be mounted here): ${others.length ? others.map(v => `**${v}**`).join(', ') : '(none)'}`,
-    '- Call `mnemosyne_vault_list` for the vaults that actually exist on this machine, with their chronicle counts and protection.',
+    '- Call `mnemosyne_vault_list` for the vaults that actually exist on this machine, with their chronicle counts, protection and, when the owner wrote one, a line on what each holds.',
     '',
     '_Call `mnemosyne_about` any time to re-read this. Call `mnemosyne_vault_list` to see live vaults and their protection._',
   ].join('\n');

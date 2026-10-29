@@ -39,10 +39,12 @@ import {
 // must boot under plain `node dist/index.js` because that's how Claude Desktop
 // and Claude Code launch it. We talk the same wire protocol via a local client.
 import { BackendRefusedError, MnemoWsClient, type VoiceJob } from './ws-client.js';
-import { unwrapContent, selectResonances, toResonanceView, voiceError, renderReport, freshnessLine } from './format.js';
+import { unwrapContent, selectResonances, toResonanceView, resonanceLine, voiceError, renderReport, freshnessLine, queryRefusal, searchFailure, findPosition, readCoverage, formatQueryRow } from './format.js';
+import { localStamp, parseStoredTime, LOCAL_TIME_NOTE } from './local-time.js';
 import { renderCovenant } from './covenant.js';
+import { renderVaultList } from './vault-list.js';
 import { recordCall } from './usage.js';
-import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget, vaultGrant, vaultForHostDefault, GRANT_RULE } from './vault-target.js';
+import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget, vaultGrant, vaultForHostDefault } from './vault-target.js';
 import { AGENT_TOOLS, handleAgentTool, sessionsRoots } from './agents.js';
 import { annotated } from './annotations.js';
 import { handleTodoAdd } from './todo-tool.js';
@@ -361,7 +363,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_vault_list',
-    description: 'List the memory vaults this Mnemosyne OS exposes, each with its token, display name and memory count. Call it first when you are unsure which vault to work against, or when the user names a store you have not seen. Pass the bold token as the `vault` argument of the other tools. The `id` line is a local path and the other tools do not take it. Vaults this server was not configured for are flagged here and refused until the user adds them.',
+    description: 'List the memory vaults this Mnemosyne OS exposes, each with its token, display name, memory count and, when the owner wrote one, a line on what it holds. Call it first when you are unsure which vault to work against, or when the user names a store you have not seen. Pass the bold token as the `vault` argument of the other tools. The `id` line is a local path and the other tools do not take it. Vaults this server was not configured for are flagged here and refused until the user adds them.',
     inputSchema: {
       type:       'object',
       properties: {},
@@ -654,17 +656,37 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_add',
-    description: 'Put tasks into the user\'s To-do backlog, the To-do widget on their canvas, in order and optionally under named steps. Use it when a conversation has settled what to do. Name the destination list in "list": call once without it to get the existing lists back on a LIST_NOT_FOUND answer, or pass create_list: true to make a new one. Always name a list. The app routes the write through the widget\'s own store, so what you file is what the user sees. ' + FILE_PATH_CAVEAT + ' To read the backlog back or change what is in it, see mnemosyne_todo_list, mnemosyne_todo_update and mnemosyne_todo_categories.',
+    description: 'Put tasks into the user\'s To-do backlog, the To-do widget on their canvas, in order and optionally under named steps. Use it when a conversation has settled what to do. Name the destination list in "list": call once without it to get the existing lists back on a LIST_NOT_FOUND answer, or pass create_list: true to make a new one. Always name a list, and file one plan into ONE list, its steps as "group". Write each text as a short title a person can say aloud (about 80 characters); the detail goes in "description". A rule, a trap or a decision is not something to do: file it with kind "note", so it stays as context and counts in no total. On a recent app your tasks wait in « To triage » until the human keeps them, and each gets a number (#42) shown by mnemosyne_todo_list. The app routes the write through the widget\'s own store, so what you file is what the user sees. ' + FILE_PATH_CAVEAT + ' To read the backlog back or change what is in it, see mnemosyne_todo_list, mnemosyne_todo_update and mnemosyne_todo_categories.',
     inputSchema: {
       type: 'object',
       properties: {
         tasks: {
           type:        'array',
-          description: 'The tasks, in execution order. Each item is a string, or {"text": string, "group": string, "description": string} where group is the STEP the task belongs to (e.g. "Step 1 · Mockup"); tasks with the same group are shown under one header in the list. One concrete, actionable line each, 300 characters max; longer detail goes in description (4000 max). A longer text is filed shortened and the answer says so.',
+          description: 'The tasks, in execution order. Each item is a string, or an object: "text" (a short title), "group" (the STEP it belongs to, e.g. "Step 1 · Mockup"; tasks with the same group are shown under one header), "description" (the detail, 4000 max), "kind" ("note" for context that is not a thing to do), "status" ("doing", "waiting" or "someday"), "priority" ("high" or "low"), "attachments" (absolute paths of files or folders the task is about, or {"path", "kind": "file"|"dir", "label"}). 300 characters max per text; a longer text is filed shortened and the answer says so.',
           items: {
             anyOf: [
               { type: 'string' },
-              { type: 'object', properties: { text: { type: 'string' }, group: { type: 'string' }, description: { type: 'string' } }, required: ['text'] },
+              {
+                type: 'object',
+                properties: {
+                  text: { type: 'string' },
+                  group: { type: 'string' },
+                  description: { type: 'string' },
+                  kind: { type: 'string', enum: ['note'] },
+                  status: { type: 'string', enum: ['doing', 'waiting', 'someday'] },
+                  priority: { type: 'string', enum: ['high', 'low'] },
+                  attachments: {
+                    type: 'array',
+                    items: {
+                      anyOf: [
+                        { type: 'string' },
+                        { type: 'object', properties: { path: { type: 'string' }, kind: { type: 'string', enum: ['file', 'dir'] }, label: { type: 'string' } }, required: ['path'] },
+                      ],
+                    },
+                  },
+                },
+                required: ['text'],
+              },
             ],
           },
         },
@@ -687,7 +709,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_list',
-    description: 'Read the user\'s To-do backlog back: the lists that exist and the tasks in them, each with the id you need to change it. Call this before mnemosyne_todo_update, which names tasks by id. A phrase like "delete the task about the invoice" reads perfectly and can still match the wrong task. This is also the way to answer "what is on my plate", or to check whether something is already filed before you add a duplicate. ' + FILE_PATH_CAVEAT + ' Scope todo:read.',
+    description: 'Read the user\'s To-do backlog back: the lists that exist and the tasks in them, each with the id (and the short number, #42) you need to change it, its status, priority, whether it is a note or waits in triage, and the names of its attached files. Call this before mnemosyne_todo_update, which names tasks by id or number. A phrase like "delete the task about the invoice" reads perfectly and can still match the wrong task. This is also the way to answer "what is on my plate", or to check whether something is already filed before you add a duplicate. ' + FILE_PATH_CAVEAT + ' Scope todo:read.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -703,6 +725,11 @@ const TOOLS = [
         limit: {
           type:        'number',
           description: 'Maximum tasks returned (default and ceiling: 300). The answer always says how many matched and how many were cut.',
+        },
+        include_paths: {
+          type:        'boolean',
+          description: 'Also print the full path of each attached file or folder, not only its name. Default false. A folder\'s content is never listed here.',
+          default:     false,
         },
       },
     },
@@ -721,10 +748,16 @@ const TOOLS = [
             properties: {
               op: {
                 type:        'string',
-                enum:        ['edit', 'complete', 'move', 'remove'],
-                description: 'edit = rewrite text/description/colour/step/due date. complete = tick or un-tick. move = send to another list. remove = archive it, or delete it with permanent: true.',
+                enum:        ['edit', 'complete', 'move', 'remove', 'attach', 'detach'],
+                description: 'edit = rewrite text/description/colour/step/due date/status/priority, or turn it into a note. complete = tick or un-tick (a note cannot be ticked). move = send to another list. remove = archive it (dropped: true marks it « not planned »), or delete it with permanent: true. attach = attach a file or folder by absolute path. detach = take an attachment off by its path.',
               },
-              task: { type: 'string', description: 'The task id, exactly as mnemosyne_todo_list printed it in brackets.' },
+              task: { type: 'string', description: 'The task id, exactly as mnemosyne_todo_list printed it in brackets, or its number (#42).' },
+              status: { type: ['string', 'null'], enum: ['doing', 'waiting', 'someday', null], description: 'edit: where its work stands. null puts it back to « to do ».' },
+              priority: { type: ['string', 'null'], enum: ['high', 'low', null], description: 'edit: high or low. null is normal.' },
+              kind: { type: 'string', enum: ['note', 'task'], description: 'edit: "note" turns a task into context (not ticked, counted nowhere); "task" turns it back.' },
+              path: { type: 'string', description: 'attach / detach: the ABSOLUTE path of the file or folder. Nothing is read: only the path is stored.' },
+              label: { type: 'string', description: 'attach: a name to show instead of the file name.' },
+              dropped: { type: 'boolean', description: 'remove: archive it as « not planned » rather than as tidied away.', default: false },
               text: { type: 'string', description: 'edit: the new text. Omit to leave it alone; it can never be emptied.' },
               description: { type: ['string', 'null'], description: 'edit: new notes. null clears them; omitting leaves them alone.' },
               group: { type: ['string', 'null'], description: 'edit: the STEP heading this task sits under. null removes it.' },
@@ -922,7 +955,7 @@ const VOICE_TOOLS = [
         },
         engine: {
           type:        'string',
-          description: 'Local engine: "xtts" and "chatterbox" clone a voice, "zonos" adds an emotion vector, "piper" is fast with fixed voices and CANNOT clone. Omit to let the host pick the best installed one.',
+          description: 'Local engine: "qwen3" and "chatterbox" clone a voice, "zonos" adds an emotion vector, "piper" is fast with fixed voices and CANNOT clone. "xtts" was retired from the app and is refused. Omit to let the host pick the best installed one.',
         },
         language: {
           type:        'string',
@@ -1230,52 +1263,21 @@ class MnemoMcpServer {
         // ranking (ARCHITECTURE/GIT/API boosted, tie-break by raw cosine).
         const result = await client.query(query, { limit, vault, semantic: true, spineTypeFilter });
 
-        if (!result.success || result.chronicles.length === 0) {
-          const filterHint = spineTypeFilter?.length ? ` (filter: ${spineTypeFilter.join(',')})` : '';
-          return text(`No chronicles found for this query${filterHint}.`);
-        }
+        // A failed search, a fallback to recent memories and a real empty
+        // match are three different answers (queryRefusal, format.ts).
+        const filterHint = spineTypeFilter?.length ? ` (filter: ${spineTypeFilter.join(',')})` : '';
+        const refusal = queryRefusal(result, vault, filterHint);
+        if (refusal !== null) return text(refusal);
 
-        // Spine types that are design/vision/doc material — their identifiers
-        // (class names, file paths, intents) may be idealized and not match the
-        // actual source code. Flag them so an agent verifies before trusting.
-        const DOC_SPINES = new Set([
-          'DOCUMENT', 'VISION', 'NOTE', 'IDEATIONAL', 'HYPOTHESIS', 'CONTEXTUAL', 'CONCERN',
-        ]);
-
-        // unwrapContent (SemanticChunker envelope → .raw) is shared with the
-        // resonance helpers — imported from ./format.js.
-        const truncate = (s: string): { text: string; truncated: boolean; totalLen: number } => {
-          const totalLen = s.length;
-          if (totalLen <= maxContentChars) return { text: s, truncated: false, totalLen };
-          return { text: s.slice(0, maxContentChars).trimEnd() + '…', truncated: true, totalLen };
-        };
-
-        const formatted = result.chronicles.map((c, i) => {
-          const isDoc      = DOC_SPINES.has(String(c.spineType).toUpperCase());
-          const stale      = freshnessLine(c.freshness);
-          const raw        = unwrapContent(c.content ?? '');
-          const { text: snippet, truncated, totalLen } = truncate(raw);
-          const truncHint  = truncated
-            ? `\n\n_(content truncated, ${totalLen} chars total. Re-query with max_content_chars: ${Math.min(totalLen, 4000)} for the full body, or call mnemosyne_memory_query with a more specific text to surface the right chunk.)_`
-            : '';
-          return [
-            `### [${i + 1}] ${c.spineType} · score: ${c.score.toFixed(3)}`,
-            `**ID:** ${c.id}`,
-            `**Date:** ${new Date(c.timestamp).toLocaleString()}`,
-            `**Source:** ${c.source_app_id}`,
-            ...(isDoc
-              ? ['> ⚠️ Design/vision doc: verify class names, file paths and identifiers against the actual source code before relying on them.']
-              : []),
-            ...(stale ? [stale] : []),
-            '',
-            snippet || '_(no content)_',
-            truncHint,
-          ].join('\n');
-        }).join('\n\n---\n\n');
+        // A words-only vault's own verdict on its rows (absent elsewhere).
+        const coverage = readCoverage(result);
+        const formatted = result.chronicles.map((c, i) => formatQueryRow(c, i, { maxContentChars, notAdmitted: coverage?.notAdmitted[i] === true }))
+          .join('\n\n---\n\n');
 
         const filterLine = spineTypeFilter?.length
           ? `\nFilter: spineType ∈ {${spineTypeFilter.join(', ')}}` : '';
-        return text(`# Mnemosyne Query: "${query}"\n\n${result.chronicles.length} result(s) · snippet=${maxContentChars}c${filterLine}\n\n${formatted}`);
+        const coverageLine = coverage ? `\n${coverage.summary}` : '';
+        return text(`# Mnemosyne Query: "${query}"\n\n${result.chronicles.length} result(s) · snippet=${maxContentChars}c${filterLine}${coverageLine}\n${LOCAL_TIME_NOTE}\n\n${formatted}`);
       }
 
       // ── mnemosyne_memory_ask ────────────────────────────────────────────────────────
@@ -1390,37 +1392,7 @@ class MnemoMcpServer {
         if (!result.success) {
           return text(`Could not list vaults: ${result.error ?? 'unknown error'}`);
         }
-        const vaults = result.vaults ?? [];
-        if (vaults.length === 0) return text('No vaults are currently exposed by Mnemosyne OS.');
-
-        const reachable = new Set(DECLARED_VAULTS);
-        let outside = 0;
-        const rows = vaults.map((v) => {
-          const name  = v.name && v.name !== v.id ? ` (${v.name})` : '';
-          const count = typeof v.chronicleCount === 'number' ? ` · ${v.chronicleCount} chronicles` : '';
-          // The id is a PATH; comparing it uppercased against env-style tokens
-          // matched nothing, so this warning used to fire on EVERY vault —
-          // including the reachable ones. Compare the derived token instead.
-          const token = toVaultToken(String(v.id)) || toVaultToken(String(v.name ?? ''));
-          const inGrant = reachable.has(token);
-          if (!inGrant) outside++;
-          const scope = inGrant ? '' : ' · ⚠️ not reachable by this server (its token is not in MNEMO_VAULTS)';
-          // Governance flags an agent must honor (see mnemosyne_about).
-          const gov: string[] = [];
-          if (v.protection === 'MAXIMUM') gov.push('🔒 MAXIMUM (private: do not read for cross-vault work, mix, or write unless asked)');
-          if (Array.isArray(v.mixableWith) && v.mixableWith.length === 0) gov.push('⛓️ isolated (never blend with other vaults)');
-          if (v.visibleInNeuralMap === false && v.protection !== 'MAXIMUM') gov.push('🧪 sandbox/out-of-band (not the user\'s real knowledge)');
-          const govLine = gov.length ? `\n    ${gov.join(' · ')}` : '';
-          // The TOKEN leads, because the token is what the other tools take.
-          // Printing the path-shaped id first is what sent agents into
-          // SCOPE_DENIED for years — it looks like the identifier, and is not.
-          return `- **${token}**${name}${count}${scope}\n    id: \`${v.id}\`${govLine}`;
-        }).join('\n');
-
-        // Adding a token is the user's config change, and on an install with no
-        // list it also drops DEV, PERSONAL and SOCIAL: say so where it is offered.
-        const grantNote = outside > 0 ? ` To reach a ⚠️ vault, the user adds its token to MNEMO_VAULTS and restarts the server. ${GRANT_RULE}` : '';
-        return text(`# Vaults exposed by Mnemosyne OS\n\n${rows}\n\n_Pass the bold **token** above as the \`vault\` argument to mnemosyne_memory_query / mnemosyne_memory_ask / mnemosyne_memory_ingest. The \`id\` line is the host's internal path, shown for reference only. Honor the governance flags; see mnemosyne_about.${grantNote}_`);
+        return text(renderVaultList(result.vaults ?? [], DECLARED_VAULTS));
       }
 
       // ── mnemosyne_memory_ingest ─────────────────────────────────────────────────────
@@ -1521,6 +1493,9 @@ class MnemoMcpServer {
         // loose `content.includes('[RESONANCE:')` matched the MCP's own source
         // code and dumped a ~189KB blob — fixed here.
         const result     = await client.query('RESONANCE resume session position phase', { limit: 30, vault: DEFAULT_VAULT });
+        // A failed search or a fallback to recent memories is not "no resonance yet".
+        const failure    = searchFailure(result, DEFAULT_VAULT);
+        if (failure !== null) return text(failure);
         const resonances = selectResonances(result.chronicles);
 
         if (resonances.length === 0) {
@@ -1528,10 +1503,7 @@ class MnemoMcpServer {
         }
 
         const now   = Date.now();
-        const lines = resonances.map(c => {
-          const v = toResonanceView(c, now);
-          return `- **${v.id}** · ${v.phase} · updated ${v.agoMin}min ago \`#${v.chronicleId}\``;
-        }).join('\n');
+        const lines = resonances.map(c => resonanceLine(toResonanceView(c, now))).join('\n');
 
         return text(`# Active Resonances (${resonances.length})\n\n${lines}\n\n> Use \`mnemosyne_position_get\` with a resonance ID to see its full position.`);
       }
@@ -1543,15 +1515,18 @@ class MnemoMcpServer {
           limit: 5, vault: DEFAULT_VAULT,
         });
 
-        if (!result.success || result.chronicles.length === 0) {
+        const failure = searchFailure(result, DEFAULT_VAULT);
+        if (failure !== null) return text(failure);
+        // The nearest row of the search is any document; only this id's marker is its position.
+        const latest = findPosition(result.chronicles, resonanceId);
+        if (latest === null) {
           return text(`No position found for resonance "${resonanceId}".\nTip: Use mnemosyne_position_update to save your current position.`);
         }
-
-        const latest = result.chronicles[0]!;
         const content = latest.content ?? '';
+        const savedAt = parseStoredTime(latest.timestamp);
         return text([
           `# Position: ${resonanceId}`,
-          `**Last saved:** ${new Date(latest.timestamp).toLocaleString()}`,
+          ...(savedAt !== null ? [`**Last saved:** ${localStamp(savedAt)}`, LOCAL_TIME_NOTE] : []),
           `**Type:** ${latest.spineType}`,
           '',
           '## Content',

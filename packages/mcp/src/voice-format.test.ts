@@ -80,8 +80,10 @@ test('UNKNOWN_CLONE tells the agent to ASK, not to guess again', () => {
 });
 
 test('each host code gets the one next move that is actually right', () => {
-  assert.match(voiceError('CLONE_NOT_SUPPORTED:piper'), /xtts.*chatterbox.*zonos/);
-  assert.match(voiceError('ENGINE_NOT_INSTALLED:xtts'), /Settings . Voice/);
+  assert.match(voiceError('CLONE_NOT_SUPPORTED:piper'), /qwen3.*chatterbox.*zonos/);
+  assert.match(voiceError('ENGINE_NOT_INSTALLED:qwen3'), /Settings . Voice/);
+  // XTTS left the app (doc 31 §13.6): the agent is told so, and what to do.
+  assert.match(voiceError('ENGINE_RETIRED:xtts — available: piper, qwen3, chatterbox, zonos'), /removed from Mnemosyne OS[\s\S]*omit engine/);
   assert.match(voiceError('SCOPE_DENIED: "voice:speak"'), /MNEMO_VOICE=1/);
   assert.match(voiceError('LICENSE_REQUIRED'), /Nothing to retry/);
   assert.match(voiceError('SCRIPT_TOO_LONG: 30000 characters'), /scenes/);
