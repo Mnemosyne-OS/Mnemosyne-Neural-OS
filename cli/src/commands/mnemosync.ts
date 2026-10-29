@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { execSync, spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 
 type ProjectStatus = 'offline' | 'online' | 'checking' | 'error' | 'panic_stopped';
 
@@ -99,8 +99,13 @@ function isAlive(pid: number) {
 }
 
 function killPid(pid: number) {
+  // The pid is read back from runtime.state.json, a file on disk: refuse
+  // anything but a positive integer, and never hand it to a shell.
+  if (!Number.isInteger(pid) || pid <= 0) {
+    throw new Error(`Refusing to kill an invalid pid: ${String(pid)}`);
+  }
   if (process.platform === 'win32') {
-    execSync(`taskkill /PID ${pid} /F`, { stdio: 'ignore' });
+    execFileSync('taskkill', ['/PID', String(pid), '/F'], { stdio: 'ignore' });
   } else {
     process.kill(pid);
   }
@@ -177,6 +182,14 @@ mnemoSyncCommand
     const project = projects.find((item) => item.id === id);
     if (!project) {
       console.log(chalk.red(`\n  ✖  Unknown project: ${id}\n`));
+      process.exit(1);
+    }
+    // startCmd is the command line the user registered for this project
+    // (`mnemosync create --start`, or the desktop dashboard). Running it through
+    // the shell is the feature: it may hold `&&`, pipes or an npm script.
+    // Nothing from outside the user's own registry reaches this call.
+    if (typeof project.commands.startCmd !== 'string' || !project.commands.startCmd.trim()) {
+      console.log(chalk.red(`\n  ✖  Project ${id} has no start command\n`));
       process.exit(1);
     }
     const child = spawn(project.commands.startCmd, {

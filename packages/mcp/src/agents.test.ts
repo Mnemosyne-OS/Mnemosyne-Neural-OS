@@ -183,14 +183,14 @@ describe('mnemosyne_agent_list', () => {
   // The load-bearing privacy property. A transcript holds everything that
   // passed in front of an agent, and this output goes to a DIFFERENT agent.
   it('never carries what the human typed', async () => {
-    const secret = 'sk-live-DO-NOT-LEAK-4815162342';
+    const humanTurn = 'HUMAN-TURN-MARKER-4815162342';
     const f = fixture({
-      'one.jsonl': transcript({ title: 'one', project: project(), branch: 'main', at: minutesAgo(1), secret }),
+      'one.jsonl': transcript({ title: 'one', project: project(), branch: 'main', at: minutesAgo(1), secret: humanTurn }),
     });
     try {
       for (const tool of ['mnemosyne_agent_list', 'mnemosyne_agent_collisions', 'mnemosyne_agent_files']) {
         const out = await handleAgentTool(tool, {}, f.env, NOW);
-        assert.ok(!out.includes(secret), `${tool} leaked the human turn`);
+        assert.ok(!out.includes(humanTurn), `${tool} leaked the human turn`);
       }
     } finally { f.cleanup(); }
   });
