@@ -1,0 +1,27 @@
+{
+  "id": "telegram-desktop-json",
+  "displayName": "Telegram (Desktop export, result.json)",
+  "version": "0.1.0",
+  "format": "json",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. `shape` is the NAME of a reader this package implements; the two lists are literal enum values. Nothing here is evaluated.",
+  "_verified": "NOT MEASURED. Written 2026-09-16 against Telegram Desktop's documented and widely reported export shape; no export existed on this machine to run it over. Everything below is a BELIEF about the format - including, and especially, that `text_entities` covers the plain runs of a message as well as its links. Telegram Desktop IS installed here and logged in, so this one is cheap to settle: Settings > Advanced > Export Telegram data, tick 'Machine-readable JSON', and point the reader at result.json. Until then, read a large `no-speaker` or `empty` count as this connector being wrong rather than the file being odd.",
+  "_whyThin": "This declaration carries two lists where the WhatsApp one carries four, and that is a property of the format rather than a corner cut. Telegram Desktop writes its keys and its enum values in ASCII English - `from`, `text`, `service`, `phone_call` - whatever language the app runs in. WhatsApp's text export localises everything it writes, which is why its connector needs a French spelling of every placeholder and cannot read an English file.",
+  "_whyNotChatLog": "Doc 118 §9.5 said it before either reader was written: same MODEL, other reader. One Telegram file holds MANY conversations, the dates are unambiguous ISO, and a message with a newline in it is one JSON string rather than several lines to fold back together. The three problems `chatLog.ts` exists to solve do not occur here, and the one problem this format has - `text` being either a string or an array of mixed chunks - does not occur there.",
+  "_theTrapThatCosts": "🚨 `text` is a string OR an array of chunks. A message carrying a link comes back as [{type:'link',...}, ' and then ', ...], and the obvious loop - keep the strings, skip the objects - returns a perfectly readable sentence with every URL, mention and bold run removed. Nothing on screen shows the loss. `text_entities` is the flat field that covers the whole message, and a masked link (text 'here', href 'https://...') keeps its href in the turn's `links` rather than being welded into the text.",
+  "_theOtherTrap": "🚨 `date_unixtime` sits next to `date` and must not be preferred. It is an absolute instant, so rendering it as a string re-times every message into the READER's zone - a shift of hours that produces a valid timestamp nobody can later tell is wrong. `date` is the wall clock the file states, and that is what the reader keeps.",
+  "_identity": "Telegram is kinder than WhatsApp about who the exporter is: `personal_information.user_id` gives an id, and `from_id` carries it on every message, so the role survives any language and any display-name change. A SINGLE-CHAT export has no personal_information block at all - then self is null, every role is `unknown`, and the app asks once.",
+  "filePattern": "result.json",
+  "telegram": {
+    "shape": "telegram-desktop-json",
+    "_skipChatTypesWhy": "A judgement, not a fact, which is why it sits in the connector where somebody can disagree with it. A bot chat is a menu and a stream of notifications; filing it as conversation buries what people said under what machines announced. Everything else - personal_chat, private_group, public_supergroup, saved_messages - is kept.",
+    "skipChatTypes": ["bot_chat"],
+    "_callActionsWhy": "Service actions that are a call rather than a notice. Both are skipped and counted, so a wrong name here costs a miscount between two skip reasons and never a lost message. Declared rather than hardcoded because Telegram adds actions over time, and an unknown one should degrade into 'service' instead of into a crash.",
+    "callActions": ["phone_call", "group_call", "invite_to_group_call", "group_call_scheduled"]
+  },
+  "_mark": "No vendor asset ships on this machine to trace, and drawing a lookalike under Telegram's name would be a fabricated brand asset. The label and tint stand in until an official path can be dropped in - a connector is data, so that costs no code change.",
+  "mark": {
+    "label": "TG",
+    "tint": "#2aabee"
+  }
+}

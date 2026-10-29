@@ -205,7 +205,8 @@ export function htmlToText(html: string): string {
     .replace(/<[^>]+>/g, '')
     .replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (whole, code: string) => {
       const key = code.toLowerCase();
-      if (key in ENTITIES) return ENTITIES[key];
+      const named = ENTITIES[key];
+      if (named !== undefined) return named;
       if (key.startsWith('#x')) {
         const n = parseInt(key.slice(2), 16);
         return Number.isFinite(n) ? String.fromCodePoint(n) : whole;
@@ -373,7 +374,7 @@ function stampConversation(conv: ConversationState, declaredStart: string | null
   // provider recorded, where the first turn's stamp is only the earliest one
   // that survived reading.
   conv.startedAt = declaredStart ?? times[0] ?? null;
-  conv.endedAt = times.length ? times[times.length - 1] : null;
+  conv.endedAt = times[times.length - 1] ?? null;
 }
 
 function newConversation(): ConversationState {
@@ -456,7 +457,7 @@ function readActivityRecord(
   const conv = newConversation();
   // The title is the opening of what was asked. Not a name the provider gave —
   // it never gave one — so the app can tell the two apart if it wants to.
-  conv.title = text.split('\n')[0].slice(0, 80) || null;
+  conv.title = (text.split('\n')[0] ?? '').slice(0, 80) || null;
   conv.turns.push({ role: 'human', text: text.trim(), at });
 
   // The connector names the whole path through the array

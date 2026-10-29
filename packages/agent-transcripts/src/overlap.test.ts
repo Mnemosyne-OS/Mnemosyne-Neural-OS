@@ -23,6 +23,7 @@ function session(over: Partial<SessionState> = {}): SessionState {
     sizeBytes: 0,
     artifacts: [],
     artifactsCapped: false,
+    tokens: null,
     humanTurns: [],
     ...over,
   };

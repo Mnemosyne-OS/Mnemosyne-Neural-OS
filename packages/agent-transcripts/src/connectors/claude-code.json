@@ -1,7 +1,7 @@
 {
   "id": "claude-code",
   "displayName": "Claude Code",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "format": "jsonl",
   "kind": "session",
   "_comment": "A connector is DATA, never code. It says how to read what is inside a folder, never WHERE that folder is - the human picks the folder. Paths use dots for object keys and [] to walk an array. Nothing here is evaluated.",
@@ -53,6 +53,18 @@
       "PowerShell"
     ],
     "take": "input.command"
+  },
+  "_usage_comment": "Where one API call's token counters sit. MEASURED on 870 real transcripts 2026-09-16: the harness writes one line PER CONTENT BLOCK of a reply and repeats the whole usage object on each, so 105 736 of 213 461 usage lines are copies. `callId` is what makes the count 107 725 calls instead of 213 461; requestId was present on 99.98% of them. The four counters stay separate because they are not priced alike and cache_read alone totals 39.5 billion against 88 million of output.",
+  "usage": {
+    "where": { "type": "assistant" },
+    "callId": "requestId",
+    "fields": {
+      "input": "message.usage.input_tokens",
+      "cacheWrite": "message.usage.cache_creation_input_tokens",
+      "cacheRead": "message.usage.cache_read_input_tokens",
+      "output": "message.usage.output_tokens",
+      "thinking": "message.usage.output_tokens_details.thinking_tokens"
+    }
   },
   "humanTurn": {
     "where": {

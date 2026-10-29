@@ -1,0 +1,35 @@
+{
+  "id": "whatsapp-native-export",
+  "displayName": "WhatsApp (Export chat)",
+  "version": "0.1.0",
+  "format": "chatlog",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. Every token below is a literal; the line shape is the NAME of one this package implements. Nothing here is evaluated.",
+  "_verified": "NOT MEASURED. Written 2026-09-16 against WhatsApp's documented and widely reported export shape; no native export existed on this machine to run it over - the one real file we hold came from a browser extension (see whatsapp-browser-export). Everything below is a BELIEF about the format. Until someone points this at a real _chat.txt, read a large 'preamble' or 'no-speaker' count as this connector being wrong rather than the file being odd.",
+  "_where": "In the chat: ⋮ (or the contact's name) > More > Export chat. The phone offers 'Without media', which is the one to take - with media the zip carries every photo of the conversation and the text file is unchanged.",
+  "_twoShapes": "🚨 iOS and Android do NOT write the same line. iOS brackets the stamp and includes seconds ('[15/08/2026, 16:55:48] Name: text'); Android puts it bare with a dash and no seconds ('15/08/2026, 16:55 - Name: text'). This connector declares the iOS shape. An Android file needs the sibling declaration - same reader, lineShape 'dash-ts-colon' - and the two cannot be merged, because a connector may not carry an alternation.",
+  "filePattern": "_chat.txt",
+  "chatLog": {
+    "lineShape": "bracket-ts-colon",
+    "_systemPrefixWhy": "⚠️ BELIEF, and the weakest line here. WhatsApp's own notices carry no sender and no marker at all - the text simply follows the stamp. With no colon on the line the reader files them as 'no-speaker', counted, not as somebody's words. That is the honest degradation, but it means notices show up as a skip count rather than as notices.",
+    "_invisibleChars": "🪤 Real WhatsApp exports open every line with U+200E LEFT-TO-RIGHT MARK and put U+202F NARROW NO-BREAK SPACE before AM/PM. Both are invisible in an editor, so a reader written by eye matches nothing and reports an empty conversation. The reader strips them; this note exists so nobody removes that step as dead code.",
+    "_mediaWhy": "BELIEF: WhatsApp writes '<Media omitted>' in English and a localised equivalent elsewhere, and on iOS an attachment line instead names the file. Both spellings are declared; neither is measured. A caption rides behind the marker exactly as in the browser export, which is why these are prefixes.",
+    "mediaMarkers": [
+      "<Media omitted>",
+      "<Médias omis>",
+      "image omitted",
+      "audio omitted",
+      "video omitted",
+      "sticker omitted",
+      "GIF omitted",
+      "document omitted"
+    ],
+    "_selfWhy": "🚨 DELIBERATELY EMPTY, and this is a decision rather than an omission. A native export does not mark the exporting human: it writes their account display name like any other participant. There is nothing to declare, so every turn comes back 'unknown' and the app asks once which participant is the person. Inventing a name here would label somebody's own messages as their correspondent's.",
+    "_dateOrderWhy": "NOT declared, and it must never be. WhatsApp writes the PHONE'S locale, so the same conversation exports month-first off one handset and day-first off another. The reader resolves it from the file when a day above 12 appears and reports 'ambiguous' when the file cannot prove it - a short chat inside the first twelve days of a month genuinely cannot be resolved, and saying so is the only honest answer."
+  },
+  "_mark": "No vendor asset ships on this machine to trace, and drawing a lookalike under WhatsApp's name would be a fabricated brand asset. The label and tint stand in until an official path can be dropped in - a connector is data, so that costs no code change.",
+  "mark": {
+    "label": "WA",
+    "tint": "#25d366"
+  }
+}

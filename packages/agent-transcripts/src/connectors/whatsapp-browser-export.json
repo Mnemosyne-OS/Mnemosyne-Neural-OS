@@ -1,0 +1,39 @@
+{
+  "id": "whatsapp-browser-export",
+  "displayName": "WhatsApp (browser export, chat.txt)",
+  "version": "0.1.0",
+  "format": "chatlog",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. Every token below is a literal; the line shape is the NAME of one this package implements. Nothing here is evaluated.",
+  "_verified": "MEASURED 2026-09-16 on a real export: chat.txt out of a 364 KB zip, 181 662 bytes, one two-party conversation spanning 2026-08-15 to 2026-09-16. The reader accounts for 2 257 of 2 257 non-empty lines: 1 990 turns (965 self, 1 025 peer), 204 continuation lines folded into the message above them, 164 media placeholders, 60 calls, 2 notices, 1 preamble. Date order PROVED month-first from the file. Every literal below was read out of that file, not out of documentation.",
+  "_correctedOnFirstRun": "🪤 A first draft of this connector declared nullBodies: ['null'], on the strength of a substring scan that reported one. Running the reader showed ZERO bodies equal to 'null' - the hit was the word sitting inside an ordinary sentence. The declaration was removed rather than kept as harmless: a literal nobody has seen is a belief wearing a measurement's clothes, and the next reader would have trusted it. The same run found <Message album>, which WAS real and is declared below.",
+  "_producer": "⚠️ UNIDENTIFIED. The zip holds chat.txt and chat.md side by side with a French header ('Exportation de la discussion WhatsApp'), which is nobody's native export - WhatsApp itself ships a single _chat.txt with no markdown twin. It is a browser extension reading WhatsApp Web, and WHICH one is not known. That matters: this connector is verified against a producer we cannot name, so a user with a different extension has a different file. See whatsapp-native-export for WhatsApp's own.",
+  "_readTheTxt": "chat.md is NOT the richer file despite being larger. It carries [16:55] per line and pushes the date up into a localised day heading ('## 15 août 2026'), so reading it would mean parsing French month names to recover a date that chat.txt states outright on every line, seconds included.",
+  "filePattern": "chat.txt",
+  "chatLog": {
+    "lineShape": "bracket-ts-colon",
+    "_systemPrefixWhy": "A notice is written where a sender would be: '[8/15/26, 4:55:48 PM] - Les messages et les appels sont chiffrés...'. Without this the dash becomes a speaker named '-' and 62 notices enter memory as somebody's words.",
+    "systemPrefix": "- ",
+    "_callsWhy": "60 of the 62 notices are the bare word [Appel] - no direction, no duration, no answered/missed. Counted rather than kept: '[Appel]' 60 times is noise in recall, and the count is the honest whole of what the producer wrote down.",
+    "callMarkers": ["[Appel]"],
+    "_mediaWhy": "MEASURED: 164 lines carry one of these, and 49 of them have a CAPTION behind the marker. The reader strips the marker off the front, keeps the caption as the message, and flags the turn. Matching the whole body instead would weld '<image omise> ' to the front of forty-nine real sentences, and every one of them would be recalled carrying a token nobody wrote.",
+    "mediaMarkers": [
+      "<image omise>",
+      "<message vocal omis>",
+      "<GIF omis>",
+      "<vidéo omise>",
+      "<sticker omis>",
+      "<document omis>",
+      "<Message album>"
+    ],
+    "_selfWhy": "This producer writes the exporting human as 'Vous'. It is LOCALISED - an English run writes 'You' - so the reader treats a declared name that matches no participant as unknown rather than labelling the person's own messages as their correspondent's. Only the measured spelling is declared here; adding guesses would make a belief indistinguishable from the measurement.",
+    "selfNames": ["Vous"],
+    "_dateOrderWhy": "NOT declared on purpose. This file proves its own order (8/15/26 has a 15 in the second field, which can only be a day), and the reader reads that proof. Declaring 'mdy' here would state that this producer always writes month-first, which nobody has measured - it follows the machine's locale, and a French user's file may well be day-first."
+  },
+  "_localisation": "🚨 Every literal above is FRENCH, because the measured file is. An English export writes '<image omitted>', '[Call]' and 'You', and none of them are declared. The failure is visible rather than silent: calls become turns reading '[Call]', placeholders stay inside the text, and self-detection falls back to unknown. A second measurement adds the tokens; a guess would pretend they were measured.",
+  "_mark": "No vendor asset ships on this machine to trace, and drawing a lookalike under WhatsApp's name would be a fabricated brand asset. The label and tint stand in until an official path can be dropped in - a connector is data, so that costs no code change.",
+  "mark": {
+    "label": "WA",
+    "tint": "#25d366"
+  }
+}

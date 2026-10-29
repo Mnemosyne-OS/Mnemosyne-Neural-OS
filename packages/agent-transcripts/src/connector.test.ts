@@ -5,7 +5,8 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  readSession, readDoc, completeLines, describeConnector, MAX_ARTIFACTS, asString,
+  readSession, readDoc, completeLines, describeConnector, MAX_ARTIFACTS,
+  totalCounts, dayKey, asCount, asString,
   type Connector,
 } from './connector';
 import claudeCode from './connectors/claude-code.json';
@@ -347,12 +348,211 @@ describe('describeConnector', () => {
     expect(fields).toContain('files written');
   });
 
+  it('names the token counters, because that is its own kind of read', () => {
+    // Consent to "which files it edited" is not consent to a record of how
+    // much you spend and when you work.
+    const withUsage: Connector = {
+      ...JSONL,
+      usage: { fields: { output: 'message.usage.output_tokens' } },
+    };
+    expect(describeConnector(withUsage)).toContain('tokens used, per call');
+    expect(describeConnector(JSONL)).not.toContain('tokens used, per call');
+  });
+
   it('describes a markdown connector by its frontmatter keys', () => {
     const md: Connector = {
       id: 'm', displayName: 'M', version: '1', format: 'markdown', kind: 'document',
       filePattern: '.md', fields: {}, frontmatter: { name: 'name', type: 'metadata.type' },
     };
     expect(describeConnector(md)).toEqual(['name', 'type']);
+  });
+});
+
+/**
+ * Tokens. Every test here is a number that would otherwise be wrong rather
+ * than missing, which is the worst kind: a wrong count looks exactly like a
+ * right one.
+ */
+describe('usage', () => {
+  const WITH_USAGE: Connector = {
+    ...JSONL,
+    usage: {
+      where: { type: 'assistant' },
+      callId: 'requestId',
+      fields: {
+        input: 'message.usage.input_tokens',
+        cacheWrite: 'message.usage.cache_creation_input_tokens',
+        cacheRead: 'message.usage.cache_read_input_tokens',
+        output: 'message.usage.output_tokens',
+        thinking: 'message.usage.output_tokens_details.thinking_tokens',
+      },
+    },
+  };
+
+  /** A local-time instant, so the expected day key is the same in every
+   *  timezone the suite might run in. */
+  const localAt = (y: number, m: number, d: number, h = 12) =>
+    new Date(y, m - 1, d, h).toISOString();
+
+  const call = (opts: {
+    req?: string; at: string; input?: number; cacheWrite?: number;
+    cacheRead?: number; output?: number; thinking?: number; usage?: boolean;
+  }) => line({
+    type: 'assistant', timestamp: opts.at, sessionId: 'S1', cwd: 'C:/w/proj',
+    ...(opts.req ? { requestId: opts.req } : {}),
+    message: {
+      model: 'claude-opus-5',
+      content: [{ type: 'text', text: 'hi' }],
+      ...(opts.usage === false ? {} : {
+        usage: {
+          input_tokens: opts.input ?? 0,
+          cache_creation_input_tokens: opts.cacheWrite ?? 0,
+          cache_read_input_tokens: opts.cacheRead ?? 0,
+          output_tokens: opts.output ?? 0,
+          output_tokens_details: { thinking_tokens: opts.thinking ?? 0 },
+        },
+      }),
+    },
+  });
+
+  const readU = (text: string) =>
+    readSession(WITH_USAGE, 'f.jsonl', 'C:/x/f.jsonl', text, text.length);
+
+  it('is null, never an empty map, when the harness records no usage', () => {
+    // The connector under test everywhere else declares none. Null says "this
+    // harness does not report"; {} would say "measured, and it was nothing".
+    expect(read(user('hi', '01'))?.tokens).toBeNull();
+  });
+
+  it('counts one call once, however many lines that reply was written on', () => {
+    const day = localAt(2026, 9, 16);
+    const st = readU(
+      call({ req: 'req_A', at: day, input: 10, output: 5 })
+      + call({ req: 'req_A', at: day, input: 10, output: 5 })
+      + call({ req: 'req_A', at: day, input: 10, output: 5 }),
+    );
+    // MEASURED on 870 real transcripts: 49.5% of usage lines are copies like
+    // these, so without this the whole feature reports roughly double.
+    expect(totalCounts(st?.tokens)).toEqual({
+      input: 10, cacheWrite: 0, cacheRead: 0, output: 5, thinking: 0, calls: 1,
+    });
+  });
+
+  it('counts two different calls twice', () => {
+    const day = localAt(2026, 9, 16);
+    const st = readU(
+      call({ req: 'req_A', at: day, input: 10, output: 5 })
+      + call({ req: 'req_B', at: day, input: 7, output: 3 }),
+    );
+    expect(totalCounts(st?.tokens)?.calls).toBe(2);
+    expect(totalCounts(st?.tokens)?.input).toBe(17);
+  });
+
+  it('counts every line when the harness writes no call id', () => {
+    // A harness that writes one line per call omits `callId`, and collapsing
+    // its lines on a shared absent id would hide real calls.
+    const day = localAt(2026, 9, 16);
+    const st = readU(call({ at: day, output: 5 }) + call({ at: day, output: 3 }));
+    expect(totalCounts(st?.tokens)?.calls).toBe(2);
+  });
+
+  it('splits a session that ran past midnight across both days', () => {
+    // A session total would put a whole night on one square of the graph.
+    const st = readU(
+      call({ req: 'a', at: localAt(2026, 9, 15, 23), output: 4 })
+      + call({ req: 'b', at: localAt(2026, 9, 16, 1), output: 6 }),
+    );
+    expect(Object.keys(st?.tokens ?? {}).sort()).toEqual(['2026-09-15', '2026-09-16']);
+    expect(st?.tokens?.['2026-09-16'].output).toBe(6);
+  });
+
+  it('keeps the four counters apart', () => {
+    const st = readU(call({
+      req: 'a', at: localAt(2026, 9, 16),
+      input: 2, cacheWrite: 1088, cacheRead: 728752, output: 528, thinking: 406,
+    }));
+    // Real numbers off this machine. Folded into one they say nothing: the
+    // cache read is the same context re-read, and it is 1 380x the output.
+    expect(totalCounts(st?.tokens)).toEqual({
+      input: 2, cacheWrite: 1088, cacheRead: 728752, output: 528, thinking: 406, calls: 1,
+    });
+  });
+
+  it('does not count an assistant line that carries no usage as a call', () => {
+    const st = readU(call({ req: 'a', at: localAt(2026, 9, 16), usage: false }));
+    expect(st?.tokens).toEqual({});
+  });
+
+  it('does not let a usage-less line consume the id of the call that has one', () => {
+    // The harness writes the text block and the tool block of one reply as
+    // separate lines, and a line can carry the id without the counters. If the
+    // empty one claimed the id, the real call would be dropped whole.
+    //
+    // 🪤 The empty line goes LAST, because readSession walks the file
+    // BACKWARDS: written first it is read second, by which point the real call
+    // has already been counted and the test proves nothing. A mutation check
+    // caught exactly that — the first version of this test passed with the
+    // guard removed.
+    const day = localAt(2026, 9, 16);
+    const st = readU(
+      call({ req: 'req_A', at: day, output: 9 })
+      + call({ req: 'req_A', at: day, usage: false }),
+    );
+    expect(totalCounts(st?.tokens)?.output).toBe(9);
+    expect(totalCounts(st?.tokens)?.calls).toBe(1);
+  });
+
+  it('holds in the other order too, where the empty line is read second', () => {
+    const day = localAt(2026, 9, 16);
+    const st = readU(
+      call({ req: 'req_A', at: day, usage: false })
+      + call({ req: 'req_A', at: day, output: 9 }),
+    );
+    expect(totalCounts(st?.tokens)?.output).toBe(9);
+    expect(totalCounts(st?.tokens)?.calls).toBe(1);
+  });
+
+  it('drops a call it cannot place in time rather than filing it under today', () => {
+    const st = readU(
+      call({ req: 'a', at: 'not a date', output: 5 })
+      + call({ req: 'b', at: localAt(2026, 9, 16), output: 3 }),
+    );
+    expect(Object.keys(st?.tokens ?? {})).toEqual(['2026-09-16']);
+    expect(totalCounts(st?.tokens)?.output).toBe(3);
+  });
+
+  it('treats a counter the harness did not write as absent, never as zero', () => {
+    const st = readU(line({
+      type: 'assistant', timestamp: localAt(2026, 9, 16), sessionId: 'S1',
+      requestId: 'a',
+      message: { model: 'm', content: [], usage: { output_tokens: 5 } },
+    }));
+    expect(totalCounts(st?.tokens)?.output).toBe(5);
+    expect(totalCounts(st?.tokens)?.calls).toBe(1);
+  });
+});
+
+describe('dayKey', () => {
+  it('uses the local day, so a night session does not land on tomorrow', () => {
+    expect(dayKey(new Date(2026, 8, 16, 23, 30).toISOString())).toBe('2026-09-16');
+  });
+
+  it('returns null for what is not a date', () => {
+    expect(dayKey('yesterday')).toBeNull();
+    expect(dayKey(null)).toBeNull();
+    expect(dayKey('')).toBeNull();
+  });
+});
+
+describe('asCount', () => {
+  it('refuses what is not a count, so nothing becomes a measured zero', () => {
+    expect(asCount(0)).toBe(0);
+    expect(asCount(12)).toBe(12);
+    expect(asCount(null)).toBeNull();
+    expect(asCount(undefined)).toBeNull();
+    expect(asCount('12')).toBeNull();
+    expect(asCount(NaN)).toBeNull();
+    expect(asCount(-1)).toBeNull();
   });
 });
 
