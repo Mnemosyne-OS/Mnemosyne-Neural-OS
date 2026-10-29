@@ -18,10 +18,11 @@
 export type { SkinManifest, SkinTokens } from './types.js';
 export { ALLOWED_TOKENS, MNEMO_DEFAULT_SKIN, BUILT_IN_SKINS } from './built-ins.js';
 export { validateSkinManifest } from './validate.js';
+export { HOST_SHARED_TOKENS, HOST_TOKEN_SOURCES, withHostFallback } from './host.js';
 export type { ValidationResult } from './validate.js';
 
 // ── Package metadata ──────────────────────────────────────────────────────────
 
-export const DESIGN_SDK_VERSION = '0.1.0';
+export const DESIGN_SDK_VERSION = '0.2.8';
 export const DESIGN_SDK_PHASE   = 'Phase 62';
 export const TOKEN_COUNT        = 36;

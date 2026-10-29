@@ -15,8 +15,16 @@ import {
   selectResonances,
   toResonanceView,
   freshnessLine,
+  queryRefusal,
+  searchFailure,
+  findPosition,
+  scoreLabel,
+  readCoverage,
+  isDesignDoc,
+  formatQueryRow,
+  resonanceLine,
 } from './format.js';
-import type { MnemoChronicle } from './ws-client.js';
+import type { MnemoChronicle, QueryResult } from './ws-client.js';
 
 const chronicle = (over: Partial<MnemoChronicle>): MnemoChronicle => ({
   id:            '1',
@@ -123,4 +131,167 @@ test('freshnessLine: current, unchecked, absent or malformed cost nothing', () =
     { state: 'changed', readAt: '2026-08-25T10:00:00.000Z', modifiedAt: '2026-09-20T08:00:00.000Z' },
     { state: 'missing', filePath: '' },
   ]) assert.equal(freshnessLine(f), null, JSON.stringify(f));
+});
+
+// ── queryRefusal ───────────────────────────────────────────────────────────────
+
+const queryResult = (over: Partial<QueryResult>): QueryResult => ({
+  success:    true,
+  chronicles: [chronicle({ id: '7', content: 'a real hit' })],
+  ...over,
+});
+
+test('queryRefusal lets real search results through', () => {
+  assert.equal(queryRefusal(queryResult({ _semantic: { wanted: true, used: true } }), 'NOTES'), null);
+});
+
+test('queryRefusal names a failed search as failed, never as empty', () => {
+  // A timeout REJECTS in ws-client and never reaches here; this is what does: the app's own refusal.
+  const out = queryRefusal(queryResult({ success: false, chronicles: [], error: 'UNKNOWN_VAULT: ZZZNOPE' }), 'ZZZNOPE');
+  assert.ok(out);
+  assert.match(out, /could not search vault:ZZZNOPE/);
+  assert.match(out, /UNKNOWN_VAULT/);
+  assert.doesNotMatch(out, /No chronicles found/);
+});
+
+test('queryRefusal refuses the fallback to recent memories even when it carries rows', () => {
+  // The rows the app served when the embed threw: recent, unscored, printed as 1.000.
+  const out = queryRefusal(queryResult({
+    chronicles: [chronicle({ id: '1', score: 1 }), chronicle({ id: '2', score: 1 })],
+    _semantic:  { wanted: true, used: false, error: 'modelManager.embed returned empty vector' },
+  }), 'NOTES');
+  assert.ok(out);
+  assert.match(out, /most recent memories/);
+  assert.match(out, /empty vector/);
+});
+
+test('queryRefusal treats an app that sends no _semantic as a real search', () => {
+  // Absent is not false: an older app cannot say, so its rows are shown.
+  assert.equal(queryRefusal(queryResult({}), 'NOTES'), null);
+});
+
+test('queryRefusal keeps the honest empty for a search that matched nothing', () => {
+  const out = queryRefusal(queryResult({ chronicles: [], _semantic: { wanted: true, used: true } }), 'NOTES', ' (filter: GIT)');
+  assert.equal(out, 'No chronicles found in vault:NOTES for this query (filter: GIT). The search ran and matched nothing.');
+});
+
+test('an empty error string reads as no reason, not as a blank', () => {
+  const out = queryRefusal(queryResult({ _semantic: { wanted: true, used: false, error: '' } }), 'NOTES');
+  assert.ok(out);
+  assert.match(out, /NOTES: no reason given\./);
+  const failed = queryRefusal(queryResult({ success: false, chronicles: [], error: '' }), 'NOTES');
+  assert.match(failed ?? '', /NOTES: no reason given\./);
+});
+
+// ── searchFailure / findPosition (the resonance tools) ─────────────────────────
+
+test('searchFailure lets an empty search through: an empty result means something of its own there', () => {
+  assert.equal(searchFailure(queryResult({ chronicles: [], _semantic: { wanted: true, used: true } }), 'DEV'), null);
+});
+
+test('searchFailure refuses the fallback to recent memories', () => {
+  assert.match(searchFailure(queryResult({ _semantic: { wanted: true, used: false } }), 'DEV') ?? '', /most recent memories/);
+});
+
+test('findPosition returns only the resonance carrying this exact id, never the nearest document', () => {
+  const doc   = chronicle({ id: '1', spineType: 'ARCHITECTURE', content: 'Phase 59 - Active Cognitive Filter' });
+  const other = chronicle({ id: '2', content: '[RESUME_SESSION] [RESONANCE:other-work]\nlot 2 - 2026-10-01' });
+  const mine  = chronicle({ id: '3', content: '[RESUME_SESSION] [RESONANCE:my-work]\nlot 4 - 2026-10-20' });
+  assert.equal(findPosition([doc, other], 'zzz-no-such-resonance'), null);
+  assert.equal(findPosition([doc, other, mine], 'my-work')?.id, '3');
+});
+
+// -- scoreLabel / readCoverage (the words-only verdict) --------------------------
+
+test('scoreLabel prints a measured score, and says "unscored" for a row nobody scored', () => {
+  assert.equal(scoreLabel(0.9234), 'score: 0.923');
+  assert.equal(scoreLabel(undefined), 'unscored (keyword match)');
+  assert.equal(scoreLabel(Number.NaN), 'unscored (keyword match)');
+});
+
+test('readCoverage is absent when the engine measured nothing', () => {
+  assert.equal(readCoverage(queryResult({ _semantic: { wanted: true, used: true } })), null);
+  assert.equal(readCoverage(queryResult({ _semantic: { wanted: true, used: true, lexicalCoverage: { measured: 0, admitted: 0, rows: [] } } })), null);
+});
+
+test('readCoverage turns "0 of 2 admitted" into a nothing-found warning, row by row', () => {
+  const result = queryResult({
+    chronicles: [chronicle({ id: '1' }), chronicle({ id: '2' })],
+    _semantic:  { wanted: true, used: true, lexicalCoverage: { measured: 2, admitted: 0, rows: [{ admitted: false }, { admitted: false }] } },
+  });
+  const view = readCoverage(result);
+  assert.ok(view);
+  assert.match(view.summary, /none of the 2 rows/);
+  assert.match(view.summary, /nothing found/);
+  assert.deepEqual(view.notAdmitted, [true, true]);
+});
+
+test('readCoverage counts the admitted rows, and ignores per-row verdicts that do not line up', () => {
+  const result = queryResult({
+    chronicles: [chronicle({ id: '1' }), chronicle({ id: '2' })],
+    _semantic:  { wanted: true, used: true, lexicalCoverage: { measured: 3, admitted: 1, rows: [{ admitted: true }, { admitted: false }, { admitted: false }] } },
+  });
+  const view = readCoverage(result);
+  assert.ok(view);
+  assert.match(view.summary, /judged 1 of the 3 rows/);
+  assert.deepEqual(view.notAdmitted, [false, false]);
+});
+
+// ── isDesignDoc ────────────────────────────────────────────────────────────────
+
+test('isDesignDoc: an agent\'s own NOTE is not a design doc, a NOTE read from a file is', () => {
+  // NOTE is the ingest tool's default spine; CORE is what an agent's ingest is stored as.
+  assert.equal(isDesignDoc('NOTE', 'CORE'), false);
+  assert.equal(isDesignDoc('NOTE', 'DOCWATCH'), true);
+  assert.equal(isDesignDoc('note', 'docwatch'), true);
+  assert.equal(isDesignDoc('NOTE', undefined), false);
+});
+
+test('isDesignDoc: the other design spines are flagged whatever their source, the rest never', () => {
+  assert.equal(isDesignDoc('DOCUMENT', 'CORE'), true);
+  assert.equal(isDesignDoc('VISION', 'DOCWATCH'), true);
+  assert.equal(isDesignDoc('HYPOTHESIS', undefined), true);
+  assert.equal(isDesignDoc('DECISION', 'DOCWATCH'), false);
+  assert.equal(isDesignDoc(undefined, 'DOCWATCH'), false);
+});
+
+// ── formatQueryRow ─────────────────────────────────────────────────────────────
+
+const WARNING = /Design\/vision doc: verify/;
+const row = (over: Partial<MnemoChronicle>, notAdmitted = false): string =>
+  formatQueryRow(chronicle({ content: JSON.stringify({ raw: 'My validation drink is lapsang-93807.' }), ...over }), 0, { maxContentChars: 600, notAdmitted });
+
+test('formatQueryRow warns on a NOTE read from a file, never on an agent\'s own NOTE', () => {
+  assert.doesNotMatch(row({ spineType: 'NOTE', source_app_id: 'CORE' }), WARNING);
+  assert.match(row({ spineType: 'NOTE', source_app_id: 'DOCWATCH' }), WARNING);
+  assert.match(row({ spineType: 'DOCUMENT', source_app_id: 'CORE' }), WARNING);
+});
+
+test('formatQueryRow prints a date only when the stored time can be read', () => {
+  assert.match(row({ timestamp: '2026-10-28 13:26:14' }), /^\*\*Date:\*\* 2026-10-28 \d\d:26$/m);
+  for (const timestamp of ['not a time', '']) {
+    assert.doesNotMatch(row({ timestamp }), /\*\*Date:\*\*/, JSON.stringify(timestamp));
+  }
+});
+
+test('formatQueryRow keeps the score label, the body, the truncation hint and the partial-match line', () => {
+  const full = row({ score: 0.613, id: '7' });
+  assert.match(full, /^### \[1\] NOTE · score: 0\.613$/m);
+  assert.match(full, /^\*\*ID:\*\* 7$/m);
+  assert.match(full, /^My validation drink is lapsang-93807\.$/m);
+  assert.doesNotMatch(full, /content truncated|Not admitted/);
+
+  const cut = formatQueryRow(chronicle({ content: 'x'.repeat(100) }), 2, { maxContentChars: 80 });
+  assert.match(cut, /^### \[3\]/);
+  assert.match(cut, /x{80}…/);
+  assert.match(cut, /content truncated, 100 chars total\. Re-query with max_content_chars: 100/);
+  assert.match(row({}, true), /^> Not admitted: this row matches only some words of the query\.$/m);
+});
+
+test('resonanceLine says the update time is unknown instead of printing 0min ago', () => {
+  const unreadable = toResonanceView(chronicle({ content: '[RESUME_SESSION] [RESONANCE:r1]\nphase — 2026-09-10T13:30:00.000Z', timestamp: 'not a time' }));
+  assert.equal(unreadable.agoMin, null);
+  assert.match(resonanceLine(unreadable), /update time unknown/);
+  assert.doesNotMatch(resonanceLine(unreadable), /0min/);
+  assert.match(resonanceLine({ id: 'r1', phase: 'p', agoMin: 30, chronicleId: '9' }), /updated 30min ago `#9`$/);
 });

@@ -195,8 +195,10 @@ export interface ReadAllResult {
   roots: { id: string; root: string; declared: boolean; found: number }[];
   /** Folders that were looked for and are not there. NOT an error — most
    *  machines run one agent — but it is the difference between "nobody else is
-   *  around" and "the other agent's folder was never opened". */
-  missing: { id: string; root: string }[];
+   *  around" and "the other agent's folder was never opened". `declared` is
+   *  true when a human named the folder: a declared folder that does not exist
+   *  is a mistyped path, not an agent that is not installed. */
+  missing: { id: string; root: string; declared: boolean }[];
   unreadable: { count: number; firstReason: string } | null;
 }
 

@@ -226,7 +226,11 @@ export interface Chronicle {
   /** Text content of the chronicle. May be absent if only the vector is stored. */
   content?: string;
   spineType: SpineType;
-  score: number;
+  /**
+   * The weighted ranking score. Absent on a row nobody scored, such as a hit of
+   * the keyword channel alone (apps built after 2026-10-25; older apps sent 1).
+   */
+  score?: number;
   timestamp: string;
   source_app_id: string;
 }
@@ -819,7 +823,7 @@ export interface SpineAssignmentsResult {
 // ── Voice rendering (v1.6.0) ────────────────────────────────────────────────────
 
 /** Local engines that can speak. Only the cloning ones accept a reference voice. */
-export type VoiceEngineId = 'piper' | 'xtts' | 'chatterbox' | 'zonos';
+export type VoiceEngineId = 'piper' | 'qwen3' | 'chatterbox' | 'zonos';
 
 /** A reference clip the cloning engines can speak with. */
 export interface VoiceClone {

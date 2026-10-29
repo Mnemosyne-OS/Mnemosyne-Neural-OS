@@ -56,3 +56,35 @@ export function parseAgentDate(value: unknown): number | null {
   const ms = new Date(trimmed).getTime();
   return Number.isFinite(ms) ? ms : null;
 }
+
+/** SQLite's `CURRENT_TIMESTAMP` text: UTC by definition, written without a zone. */
+const SQLITE_UTC = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d+)?$/;
+
+/**
+ * A chronicle's stored time → epoch ms, or `null` when it cannot be read.
+ *
+ * 🚨 The host hands `created_at` over as SQLite wrote it (`2026-10-28 13:26:14`),
+ * which is UTC with no zone, and `new Date()` reads that shape as LOCAL time:
+ * every printed date was off by the machine's offset (four hours late on a
+ * UTC-4 machine, seen 2026-10-28). A number is epoch ms; a string that names
+ * its zone (`Z`, `+02:00`) is read as written. An ISO string with a `T` and no
+ * zone is left to `Date.parse`, which reads it as local time: the host never
+ * stores that shape (0 of 52 585 chronicles on 2026-10-28).
+ */
+export function parseStoredTime(value: unknown): number | null {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const sqlite = SQLITE_UTC.exec(trimmed);
+  if (sqlite) {
+    const [, y, mo, d, h, mi, s, frac] = sqlite;
+    const at = new Date(Date.UTC(Number(y), Number(mo) - 1, Number(d), Number(h), Number(mi), Number(s),
+      frac ? Math.round(Number(frac) * 1000) : 0));
+    // Rejects the impossible (`2026-13-40`), which Date.UTC would roll over.
+    if (at.getUTCMonth() !== Number(mo) - 1 || at.getUTCDate() !== Number(d)) return null;
+    return at.getTime();
+  }
+  const ms = Date.parse(trimmed);
+  return Number.isFinite(ms) ? ms : null;
+}

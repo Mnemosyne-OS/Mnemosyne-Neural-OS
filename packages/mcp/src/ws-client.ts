@@ -49,8 +49,17 @@ export interface MnemoChronicle {
   spineType:     string;
   content?:      string;
   timestamp:     number | string;
-  score:         number;
+  /**
+   * The weighted ranking score. Absent on a row nobody scored, such as a hit of
+   * the keyword channel alone (apps built after 2026-10-25; older apps sent 1).
+   */
+  score?:        number;
   source_app_id: string;
+  /**
+   * The raw pre-weight cosine (apps built after 2026-10-18). Absent from older apps
+   * and from rows the vector channel never scored. Read by the grounding measure.
+   */
+  cosine?:       number;
   /**
    * Whether the source file still holds what was read (apps built after 2026-09-28). Absent
    * from older apps and from rows with no source file. Read by
@@ -63,7 +72,14 @@ export interface QueryResult {
   success:    boolean;
   chronicles: MnemoChronicle[];
   error?:     string;
-  _semantic?: { wanted: boolean; used: boolean; error?: string; vectorDim?: number; vaultSize?: number };
+  _semantic?: {
+    wanted: boolean; used: boolean; error?: string; vectorDim?: number; vaultSize?: number;
+    /**
+     * On a words-only vault: how many served rows the engine would admit into a
+     * chat answer, and the verdict per row in rank order. Read untrusted.
+     */
+    lexicalCoverage?: unknown;
+  };
 }
 
 export interface AskResult {

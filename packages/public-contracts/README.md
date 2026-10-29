@@ -91,6 +91,21 @@ Free download for Windows, macOS and Linux
 
 ---
 
+## Get Mnemosyne OS
+
+These contracts describe the shapes the desktop app speaks. To run it, install
+[Mnemosyne OS](https://mnemosyne-os.io), a memory system that runs on your own machine.
+
+<div align="center">
+
+### [⬇ Download Mnemosyne OS](https://mnemosyne-os.io/download)
+
+Free download for Windows, macOS and Linux
+
+</div>
+
+---
+
 ## Where Mnemosyne OS lives
 
 Published by XPACEGEMS LLC. Its official addresses:

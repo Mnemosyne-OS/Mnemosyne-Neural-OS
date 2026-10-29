@@ -96,7 +96,7 @@ export const MNEMO_SITH_SKIN: SkinManifest = {
     '--status-active': '#ff2244',
     '--text-accent':   '#ff2244',
     '--shadow-accent': '0 0 20px rgba(255, 34, 68, 0.2)',
-    '--border-accent': '1px solid rgba(255, 34, 68, 0.30)',
+    '--border-accent': 'rgba(255, 34, 68, 0.30)',
   },
 };
 
@@ -116,7 +116,7 @@ export const MNEMO_GHOST_SKIN: SkinManifest = {
     '--status-active': '#b0bec5',
     '--text-accent':   '#b0bec5',
     '--shadow-accent': '0 0 20px rgba(176, 190, 197, 0.12)',
-    '--border-accent': '1px solid rgba(176, 190, 197, 0.20)',
+    '--border-accent': 'rgba(176, 190, 197, 0.20)',
   },
 };
 
@@ -136,7 +136,7 @@ export const MNEMO_AURA_SKIN: SkinManifest = {
     '--status-active': '#d500f9',
     '--text-accent':   '#d500f9',
     '--shadow-accent': '0 0 20px rgba(213, 0, 249, 0.20)',
-    '--border-accent': '1px solid rgba(213, 0, 249, 0.28)',
+    '--border-accent': 'rgba(213, 0, 249, 0.28)',
   },
 };
 

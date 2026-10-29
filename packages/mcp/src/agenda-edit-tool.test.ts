@@ -46,6 +46,13 @@ test('a series appears once, with its cadence and its next occurrence', () => {
   assert.match(s, /next 2026-09-11/);
 });
 
+test('a series the four cadences cannot say shows its rule (doc 168 lot 2)', () => {
+  const s = renderAgendaList(view({
+    events: [{ id: 'e4', title: 'Every 2 weeks', startAt: AT, nextAt: AT + 14 * 86_400_000, repeatsRule: 'FREQ=WEEKLY;INTERVAL=2' }],
+  }));
+  assert.match(s, /repeats FREQ=WEEKLY;INTERVAL=2/);
+});
+
 test('an event with nothing left says so rather than showing its old start as a future', () => {
   const s = renderAgendaList(view({ events: [{ id: 'e3', title: 'Old lunch', startAt: AT }] }));
   assert.match(s, /no occurrence left/);

@@ -17,7 +17,11 @@
  */
 
 export interface TodoAddArgs {
-  tasks: Array<string | { text: string; group?: string; description?: string }>;
+  tasks: Array<string | {
+    text: string; group?: string; description?: string;
+    kind?: 'note'; status?: 'doing' | 'waiting' | 'someday'; priority?: 'high' | 'low';
+    attachments?: Array<string | { path: string; kind?: 'file' | 'dir'; label?: string }>;
+  }>;
   list?: string;
   createList?: boolean;
   color?: string;
@@ -86,7 +90,8 @@ export function renderTodoAdd(result: TodoAddResult, asked: number): string {
     // them is on a screen the human is looking at.
     const how = result.via === 'file' ? ' The app was not open, so this went straight to the file.' : '';
     return `Filed ${n} task${n === 1 ? '' : 's'} into ${where}${created}.${renderTodoLost(result)}${how}`
-      + ' They appear in the To-do widget in the order given, under their steps.';
+      + ' They appear in the To-do widget in the order given, under their steps; on a recent app they wait in « To triage » until the human keeps them.'
+      + ' Read them back with mnemosyne_todo_list to get their numbers.';
   }
   const lists = result.lists && result.lists.length
     ? `\nLists that exist: ${result.lists.map((l) => `"${l}"`).join(', ')}.`

@@ -46,7 +46,7 @@ A skin is a single `.json` file. Drop it into the app and see the result live.
     "--status-active": "#9b59b6",
     "--text-accent": "#9b59b6",
     "--shadow-accent": "0 0 20px rgba(155, 89, 182, 0.2)",
-    "--border-accent": "1px solid rgba(155, 89, 182, 0.28)"
+    "--border-accent": "rgba(155, 89, 182, 0.28)"
   }
 }
 ```
@@ -129,6 +129,27 @@ A skin can override any subset of these CSS variables.
 
 ### Spacing, Radius, Borders, Shadows, Transitions
 See [`skin-schema.json`](./skin-schema.json) for the full list with descriptions.
+
+### Border tokens are colours
+`--border-subtle`, `--border-accent` and `--border-overload` hold a colour, as
+in Mnemosyne OS itself. Write the border around it: `1px solid
+var(--border-subtle)`.
+
+### Inside a Mnemosyne OS cartridge
+A cartridge that calls `onHostConfig()` from `@mnemosyne_os/cartridge-sdk`
+receives the user's theme as CSS variables. Eight skin tokens share their name
+with the host (`HOST_SHARED_TOKENS`) and follow the theme as they are. Nine
+more read a host variable first (`HOST_TOKEN_SOURCES`):
+
+```ts
+import { withHostFallback } from '@mnemosyne_os/design-sdk';
+
+withHostFallback('--status-active', '#3fd68a');
+// 'var(--accent-success-text, #3fd68a)'
+```
+
+The app then uses the user's theme inside Mnemosyne OS and the skin's own
+colours anywhere else.
 
 ### Layout tokens (advanced)
 These exist but modifying them **may break the app layout**:

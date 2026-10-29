@@ -54,6 +54,7 @@ export { shellWriteTargets, looksLikePath } from './shellWrites';
 export {
   LIVE_MINUTES,
   minutesSince,
+  lastSeen,
   isRecent,
   liveSessions,
   collisions,

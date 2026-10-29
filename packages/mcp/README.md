@@ -328,11 +328,11 @@ Works with the app closed on a dev install (the headless daemon reads the file);
 | **`mnemosyne_about`** | Re-read the briefing the agent was handed on connect: the governance tenet, the vault protection model, the spine model, and the rules for an agent working on someone else's memory. Call it if your client did not surface the server instructions. |
 | **`mnemosyne_memory_query`** | Semantic search. It returns raw chronicles, ranked by vector similarity fused with a local BM25 channel and weighted by spineType. Supports `spine_type_filter`, `max_content_chars` and `limit` (50 max). |
 | **`mnemosyne_memory_ask`** | Ask a question, get a synthesized prose answer grounded in the vault, plus its source chronicles. Use it for why, who and how questions that span many memories. It runs the full RAG pipeline, which also makes it the better retriever, and it is slower than `query`. |
-| **`mnemosyne_vault_list`** | List the vaults Mnemosyne OS exposes, with each one's token, name and chronicle count. Call it to discover valid `vault` targets. |
+| **`mnemosyne_vault_list`** | List the vaults Mnemosyne OS exposes, with each one's token, name, chronicle count and the description written in its panel in the app. Call it to discover valid `vault` targets. A vault with no description is left without one, and the list says how many reachable vaults have none. |
 | **`mnemosyne_memory_forget`** | Erase one chronicle for good, by the id `mnemosyne_memory_query` returned. Absent unless you set `MNEMO_FORGET=1`, and the app wants the `FORGET` intent on top of that. You arm erasure by hand, because writing a new chronicle cannot undo it. |
 | **`mnemosyne_memory_ingest`** | Persist a memory. Pick a `spine_type`: ARCHITECTURE, DECISION, DEBUG, BUGFIX, FEATURE, NOTE, SESSION, RESONANCE or CUSTOM. |
 | **`mnemosyne_todo_add`** | Put tasks into the user's **To-do backlog**, in order and optionally under named steps. Name the `list`, or pass `create_list: true`. An unknown name is refused with the lists that exist. With a window open the write goes through the widget's own store; on macOS with the window closed the app writes the file directly. Scope `todo:write`. |
-| **`mnemosyne_cockpit_update`** | Your own **status card** on the user's canvas: `state` working, waiting, done, blocked or closed, a `title`, one `status` line, up to 4 `detail` lines. You declare the state, and the app prints it next to the time since your last call, so call at real milestones. "waiting" and "blocked" make the card pulse and the taskbar flash. The answer carries the messages the user left on your card. Send `desktop` once, with the name of a board the user gives you, and this session’s cards go there for the rest of the conversation; leave it out and they go to whichever board answers for this project. Needs the app window open. Scope `cockpit:write`. |
+| **`mnemosyne_cockpit_update`** | Your own **status card** on the user's canvas: `state` working, waiting, done, blocked or closed, a `title`, one `status` line, up to 4 `detail` lines. You declare the state, and the app prints it next to the time since your last call, so call at real milestones. "waiting" and "blocked" make the card pulse and the taskbar flash. The answer carries the messages the user left on your card. Send `desktop` once, with the name of a board the user gives you, and this session’s cards go there for the rest of the conversation; leave it out and they go to whichever board answers for this project. Claude Code names the card by its `CLAUDE_CODE_SESSION_ID`; other clients (Cursor, Antigravity…) pass `session`, any stable id for the conversation, on every call. Needs the app window open. Scope `cockpit:write`. |
 | **`mnemosyne_pheme_watch`** | Add a subreddit, a Hacker News query or a topic to the user's **Pheme radar**, or take one off. The lists are theirs. An operation that would empty one is refused, each one reports its own outcome, and the user gets a receipt in Pheme naming the agent and what changed. It posts nowhere. Needs the app running, though Pheme itself can be closed. Scope `pheme:profile`. |
 | **`mnemosyne_pheme_radar`** | Read what the **Pheme radar** last found: fresh threads in the watched subreddits and Hacker News queries, with a topic score and, after the user's Mnemosyne OS pass, a tier. The answer leads with **when** the scan ran, because it is only as fresh as the last scan the user ran. "No radar yet" is said in words rather than returned as an empty list. Draft the reply; the user posts it. Needs the app running. Scope `pheme:read`. |
 | **`mnemosyne_agenda_add`** | Put appointments or deadlines into the user's **calendar**. `start` and the optional `end` are ISO 8601, and a time with no offset is read as the user's own machine local time. Supports `all_day`, `recurrence` (daily, weekly, monthly, yearly) and `alarm_minutes_before`. To change or remove one, see `mnemosyne_agenda_update` and `mnemosyne_agenda_remove`. Scope `agenda:write`. |
@@ -590,6 +590,30 @@ here the agent cannot undo afterwards.
 **Contact.** Privacy questions go to **dev@mnemosyne-os.com**, XPACEGEMS LLC, 2932 NW 72 Ave,
 Miami, FL 33122, USA. Full policy: <https://mnemosyne-os.io/confidentialite>. Bugs and
 security reports: <https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/issues>.
+
+---
+
+## The second server: what the app does for your agent
+
+This package is the memory. The desktop app ships a second MCP server,
+**Mnemosyne OS actions**, for what the OS can do. It is not on npm: the app
+carries it and keeps it at its own version.
+
+| Tool | What it does |
+|---|---|
+| `os_find` | Looks up an action the OS can perform, from the person's request in their own words. The answer gives each matching action with its exact arguments, or says that none exists. |
+| `os_run` | Runs one action found with `os_find`: open, arrange or close windows on the board, compose a desktop, or drive an installed app (Atlas, Vitrine Studio, the CRM and the others). Several steps of one app go in one call. |
+| `os_image_generate` | Draws a picture, billed per picture on the person's Mnemosyne credits. |
+| `os_video_generate`, `os_video_status` | Makes a short video clip from a first and a last picture, billed per second on the same credits. |
+
+**Connect it.** In the app, open **Settings › Agents › Connect my coding agent**.
+For Cursor and Antigravity, one click writes both servers into the agent's
+config. For Claude Code, the panel prints the two `claude mcp add` lines to
+copy. The same panel is on the first screen of the setup wizard.
+
+**What the person keeps.** The first `os_run` opens a dialog inside the app,
+and the person allows the catalog there. Pictures ask once, and videos ask once
+more on their own, because both spend the person's credits. Every action needs the app running.
 
 ---
 

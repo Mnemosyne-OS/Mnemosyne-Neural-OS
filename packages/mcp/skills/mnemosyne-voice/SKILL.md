@@ -67,8 +67,9 @@ Three preconditions are not your fault when they fail, and each has a different 
 Call **`mnemosyne_voice_list`** first, every time. It is the only source of valid clone names,
 and it tells you which engines are installed:
 
-- **`xtts`**, **`chatterbox`**, **`zonos`** clone a voice. `chatterbox` is the most
-  expressive; `zonos` takes an emotion vector.
+- **`qwen3`**, **`chatterbox`**, **`zonos`** clone a voice. `qwen3` is the fastest
+  (Windows); `chatterbox` is the most expressive; `zonos` takes an emotion vector.
+  `xtts` was retired from the app and is refused by name.
 - **`piper`** is fast with fixed voices and **cannot clone**. Asking it for a clone is
   refused rather than quietly answered in a stock voice.
 

@@ -8,8 +8,8 @@
  * greedy `/Name:\s*(.+)/` capture then swallowed the whole file as its "name".
  */
 
-import type { MnemoChronicle } from './ws-client.js';
-import { localStamp } from './local-time.js';
+import type { MnemoChronicle, QueryResult } from './ws-client.js';
+import { localStamp, parseStoredTime } from './local-time.js';
 
 /**
  * Unwrap the SemanticChunker envelope `{ raw, spineType, ... }` and return only
@@ -54,7 +54,8 @@ const firstLine = (s: string): string => (s.split(/\r?\n/)[0] ?? '').trim();
 export interface ResonanceView {
   id:          string;
   phase:       string;
-  agoMin:      number;
+  /** Minutes since the chronicle was saved; null when its time cannot be read, never a made-up 0. */
+  agoMin:      number | null;
   chronicleId: string;
 }
 
@@ -69,17 +70,20 @@ export function toResonanceView(c: MnemoChronicle, now: number = Date.now()): Re
   // update_position writes "<phase> — <iso>" on the line right after the marker.
   const phaseM  = body.match(/\[RESONANCE:[^\]]+\]\s*\r?\n\s*([^\n\r]+?)\s+—\s+\d{4}-\d{2}-\d{2}/);
   const phase   = phaseM?.[1] ? cap(phaseM[1].trim(), 60) : cap(firstLine(body) || String(c.spineType), 60);
-  const ts      = new Date(c.timestamp).getTime();
-  const agoMin  = Number.isFinite(ts) ? Math.max(0, Math.round((now - ts) / 60000)) : 0;
+  const ts      = parseStoredTime(c.timestamp);
+  const agoMin  = ts !== null ? Math.max(0, Math.round((now - ts) / 60000)) : null;
   return { id, phase, agoMin, chronicleId: String(c.id) };
+}
+
+/** One listing line of a resonance; an unreadable time says so instead of "0min ago". */
+export function resonanceLine(v: ResonanceView): string {
+  const age = v.agoMin === null ? 'update time unknown' : `updated ${v.agoMin}min ago`;
+  return `- **${v.id}** · ${v.phase} · ${age} \`#${v.chronicleId}\``;
 }
 
 /** Render the full resonance listing body (without the surrounding headers). */
 export function formatResonances(chronicles: MnemoChronicle[], now: number = Date.now()): string {
-  return selectResonances(chronicles).map(c => {
-    const v = toResonanceView(c, now);
-    return `- **${v.id}** · ${v.phase} · updated ${v.agoMin}min ago \`#${v.chronicleId}\``;
-  }).join('\n');
+  return selectResonances(chronicles).map(c => resonanceLine(toResonanceView(c, now))).join('\n');
 }
 
 // ── Voice rendering ───────────────────────────────────────────────────────────
@@ -99,7 +103,10 @@ export function voiceError(code: string | undefined): string {
       + ` Do NOT retry with another name: a voice-over in the wrong voice sounds perfectly fine and is worthless.`;
   }
   if (raw.startsWith('CLONE_NOT_SUPPORTED')) {
-    return `${raw}\n\nThat engine has fixed voices. Use "xtts", "chatterbox" or "zonos" to clone, or drop the clone argument.`;
+    return `${raw}\n\nThat engine has fixed voices. Use "qwen3", "chatterbox" or "zonos" to clone, or drop the clone argument.`;
+  }
+  if (raw.startsWith('ENGINE_RETIRED')) {
+    return `${raw}\n\nThat engine was removed from Mnemosyne OS. Use one the message lists, or omit engine and the host picks the best installed one.`;
   }
   if (raw.startsWith('ENGINE_NOT_INSTALLED') || raw.startsWith('NO_CLONING_ENGINE') || raw.startsWith('NO_TTS_ENGINE')) {
     return `${raw}\n\nThe user installs local voices from Settings → Voice in the Mnemosyne OS app. This is a multi-GB download, so tell them rather than waiting.`;
@@ -211,4 +218,164 @@ export function freshnessLine(freshness: unknown): string | null {
     return `> ⚠️ Gone: \`${filePath}\` no longer exists${read !== null ? `; this memory was taken on ${localDay(read)}` : ''}.`;
   }
   return null;
+}
+
+/**
+ * What `mnemosyne_memory_query` says INSTEAD of results, or null when the rows
+ * are real search results. Three answers that used to read as one:
+ *
+ *   - the app refused or failed: nothing was read, so "nothing found" would be
+ *     a claim about the vault that the search never made;
+ *   - the embed failed and the app fell back to the N most RECENT memories
+ *     (`_semantic.used === false`). Those rows carry no score, the app prints
+ *     them as 1.000, and shown as results they read as a perfect ranking that
+ *     never happened. They are refused, never shown;
+ *   - the search ran and matched nothing: the only honest "no chronicles found".
+ *
+ * An app too old to send `_semantic` is not a fallback: absent is not false.
+ */
+export function queryRefusal(result: QueryResult, vault: string, filterHint = ''): string | null {
+  const failure = searchFailure(result, vault);
+  if (failure !== null) return failure;
+  if (result.chronicles.length === 0) {
+    return `No chronicles found in vault:${vault} for this query${filterHint}. The search ran and matched nothing.`;
+  }
+  return null;
+}
+
+/**
+ * The two answers of `queryRefusal` that say the rows are NOT a search result:
+ * the app failed, or it fell back to its most recent memories. Null when the
+ * search ran, whatever it found. The resonance tools read this one, because an
+ * empty result means something of their own ("no resonance yet").
+ * An empty error string reads as no reason, like an absent one.
+ */
+export function searchFailure(result: QueryResult, vault: string): string | null {
+  if (!result.success) {
+    return `Mnemosyne could not search vault:${vault}: ${result.error || 'no reason given'}. `
+      + `This is a failed search, not an empty one: nothing was read, so it says nothing about what the vault holds.`;
+  }
+  const semantic = result._semantic;
+  if (semantic && semantic.wanted === true && semantic.used === false) {
+    return `Mnemosyne could not run this search on vault:${vault}: ${semantic.error || 'no reason given'}. `
+      + `The app fell back to its most recent memories, which are not results for this query, so none are shown. `
+      + `This says nothing about what the vault holds. Retry once the embedder is back, or use mnemosyne_memory_ask.`;
+  }
+  return null;
+}
+
+/**
+ * The saved position of ONE resonance, or null. A search for an id ranks
+ * whatever is nearest, so the first row can be any document: only a resonance
+ * chronicle carrying this exact `[RESONANCE:<id>]` marker is that position.
+ * Rows come newest-relevant first, so the first match is returned.
+ */
+export function findPosition(chronicles: MnemoChronicle[], resonanceId: string): MnemoChronicle | null {
+  const marker = `[RESONANCE:${resonanceId}]`;
+  return selectResonances(chronicles).find(c => unwrapContent(c.content ?? '').includes(marker)) ?? null;
+}
+
+/**
+ * The score as printed beside a query row. A row nobody scored (a hit of the
+ * keyword channel alone) says so: an older app sent 1 for it, and "1.000" read
+ * as a perfect match.
+ */
+export function scoreLabel(score: unknown): string {
+  return typeof score === 'number' && Number.isFinite(score)
+    ? `score: ${score.toFixed(3)}`
+    : 'unscored (keyword match)';
+}
+
+// Spine types that are design/vision/doc material: their identifiers (class
+// names, file paths, intents) may be idealized and not match the actual code.
+const DOC_SPINES = new Set([
+  'DOCUMENT', 'VISION', 'NOTE', 'IDEATIONAL', 'HYPOTHESIS', 'CONTEXTUAL', 'CONCERN',
+]);
+
+/**
+ * Whether a query row is design material an agent should check against the
+ * source code before trusting its identifiers.
+ *
+ * NOTE is also the default spine of `mnemosyne_memory_ingest`, so it counts
+ * only when the row came from a file on disk (DocWatch): an agent's own note
+ * ("my validation drink is …") carried the "verify against the actual source
+ * code" warning, seen under DeepSeek Harness on 2026-10-28.
+ */
+export function isDesignDoc(spineType: unknown, sourceAppId: unknown): boolean {
+  const spine = String(spineType ?? '').toUpperCase();
+  if (!DOC_SPINES.has(spine)) return false;
+  return spine !== 'NOTE' || String(sourceAppId ?? '').toUpperCase() === 'DOCWATCH';
+}
+
+export interface QueryRowOptions {
+  /** Characters of body kept before the truncation hint. */
+  maxContentChars: number;
+  /** The words-only vault judged this row a partial match (readCoverage). */
+  notAdmitted?: boolean;
+}
+
+/**
+ * One result row of `mnemosyne_memory_query`, as the agent reads it. Lives
+ * here so the output itself is tested: the guards it carries (the date line
+ * omitted when the time cannot be read, the design-doc warning) were checked
+ * only by reading index.ts as text, and inverting either left every test green
+ * (verification of 2026-10-28).
+ */
+export function formatQueryRow(c: MnemoChronicle, index: number, options: QueryRowOptions): string {
+  const savedAt  = parseStoredTime(c.timestamp);
+  const stale    = freshnessLine(c.freshness);
+  const raw      = unwrapContent(c.content ?? '');
+  const totalLen = raw.length;
+  const truncated = totalLen > options.maxContentChars;
+  const snippet  = truncated ? raw.slice(0, options.maxContentChars).trimEnd() + '…' : raw;
+  const truncHint = truncated
+    ? `\n\n_(content truncated, ${totalLen} chars total. Re-query with max_content_chars: ${Math.min(totalLen, 4000)} for the full body, or call mnemosyne_memory_query with a more specific text to surface the right chunk.)_`
+    : '';
+  return [
+    `### [${index + 1}] ${c.spineType} · ${scoreLabel(c.score)}`,
+    `**ID:** ${c.id}`,
+    // An unreadable time prints no date line: absent, never a made-up one.
+    ...(savedAt !== null ? [`**Date:** ${localStamp(savedAt)}`] : []),
+    `**Source:** ${c.source_app_id}`,
+    // Design material is flagged so an agent verifies its identifiers before trusting them.
+    ...(isDesignDoc(c.spineType, c.source_app_id)
+      ? ['> ⚠️ Design/vision doc: verify class names, file paths and identifiers against the actual source code before relying on them.']
+      : []),
+    ...(stale ? [stale] : []),
+    ...(options.notAdmitted ? ['> Not admitted: this row matches only some words of the query.'] : []),
+    '',
+    snippet || '_(no content)_',
+    truncHint,
+  ].join('\n');
+}
+
+export interface CoverageView {
+  /** One line for the whole answer. */
+  summary: string;
+  /** Per served row, in rank order: true when the engine would NOT admit it. */
+  notAdmitted: boolean[];
+}
+
+/**
+ * What the engine measured about a words-only vault's rows, or null when it
+ * measured nothing (any other vault, or an older app). `admitted` counts the
+ * rows the chat would let into an answer; a row it would not admit matches only
+ * some words of the question, and is the nearest the engine comes to "I don't
+ * know". Per-row verdicts are used only when they line up with the rows shown.
+ */
+export function readCoverage(result: QueryResult): CoverageView | null {
+  const raw = result._semantic?.lexicalCoverage;
+  if (!raw || typeof raw !== 'object') return null;
+  const c = raw as { measured?: unknown; admitted?: unknown; rows?: unknown };
+  if (typeof c.measured !== 'number' || typeof c.admitted !== 'number' || c.measured <= 0) return null;
+  const rows = Array.isArray(c.rows) ? c.rows : [];
+  const aligned = rows.length === result.chronicles.length;
+  const notAdmitted = result.chronicles.map((_, i) => {
+    const r = aligned ? rows[i] as { admitted?: unknown } | null : null;
+    return !!r && typeof r === 'object' && r.admitted === false;
+  });
+  const summary = c.admitted === 0
+    ? `> ⚠️ Words-only vault: the engine judged none of the ${c.measured} rows it measured worth a place in an answer. They match only some words of the query; treat this as "nothing found".`
+    : `> Words-only vault: the engine judged ${c.admitted} of the ${c.measured} rows it measured worth a place in an answer.`;
+  return { summary, notAdmitted };
 }

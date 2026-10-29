@@ -21,6 +21,6 @@
     "--text-muted":         "#2d6a8a",
     "--text-accent":        "#00b4d8",
     "--shadow-accent":      "0 0 24px rgba(0, 180, 216, 0.22)",
-    "--border-accent":      "1px solid rgba(0, 180, 216, 0.28)"
+    "--border-accent":      "rgba(0, 180, 216, 0.28)"
   }
 }
