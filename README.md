@@ -17,6 +17,7 @@
 <br/>
 
 [![CI](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions)
+[![HOL Guard scan](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
