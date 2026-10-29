@@ -1,0 +1,25 @@
+name: Plugin security scan
+
+# HOL Plugin Scanner, the same scanner the Awesome AI Plugins catalog runs on
+# this repository before listing it. Fails under the catalog's threshold (75).
+# Read-only: no secrets, checkout credentials not persisted.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: hashgraph-online/ai-plugin-scanner-action@c96833de5070fab4e564010b5ab6e3c3d7e07a3e # v1.2.806
+        with:
+          plugin_dir: "."
+          min_score: 75
+          fail_on_severity: none
