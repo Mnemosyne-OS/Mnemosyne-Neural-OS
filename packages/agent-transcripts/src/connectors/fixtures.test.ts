@@ -7,7 +7,7 @@
  * executed; otherwise the doc describes a ritual nobody performs.
  */
 import { describe, it, expect } from 'vitest';
-import { readSession, type Connector, type SessionState } from '../connector';
+import { readSession, totalCounts, type Connector, type SessionState } from '../connector';
 
 import claudeCode from './claude-code.json';
 import claudeCodeFixture from './claude-code.fixture.jsonl?raw';
@@ -67,6 +67,15 @@ describe.each(CASES)('$name against its own fixture', ({ connector, fixture, exp
   for (const [field, want] of Object.entries(expected)) {
     // Keys starting with _ are the file's own commentary, not assertions.
     if (field.startsWith('_')) continue;
+    // `tokens` is keyed by LOCAL calendar day, so a fixture that declared it
+    // directly would pass in Paris and fail in Tokyo. The fold is the part
+    // worth pinning anyway: it is where the call de-duplication shows up.
+    if (field === 'tokensTotal') {
+      it('produces the declared token totals', () => {
+        expect(totalCounts(state?.tokens)).toEqual(want);
+      });
+      continue;
+    }
     it(`produces the declared ${field}`, () => {
       expect(state?.[field as keyof SessionState]).toEqual(want);
     });

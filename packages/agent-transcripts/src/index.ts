@@ -25,10 +25,19 @@ export {
   completeLines,
   describeConnector,
   MAX_ARTIFACTS,
+  dayKey,
+  asCount,
+  emptyCounts,
+  addCounts,
+  totalCounts,
+  type TokenCounts,
+  type UsageSpec,
   type Artifact,
   type Connector,
   type ConnectorFormat,
   type ArchiveSpec,
+  type ChatLogSpec,
+  type TelegramSpec,
   type DocState,
   type SessionState,
 } from './connector';
@@ -48,6 +57,37 @@ export {
   type SkipReason,
   type Turn,
 } from './archive';
+
+export {
+  readChatLog,
+  accountedForLines,
+  resolveDateOrder,
+  CHAT_LINE_LEVEL_REASONS,
+  type ChatLogState,
+  type ChatTurn,
+  type ChatRole,
+  type ChatSkipReason,
+  type ChatLineShape,
+  type DateOrder,
+} from './chatLog';
+
+export {
+  readTelegramExport,
+  accountedForMessages,
+  TELEGRAM_MESSAGE_LEVEL_REASONS,
+  type TelegramExportState,
+  type TelegramChatState,
+  type TelegramTurn,
+  type TelegramSkipReason,
+  type TelegramChatSkipReason,
+} from './telegram';
+
+export {
+  groupIntoBursts,
+  DEFAULT_BURST_GAP_MINUTES,
+  type Burst,
+  type BurstReport,
+} from './bursts';
 
 export { shellWriteTargets, looksLikePath } from './shellWrites';
 
@@ -93,6 +133,10 @@ import openclaw from './connectors/openclaw.json';
 import chatgptExport from './connectors/chatgpt-export.json';
 import claudeAiExport from './connectors/claude-ai-export.json';
 import geminiTakeout from './connectors/gemini-takeout.json';
+import whatsappBrowserExport from './connectors/whatsapp-browser-export.json';
+import whatsappNativeExport from './connectors/whatsapp-native-export.json';
+import whatsappNativeAndroid from './connectors/whatsapp-native-android.json';
+import telegramDesktopJson from './connectors/telegram-desktop-json.json';
 import type { Connector } from './connector';
 
 /**
@@ -139,6 +183,50 @@ export const ARCHIVE_CONNECTORS = {
 } as const;
 
 export type ArchiveConnectorId = keyof typeof ARCHIVE_CONNECTORS;
+
+/**
+ * Connectors for a MESSAGING APP'S EXPORTED LOG, read with `readChatLog`.
+ * Doc 118 §9.
+ *
+ * A third map rather than a third entry in the other two, for the reason the
+ * reader itself exists: this file holds ONE conversation between N named
+ * PEOPLE, where an archive holds many conversations between a human and a
+ * model. A caller that reached for `readArchive` with one of these would get an
+ * empty result rather than an error, which is the failure mode the split
+ * between CONNECTORS and ARCHIVE_CONNECTORS was already drawn to avoid.
+ *
+ * ⚠️ Only `whatsapp-browser-export` has been run over a real file, and even
+ * that one is verified against a producer nobody could name (a browser
+ * extension, not WhatsApp). The two native ones are written against documented
+ * shape; each says so in its own `_verified`, and `archiveConnectorIsVerified`
+ * reads that rather than letting a caller assume.
+ */
+export const CHATLOG_CONNECTORS = {
+  'whatsapp-browser-export': whatsappBrowserExport as Connector,
+  'whatsapp-native-export': whatsappNativeExport as Connector,
+  'whatsapp-native-android': whatsappNativeAndroid as Connector,
+} as const;
+
+export type ChatLogConnectorId = keyof typeof CHATLOG_CONNECTORS;
+
+/**
+ * Connectors for a TELEGRAM EXPORT, read with `readTelegramExport`. Doc 118 §10.
+ *
+ * A fourth map, for the reason the other three are separate: a caller that
+ * reached for `readChatLog` with one of these would get a null back rather than
+ * an error, and a caller that reached for `readArchive` would get an empty
+ * result — which is the failure mode this split exists to prevent. Telegram
+ * shares the MODEL with the chat logs and the reader with nobody.
+ *
+ * ⚠️ Nothing here has been run over a real export. `_verified` says so on the
+ * file, and `archiveConnectorIsVerified` reads it rather than letting a caller
+ * assume.
+ */
+export const TELEGRAM_CONNECTORS = {
+  'telegram-desktop-json': telegramDesktopJson as Connector,
+} as const;
+
+export type TelegramConnectorId = keyof typeof TELEGRAM_CONNECTORS;
 
 export type ConnectorId = keyof typeof CONNECTORS;
 

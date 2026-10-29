@@ -1,0 +1,28 @@
+{
+  "id": "whatsapp-native-android",
+  "displayName": "WhatsApp (Export chat, Android)",
+  "version": "0.1.0",
+  "format": "chatlog",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. Every token below is a literal; the line shape is the NAME of one this package implements. Nothing here is evaluated.",
+  "_verified": "NOT MEASURED. Written 2026-09-16 against the documented and widely reported Android shape. A BELIEF, like its iOS sibling, and for the same reason: no native export existed on this machine.",
+  "_whySeparate": "Same app, different line. Android writes '15/08/2026, 16:55 - Name: text' - no brackets, no seconds, a dash between stamp and sender. A connector may not carry an alternation (that would be a pattern, and a pattern from a stranger is a machine that hangs on somebody else's computer), so the two shapes are two connectors over one reader.",
+  "_fileName": "The file is named after the conversation ('WhatsApp Chat with Débora.txt'), which is why filePattern matches the extension rather than a name.",
+  "filePattern": ".txt",
+  "chatLog": {
+    "lineShape": "dash-ts-colon",
+    "_mediaWhy": "BELIEF: Android writes '<Media omitted>' in English and a localised equivalent elsewhere. A caption rides behind the marker, so these are prefixes.",
+    "mediaMarkers": [
+      "<Media omitted>",
+      "<Médias omis>",
+      "<Multimedia omitido>"
+    ],
+    "_selfWhy": "Empty for the same reason as the iOS sibling: a native export writes the account's display name like any other participant and marks nobody as the self. Every turn comes back 'unknown' and the app asks once.",
+    "_dateOrderWhy": "NOT declared. It follows the phone's locale; the reader resolves it from the file or says it could not."
+  },
+  "_mark": "No vendor asset ships on this machine to trace, and drawing a lookalike under WhatsApp's name would be a fabricated brand asset.",
+  "mark": {
+    "label": "WA",
+    "tint": "#25d366"
+  }
+}

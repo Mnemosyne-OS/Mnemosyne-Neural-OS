@@ -1,0 +1,161 @@
+{
+  "about": "SYNTHETIC. The shape is copied from Telegram Desktop's documented machine-readable export; every name, word and id below is invented. This package publishes to npm and a fixture cut from a real export would put somebody's conversations in a public tarball.",
+  "personal_information": {
+    "user_id": 111222333,
+    "first_name": "Ada",
+    "last_name": "Renard",
+    "phone_number": "+00 000 00 00 00"
+  },
+  "chats": {
+    "about": "chat history",
+    "list": [
+      {
+        "name": "Bo Lindgren",
+        "type": "personal_chat",
+        "id": 444555666,
+        "messages": [
+          {
+            "id": 1,
+            "type": "message",
+            "date": "2026-08-15T16:55:48",
+            "date_unixtime": "1755269748",
+            "from": "Ada Renard",
+            "from_id": "user111222333",
+            "text": "the venue is booked",
+            "text_entities": [{ "type": "plain", "text": "the venue is booked" }]
+          },
+          {
+            "id": 2,
+            "type": "message",
+            "date": "2026-08-15T16:57:02",
+            "date_unixtime": "1755269822",
+            "from": "Bo Lindgren",
+            "from_id": "user444555666",
+            "reply_to_message_id": 1,
+            "text": [
+              "look at ",
+              { "type": "text_link", "text": "this one", "href": "https://example.org/hall" },
+              " instead"
+            ],
+            "text_entities": [
+              { "type": "plain", "text": "look at " },
+              { "type": "text_link", "text": "this one", "href": "https://example.org/hall" },
+              { "type": "plain", "text": " instead" }
+            ]
+          },
+          {
+            "id": 3,
+            "type": "message",
+            "date": "2026-08-15T17:02:10",
+            "date_unixtime": "1755270130",
+            "from": "Bo Lindgren",
+            "from_id": "user444555666",
+            "photo": "photos/photo_1@15-08-2026_17-02-10.jpg",
+            "width": 1280,
+            "height": 960,
+            "text": "the main room",
+            "text_entities": [{ "type": "plain", "text": "the main room" }]
+          },
+          {
+            "id": 4,
+            "type": "message",
+            "date": "2026-08-15T17:03:00",
+            "date_unixtime": "1755270180",
+            "from": "Ada Renard",
+            "from_id": "user111222333",
+            "file": "stickers/sticker.webp",
+            "media_type": "sticker",
+            "sticker_emoji": "👍",
+            "text": "",
+            "text_entities": []
+          },
+          {
+            "id": 5,
+            "type": "service",
+            "date": "2026-08-15T18:00:00",
+            "date_unixtime": "1755273600",
+            "actor": "Bo Lindgren",
+            "actor_id": "user444555666",
+            "action": "phone_call",
+            "duration_seconds": 312,
+            "discard_reason": "hangup",
+            "text": "",
+            "text_entities": []
+          },
+          {
+            "id": 6,
+            "type": "message",
+            "date": "2026-08-16T09:12:00",
+            "date_unixtime": "1755328320",
+            "from": "Ada Renard",
+            "from_id": "user111222333",
+            "forwarded_from": "Cy Moreau",
+            "text": "the deposit is non refundable",
+            "text_entities": [{ "type": "plain", "text": "the deposit is non refundable" }]
+          },
+          {
+            "id": 7,
+            "type": "message",
+            "date": "2026-08-16T09:20:00",
+            "date_unixtime": "1755328800",
+            "edited": "2026-08-16T09:21:30",
+            "edited_unixtime": "1755328890",
+            "from": "Bo Lindgren",
+            "from_id": "user444555666",
+            "text": "then we pay friday",
+            "text_entities": [{ "type": "plain", "text": "then we pay friday" }]
+          },
+          {
+            "id": 8,
+            "type": "message",
+            "date": "not a date",
+            "from": "Bo Lindgren",
+            "from_id": "user444555666",
+            "text": "sent from a broken clock",
+            "text_entities": [{ "type": "plain", "text": "sent from a broken clock" }]
+          },
+          {
+            "id": 9,
+            "type": "message",
+            "date": "2026-08-16T10:00:00",
+            "from": null,
+            "from_id": "channel999888",
+            "text": "posted with no author",
+            "text_entities": [{ "type": "plain", "text": "posted with no author" }]
+          },
+          {
+            "id": 10,
+            "type": "message",
+            "date": "2026-08-16T10:05:00",
+            "from": "Bo Lindgren",
+            "from_id": "user444555666",
+            "text": "",
+            "text_entities": []
+          }
+        ]
+      },
+      {
+        "name": "Deploy bot",
+        "type": "bot_chat",
+        "id": 777000111,
+        "messages": [
+          {
+            "id": 1,
+            "type": "message",
+            "date": "2026-08-15T08:00:00",
+            "from": "Deploy bot",
+            "from_id": "user777000111",
+            "text": "build 4812 succeeded",
+            "text_entities": [{ "type": "plain", "text": "build 4812 succeeded" }]
+          }
+        ]
+      },
+      {
+        "name": "Saved Messages",
+        "type": "saved_messages",
+        "id": 111222333,
+        "messages": []
+      }
+    ]
+  }
+}

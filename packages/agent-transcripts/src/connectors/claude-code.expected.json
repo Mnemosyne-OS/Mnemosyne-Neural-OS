@@ -3,6 +3,16 @@
 
   "_artifacts": "Two files, from the two kinds of evidence. a.ts was recorded by a Write tool call (origin 'tool'); draft.md was read out of a redirection in a Bash command (origin 'shell'). Measured 2026-08-29: 98 of 211 real sessions wrote files the second way and no other, so a fixture that only exercised the first would prove the wrong thing. Newest first, because the walk runs backwards.",
 
+  "_tokensTotal": "The fixture holds FOUR assistant lines carrying a usage, and three API calls: the first reply was written as two lines, one per content block, each repeating the same usage object. A reader that ignores requestId reports 4 calls, 41 input and 15 output here — which is the shape of the error it makes on a real machine, where half the usage lines are copies. The four counters are never added together: cacheRead is a re-read of the same context on every turn and dwarfs the rest.",
+  "tokensTotal": {
+    "input": 31,
+    "cacheWrite": 120,
+    "cacheRead": 13100,
+    "output": 10,
+    "thinking": 3,
+    "calls": 3
+  },
+
   "sessionId": "11111111-2222-3333-4444-555555555555",
   "model": "claude-opus-5",
   "projectPath": "C:\\work\\demo",
