@@ -16,6 +16,12 @@
 
 <br/>
 
+<a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4"><img src="assets/teaser-v2-harness.gif" width="360" alt="Irina, the assistant, made of particles: curiosity is a lovely flaw, but she is still working on her harnesses. Follow Mnemosyne OS for version 2. Her agenda pops open on Friday, 9:00, Build Release 2.0. Oops, you didn't see that. The screen switches off." /></a>
+<br/>
+<em>Version 2 is on its way. Irina is still working on her harnesses · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4">watch with sound</a></em>
+
+<br/>
+
 [![CI](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions)
 [![HOL Guard scan](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
