@@ -6,6 +6,9 @@
 
 **Open to build on · Private at the core**
 
+[![Mnemosyne OS trust badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dmnemosyne-os%252Fmnemosyne-neural-os%26metric%3Dtrust%26style%3Dflat)](https://hol.org/registry/plugins/mnemosyne-os%2Fmnemosyne-neural-os)
+[![Mnemosyne OS publisher badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dmnemosyne-os%252Fmnemosyne-neural-os%26metric%3Dpublisher%26style%3Dflat)](https://hol.org/registry/plugins/mnemosyne-os%2Fmnemosyne-neural-os)
+
 <img src="assets/flags/en.svg" height="14" alt="English" /> English&ensp;·&ensp;<img src="assets/flags/fr.svg" height="14" alt="Français" /> Français&ensp;·&ensp;<img src="assets/flags/es.svg" height="14" alt="Español" /> Español&ensp;·&ensp;<img src="assets/flags/de.svg" height="14" alt="Deutsch" /> Deutsch&ensp;·&ensp;<img src="assets/flags/br.svg" height="14" alt="Português" /> Português&ensp;·&ensp;<img src="assets/flags/ru.svg" height="14" alt="Русский" /> Русский&ensp;·&ensp;<img src="assets/flags/zh.svg" height="14" alt="中文" /> 中文
 
 <br/>
@@ -28,8 +31,6 @@
 
 [![CI](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions)
 [![HOL Guard scan](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml)
-[![Mnemosyne OS trust badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dmnemosyne-os%252Fmnemosyne-neural-os%26metric%3Dtrust%26style%3Dflat)](https://hol.org/registry/plugins/mnemosyne-os%2Fmnemosyne-neural-os)
-[![Mnemosyne OS publisher badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dmnemosyne-os%252Fmnemosyne-neural-os%26metric%3Dpublisher%26style%3Dflat)](https://hol.org/registry/plugins/mnemosyne-os%2Fmnemosyne-neural-os)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
 ![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
