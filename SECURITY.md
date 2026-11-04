@@ -113,7 +113,8 @@ can open a pull request. It cannot publish.
 - A maintainer publishes each `@mnemosyne_os/*` package by hand, from their
   own machine, logged in to npm.
 - npm asks for the account's second factor on every publish. The maintainer
-  confirms it in a browser. A script cannot pass that step.
+  confirms it in a browser, with a hardware security key unlocked by their
+  fingerprint. A script cannot pass that step.
 - No workflow holds an npm token. You can check `.github/workflows/`: no
   step runs `npm publish` or `pnpm publish`.
 - One consequence: our packages carry no npm provenance statement. npm only
