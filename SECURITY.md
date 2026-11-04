@@ -1,9 +1,9 @@
 # Security policy
 
 This page says how to report a vulnerability in Mnemosyne OS, what happens
-after you do, and what protections are in place on this repository. Every
-claim below can be checked on the Security tab of this repository without
-taking our word for it.
+after you do, and what protections are in place on this repository. Each
+claim below names the place where you can check it: the Security tab, a file
+in this repository, or a command you can run.
 
 ## Reporting a vulnerability
 
@@ -103,6 +103,50 @@ Two facts about the product itself, for people evaluating it:
   Windows, Keychain on macOS, the desktop keyring on Linux. A Linux desktop
   with no keyring gets a fixed key instead, and the app reports that state.
 
+## How a release reaches you
+
+A person signs off every step that ships code to you. A schedule or a bot
+can open a pull request. It cannot publish.
+
+### npm packages
+
+- A maintainer publishes each `@mnemosyne_os/*` package by hand, from their
+  own machine, logged in to npm.
+- npm asks for the account's second factor on every publish. The maintainer
+  confirms it in a browser. A script cannot pass that step.
+- No workflow holds an npm token. You can check `.github/workflows/`: no
+  step runs `npm publish` or `pnpm publish`.
+- One consequence: our packages carry no npm provenance statement. npm only
+  issues one for a package published from CI. We chose the human step.
+
+### Desktop installers
+
+- The installers arrive on this repository as a draft release.
+- A maintainer reviews the notes and the files, then clicks Publish.
+- That click starts `.github/workflows/attest-release.yml`. It records a
+  build provenance attestation for each installer. To check a file you
+  downloaded, run:
+
+  ```bash
+  gh attestation verify <file> -R Mnemosyne-OS/Mnemosyne-Neural-OS
+  ```
+
+- The Windows installer is signed on the release machine. The private key
+  of the certificate stays in Certum's cloud HSM. Each signing session
+  opens with a one-time code from the maintainer's phone.
+
+### Dependencies
+
+- `pnpm-lock.yaml` pins every dependency of the workspace. CI installs with
+  `--frozen-lockfile`, so a build uses exactly the versions in the lockfile.
+- Dependabot opens pull requests once a month, and when a dependency has a
+  known vulnerability. Its settings are in `.github/dependabot.yml`. A
+  maintainer takes major versions by hand.
+- A maintainer reviews and merges each Dependabot pull request. Auto-merge
+  is disabled on this repository.
+- Every action in `.github/workflows/` is pinned to a commit SHA.
+  Dependabot proposes the new pins.
+
 ## What is not in place yet
 
 No third-party penetration test has been done on the app. No dynamic
@@ -130,4 +174,4 @@ other direction cannot be undone.
 
 XPACEGEMS LLC, Miami, FL 33122, USA. This policy covers the Mnemosyne OS
 desktop app, the `@mnemosyne_os` packages and the MnemoForge CLI.
-Last updated: September 17, 2026.
+Last updated: November 4, 2026.
