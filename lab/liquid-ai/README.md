@@ -201,7 +201,7 @@ split chosen from the driver's figure starts from the wrong number.
 | CPU only | 0 | 69 tok/s | 16 to 21 tok/s |
 | Vulkan, RTX, all experts on the CPU | 1.4 GB | 77 tok/s | 16 to 19 tok/s |
 | Vulkan, RTX, 8 expert layers on the GPU | 1.5 GB, card full | 145 tok/s | 4.7 tok/s |
-| Vulkan, RTX for attention, experts on the iGPU | 0.7 GB | 97 tok/s | 11 to 13 tok/s |
+| Vulkan, both GPUs: 13.7 GB of weights on the iGPU, 177 MB on the RTX | 0.7 GB | 97 tok/s | 11 to 13 tok/s |
 | Vulkan, everything on the Intel iGPU | 0 | 108 tok/s | 21 tok/s |
 | CUDA, RTX, `--fit` | up to the card's limit | 358 tok/s | ~35 tok/s |
 
