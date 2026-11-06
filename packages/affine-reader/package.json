@@ -54,7 +54,7 @@
     "prepublishOnly": "npm run clean && npm run build"
   },
   "dependencies": {
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.33"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
