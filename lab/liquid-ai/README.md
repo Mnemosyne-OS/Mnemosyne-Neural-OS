@@ -234,6 +234,39 @@ dropped from about 4 GB to 1.4 GB and stayed there. Either the app released
 an idle model, or Windows moved its memory out to make room. A video playing
 on the machine froze once, briefly, during these runs.
 
+## How we test
+
+The scripts are in [`bench/`](bench/). They need llama.cpp, Python 3, curl and,
+for the GPU numbers, `nvidia-smi`.
+
+1. Check the download. Compare the file's SHA-256 with the `lfs.oid` that
+   Hugging Face lists for it.
+2. Ask the model two short questions with thinking off. A `</think>` inside
+   the answer means the reasoning leaked.
+   [`leak-ask.py`](bench/leak-ask.py) does it against a running llama-server.
+3. Measure each placement with the app open, because that is how people run
+   it. [`split-bench.sh`](bench/split-bench.sh) loads the model once per
+   placement and reads the GPU memory before and after.
+   For example:
+   `SERVER=llama-server MODEL=model.gguf CTX=doc.txt sh split-bench.sh run1 cpu igpu gpu 99`
+4. For a vision model, draw the test image with
+   [`make-test-image.py`](bench/make-test-image.py), then time
+   [`vl-ask.py`](bench/vl-ask.py) on each size.
+
+What we learned to check before trusting a number:
+
+- **The free GPU memory.** On this laptop Vulkan and CUDA both reported about
+  5 GB free while `nvidia-smi` counted 2.4 GB. We read `nvidia-smi`.
+- **That the GPU is really used.** A llama-server build without its CUDA
+  runtime next to it runs on the CPU and prints no error. Its log has no
+  `CUDA0` line, and `nvidia-smi` does not move. That is how our first 24B
+  figure was wrong.
+- **Where the weights went.** With `-lv 4` the loader prints one
+  `model buffer size` line per device. A split we had named "attention on the
+  RTX" turned out to put 13.7 GB on the iGPU and 177 MB on the RTX.
+- **Who else is on the GPU.** Two processes on the same card slow each other
+  down. `nvidia-smi --query-compute-apps=pid,used_memory --format=csv` lists them.
+
 ## Questions we have
 
 1. For LFM3-Omni-2B and LFM3-Audio-2B over `/v1/realtime`, which sampling
