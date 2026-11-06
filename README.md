@@ -38,13 +38,13 @@
 [![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_on_holdout_questions_·_verifiable-33ffd6?style=flat-square)](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 ![Interface languages](https://img.shields.io/badge/interface-7_languages-a98bff)
-[![version](https://img.shields.io/github/v/release/Mnemosyne-OS/Mnemosyne-Neural-OS?include_prereleases&label=version&color=f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
+[![version](https://img.shields.io/badge/version-v2.1.0--infinity-f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
 
 <br/><br/>
 
 <!-- Download + MnemoForge badges: auto-updated by `.github/workflows/sync-readme-release-badges.yml` on Release (tags `v…` = OS setup, `cli-…` = CLI). -->
 [![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v2.1.0-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.1.0-infinity)
-[![MnemoForge CLI](https://img.shields.io/badge/📦_MnemoForge_CLI_(MIT)-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
+[![MnemoForge CLI](https://img.shields.io/badge/%F0%9F%93%A6_MnemoForge_CLI_%28MIT%29-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
 
 <br/>
 
