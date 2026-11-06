@@ -24,7 +24,7 @@ touched the GPU. The numbers below are measured again on the CUDA build.
 | Model | What we tried | Result | Status in Mnemosyne OS |
 |---|---|---|---|
 | LFM3-VL-2B (Q4_K_M) | Describe attached images | Works, 9 s per image | Integrated |
-| LFM2.5-8B-A1B (Q4_K_M) | Local chat and voice turns | Works, 81 tok/s on llama-server, app open | Integrated |
+| LFM2.5-8B-A1B (Q4_K_M) | Local chat and voice turns | Works, 41 to 70 tok/s depending on free GPU memory | Integrated |
 | LFM2.5-24B-A2B (Q4_K_M) | Local chat through llama-server | Works, ~35 tok/s, app open | Integrated |
 | LFM2.5 1.2B Instruct and 2.6B (Q4_K_M) | Short chat in French | Answer like assistants | Listed for testing |
 | LFM2.5 230M, 350M and 1.2B Thinking (Q4_K_M) | Short chat in French | Shallow, or slow at thinking off | Not listed |
@@ -222,8 +222,9 @@ What we take from one evening on one laptop:
 1. On Vulkan, `--fit` chose a split that wrote 4 to 6 times slower than
    "all experts on the CPU". A margin that corrected the wrong free figure did
    not change that.
-2. On CUDA, `--fit` chose well for both models. So Mnemosyne OS keeps CUDA and
-   `--fit` on NVIDIA cards, and the 8B moved there.
+2. On CUDA, `--fit` chose well for both models that evening, with the other
+   processes on the card idle. The next section shows where that stopped
+   being true.
 3. The integrated GPU ran the 24B as fast as the best CPU split, read 57 %
    faster, and left the RTX and the CPU free. Nothing in the app uses it yet.
 4. The image reader is the exception: 8 s on the CPU, 17 to 19 s on the iGPU
@@ -232,7 +233,73 @@ What we take from one evening on one laptop:
 One open question. While the CUDA runs loaded, the app's own share of the GPU
 dropped from about 4 GB to 1.4 GB and stayed there. Either the app released
 an idle model, or Windows moved its memory out to make room. A video playing
-on the machine froze once, briefly, during these runs.
+on the machine froze once, briefly, during these runs. The next section
+answers it: Windows moved the memory out.
+
+## The next night: the split follows the real free memory
+
+**What broke.** In the app, the 8B loaded with `--fit` while the app already
+held 2.4 GB of the GPU. `--fit` left 0.35 GB free. A chat answer had produced
+nothing after 14 minutes.
+
+**Why.** On this Windows laptop, CUDA reports 5 072 MiB free whether the card
+is empty or 3.7 GB are held by other processes. `--fit` sizes the split from
+that figure. Windows then moves the other processes' memory into system RAM to
+make room, and the model spills into shared memory when there is no room left.
+
+**What we measured.** We held part of the GPU with two small resident models,
+restarted before each run. Then we loaded the 8B on the CUDA build with our
+app's server arguments and a 32 768-token window, and sent a 9 491-token
+prompt. Free memory is `nvidia-smi` `memory.free`.
+
+| Really free | `--fit` with a corrected margin | All experts on the CPU | All on the GPU |
+|---|---|---|---|
+| 5 920 MiB | 68.8 tok/s | 40.8 tok/s | 83.1 tok/s |
+| 4 388 MiB | 69.7 tok/s | 41.7 tok/s | 83.2, others pushed out |
+| 2 626 MiB | 50.0 tok/s | 41.8 tok/s | 62.1, others pushed out |
+| 1 458 MiB | 19.1 tok/s | 41.0 tok/s | not run |
+| 1 276 MiB | 18.1 tok/s | 44.5 tok/s | not run |
+| 864 MiB | 20.7 tok/s | 43.5 tok/s | 78.9, others pushed out |
+
+"Corrected margin" means `--fit on -fitt (768 + driver free − real free)`.
+The margin absorbs what the driver overstates. That `--fit` never pushed
+another process out, at any level. "All on the GPU" was the fastest every
+time, by taking the others' memory: 5 GB of theirs went down to 128 MB.
+At 864 MiB free, the integrated GPU wrote 29.9 tok/s and the CPU alone 22.8,
+but the first word came after 50 and 100 seconds.
+
+**Larger models need more room.** We ran the same comparison on the 24B and on
+gpt-oss 20B. Each cell gives corrected `--fit` / all experts on the CPU, in
+written tok/s.
+
+| Really free | LFM2.5-24B-A2B | gpt-oss 20B |
+|---|---|---|
+| 5 920 MiB | 32.5 / 27.0 | 25.8 / 21.3 |
+| 4 388 MiB | 30.7 / 27.9 | 28.3 / 23.9 |
+| 2 626 MiB | 27.0 / 28.9 | 11.1 / 20.4 |
+
+At 2 626 MiB the 24B also gave its first word at 41 s on `--fit`, and at 20 s
+with the experts on the CPU.
+
+With the plain `--fit` and 2 626 MiB free, both fell to 5.1 tok/s and pushed
+the other processes out. So did the 8B, at 6.9 tok/s.
+
+**The rule now in Mnemosyne OS:**
+
+1. Read the real free memory with `nvidia-smi` when the model loads.
+2. Every model on our llama-server gets `--fit` with the corrected margin.
+   With an empty GPU it is the same as the plain `--fit`.
+3. The three MoE models above also have a floor. Below it, or without
+   `nvidia-smi`, every expert stays on the CPU and the rest goes on the GPU.
+   The floor is 2 560 MiB for the 8B, and 3 584 MiB for the 24B and gpt-oss.
+
+With a free GPU the 8B writes about 69 tok/s, and about 43 when the GPU is
+nearly full. The rule is applied when the model loads, and it is not applied
+again while the model runs.
+
+**The window.** Our server opened 16 384 tokens, and a long chat then had room
+for one memory out of four. A 32 768-token window costs the 8B 166 MB more on
+the GPU and the 24B 234 MB, at the same speed. Both now open 32 768.
 
 ## How we test
 
