@@ -26,7 +26,8 @@ touched the GPU. The numbers below are measured again on the CUDA build.
 | LFM3-VL-2B (Q4_K_M) | Describe attached images | Works, 9 s per image | Integrated |
 | LFM2.5-8B-A1B (Q4_K_M) | Local chat and voice turns | Works, 81 tok/s on llama-server, app open | Integrated |
 | LFM2.5-24B-A2B (Q4_K_M) | Local chat through llama-server | Works, ~35 tok/s, app open | Integrated |
-| LFM2.5 230M, 350M, 1.2B, 2.6B (Q4_K_M) | Short chat in French | All answer in French | Listed for testing |
+| LFM2.5 1.2B Instruct and 2.6B (Q4_K_M) | Short chat in French | Answer like assistants | Listed for testing |
+| LFM2.5 230M, 350M and 1.2B Thinking (Q4_K_M) | Short chat in French | Shallow, or slow at thinking off | Not listed |
 | LFM2.5-Embedding-350M (Q8_0) | Retrieval over our docs | Better top-1 in 5 of 6 languages | Not integrated |
 | LFM3-Omni-2B and LFM3-Audio-2B (Q4_K_M) | Speech to text, speech to speech | Speech input works, speech output unclear | Not integrated |
 
