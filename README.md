@@ -29,10 +29,12 @@
 
 <br/>
 
+<!-- RELEASE REMINDER: these badges are static, nothing updates them. At every release, bump by hand: version, Electron, React, the Download button below, and the "Runtime:" line of the Stack section. -->
+
 [![CI](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/ci.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions)
 [![HOL Guard scan](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml/badge.svg)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/actions/workflows/plugin-scan.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)
-![Electron](https://img.shields.io/badge/Electron-31.7.7-47848f?logo=electron)
+![Electron](https://img.shields.io/badge/Electron-43.8.3-47848f?logo=electron)
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react)
 ![Tests](https://img.shields.io/badge/tests-passing-22c55e)
 [![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_on_holdout_questions_·_verifiable-33ffd6?style=flat-square)](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
@@ -44,7 +46,7 @@
 
 <!-- Download + MnemoForge badges: auto-updated by `.github/workflows/sync-readme-release-badges.yml` on Release (tags `v…` = OS setup, `cli-…` = CLI). -->
 [![Download Mnemosyne OS](https://img.shields.io/static/v1?label=Download&message=Mnemosyne+OS+%28v2.1.0-infinity%29+%C2%B7+NEW&color=111827&logo=github&style=for-the-badge)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.1.0-infinity)
-[![MnemoForge CLI](https://img.shields.io/badge/%F0%9F%93%A6_MnemoForge_CLI_%28MIT%29-8b5cf6?style=for-the-badge&logo=npm)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/cli-v1.3.18)
+[![MnemoForge CLI](https://img.shields.io/badge/%F0%9F%93%A6_MnemoForge_CLI_%28MIT%29-8b5cf6?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/@mnemosyne_os/forge)
 
 <br/>
 
@@ -566,7 +568,7 @@ sequenceDiagram
 - No telemetry without consent
 
 **Stack**
-- **Runtime:** Electron 31, Node.js 22
+- **Runtime:** Electron 43, Node.js 24
 - **Frontend:** React 18, TypeScript (strict mode), Vite
 - **State:** Zustand with `useShallow` atomic selectors
 - **AI Integration:** Claude API, Ollama (local LLMs), OpenAI-compatible endpoints
