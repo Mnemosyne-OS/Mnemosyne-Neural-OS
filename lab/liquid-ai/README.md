@@ -10,16 +10,23 @@ A run that failed stays in the notes too.
 - Laptop, Windows 11, 32 GB of RAM.
 - NVIDIA RTX 4050 Laptop GPU, 6 GB, power-limited by the vendor profile.
 - An Intel Arc integrated GPU next to it.
-- llama.cpp b12080 (CPU and Vulkan builds) for every model below.
-- "App open" means Mnemosyne OS was running and held about 4 GB of the GPU.
+- llama.cpp b12080 (CPU and Vulkan builds), and b11742 (CUDA), the build
+  Mnemosyne OS uses on NVIDIA cards.
+- "App open" means Mnemosyne OS was running and held 1.5 to 4 GB of the GPU.
+
+**Correction, evening of 2026-11-05.** The first version of these notes gave
+the 24B 25 tok/s on llama-server. That run was on the CPU only. The
+llama-server build we used had no CUDA runtime next to it, so it never
+touched the GPU. The numbers below are measured again on the CUDA build.
 
 ## Summary
 
 | Model | What we tried | Result | Status in Mnemosyne OS |
 |---|---|---|---|
 | LFM3-VL-2B (Q4_K_M) | Describe attached images | Works, 9 s per image | Integrated |
-| LFM2.5-8B-A1B (Q4_K_M) | Local chat and voice turns | Works, 79 tok/s on the GPU | Integrated |
-| LFM2.5-24B-A2B (Q4_K_M) | Local chat through llama-server | Works, 25 tok/s | Integrated |
+| LFM2.5-8B-A1B (Q4_K_M) | Local chat and voice turns | Works, 81 tok/s on llama-server, app open | Integrated |
+| LFM2.5-24B-A2B (Q4_K_M) | Local chat through llama-server | Works, ~35 tok/s, app open | Integrated |
+| LFM2.5 230M, 350M, 1.2B, 2.6B (Q4_K_M) | Short chat in French | All answer in French | Listed for testing |
 | LFM2.5-Embedding-350M (Q8_0) | Retrieval over our docs | Better top-1 in 5 of 6 languages | Not integrated |
 | LFM3-Omni-2B and LFM3-Audio-2B (Q4_K_M) | Speech to text, speech to speech | Speech input works, speech output unclear | Not integrated |
 
@@ -70,15 +77,34 @@ The text stays readable down to about 7.5 px tall.
 We give the reader at most 2048 px on the longest side.
 The resize happens in memory, and the user's file is left as it is.
 
+**A second image in the same conversation.** The chat model reads the
+description, not the image. With two descriptions in one prompt, it described
+the first image again. We tested where to put them, on a conversation that
+had already described image 1, two runs each on LFM2.5-8B-A1B.
+
+| Layout | Image described |
+|---|---|
+| Both descriptions before the whole history | Both, mixed |
+| Both descriptions right before the question | The first one, 2 of 2 |
+| The new description alone, right before the question | The new one, 2 of 2 |
+
+So a message with an image now carries that image alone. The earlier
+descriptions come back only for a question without an image.
+
 ## LFM2.5-8B-A1B: local chat and voice
 
 | Placement | Speed |
 |---|---|
 | All 25 layers on the GPU (Vulkan), app closed | ~79 tok/s |
 | CPU only | ~27 tok/s |
-| GPU shared with the app | ~11 tok/s |
+| GPU shared with the app, node-llama-cpp | ~11 tok/s |
+| llama-server b11742 (CUDA), `--fit`, app open | 81.5 tok/s |
 
 Answers came in 4.2 s, then 1.2 s once warm.
+Inside the app, node-llama-cpp put every layer on the GPU and spilled into
+shared memory. On llama-server with `--fit` the same model read a 1 775-token
+prompt at 918 tok/s and gave its first words at 2.0 s. So the 8B now runs on
+llama-server on NVIDIA cards.
 
 **Reasoning at thought budget 0.** Our voice turns run with thinking off.
 At budget 0 the model still reasoned, and the reasoning arrived as answer
@@ -94,11 +120,11 @@ fix it.
 
 - node-llama-cpp on Vulkan with automatic layers: out of GPU memory at load.
 - 14 layers on the GPU: 4 to 8 tok/s.
-- CPU only: 14 to 17 tok/s.
-- llama-server with `--n-cpu-moe 99`: ~25 tok/s.
+- CPU only (llama-server): 69 tok/s read, 16 to 21 written.
+- llama-server b11742 (CUDA), `--fit`, app open: 358 tok/s read, ~35 written,
+  first words at 5.0 s for a 1 776-token prompt.
 
 The model deliberates at length (about 2 500 characters).
-One answer took 30 s, the next 22 s.
 We run it through llama-server.
 
 ## LFM2.5-Embedding-350M: retrieval
@@ -158,9 +184,61 @@ This is an idea we are testing. Nothing of it is built yet.
 P.S. This idea keeps spinning in my head. I will try a few things tonight.
 To be continued.
 
+## The same evening: where should the model run?
+
+We loaded the two MoE models many times, each time on a different split, with
+the app open. Every run read the same 1 776-token prompt, then wrote an
+answer. The free GPU memory came from `nvidia-smi`.
+
+**The drivers overstate the free memory.** With the app open, `nvidia-smi`
+counted 2 426 MiB free. Vulkan announced 5 152 MiB free, and CUDA 5 072. Any
+split chosen from the driver's figure starts from the wrong number.
+
+**LFM2.5-24B-A2B**, app open, about 2.2 GB of the RTX free:
+
+| Where it ran | GPU memory taken | Read | Write |
+|---|---|---|---|
+| CPU only | 0 | 69 tok/s | 16 to 21 tok/s |
+| Vulkan, RTX, all experts on the CPU | 1.4 GB | 77 tok/s | 16 to 19 tok/s |
+| Vulkan, RTX, 8 expert layers on the GPU | 1.5 GB, card full | 145 tok/s | 4.7 tok/s |
+| Vulkan, RTX for attention, experts on the iGPU | 0.7 GB | 97 tok/s | 11 to 13 tok/s |
+| Vulkan, everything on the Intel iGPU | 0 | 108 tok/s | 21 tok/s |
+| CUDA, RTX, `--fit` | up to the card's limit | 358 tok/s | ~35 tok/s |
+
+**LFM2.5-8B-A1B**, same conditions:
+
+| Where it ran | Read | Write | First words |
+|---|---|---|---|
+| CPU only | 176 tok/s | 37 tok/s | 10.2 s |
+| Vulkan, Intel iGPU | 201 tok/s | 35 tok/s | 8.9 s |
+| Vulkan, RTX, everything on the card | 840 tok/s | 5.4 tok/s | 2.5 s |
+| Vulkan, RTX, all experts on the CPU | 695 tok/s | 35 to 40 tok/s | 2.6 s |
+| Vulkan, RTX, `--fit` | 841 tok/s | 6.2 tok/s | 2.5 s |
+| CUDA, RTX, `--fit` | 918 tok/s | 81.5 tok/s | 2.0 s |
+
+What we take from one evening on one laptop:
+
+1. On Vulkan, `--fit` chose a split that wrote 4 to 6 times slower than
+   "all experts on the CPU". A margin that corrected the wrong free figure did
+   not change that.
+2. On CUDA, `--fit` chose well for both models. So Mnemosyne OS keeps CUDA and
+   `--fit` on NVIDIA cards, and the 8B moved there.
+3. The integrated GPU ran the 24B as fast as the best CPU split, read 57 %
+   faster, and left the RTX and the CPU free. Nothing in the app uses it yet.
+4. The image reader is the exception: 8 s on the CPU, 17 to 19 s on the iGPU
+   for a 2048 px image. It stays on the CPU.
+
+One open question. While the CUDA runs loaded, the app's own share of the GPU
+dropped from about 4 GB to 1.4 GB and stayed there. Either the app released
+an idle model, or Windows moved its memory out to make room. A video playing
+on the machine froze once, briefly, during these runs.
+
 ## Questions we have
 
 1. For LFM3-Omni-2B and LFM3-Audio-2B over `/v1/realtime`, which sampling
    settings give intelligible speech?
 2. Is reasoning at thought budget 0 expected for LFM2.5-8B-A1B and 24B-A2B?
 3. Is there a recommended `--image-max-tokens` for LFM3-VL on large images?
+4. Have you measured the LFM2.5 MoE models with their experts on an
+   integrated GPU? On our laptop the Intel iGPU matched the CPU for writing and
+   read faster.
