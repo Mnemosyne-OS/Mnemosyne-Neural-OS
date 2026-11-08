@@ -1,0 +1,34 @@
+{
+  "name": "mnemosyne-neural-os",
+  "version": "2.2.0",
+  "description": "MCP server and agent skill for Mnemosyne OS: gives your agent the vaults you choose in the desktop app, local memory searched by vector and BM25 on your own machine.",
+  "author": {
+    "name": "Mnemosyne OS",
+    "email": "dev@mnemosyne-os.com",
+    "url": "https://mnemosyne-os.io"
+  },
+  "homepage": "https://mnemosyne-os.io",
+  "repository": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS",
+  "license": "MIT",
+  "keywords": ["mcp", "memory", "local-first", "vaults", "rag", "bm25", "agent-memory"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Mnemosyne OS",
+    "shortDescription": "Local memory vaults for your agent, on your machine",
+    "longDescription": "Connects your agent to Mnemosyne OS, a desktop memory app for Windows, macOS (Apple silicon) and Linux. Watched folders feed separate vaults on your machine; search fuses vector ranking with a local BM25 keyword channel. The agent reads only the vaults you grant; any other vault answers SCOPE_DENIED. The MCP server (@mnemosyne_os/mcp) and the skill in this repository are MIT; the memory tools need the free desktop app running, and its memory engine ships closed inside the desktop build.",
+    "developerName": "Mnemosyne OS",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Write"],
+    "websiteURL": "https://mnemosyne-os.io",
+    "privacyPolicyURL": "https://mnemosyne-os.io/confidentialite",
+    "termsOfServiceURL": "https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/LICENSE",
+    "defaultPrompt": [
+      "List my Mnemosyne vaults and what each one is for.",
+      "Search my notes vault for what I decided about this module."
+    ],
+    "brandColor": "#5B4FCF",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "screenshots": ["./assets/neural-map.jpg", "./assets/sovereign-notes.jpg"]
+  }
+}
