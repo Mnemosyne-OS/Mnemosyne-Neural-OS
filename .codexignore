@@ -1,0 +1,30 @@
+# Paths a Codex plugin install must never pick up from this repository.
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Dependencies, build output and caches
+node_modules/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+
+# Local state, logs and scratch
+*.log
+*.pid
+tmp_*
+scratch/
+_content/
+.marketing/
+
+# Archives and heavy media not needed by the plugin
+archive/
+lab/
+*.mp4
+*.gif
