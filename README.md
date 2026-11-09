@@ -21,7 +21,7 @@
 
 <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4"><img src="assets/teaser-v2-harness.gif" width="360" alt="Irina, the assistant, made of particles: curiosity is a lovely flaw, but she is still working on her harnesses. Follow Mnemosyne OS for version 2. Her agenda pops open on Friday, 9:00, Build Release 2.0. Oops, you didn't see that. The screen switches off." /></a>
 <br/>
-<em>v2.1.0 · The Local Model is out. Irina still works on her harnesses · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4">watch with sound</a></em>
+<em>v2.2.0 · The Sentinel is out. Irina still works on her harnesses · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4">watch with sound</a></em>
 
 <br/>
 
@@ -40,7 +40,7 @@
 [![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_on_holdout_questions_·_verifiable-33ffd6?style=flat-square)](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 ![Interface languages](https://img.shields.io/badge/interface-7_languages-a98bff)
-[![version](https://img.shields.io/badge/version-v2.1.0--infinity-f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
+[![version](https://img.shields.io/badge/version-v2.2.0--infinity-f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
 
 <br/><br/>
 
@@ -76,12 +76,12 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 ---
 
 > [!IMPORTANT]
-> **🧠 New in 2.1.0 · The Local Model.** LFM3, a 1.1 GB model from Liquid AI, is the new
-> default local model: it runs on your machine, even without a graphics card. A review
-> widget your coding agent drives over MCP, an improved Notion connector, and the
-> translations reviewed in four languages.
+> **🛡️ New in 2.2.0 · The Sentinel.** Lock your screen and your avatar watches over it:
+> a noise, a movement or a hand on the keyboard, and it reacts. Unlock with your code,
+> Windows Hello or Touch ID. Your IDE talks better with Mnemosyne OS (Settings › Harness),
+> git repos are sorted before they are read, and projects mapped by graphify open in a Code graph window.
 >
-> **[→ The release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.1.0-infinity)** · [Connect your coding agent](https://mnemosyne-os.io/mcp)
+> **[→ The release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.2.0-infinity)** · [Connect your coding agent](https://mnemosyne-os.io/mcp)
 
 <div align="center">
 <a href="https://mnemosyne-os.io/hermes"><img src="https://raw.githubusercontent.com/Mnemosyne-OS/MnemoHermes/main/docs/tour.gif" width="80%" alt="The MnemoHermes cockpit opening from the Mnemosyne OS dock, then its Tasks, Agents, Tools, Skills, Memory inbox and Settings tabs" /></a>
@@ -669,7 +669,7 @@ bound to the founder's research identity, ORCID
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition, 29 public releases**, now at [**v2.1.0 · The Local Model**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.1.0-infinity)
+- [x] 🚀 **Infinity Edition, 30 public releases**, now at [**v2.2.0 · The Sentinel**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.2.0-infinity)
 - [x] 🖼️ **Theia, image memory and visual recall**: Mnemosyne's sister engine (named for the Titaness of sight) gives every vault an eye: your images are embedded **locally** (SigLIP 2, no cloud, no API), recall answers with thumbnails under the reply, and a living gallery shows them with categories the engine discovers on its own: categories you can rate, correct, rename or teach, because the human's word always outranks the model's guess. Off by default; one Settings toggle installs, downloads pinned weights and indexes.
 - [x] 🕸️ **Synaptic P2P** (beta, since v1.5.0): two installs connect directly over libp2p, with no cloud relay. Give someone a vault to read, send mail between installs, keep one vault together, and give each of your machines a role
 - [x] 📚 **Memory cartridges**: public knowledge fetched from its official source into your memory, starting with laws, medicine, science, world history, known vulnerabilities and trademarks
@@ -712,6 +712,7 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 
 | Date | Release | In one line |
 |------|---------|-------------|
+| **Nov 9, 2026** | [**v2.2.0 · The Sentinel**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.2.0-infinity) | **Sentinel gets a face**: your avatar watches the locked screen on every display, unlock by code, Windows Hello or Touch ID. **Settings › Harness** shows what your AI receives on each turn. Git repos are sorted into docs, code and history vaults before they are read. Compatible with **graphify** (a Code graph window). Hermes Agent 0.23 with the Mnemosyne OS plugin. In test: a local decision model checks the orb's voice commands. |
 | **Nov 5, 2026** | [**v2.1.0 · The Local Model**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.1.0-infinity) | **LFM3** from Liquid AI is the new default local model: 1.1 GB, it runs without a graphics card. A **review widget** your coding agent drives over MCP. The **Notion connector** imports a whole workspace into a vault. Translations reviewed in German, Russian, Chinese and Portuguese. Onboarding saves the « 100 % local » and credits choice. |
 | **Oct 31, 2026** | [**v2.0.0 · The Avatar**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.0.0-infinity) | **The Avatar Studio**: a face, a voice and a personality on every desktop. **New onboarding** (run it again from What's new; your settings are kept). XTTS is replaced by Qwen3-TTS on the GPU, free. Wake word and voice-first mode. Agenda and To-do redone. Lab 3D, MnemoBudget and MnemoSign. Up to 3 desktops without a license. Many features are still experimental. |
 | **Oct 17, 2026** | [**v1.9.0 · The Orb**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v1.9.0-infinity) | The orb becomes your assistant. **She drives your apps**: say "tidy my desktop" and she plans the steps and runs them, on the board, on an empty desktop or pinned above all your applications. She now also understands German, Portuguese, Russian and Chinese. Your day comes to the board: the morning briefing and the evening journal read aloud, Google Calendar and your mail, meetings prepared on a card, and Sentinel, an alarm for your desk while you are away. **Your coding agents drive Mnemosyne OS** from Claude Code, Cursor, Codex or any IDE connected to the MCP server, and every call is written to a journal on your machine. Also new: IDE Timeline, YouTube in an app (beta) and memory on an NVIDIA card (beta). Many features are still experimental. |
