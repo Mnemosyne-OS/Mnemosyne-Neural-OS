@@ -130,6 +130,7 @@ import antigravityNotes from './connectors/antigravity-notes.json';
 import antigravityIde from './connectors/antigravity-ide.json';
 import antigravityIdeNotes from './connectors/antigravity-ide-notes.json';
 import openclaw from './connectors/openclaw.json';
+import cursor from './connectors/cursor.json';
 import chatgptExport from './connectors/chatgpt-export.json';
 import claudeAiExport from './connectors/claude-ai-export.json';
 import geminiTakeout from './connectors/gemini-takeout.json';
@@ -159,6 +160,9 @@ export const CONNECTORS = {
   // that holds no export is not a fault to explain away — there is simply
   // nothing there yet.
   'openclaw': openclaw as Connector,
+  // Cursor writes live JSONL under ~/.cursor/projects/<slug>/agent-transcripts.
+  // Measured 2026-10-31: no per-line clock (eventTime mtime), nest session-dir.
+  'cursor': cursor as Connector,
 } as const;
 
 /**

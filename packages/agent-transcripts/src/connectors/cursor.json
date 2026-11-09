@@ -1,0 +1,62 @@
+{
+  "id": "cursor",
+  "displayName": "Cursor",
+  "version": "1.0.0",
+  "format": "jsonl",
+  "kind": "session",
+
+  "_comment": "Measured 2026-10-31 against REAL Cursor agent transcripts on this machine under ~/.cursor/projects/<slug>/agent-transcripts/<uuid>/<uuid>.jsonl. Each line is { role, message: { content: [...] } }; tool calls are type tool_use with name + input (Write/StrReplace take input.path, Shell takes input.command). No line carries a clock, a model, a cwd or a session id — those stay absent rather than invented. Human turns wrap the real request in <user_query>…</user_query> (often after a <timestamp>…</timestamp> that is prose, not ISO).",
+
+  "_eventTime": "Cursor never writes a per-line timestamp. lastEventAt is the file's mtime (ISO), which is what the harness actually updates when it appends. Declared as eventTime rather than a fake fields.timestamp path: a path that never matches would look like format drift.",
+  "eventTime": "mtime",
+
+  "_mark": "TRACED from Cursor's own product icon, never drawn: the path in CursorIcon inside resources/app/molten/dist/renderer/assets (viewBox 0 0 49 56), scaled uniformly by 24/56 and centred on x into a 24-unit badge. Tint is near-white so the mark reads on Ariadne's dark hub; Cursor ships the same silhouette in currentColor. The day an official SVG asset is redistributable under a clear licence it can replace this field with no code change.",
+  "mark": {
+    "label": "CU",
+    "tint": "#f0f0f0",
+    "svg": "M22.08 5.68L12.5 0.13C12.19 -0.04 11.81 -0.04 11.5 0.13L1.92 5.68C1.66 5.83 1.5 6.11 1.5 6.41V17.59C1.5 17.89 1.66 18.17 1.92 18.32L11.5 23.87C11.81 24.04 12.19 24.04 12.5 23.87L22.08 18.32C22.34 18.17 22.5 17.89 22.5 17.59V6.41C22.5 6.11 22.34 5.83 22.08 5.68H22.08ZM21.48 6.86L12.23 22.92C12.16 23.03 12 22.98 12 22.86V12.34C12 12.13 11.89 11.94 11.71 11.83L2.62 6.57C2.51 6.51 2.56 6.34 2.68 6.34H21.18C21.45 6.34 21.61 6.63 21.48 6.86L21.48 6.86Z"
+  },
+
+  "folderHint": ".cursor/projects",
+
+  "_tree": "Two layouts, one declaration. Under ~/.cursor/projects each first-level directory is a project slug holding agent-transcripts/<sessionId>/<sessionId>.jsonl — nest session-dir says the jsonl sits in a child of subPath, not in subPath itself. Pointing the picker at a single project's agent-transcripts folder still works: the walk falls through to treating each child as a session directory. idFrom dir because no line carries a session id.",
+  "tree": { "subPath": "agent-transcripts", "idFrom": "dir", "nest": "session-dir" },
+
+  "filePattern": ".jsonl",
+
+  "_fields": "No model, cwd, branch or sessionId on any measured line. Absent stays absent. sessionId comes from the directory name via tree.idFrom.",
+  "fields": {},
+
+  "action": {
+    "path": "message.content[]",
+    "where": { "type": "tool_use" },
+    "take": "name"
+  },
+
+  "_artifact": "Write creates a file; StrReplace edits one. Both carry the absolute path in input.path. Measured on a real session: Write 2, StrReplace 29, against Shell 121 — most edits are StrReplace. Delete is not listed: removing a file is not writing one.",
+  "artifact": {
+    "path": "message.content[]",
+    "where": { "type": "tool_use" },
+    "tools": ["Write", "StrReplace"],
+    "take": "input.path"
+  },
+
+  "_shellWrite": "Shell is the terminal tool. The command string is input.command. Patterns stay in lib/shellWrites — a connector is data a stranger can ship.",
+  "shellWrite": {
+    "path": "message.content[]",
+    "where": { "type": "tool_use" },
+    "tools": ["Shell"],
+    "take": "input.command"
+  },
+
+  "_humanTurn": "role:user is the person. Measured: zero tool_result blocks on user lines in the real transcripts (unlike Claude Code), but notWhen stays so a format change cannot flood the summary. between pulls the request out of <user_query>…</user_query>; when the markers are absent the raw text is kept.",
+  "humanTurn": {
+    "where": { "role": "user" },
+    "notWhen": {
+      "path": "message.content[]",
+      "has": "tool_result"
+    },
+    "text": "message.content",
+    "between": { "start": "<user_query>", "end": "</user_query>" }
+  }
+}

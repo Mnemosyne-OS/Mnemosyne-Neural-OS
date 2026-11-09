@@ -309,14 +309,14 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 
 ---
 
-## The 25 tools your agent gets
+## The 29 tools your agent gets
 
-Twenty-two of the 25 are in the table below. The table also lists
-`mnemosyne_memory_forget`, the erasure tool, which is not one of the 25: it
+Twenty-six of the 29 are in the table below. The table also lists
+`mnemosyne_memory_forget`, the erasure tool, which is not one of the 29: it
 appears only when you set `MNEMO_FORGET=1`. The three that read the other agents
 on this machine have their own section further down. Setting `MNEMO_VOICE=1`
 adds the three voice tools documented further up, and `MNEMO_FORGET=1` adds the
-erasure tool, for 29 in all.
+erasure tool, for 33 in all.
 
 Eight of them read or write the To-do backlog and the calendar. All eight carry
 the same requirement:
@@ -335,6 +335,10 @@ Works with the app closed on a dev install (the headless daemon reads the file);
 | **`mnemosyne_cockpit_update`** | Your own **status card** on the user's canvas: `state` working, waiting, done, blocked or closed, a `title`, one `status` line, up to 4 `detail` lines. You declare the state, and the app prints it next to the time since your last call, so call at real milestones. "waiting" and "blocked" make the card pulse and the taskbar flash. The answer carries the messages the user left on your card. Send `desktop` once, with the name of a board the user gives you, and this session’s cards go there for the rest of the conversation; leave it out and they go to whichever board answers for this project. Claude Code names the card by its `CLAUDE_CODE_SESSION_ID`; other clients (Cursor, Antigravity…) pass `session`, any stable id for the conversation, on every call. Needs the app window open. Scope `cockpit:write`. |
 | **`mnemosyne_pheme_watch`** | Add a subreddit, a Hacker News query or a topic to the user's **Pheme radar**, or take one off. The lists are theirs. An operation that would empty one is refused, each one reports its own outcome, and the user gets a receipt in Pheme naming the agent and what changed. It posts nowhere. Needs the app running, though Pheme itself can be closed. Scope `pheme:profile`. |
 | **`mnemosyne_pheme_radar`** | Read what the **Pheme radar** last found: fresh threads in the watched subreddits and Hacker News queries, with a topic score and, after the user's Mnemosyne OS pass, a tier. The answer leads with **when** the scan ran, because it is only as fresh as the last scan the user ran. "No radar yet" is said in words rather than returned as an empty list. Draft the reply; the user posts it. Needs the app running. Scope `pheme:read`. |
+| **`mnemosyne_review_open`** | Ask the user to **review a video or image** you made. It shows in the review panel of Mnemosyne OS and, once they paired the review bot, on their phone (Telegram) with Approve / Change / Reject buttons. The file must be inside `~/.mnemosyne/generations`, `voiceovers` or `outbox`; anything else is refused. Pass `parentId` for a retake: the panel shows the versions side by side. Needs the app running. Scope `review:ask`. |
+| **`mnemosyne_review_wait`** | Wait for the user's answers to **that** review, from the app or the phone: approve, changes, reject or a plain comment (frame notes can come alone), with the text (a voice note arrives transcribed) and the second of the video it points at. Returns every answer since `after`. One call waits ~45 s, under the client's own tool timeout; on STILL WAITING, call again with the same `after`. To wait without a loop, run the `mnemosyne-review-wait <id> --after <ms>` command this package ships (it exits with the answer). Needs the app running. Scope `review:ask`. |
+| **`mnemosyne_review_get`** | Read a review as it stands: state, every answer, publishing state. Does not wait. Needs the app running. Scope `review:ask`. |
+| **`mnemosyne_telegram_send`** | Send one local file (video, photo, audio, pdf) to the user's **Telegram home chat** — the Hermes bot channel they already configured. Absolute path required; optional caption. Recipient is never chosen by the agent. Caps: 48 MB, allow-listed types. Needs the app running. Scope `telegram:homeSend`. |
 | **`mnemosyne_agenda_add`** | Put appointments or deadlines into the user's **calendar**. `start` and the optional `end` are ISO 8601, and a time with no offset is read as the user's own machine local time. Supports `all_day`, `recurrence` (daily, weekly, monthly, yearly) and `alarm_minutes_before`. To change or remove one, see `mnemosyne_agenda_update` and `mnemosyne_agenda_remove`. Scope `agenda:write`. |
 | **`mnemosyne_todo_list`** | Read the backlog back: the lists, and every task with the **id** you need to change it. Call it before `mnemosyne_todo_update`, which names tasks by id. A phrase like "delete the task about the invoice" reads perfectly and can still match the wrong task. Filters by `list`, `include_done` and `limit`. The archive is counted rather than listed. Scope `todo:read`. |
 | **`mnemosyne_todo_update`** | **Change tasks**: `edit`, `complete`, `move`, `remove`. Every operation names an id from `mnemosyne_todo_list`. `remove` **archives** by default and stays recoverable; `permanent: true` deletes outright and has to be asked for. The batch applies in order as one save, and each operation reports its own outcome, so a stale id does not sink the ones around it. Scope `todo:write`. |
@@ -605,6 +609,7 @@ carries it and keeps it at its own version.
 | `os_run` | Runs one action found with `os_find`: open, arrange or close windows on the board, compose a desktop, or drive an installed app (Atlas, Vitrine Studio, the CRM and the others). Several steps of one app go in one call. |
 | `os_image_generate` | Draws a picture, billed per picture on the person's Mnemosyne credits. |
 | `os_video_generate`, `os_video_status` | Makes a short video clip from a first and a last picture, billed per second on the same credits. |
+| `os_avatar_film`, `os_avatar_status` | Makes a video of the person's particle avatar saying the lines given, with a voice of Mnemosyne OS, on their computer. No credits. |
 
 **Connect it.** In the app, open **Settings › Agents › Connect my coding agent**.
 For Cursor and Antigravity, one click writes both servers into the agent's

@@ -144,7 +144,7 @@ export function overlappingTouches(
 ): OverlapReport {
   const now = opts.now ?? Date.now();
   const windowMs = opts.windowMs ?? TOUCH_WINDOW_MS;
-  const ci = opts.caseInsensitive ?? (process.platform === 'win32');
+  const ci = opts.caseInsensitive ?? (process.platform === 'win32' || process.platform === 'darwin');
   const selfId = opts.selfId ?? null;
 
   const wanted = new Map<string, string>();   // folded -> as the caller wrote it

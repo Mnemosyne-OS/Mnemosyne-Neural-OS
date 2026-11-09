@@ -159,7 +159,7 @@ export async function readSessionsFromDisk(
       if (!firstReason) firstReason = err instanceof Error ? err.message : String(err);
       continue;
     }
-    const st = readSession(connector, f.name, f.path, text, f.sizeBytes ?? text.length);
+    const st = readSession(connector, f.name, f.path, text, f.sizeBytes ?? text.length, f.mtime);
     if (!st) continue;
     // The recorded path is a CWD, which one `cd` moves off the project root.
     // Resolving it to its working tree is a filesystem fact, not an invention,

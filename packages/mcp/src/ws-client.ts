@@ -147,6 +147,10 @@ export interface DreamBridgeEndpoint {
   spineType:   string;
   vault:       string;
   excerpt?:    string;
+  /** How the side was found (app 2.0.x+, doc 193); absent on an older app. */
+  state?:      'resolved' | 'inferred' | 'ambiguous' | 'missing';
+  vaultLabel?: string | null;
+  candidates?: number;
 }
 
 export interface DreamBridge {
@@ -158,12 +162,23 @@ export interface DreamBridge {
   cosine:    number;
   from:      DreamBridgeEndpoint;
   to:        DreamBridgeEndpoint;
+  // One entry per pair since app 2.0.x (doc 193); all absent on an older app.
+  key?:        string;
+  resolution?: 'resolved' | 'inferred' | 'unresolved';
+  sightings?:  number;
+  firstSeen?:  string;
+  status?:     'new' | 'seen' | 'kept' | 'pinned' | 'dismissed';
+  nearCopy?:   boolean;
+  crossVault?: boolean;
+  ledgers?:    string[];
 }
 
 export interface DreamBridgesResult {
   success: boolean;
   bridges: DreamBridge[];
   error?:  string;
+  total?:  number;
+  unresolvedHidden?: number;
 }
 
 export interface SpineAssignmentEntry {
@@ -492,12 +507,14 @@ export class MnemoWsClient {
     minDbs?:      number;
     sessionId?:   string;
     chronicleId?: number;
+    includeUnresolved?: boolean;
   } = {}): Promise<DreamBridgesResult> {
     const params: Record<string, unknown> = { appId: this.manifest.id };
     if (opts.limit       !== undefined) params['limit']       = opts.limit;
     if (opts.minDbs      !== undefined) params['minDbs']      = opts.minDbs;
     if (opts.sessionId   !== undefined) params['sessionId']   = opts.sessionId;
     if (opts.chronicleId !== undefined) params['chronicleId'] = opts.chronicleId;
+    if (opts.includeUnresolved) params['includeUnresolved'] = true;
     return await this._rpc<DreamBridgesResult>('sdk.dream.bridges', params);
   }
 
@@ -519,6 +536,22 @@ export class MnemoWsClient {
     if (opts.offset          !== undefined) params['offset']          = opts.offset;
     if (opts.includeTaxonomy !== undefined) params['includeTaxonomy'] = opts.includeTaxonomy;
     return await this._rpc<SpineAssignmentsResult>('sdk.spine.assignments', params);
+  }
+
+  // ── The review door (doc 196) ──────────────────────────────────────────────
+
+  /** Opens a review on a video; the host fences the path. */
+  async reviewOpen(p: Record<string, unknown>): Promise<{ id: string; version: number; createdAt: number }> {
+    return await this._rpc('sdk.review.open', { ...p, appId: this.manifest.id });
+  }
+
+  /** Waits for the next answer to one review. A long call: the caller sizes its timeout. */
+  async reviewWait(p: Record<string, unknown>, timeoutMs: number): Promise<{ state: string; answer: import('./review-tool.js').Answer; answers?: import('./review-tool.js').Answer[] }> {
+    return await this._rpc('sdk.review.wait', { ...p, appId: this.manifest.id }, timeoutMs);
+  }
+
+  async reviewGet(id: unknown): Promise<{ id: string; title: string; state: string; version: number; answers: import('./review-tool.js').Answer[] }> {
+    return await this._rpc('sdk.review.get', { appId: this.manifest.id, id });
   }
 
   // ── Voice rendering (SDK v1.6) ──────────────────────────────────────────────
@@ -564,6 +597,19 @@ export class MnemoWsClient {
   /** Ask a render to stop at its next segment boundary. */
   async voiceCancel(jobId: string): Promise<VoiceJobResult> {
     return await this._rpc<VoiceJobResult>('sdk.voice.cancel', { appId: this.manifest.id, jobId });
+  }
+
+  /**
+   * Push one absolute local file to the Hermes Telegram home channel.
+   * Throws on named refusals (`NO_TELEGRAM`, `TOO_LARGE`, …) — same convention
+   * as the other write doors.
+   */
+  async telegramSendHomeFile(p: { path: string; caption?: string }): Promise<{
+    method: string; bytes: number; filename: string;
+  }> {
+    const params: Record<string, unknown> = { appId: this.manifest.id, path: p.path };
+    if (p.caption !== undefined) params['caption'] = p.caption;
+    return await this._rpc('sdk.telegram.send', params);
   }
 
   close(): void {

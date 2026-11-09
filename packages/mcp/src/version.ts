@@ -39,4 +39,19 @@ function readVersion(): string {
 }
 
 /** This package's version, as published. `'unknown'` when it could not be read. */
-export const PKG_VERSION = readVersion();
+/**
+ * The version tsup stamps into the bundle (`define`, see tsup.config.ts and
+ * tsup.app.config.ts), read from this package's package.json when the bundle
+ * is built. It is what the APP copy needs: electron-builder puts that bundle at
+ * `resources/mnemosyne-mcp/index.mjs`, where `../package.json` is nothing, and
+ * the server announced "unknown" (measured 2026-11-04). The stamp is taken
+ * from the tree being built and nothing else, so it is a fact about the
+ * artifact, not a retyped literal. Undeclared under tsx, where the read wins.
+ */
+declare const __MNEMO_PKG_VERSION__: string | undefined;
+
+function stampedVersion(): string | null {
+  return typeof __MNEMO_PKG_VERSION__ === 'string' && __MNEMO_PKG_VERSION__ ? __MNEMO_PKG_VERSION__ : null;
+}
+
+export const PKG_VERSION = stampedVersion() ?? readVersion();

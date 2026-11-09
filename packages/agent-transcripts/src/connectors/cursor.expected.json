@@ -1,0 +1,26 @@
+{
+  "_comment": "What cursor.json must produce from cursor.fixture.jsonl. The fixture is a REDACTED shape measured 2026-10-31 on real Cursor transcripts: role/message/content tool_use lines, Write/StrReplace/Shell, <user_query> wrappers, a turn_ended status line, and a deliberately cut last line. No per-line clock — lastEventAt is the mtime the fixtures test passes in (2026-10-31T18:25:00.000Z).",
+
+  "_sessionId": "From the directory name via tree.idFrom, not from any line field.",
+
+  "_artifacts": "Newest first (walk backwards): StrReplace on legend.md, then the Shell redirection to status.txt, then Write on legend.md. Read is not a write. origins tool/shell kept apart.",
+
+  "_humanTurns": "Only the two <user_query> bodies, in chronological order after the reverse-then-flip. The timestamp prose outside the markers is dropped.",
+
+  "sessionId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+  "model": null,
+  "projectPath": null,
+  "branch": null,
+  "isSidechain": false,
+  "lastEventAt": "2026-10-31T18:25:00.000Z",
+  "tool": "StrReplace",
+  "artifactsCapped": false,
+  "artifacts": [
+    { "path": "C:\\work\\demo\\docs\\legend.md", "origin": "tool", "at": null },
+    { "path": "C:/work/demo/tmp/status.txt", "origin": "shell", "at": null }
+  ],
+  "humanTurns": [
+    { "at": null, "text": "fix the map legend" },
+    { "at": null, "text": "ship it" }
+  ]
+}

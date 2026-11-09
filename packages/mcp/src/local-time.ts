@@ -21,6 +21,22 @@ export function localStamp(at: number | undefined): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
+
+/**
+ * A stamp with its weekday, the one fact a small model got wrong when left to
+ * compute it (2026-11-06: « tomorrow Friday 7 » for a Saturday, doc 202 §3).
+ */
+export function dayStamp(at: number): string {
+  return `${localStamp(at)} (${WEEKDAYS[new Date(at).getDay()]})`;
+}
+
+/** Local midnight of the day `at` falls in, `days` days later. */
+export function localDayStart(at: number, days = 0): number {
+  const d = new Date(at);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days).getTime();
+}
+
 /** Stated once per answer that prints a time, so the frame is never guessed. */
 export const LOCAL_TIME_NOTE = 'Times are this machine\'s local time; give times back in the same frame (ISO 8601 without an offset).';
 

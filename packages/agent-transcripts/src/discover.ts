@@ -44,7 +44,7 @@ export interface DiscoveredSource {
  *  `openclaw` has no `folderHint` (its exports land under whatever workspace
  *  the human named), so it is never probed: it is read only when
  *  `MNEMO_AGENT_SESSIONS_OPENCLAW` declares the folder. */
-const SESSION_SOURCES: ConnectorId[] = ['claude-code', 'antigravity', 'antigravity-ide', 'openclaw'];
+const SESSION_SOURCES: ConnectorId[] = ['claude-code', 'antigravity', 'antigravity-ide', 'openclaw', 'cursor'];
 
 /** `MNEMO_AGENT_SESSIONS_ANTIGRAVITY_IDE` for `antigravity-ide`. */
 function envKeyFor(id: ConnectorId): string {

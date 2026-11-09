@@ -38,6 +38,7 @@ is when a line was last written, and the reader draws its own conclusion.
 | `antigravity`, `antigravity-notes` | Antigravity sessions and notes |
 | `antigravity-ide`, `antigravity-ide-notes` | the IDE variant of both |
 | `openclaw` | an OpenClaw 2 trajectory export |
+| `cursor` | Cursor agent sessions under `~/.cursor/projects` |
 
 ### Data exports, read with `readArchive`
 

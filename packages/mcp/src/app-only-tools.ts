@@ -52,6 +52,10 @@ export const TOOL_RPC: Readonly<Record<string, readonly string[]>> = {
   mnemosyne_cockpit_update:    ['sdk.cockpit.update'],
   mnemosyne_pheme_watch:       ['sdk.pheme.watch'],
   mnemosyne_pheme_radar:       ['sdk.pheme.radar'],
+  mnemosyne_review_open:       ['sdk.review.open'],
+  mnemosyne_review_wait:       ['sdk.review.wait'],
+  mnemosyne_review_get:        ['sdk.review.get'],
+  mnemosyne_telegram_send:     ['sdk.telegram.send'],
 };
 
 /** Tools that read files on disk and never open a socket. */
@@ -127,4 +131,4 @@ export const FILE_PATH_CAVEAT =
 // knows whether the app was ever run on this machine. Two sources of action
 // produced 'start the app' next to 'it may never have run here'.
 export const APP_NOT_RUNNING_MESSAGE =
-  'Cannot reach Mnemosyne OS on ws://127.0.0.1:7799, and this tool needs the app itself: the headless daemon serves only query, ingest, git log, the To-do and the calendar (no ask, vaults, dream bridges, spine assignments, voice or cockpit).';
+  'Cannot reach Mnemosyne OS on ws://127.0.0.1:7799, and this tool needs the app itself: the headless daemon serves only query, ingest, git log, the To-do and the calendar (no ask, vaults, dream bridges, spine assignments, voice, cockpit or Telegram send).';

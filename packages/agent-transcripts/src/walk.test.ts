@@ -188,6 +188,54 @@ describe('activeDirs', () => {
   });
 });
 
+describe('walkSource on a nested session-dir layout (Cursor)', () => {
+  const NESTED: Connector = {
+    ...FLAT,
+    id: 'cursor-like',
+    tree: { subPath: 'agent-transcripts', idFrom: 'dir', nest: 'session-dir' },
+  };
+  const projects = {
+    '/projects': ['projA', 'projB', 'noise.txt'],
+    '/projects/projA/agent-transcripts': ['s1', 's2'],
+    '/projects/projA/agent-transcripts/s1': ['s1.jsonl'],
+    '/projects/projA/agent-transcripts/s2': ['s2.jsonl'],
+    '/projects/projB/agent-transcripts': ['s3'],
+    '/projects/projB/agent-transcripts/s3': ['s3.jsonl'],
+  };
+  const transcriptsRoot = {
+    '/agent-transcripts': ['s1', 's2'],
+    '/agent-transcripts/s1': ['s1.jsonl'],
+    '/agent-transcripts/s2': ['s2.jsonl'],
+  };
+
+  it('finds sessions under projects/*/agent-transcripts/<id>/', async () => {
+    const { readDir } = tree(projects);
+    const r = await walkSource(readDir, '/projects', NESTED, undefined);
+    expect(r.sessionFiles.map(f => f.path).sort()).toEqual([
+      '/projects/projA/agent-transcripts/s1/s1.jsonl',
+      '/projects/projA/agent-transcripts/s2/s2.jsonl',
+      '/projects/projB/agent-transcripts/s3/s3.jsonl',
+    ]);
+  });
+
+  it('still works when the picker points at agent-transcripts itself', async () => {
+    const { readDir } = tree(transcriptsRoot);
+    const r = await walkSource(readDir, '/agent-transcripts', NESTED, undefined);
+    expect(r.sessionFiles.map(f => f.path).sort()).toEqual([
+      '/agent-transcripts/s1/s1.jsonl',
+      '/agent-transcripts/s2/s2.jsonl',
+    ]);
+  });
+
+  it('activeDirs names the project folder, not the uuid folder', () => {
+    const files = [
+      { name: 's1.jsonl', path: '/projects/projA/agent-transcripts/s1/s1.jsonl', isDirectory: false, mtime: 2 },
+      { name: 's3.jsonl', path: '/projects/projB/agent-transcripts/s3/s3.jsonl', isDirectory: false, mtime: 1 },
+    ];
+    expect(activeDirs(files, NESTED)).toEqual(['/projects/projA', '/projects/projB']);
+  });
+});
+
 describe('shouldSweep', () => {
   it('sweeps on the very first pass', () => {
     expect(shouldSweep(null, 1000)).toBe(true);

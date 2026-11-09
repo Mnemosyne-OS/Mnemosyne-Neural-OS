@@ -11,7 +11,7 @@ process.env['TZ'] = 'Etc/GMT-5';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  doorFailure, renderOutcome, renderTodoApply, renderTodoList, todoListParams,
+  doorFailure, handleTodoList, renderOutcome, renderTodoApply, renderTodoList, todoListParams,
   type TodoReadResult,
 } from './todo-edit-tool.js';
 
@@ -170,4 +170,90 @@ test('a list counts its done work in the archive, and says it is there (doc 170 
   assert.match(s, /- Octave \[key: c-x\] - 4 open, 7 done \(6 of them archived\)/);
   const none = renderTodoList(view({ lists: [{ key: 'wip', name: 'WIP', open: 2, done: 1 }] }));
   assert.match(none, /- WIP \[key: wip\] - 2 open, 1 done$/m);
+});
+
+// ── What needs attention comes first (doc 202 §4, 2026-11-06) ──────────────
+// The 8B copied the first section of a 162-task read: the lists, not one task.
+// Local Friday 2026-11-06 15:30 in the pinned zone (UTC+5).
+const NOW = new Date(2026, 10, 6, 15, 30).getTime();
+const at = (d: number, h: number, m = 0): number => new Date(2026, 10, d, h, m).getTime();
+type TaskView = NonNullable<TodoReadResult['view']>['tasks'][number];
+const task = (id: string, over: Partial<TaskView> = {}): TaskView =>
+  ({ id, text: `Task ${id}`, list: 'En cours', listKey: 'wip', done: false, ...over });
+const backlog = view({
+  lists: [{ key: 'wip', name: 'En cours', open: 9, done: 0 }, { key: 'c-cur', name: 'Cursor', open: 1, done: 0 }],
+  tasks: [
+    task('plain'),
+    task('far', { dueAt: at(20, 9) }),
+    task('soon', { dueAt: at(12, 14, 30) }),
+    task('high', { priority: 'high' }),
+    task('doing', { status: 'doing' }),
+    task('od2', { dueAt: at(4, 9) }),
+    task('od1', { dueAt: at(3, 10), priority: 'high' }),
+    task('today', { dueAt: at(6, 23, 30) }),
+    // 02:00 local on the 7th is still the 6th in UTC: a UTC day boundary says « today ».
+    task('tomorrow', { dueAt: at(7, 2) }),
+    task('note', { dueAt: at(5, 9), kind: 'note' }),
+    task('ticked', { dueAt: at(5, 9), done: true }),
+  ],
+  total: 11,
+});
+
+test('a whole-backlog read opens with the date and what needs attention, most urgent first, each once', () => {
+  const s = renderTodoList(backlog, { now: NOW, wholeBacklog: true });
+  assert.ok(s.startsWith('Today is 2026-11-06 15:30 (Fri).\nNeeds attention first: 7 of 10 open task(s)'), s.slice(0, 120));
+  const block = s.slice(0, s.indexOf('\nLists:'));
+  const order = [...block.matchAll(/^- \[([a-z0-9]+)\]/gm)].map(m => m[1]);
+  assert.deepEqual(order, ['od1', 'od2', 'today', 'tomorrow', 'soon', 'high', 'doing']);
+  assert.match(block, /\[od1\] Task od1 \| OVERDUE since 2026-11-03 10:00 \(Tue\) \| list: En cours/);
+  assert.match(block, /\[today\] Task today \| due TODAY 2026-11-06 23:30 \(Fri\)/);
+  assert.match(block, /\[tomorrow\] Task tomorrow \| due TOMORROW 2026-11-07 02:00 \(Sat\)/);
+  assert.match(block, /\[soon\] Task soon \| due 2026-11-12 14:30 \(Thu\)/);
+  assert.match(block, /\[high\] Task high \| priority high/);
+  assert.match(block, /\[doing\] Task doing \| in progress/);
+  // The full list still follows, so an agent keeps every id.
+  assert.match(s, /Tasks \(11 of 11\):[\s\S]*\[plain\] Task plain/);
+  assert.match(s, /call again with list: <its key>/);
+});
+
+test('a read of one list adds no attention section; an empty block says none; the cap says what it left', () => {
+  const one = renderTodoList(backlog, { now: NOW });
+  assert.ok(one.startsWith('Lists:'), one.slice(0, 40));
+  assert.doesNotMatch(one, /Needs attention|call again with list/);
+  const calm = renderTodoList(view({ tasks: [task('plain'), task('far', { dueAt: at(20, 9) })], total: 2 }), { now: NOW, wholeBacklog: true });
+  assert.match(calm, /^Today is 2026-11-06 15:30 \(Fri\)\.\nNeeds attention: none/);
+  const many = Array.from({ length: 12 }, (_, i) => task(`h${i}`, { priority: 'high' }));
+  const capped = renderTodoList(view({ tasks: many, total: 12 }), { now: NOW, wholeBacklog: true });
+  assert.equal((capped.slice(0, capped.indexOf('\nLists:')).match(/^- \[/gm) ?? []).length, 10);
+  assert.match(capped, /\(2 more need attention: they are in the full list below\.\)/);
+});
+
+test('the tool opens with attention only when no list was asked', async () => {
+  const client = { _rpc: async <T,>(): Promise<T> => backlog as unknown as T };
+  assert.match(await handleTodoList(client, 'mcp', {}), /Needs attention first/);
+  assert.doesNotMatch(await handleTodoList(client, 'mcp', { list: 'Cursor' }), /Needs attention/);
+});
+
+test('the agent\'s limit cuts the printed list, never the ranking: the overdue task far down still comes first', async () => {
+  // Measured 2026-11-06 (doc 202 §4.4): the 8B passed limit 20 and the overdue
+  // tasks sat further down the list order, out of the block.
+  const asked: Array<Record<string, unknown> | undefined> = [];
+  const client = {
+    _rpc: async <T,>(_method: string, params?: Record<string, unknown>): Promise<T> => {
+      asked.push(params);
+      return backlog as unknown as T;
+    },
+  };
+  const s = await handleTodoList(client, 'mcp', { limit: 2 });
+  assert.equal(asked[0]?.['limit'], 300);
+  assert.match(s.slice(0, s.indexOf('\nLists:')), /^- \[od1\] Task od1 \| OVERDUE/m);
+  assert.match(s, /Tasks \(2 of 11\):/);
+  assert.match(s, /9 more matched and were NOT returned/);
+  // A limit of 0 still ranks: the block is there, no task is printed.
+  const none = await handleTodoList(client, 'mcp', { limit: 0 });
+  assert.match(none, /Needs attention first/);
+  assert.match(none, /11 matched but none were returned/);
+  // A read of one list keeps the agent's own limit on the wire.
+  await handleTodoList(client, 'mcp', { list: 'Cursor', limit: 5 });
+  assert.equal(asked.at(-1)?.['limit'], 5);
 });

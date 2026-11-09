@@ -166,6 +166,8 @@ export type {
 
   // Read-only Introspection (v1.4.0) — Dream State + Spine assignments
   DreamBridgeEndpoint,
+  DreamBridgeSideState,
+  DreamBridgeStatus,
   DreamBridge,
   DreamBridgesOptions,
   DreamBridgesResult,

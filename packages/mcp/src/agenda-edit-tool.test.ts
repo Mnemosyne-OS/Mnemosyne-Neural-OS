@@ -53,6 +53,35 @@ test('a series the four cadences cannot say shows its rule (doc 168 lot 2)', () 
   assert.match(s, /repeats FREQ=WEEKLY;INTERVAL=2/);
 });
 
+test('the list opens on today, then groups soon, later and past, the next date first (2026-11-06)', () => {
+  const now = AT;
+  const s = renderAgendaList(view({
+    events: [
+      { id: 'bday', title: 'Birthday of A', startAt: now + 60 * 86_400_000, nextAt: now + 60 * 86_400_000, allDay: true },
+      { id: 'week', title: 'Weekly check', startAt: now - 15 * 86_400_000, nextAt: now + 6 * 86_400_000, repeats: 'weekly', alarmMinutesBefore: 0 },
+      { id: 'gone', title: 'Old lunch', startAt: now - 2 * 86_400_000 },
+    ],
+    total: 3,
+  }), now);
+  assert.match(s, /^Today is 2026-09-10 19:00 \(Thu\)\./);
+  const soon = s.indexOf('In the next 7 days');
+  const later = s.indexOf('Later: 1');
+  const past = s.indexOf('Already past: 1');
+  assert.ok(soon >= 0 && soon < s.indexOf('[week]') && s.indexOf('[week]') < later, s);
+  assert.ok(later < s.indexOf('[bday]') && s.indexOf('[bday]') < past && past < s.indexOf('[gone]'), s);
+  // The next occurrence leads the row, with its weekday; the start only says since when.
+  assert.match(s, /\[week\] Weekly check\n {4}next 2026-09-16 19:00 \(Wed\)\n {4}repeats weekly since 2026-08-26 19:00 \(Wed\)/);
+  assert.match(s, /reminder at the start time/);
+  assert.match(s, /\[gone\] Old lunch\n {4}no occurrence left \(was 2026-09-08 19:00 \(Tue\)\)/);
+});
+
+test('nothing soon is said as such, not left out', () => {
+  const s = renderAgendaList(view({ events: [{ id: 'b', title: 'Birthday', startAt: AT + 90 * 86_400_000, nextAt: AT + 90 * 86_400_000 }] }), AT);
+  assert.match(s, /In the next 7 days \(until 2026-09-17 19:00 \(Thu\)\): none/);
+  assert.match(s, /Later: 1/);
+  assert.doesNotMatch(s, /Already past/);
+});
+
 test('an event with nothing left says so rather than showing its old start as a future', () => {
   const s = renderAgendaList(view({ events: [{ id: 'e3', title: 'Old lunch', startAt: AT }] }));
   assert.match(s, /no occurrence left/);
@@ -61,7 +90,49 @@ test('an event with nothing left says so rather than showing its old start as a 
 test('an empty window names the window as the reason, and counts what is outside it', () => {
   const s = renderAgendaList(view({ events: [], total: 0, outsideWindow: 4 }));
   assert.match(s, /No appointments in the window/);
-  assert.match(s, /4 appointment\(s\) exist outside the window/);
+  assert.match(s, /4 appointment\(s\) fall outside the window/);
+});
+
+// ── What the window left out, past and to come (doc 202 §4.5, 2026-11-06) ──
+// « what's on my agenda » read today→Sunday, got 0 events and « 55 outside »,
+// and the 8B said « 55 appointments planned »: 49 were past.
+const weekly = { id: 'week', title: 'Weekly check', startAt: AT - 15 * 86_400_000, nextAt: AT + 6 * 86_400_000, repeats: 'weekly' as const };
+const bday = { id: 'bday', title: 'Birthday of A', startAt: AT + 60 * 86_400_000, nextAt: AT + 60 * 86_400_000 };
+
+test('the sentence splits what is still to come from what is past, and names the next one', () => {
+  const s = renderAgendaList(view({ events: [], total: 0, outsideWindow: 5 }), AT, [bday, weekly]);
+  assert.match(s, /Outside the window you asked for: 2 still to come \(the next one: \[week\] Weekly check, 2026-09-16 19:00 \(Wed\)\); 3 already past\./);
+  // An event already in the window is not counted again as outside it.
+  const inside = renderAgendaList(view({ events: [weekly], total: 1, outsideWindow: 4 }), AT, [weekly, bday]);
+  assert.match(inside, /1 still to come \(the next one: \[bday\] Birthday of A, 2026-11-09/);
+  assert.match(inside, /3 already past\./);
+  // Nothing to come is said as such.
+  assert.match(renderAgendaList(view({ events: [], total: 0, outsideWindow: 2 }), AT, []), /none still to come; 2 already past\./);
+});
+
+test('the tool reads what is still to come only when a window left some out', async () => {
+  const calls: Array<Record<string, unknown> | undefined> = [];
+  const answers: AgendaReadResult[] = [view({ events: [], total: 0, outsideWindow: 5 }), view({ events: [bday, weekly], total: 2 })];
+  const client = {
+    _rpc: async <T,>(_m: string, params?: Record<string, unknown>): Promise<T> => {
+      calls.push(params);
+      return (answers[calls.length - 1] ?? view()) as unknown as T;
+    },
+  } as unknown as AgendaRpcClient;
+  const s = await handleAgendaList(client, 'mcp', { from: '2026-09-10', to: '2026-09-13' });
+  assert.equal(calls.length, 2);
+  assert.deepEqual(calls[1], { appId: 'mcp', includePast: false });
+  assert.match(s, /2 still to come \(the next one: \[week\] Weekly check/);
+  // No window, or nothing outside it: one read, as before.
+  calls.length = 0;
+  answers.splice(0, answers.length, view({ outsideWindow: 3 }));
+  await handleAgendaList(client, 'mcp', {});
+  assert.equal(calls.length, 1);
+  // A failed second read keeps the whole count, never a made-up split.
+  calls.length = 0;
+  answers.splice(0, answers.length, view({ events: [], total: 0, outsideWindow: 5 }), { ok: false, error: 'TIMEOUT' });
+  const whole = await handleAgendaList(client, 'mcp', { from: '2026-09-10' });
+  assert.match(whole, /5 appointment\(s\) fall outside the window you asked for\./);
 });
 
 test('a removal is named by title and time, and says it cannot be undone', () => {

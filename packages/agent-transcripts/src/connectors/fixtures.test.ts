@@ -21,6 +21,10 @@ import openclaw from './openclaw.json';
 import openclawFixture from './openclaw.fixture.jsonl?raw';
 import openclawExpected from './openclaw.expected.json';
 
+import cursor from './cursor.json';
+import cursorFixture from './cursor.fixture.jsonl?raw';
+import cursorExpected from './cursor.expected.json';
+
 interface Case {
   name: string;
   connector: Connector;
@@ -29,6 +33,8 @@ interface Case {
   /** The path the fixture stands in for — some connectors read the session id
    *  out of it, so a bare file name would not exercise them. */
   path: string;
+  /** File mtime in ms — required when the connector uses `eventTime: 'mtime'`. */
+  mtime?: number;
 }
 
 const CASES: Case[] = [
@@ -55,10 +61,19 @@ const CASES: Case[] = [
     // export-trajectory`, one directory per export.
     path: 'C:/work/demo/.openclaw/trajectory-exports/openclaw-trajectory-11111111-2026-09-06T23-01-10/events.jsonl',
   },
+  {
+    name: 'cursor',
+    connector: cursor as Connector,
+    fixture: cursorFixture,
+    expected: cursorExpected,
+    path: 'C:/Users/x/.cursor/projects/demo/agent-transcripts/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.jsonl',
+    // Matches lastEventAt in cursor.expected.json — Cursor has no line clock.
+    mtime: Date.parse('2026-10-31T18:25:00.000Z'),
+  },
 ];
 
-describe.each(CASES)('$name against its own fixture', ({ connector, fixture, expected, path }) => {
-  const state = readSession(connector, path.split('/').pop()!, path, fixture, fixture.length);
+describe.each(CASES)('$name against its own fixture', ({ connector, fixture, expected, path, mtime }) => {
+  const state = readSession(connector, path.split('/').pop()!, path, fixture, fixture.length, mtime);
 
   it('reads the fixture at all', () => {
     expect(state).not.toBeNull();

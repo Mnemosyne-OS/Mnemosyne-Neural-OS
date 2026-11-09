@@ -15,7 +15,7 @@
  * @module todo-edit-tool
  */
 import type { TodoRpcClient } from './todo-tool';
-import { localStamp, LOCAL_TIME_NOTE } from './local-time.js';
+import { dayStamp, localDayStart, localStamp, LOCAL_TIME_NOTE } from './local-time.js';
 
 export interface TodoTaskView {
   id: string;
@@ -106,9 +106,78 @@ export function doorFailure(error: string | undefined, subject: string): string 
   }
 }
 
-export function renderTodoList(result: TodoReadResult): string {
+/** How far « due soon » reaches in the attention block: the agenda's week. */
+export const TODO_SOON_DAYS = 7;
+/** At most this many tasks in the attention block; the rest stay in the full list. */
+export const ATTENTION_MAX = 10;
+
+export interface TodoRenderOptions {
+  /** The present, for tests; the clock otherwise. */
+  now?: number;
+  /** True when no list was asked: the answer then opens with what needs attention. */
+  wholeBacklog?: boolean;
+  /** The agent's own limit, applied to the printed list only. */
+  printLimit?: number;
+}
+
+/** The host's ceiling for one read (and its default): what a whole-backlog read asks for. */
+export const TODO_READ_CEILING = 300;
+
+/**
+ * The open tasks a person means by « what do I have to do », most urgent first:
+ * overdue, due today, tomorrow, within TODO_SOON_DAYS, then high priority, then
+ * in progress. Each task once, with the reason it is there.
+ *
+ * Measured 2026-11-06 (doc 202 §4.0): the read returned 162 tasks in list order,
+ * 31 374 characters, and LFM2.5 8B answered with the « Lists » section copied
+ * line for line, 25 lines and not one task. A small model copies the first
+ * section it is given, so the tasks that matter come first, chosen here.
+ */
+export function attentionTasks(tasks: readonly TodoTaskView[], now: number): Array<{ task: TodoTaskView; why: string }> {
+  const today = localDayStart(now);
+  const tomorrow = localDayStart(now, 1);
+  const dayAfter = localDayStart(now, 2);
+  const soonEnd = localDayStart(now, TODO_SOON_DAYS + 1);
+  const open = tasks.filter(t => !t.done && t.kind !== 'note');
+  const due = open.filter(t => typeof t.dueAt === 'number' && Number.isFinite(t.dueAt) && (t.dueAt as number) < soonEnd)
+    .sort((a, b) => (a.dueAt as number) - (b.dueAt as number));
+  const picked = new Set<string>();
+  const out: Array<{ task: TodoTaskView; why: string }> = [];
+  const take = (task: TodoTaskView, why: string): void => {
+    if (picked.has(task.id)) return;
+    picked.add(task.id);
+    out.push({ task, why });
+  };
+  for (const t of due) {
+    const at = t.dueAt as number;
+    const when = dayStamp(at);
+    take(t, at < today ? `OVERDUE since ${when}` : at < tomorrow ? `due TODAY ${when}` : at < dayAfter ? `due TOMORROW ${when}` : `due ${when}`);
+  }
+  for (const t of open) if (t.priority === 'high') take(t, 'priority high');
+  for (const t of open) if (t.status === 'doing') take(t, 'in progress');
+  return out;
+}
+
+function attentionBlock(tasks: readonly TodoTaskView[], openCount: number, now: number): string {
+  const all = attentionTasks(tasks, now);
+  const head = `Today is ${dayStamp(now)}.`;
+  if (all.length === 0) {
+    return `${head}\nNeeds attention: none (no open task is overdue, due in the next ${TODO_SOON_DAYS} days, high priority or in progress).`;
+  }
+  const shown = all.slice(0, ATTENTION_MAX);
+  const rows = shown.map(({ task, why }) => {
+    const num = typeof task.num === 'number' ? ` #${task.num}` : '';
+    return `- [${task.id}]${num} ${task.text} | ${why} | list: ${task.list}`;
+  }).join('\n');
+  const more = all.length > shown.length ? `\n(${all.length - shown.length} more need attention: they are in the full list below.)` : '';
+  return `${head}\nNeeds attention first: ${all.length} of ${openCount} open task(s), most urgent first `
+    + `(overdue, due in the next ${TODO_SOON_DAYS} days, high priority, in progress):\n${rows}${more}`;
+}
+
+export function renderTodoList(result: TodoReadResult, opts: TodoRenderOptions = {}): string {
   if (!result.ok || !result.view) return doorFailure(result.error, 'backlog');
   const v = result.view;
+  const now = opts.now ?? Date.now();
   const where = result.via === 'file' ? ' (read straight from the file: the app is not open)' : '';
   const lists = v.lists.length
     ? v.lists.map(l => `- ${l.name} [key: ${l.key}] - ${l.open} open, ${l.done + (l.archivedDone ?? 0)} done`
@@ -116,16 +185,29 @@ export function renderTodoList(result: TodoReadResult): string {
       + (l.archivedDone ? ` (${l.archivedDone} of them archived)` : '')
       + (l.notes ? `, ${l.notes} note(s)` : '')).join('\n')
     : '- (no lists)';
+  // « Détail la catégorie cursor » went to the memory and the web (doc 202 §4.0):
+  // the person's word for a list is « category », and the way in is said here.
+  const oneList = opts.wholeBacklog && v.lists.length
+    ? '\nA list is what the person may call a category or a project: to show one list\'s tasks only, call again with list: <its key>.'
+    : '';
+  const attention = opts.wholeBacklog && v.tasks.length
+    ? `${attentionBlock(v.tasks, v.lists.reduce((n, l) => n + l.open, 0), now)}\n\n`
+    : '';
+  // The agent's limit cuts what is PRINTED, never what is ranked above (doc 202 §4.4).
+  const shown = typeof opts.printLimit === 'number' && opts.printLimit < v.tasks.length
+    ? v.tasks.slice(0, Math.max(0, opts.printLimit))
+    : v.tasks;
+  const truncated = v.truncated + (v.tasks.length - shown.length);
 
-  if (v.tasks.length === 0) {
+  if (shown.length === 0) {
     // "Nothing matched" is not "you have nothing to do": a filter that hit no
     // rows and an empty backlog read the same to a caller who is only handed a
     // count, and only one of them is a reason to stop looking.
     const why = v.total === 0 ? 'Nothing matched.' : `${v.total} matched but none were returned.`;
-    return `Lists${where}:\n${lists}\n\n${why}\nArchived (not listed here): ${v.archived}.`;
+    return `${attention}Lists${where}:\n${lists}${oneList}\n\n${why}\nArchived (not listed here): ${v.archived}.`;
   }
 
-  const tasks = v.tasks.map(task => {
+  const tasks = shown.map(task => {
     const flags = [
       task.kind === 'note' ? 'note (context, not to do)' : null,
       task.done ? 'done' : null,
@@ -146,12 +228,12 @@ export function renderTodoList(result: TodoReadResult): string {
       + files;
   }).join('\n');
 
-  const cut = v.truncated > 0
-    ? `\n\n${v.truncated} more matched and were NOT returned: narrow the list or raise the limit.`
+  const cut = truncated > 0
+    ? `\n\n${truncated} more matched and were NOT returned: narrow the list or raise the limit.`
     : '';
-  // The frame is stated once, and only when a due date was printed.
-  const frame = v.tasks.some(t => localStamp(t.dueAt) !== '') ? `\n${LOCAL_TIME_NOTE}` : '';
-  return `Lists${where}:\n${lists}\n\nTasks (${v.tasks.length} of ${v.total}):\n${tasks}${cut}${frame}`
+  // The frame is stated once, and only when a due date was printed (in the block or the list).
+  const frame = (attention ? v.tasks : shown).some(t => localStamp(t.dueAt) !== '') ? `\n${LOCAL_TIME_NOTE}` : '';
+  return `${attention}Lists${where}:\n${lists}${oneList}\n\nTasks (${shown.length} of ${v.total}):\n${tasks}${cut}${frame}`
     + `\n\nArchived (not listed here): ${v.archived}.`
     + '\nUse the id in brackets (or the #number) with mnemosyne_todo_update, never the text.';
 }
@@ -251,8 +333,17 @@ export function todoListParams(appId: string, args: Record<string, unknown>): Re
 export async function handleTodoList(
   client: TodoRpcClient, appId: string, args: Record<string, unknown>,
 ): Promise<string> {
-  const result = await client._rpc<TodoReadResult>('sdk.todo.read', todoListParams(appId, args));
-  return renderTodoList(result);
+  const params = todoListParams(appId, args);
+  if (params['list'] !== undefined) {
+    return renderTodoList(await client._rpc<TodoReadResult>('sdk.todo.read', params));
+  }
+  // A whole-backlog read ranks EVERY open task, so it asks the host for all of
+  // them; the agent's limit then cuts the printed list only. Measured 2026-11-06
+  // (doc 202 §4.4): the 8B passed limit 20 or 50, and the overdue tasks sat
+  // further down the list order, out of the attention block.
+  const asked = typeof params['limit'] === 'number' ? params['limit'] : undefined;
+  const result = await client._rpc<TodoReadResult>('sdk.todo.read', { ...params, limit: TODO_READ_CEILING });
+  return renderTodoList(result, { wholeBacklog: true, ...(asked !== undefined ? { printLimit: asked } : {}) });
 }
 
 export async function handleTodoApply(

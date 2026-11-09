@@ -106,6 +106,7 @@ describe('sessionsRoots', () => {
     const roots = sessionsRoots({} as NodeJS.ProcessEnv).map(norm);
     assert.ok(roots.some(r => /\.claude\/projects$/.test(r)), roots.join(', '));
     assert.ok(roots.some(r => /antigravity/.test(r)), roots.join(', '));
+    assert.ok(roots.some(r => /\.cursor\/projects$/.test(r)), roots.join(', '));
   });
 });
 

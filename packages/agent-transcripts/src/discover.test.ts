@@ -21,6 +21,9 @@ function isolated(extra: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
     MNEMO_AGENT_SESSIONS: none,
     MNEMO_AGENT_SESSIONS_ANTIGRAVITY: none,
     MNEMO_AGENT_SESSIONS_ANTIGRAVITY_IDE: none,
+    // Cursor's real ~/.cursor/projects exists on every machine that runs this
+    // suite inside Cursor — without this, discover would always find it.
+    MNEMO_AGENT_SESSIONS_CURSOR: none,
     ...extra,
   };
 }

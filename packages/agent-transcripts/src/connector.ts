@@ -322,8 +322,19 @@ export interface Connector {
    * instead of exploring every branch of a tree the app has no business
    * walking. `idFrom: 'dir'` says the session id is that directory's name,
    * which is how an agent that writes no id field still has one.
+   *
+   * `nest: 'session-dir'` (Cursor): the jsonl is not IN `subPath`, it is in a
+   * child directory of `subPath` — `<root>/<project>/agent-transcripts/<id>/<id>.jsonl`.
+   * Without the flag the walk would list `agent-transcripts` and see only
+   * directories, never a file.
    */
-  tree?: { subPath: string; idFrom?: 'dir' };
+  tree?: { subPath: string; idFrom?: 'dir'; nest?: 'session-dir' };
+  /**
+   * When the harness writes no per-line clock, `lastEventAt` is taken from the
+   * file's mtime (passed into `readSession`). Cursor is the measured case:
+   * every line is `{ role, message }` with no timestamp field at all.
+   */
+  eventTime?: 'mtime';
   filePattern: string;
   /**
    * jsonl only: which vendor field carries which normalised one.
@@ -550,6 +561,9 @@ export function completeLines(text: string): string[] {
  */
 function sessionDirOf(conn: Connector, path: string): string | null {
   const segs = path.replace(/\\/g, '/').split('/').filter(Boolean);
+  // nest session-dir: the session folder is the parent of the file itself
+  // (`…/agent-transcripts/<id>/<id>.jsonl`), not one level above subPath.
+  if (conn.tree?.nest === 'session-dir') return segs[segs.length - 2] ?? null;
   const depth = (conn.tree?.subPath ?? '').split('/').filter(Boolean).length;
   return segs[segs.length - depth - 2] ?? null;
 }
@@ -689,7 +703,16 @@ function accumulateUsage(
   bucket.calls += 1;
 }
 
-export function readSession(conn: Connector, file: string, path: string, text: string, sizeBytes: number): SessionState | null {
+export function readSession(
+  conn: Connector,
+  file: string,
+  path: string,
+  text: string,
+  sizeBytes: number,
+  /** File mtime in ms since epoch. Required when `conn.eventTime === 'mtime'`;
+   *  ignored otherwise. */
+  mtime?: number,
+): SessionState | null {
   const st: SessionState = {
     file, path, sessionId: null, title: null, model: null, projectPath: null, branch: null,
     isSidechain: false, lastEventAt: null, firstEventAt: null, tool: null, sizeBytes,
@@ -812,6 +835,16 @@ export function readSession(conn: Connector, file: string, path: string, text: s
 
   // An agent that writes no id field still has one: the directory it writes in.
   if (!st.sessionId && conn.tree?.idFrom === 'dir') st.sessionId = sessionDirOf(conn, path);
+
+  // Harnesses that never stamp a line (Cursor) still have a clock: the file's
+  // mtime, which moves every time the harness appends. Absent mtime stays
+  // absent — inventing "now" would make every unread session look live.
+  if (!st.lastEventAt && conn.eventTime === 'mtime'
+      && typeof mtime === 'number' && Number.isFinite(mtime) && mtime > 0) {
+    const iso = new Date(mtime).toISOString();
+    st.lastEventAt = iso;
+    if (!st.firstEventAt) st.firstEventAt = iso;
+  }
 
   st.humanTurns.reverse();   // chronological: a summary reads a session forward
   return st.lastEventAt ? st : null;

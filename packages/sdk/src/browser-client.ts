@@ -564,7 +564,7 @@ export class MnemoClientBrowser {
    *
    * Required manifest: `scopes: ['bridge:read']`, `intents: ['BRIDGE_READ']`
    *
-   * @param options - Optional filters: `{ limit, minDbs, sessionId, chronicleId }`
+   * @param options - Optional filters: `{ limit, minDbs, sessionId, chronicleId, includeUnresolved }`
    *
    * @example
    * ```typescript

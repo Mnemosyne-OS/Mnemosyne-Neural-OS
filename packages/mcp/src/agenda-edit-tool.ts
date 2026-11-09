@@ -23,7 +23,7 @@
  */
 import type { AgendaRpcClient } from './agenda-tool';
 import { doorFailure } from './todo-edit-tool';
-import { localStamp, parseAgentDate, LOCAL_TIME_NOTE } from './local-time.js';
+import { dayStamp, localStamp, parseAgentDate, LOCAL_TIME_NOTE } from './local-time.js';
 
 export interface AgendaEventView {
   id: string;
@@ -62,43 +62,100 @@ export interface AgendaReadResult {
  */
 export const stamp = localStamp;
 
-export function renderAgendaList(result: AgendaReadResult): string {
+/** How far « soon » reaches in the grouped list: the days a person means by « what's on ». */
+export const SOON_DAYS = 7;
+const DAY_MS = 86_400_000;
+
+/** A stamp with its weekday: shared with the To-do read (local-time). */
+export { dayStamp };
+
+/**
+ * What the window left out, split into what is still to come and what is past,
+ * with the next one named. Measured 2026-11-06 (doc 202 §4.3): « what's on my
+ * agenda » read today→Sunday, got 0 events and « 55 outside the window », and
+ * LFM2.5 8B said « 55 appointments planned »: 49 of them were past, and the one
+ * that mattered (a check on Thursday) was never named.
+ */
+function outsideWindowSentence(v: NonNullable<AgendaReadResult['view']>, upcoming?: readonly AgendaEventView[]): string {
+  if (v.outsideWindow <= 0) return '';
+  if (!upcoming) return `${v.outsideWindow} appointment(s) fall outside the window you asked for.`;
+  const inWindow = new Set(v.events.map(e => e.id));
+  const toCome = upcoming.filter(e => e.nextAt !== undefined && !inWindow.has(e.id))
+    .sort((a, b) => (a.nextAt as number) - (b.nextAt as number));
+  const past = Math.max(0, v.outsideWindow - toCome.length);
+  const next = toCome[0];
+  const comeText = next
+    ? `${toCome.length} still to come (the next one: [${next.id}] ${next.title}, ${dayStamp(next.nextAt as number)})`
+    : 'none still to come';
+  return `Outside the window you asked for: ${comeText}; ${past} already past.`;
+}
+
+function eventRow(e: AgendaEventView): string {
+  // 🎭 The NEXT occurrence comes first. Measured 2026-11-06, LFM2.5 8B through
+  // Hermes: a weekly event printed « starts 2026-10-22, next 2026-11-12 » was
+  // read back as « next on 22 October », once with the wrong weekday.
+  const when = e.nextAt !== undefined ? `next ${dayStamp(e.nextAt)}` : `no occurrence left (was ${dayStamp(e.startAt)})`;
+  const bits = [
+    e.repeats ? `repeats ${e.repeats} since ${dayStamp(e.startAt)}` : e.repeatsRule ? `repeats ${e.repeatsRule} since ${dayStamp(e.startAt)}` : null,
+    e.repeatsUntil !== undefined ? `until ${stamp(e.repeatsUntil)}` : null,
+    e.endAt !== undefined ? `ends ${stamp(e.endAt)}` : null,
+    e.allDay ? 'all day' : null,
+    e.location ? `at ${e.location}` : null,
+    // « reminder 0 min before » was read back as « no reminder ».
+    e.alarmMinutesBefore !== undefined
+      ? (e.alarmMinutesBefore === 0 ? 'reminder at the start time' : `reminder ${e.alarmMinutesBefore} min before`)
+      : null,
+  ].filter(Boolean).join(' | ');
+  return `- [${e.id}] ${e.title}\n    ${when}${bits ? `\n    ${bits}` : ''}`;
+}
+
+/**
+ * The calendar as an agent reads it back: today's date first, then what comes
+ * in the next SOON_DAYS days, what comes later, and what is already past.
+ *
+ * Measured 2026-11-06 with Hermes on LFM2.5 8B and a real calendar (one weekly
+ * check, five imported birthdays months away): « what's on my agenda » was
+ * answered 0/2, the start of a series given as its next date, the birthdays
+ * listed as the agenda. The groups and the weekdays are computed HERE, so the
+ * model copies instead of computing.
+ *
+ * @param result - The host's answer
+ * @param now - The present, for tests; the clock otherwise
+ * @param upcoming - Every appointment still to come, read apart when the window
+ *   left some out (handleAgendaList); absent = the old one-number sentence
+ */
+export function renderAgendaList(result: AgendaReadResult, now: number = Date.now(), upcoming?: readonly AgendaEventView[]): string {
   if (!result.ok || !result.view) return doorFailure(result.error, 'calendar');
   const v = result.view;
   const where = result.via === 'file' ? ' (read straight from the file: the app is not open)' : '';
+  const today = `Today is ${dayStamp(now)}.`;
+  const outsideSentence = outsideWindowSentence(v, upcoming);
 
   if (v.events.length === 0) {
     // The window is named as the reason, because "no appointments" and "none in
     // the window you asked about" are different facts and the second one is
     // fixed by asking differently.
-    const outside = v.outsideWindow > 0
-      ? ` ${v.outsideWindow} appointment(s) exist outside the window you asked for.`
-      : '';
-    return `No appointments in the window${where}.${outside}`;
+    return `${today}\nNo appointments in the window${where}.${outsideSentence ? ` ${outsideSentence}` : ''}`;
   }
 
-  const rows = v.events.map(e => {
-    // 🎭 An event with nothing left to happen says so, rather than showing its
-    // original start as though it were still coming.
-    const next = e.nextAt !== undefined ? `next ${stamp(e.nextAt)}` : 'no occurrence left';
-    const bits = [
-      e.repeats ? `repeats ${e.repeats}` : e.repeatsRule ? `repeats ${e.repeatsRule}` : null,
-      e.repeatsUntil !== undefined ? `until ${stamp(e.repeatsUntil)}` : null,
-      e.allDay ? 'all day' : null,
-      e.location ? `at ${e.location}` : null,
-      e.alarmMinutesBefore !== undefined ? `reminder ${e.alarmMinutesBefore} min before` : null,
-    ].filter(Boolean).join(' | ');
-    return `- [${e.id}] ${e.title}\n    starts ${stamp(e.startAt)}${e.endAt !== undefined ? ` -> ${stamp(e.endAt)}` : ''}, ${next}`
-      + (bits ? `\n    ${bits}` : '');
-  }).join('\n');
+  const soonEnd = now + SOON_DAYS * DAY_MS;
+  const byNext = (a: AgendaEventView, b: AgendaEventView) => (a.nextAt ?? a.startAt) - (b.nextAt ?? b.startAt);
+  const soon = v.events.filter(e => e.nextAt !== undefined && e.nextAt <= soonEnd).sort(byNext);
+  const later = v.events.filter(e => e.nextAt !== undefined && e.nextAt > soonEnd).sort(byNext);
+  const past = v.events.filter(e => e.nextAt === undefined).sort(byNext);
+  const group = (title: string, list: AgendaEventView[]) =>
+    list.length ? `${title}: ${list.length}\n${list.map(eventRow).join('\n')}` : `${title}: none`;
+  const groups = [
+    group(`In the next ${SOON_DAYS} days (until ${dayStamp(soonEnd)})`, soon),
+    group('Later', later),
+    ...(past.length ? [group('Already past', past)] : []),
+  ].join('\n\n');
 
   const cut = v.truncated > 0
     ? `\n\n${v.truncated} more matched and were NOT returned: narrow the window or raise the limit.`
     : '';
-  const outside = v.outsideWindow > 0
-    ? `\n${v.outsideWindow} appointment(s) fall outside the window you asked for.`
-    : '';
-  return `Appointments (${v.events.length} of ${v.total})${where}:\n${rows}${cut}${outside}`
+  const outside = outsideSentence ? `\n${outsideSentence}` : '';
+  return `${today}\nAppointments (${v.events.length} of ${v.total})${where}:\n\n${groups}${cut}${outside}`
     + `\n\n${LOCAL_TIME_NOTE}`
     + '\nUse the id in brackets with mnemosyne_agenda_update or mnemosyne_agenda_remove, never the title.';
 }
@@ -191,7 +248,19 @@ export async function handleAgendaList(
   const built = agendaListParams(appId, args);
   if ('refusal' in built) return built.refusal;
   const result = await client._rpc<AgendaReadResult>('sdk.agenda.read', built.params);
-  return renderAgendaList(result);
+  const windowed = built.params['from'] !== undefined || built.params['to'] !== undefined;
+  if (!windowed || !result.ok || !result.view || result.view.outsideWindow <= 0) return renderAgendaList(result);
+  // The window left some out: one more read, every appointment still to come, so
+  // the answer names the next one instead of a bare count (doc 202 §4.5).
+  let upcoming: AgendaEventView[] | undefined;
+  try {
+    const all = await client._rpc<AgendaReadResult>('sdk.agenda.read', { appId: built.params['appId'], includePast: false });
+    if (all.ok && all.view) upcoming = all.view.events;
+    else console.error(`[agenda] the read of what is still to come failed (${all.error ?? 'no view'}); the count stays whole`);
+  } catch (err) {
+    console.error('[agenda] the read of what is still to come failed; the count stays whole:', err);
+  }
+  return renderAgendaList(result, Date.now(), upcoming);
 }
 
 /** Turns the tool's snake_case edit arguments into the host's op shape. */

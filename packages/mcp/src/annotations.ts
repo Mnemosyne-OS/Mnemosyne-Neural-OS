@@ -40,12 +40,17 @@ export const TOOL_TITLES: Record<string, string> = {
   mnemosyne_agenda_remove:     'Remove appointments',
   mnemosyne_agenda_add:        'Add appointments',
   mnemosyne_voice_list:        'List local voices',
+  mnemosyne_review_open:       'Ask the human to review a video',
+  mnemosyne_review_wait:       'Wait for the answer to a review',
+  mnemosyne_review_get:        'Read a review',
   mnemosyne_voice_speak:       'Render a script to a WAV',
   mnemosyne_voice_status:      'Check the voice engine',
+  mnemosyne_telegram_send:     'Send a file to Telegram home',
 };
 
 /** Tools that only read. Everything else has to say whether it can destroy. */
 export const READ_ONLY_TOOLS = new Set<string>([
+  'mnemosyne_review_get',
   'mnemosyne_about',
   'mnemosyne_memory_query',
   'mnemosyne_memory_ask',

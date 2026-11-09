@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne_os/mcp",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "mcpName": "io.github.Mnemosyne-OS/mcp",
   "description": "MCP server for Mnemosyne OS. Gives AI agents access to vault memory, resonances, git context, and to what the other coding agents on this machine are doing.",
   "keywords": [
@@ -35,7 +35,8 @@
   "bin": {
     "mcp": "./dist/index.js",
     "mnemosyne-mcp": "./dist/index.js",
-    "mnemosyne-cockpit-hook": "./dist/cockpit-hook.js"
+    "mnemosyne-cockpit-hook": "./dist/cockpit-hook.js",
+    "mnemosyne-review-wait": "./dist/review-wait.js"
   },
   "main": "./dist/index.js",
   "exports": {
@@ -44,18 +45,19 @@
   "files": [
     "dist/index.js",
     "dist/cockpit-hook.js",
+    "dist/review-wait.js",
     "README.md",
     "skills",
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup --entry.index src/index.ts --entry.cockpit-hook src/cockpit-hook.ts --format esm --no-splitting --clean",
+    "build": "tsup --entry.index src/index.ts --entry.cockpit-hook src/cockpit-hook.ts --entry.review-wait src/review-wait.ts --format esm --no-splitting --clean",
     "dev": "tsup src/index.ts --format esm --watch",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test \"src/*.test.ts\"",
     "start": "node dist/index.js",
     "release": "npm run typecheck && npm run build:publish && npm publish --access public",
-    "build:publish": "tsup --entry.index src/index.ts --entry.cockpit-hook src/cockpit-hook.ts --format esm --no-splitting --clean",
+    "build:publish": "tsup --entry.index src/index.ts --entry.cockpit-hook src/cockpit-hook.ts --entry.review-wait src/review-wait.ts --format esm --no-splitting --clean",
     "prepublishOnly": "npm run typecheck && npm run build:publish"
   },
   "dependencies": {

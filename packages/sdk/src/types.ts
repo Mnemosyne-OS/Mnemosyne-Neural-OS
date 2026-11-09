@@ -708,14 +708,36 @@ export interface MnemoEvent<T = unknown> {
 
 // ── v1.4.0 — Read-only Introspection (Dream State + Spine assignments) ───────
 
+/**
+ * How one side of a bridge was found (doc 193 §2.2).
+ * - `resolved`: the vault the row names is mounted and holds the id.
+ * - `inferred`: a legacy row (vault `'dev'`); exactly one dream-eligible vault
+ *   holds this id with this spine type. Likely, never certain.
+ * - `ambiguous`: a legacy row; several vaults match. Nothing is chosen.
+ * - `missing`: no dream-eligible vault holds the id.
+ */
+export type DreamBridgeSideState = 'resolved' | 'inferred' | 'ambiguous' | 'missing';
+
+/** The human's triage of a bridge in the app's explorer. */
+export type DreamBridgeStatus = 'new' | 'seen' | 'kept' | 'pinned' | 'dismissed';
+
 /** One endpoint (chronicle) of a dream bridge. */
 export interface DreamBridgeEndpoint {
   chronicleId: number;
   spineType: string;
-  /** Vault name as recorded by the dream engine (core vault name, e.g. 'dev'). */
+  /**
+   * Core vault name the memory was found in (resolved or inferred). For a
+   * side not found, the name the row carries (`'dev'` on a legacy row).
+   */
   vault: string;
-  /** Short excerpt of the chronicle content (~240 chars), when resolvable. */
+  /** Short excerpt of the chronicle content (~160 chars), when resolvable. */
   excerpt?: string;
+  /** How this side was found (since app 2.0.x, doc 193). */
+  state?: DreamBridgeSideState;
+  /** Display name of the vault, when resolved or inferred. */
+  vaultLabel?: string | null;
+  /** Vaults that matched a legacy side (> 1 = ambiguous). */
+  candidates?: number;
 }
 
 /**
@@ -725,16 +747,34 @@ export interface DreamBridgeEndpoint {
  * [DREAM-STATE][READ-ONLY]
  */
 export interface DreamBridge {
+  /** Row id of the latest sighting (not unique across databases; use `key`). */
   id: number;
-  /** Dream scan session that produced this bridge. */
+  /** Dream scan session of the latest sighting. */
   sessionId: string | null;
+  /** Latest sighting. */
   scannedAt: string;
-  /** Composite Dream Bridge Score. */
+  /** Composite Dream Bridge Score (highest over all sightings). */
   dbs: number;
-  /** Raw cosine similarity between the two chronicles. */
+  /** Raw cosine similarity between the two chronicles (latest sighting). */
   cosine: number;
   from: DreamBridgeEndpoint;
   to: DreamBridgeEndpoint;
+  // ── since app 2.0.x (doc 193): one entry per pair, however many scans saw it ──
+  /** Stable pair key, the one the app's triage uses. */
+  key?: string;
+  /** `resolved` both sides, `inferred` at least one side inferred, else `unresolved`. */
+  resolution?: 'resolved' | 'inferred' | 'unresolved';
+  /** How many stored scan rows saw this pair. */
+  sightings?: number;
+  firstSeen?: string;
+  /** The human's triage in the app (`new` = never opened). */
+  status?: DreamBridgeStatus;
+  /** Cosine high enough that the two are copies, not an insight. */
+  nearCopy?: boolean;
+  /** Both sides found, in different vaults. */
+  crossVault?: boolean;
+  /** Display names of the vault databases that stored the rows. */
+  ledgers?: string[];
 }
 
 /** Options for dreamBridges(). */
@@ -747,6 +787,8 @@ export interface DreamBridgesOptions {
   sessionId?: string;
   /** Only return bridges touching this chronicle id. */
   chronicleId?: number;
+  /** Also return pairs with a side ambiguous or missing (default: false). */
+  includeUnresolved?: boolean;
 }
 
 /** Result of dreamBridges(). */
@@ -754,6 +796,10 @@ export interface DreamBridgesResult {
   success: boolean;
   bridges: DreamBridge[];
   error?: string;
+  /** Pairs matching the filters before `limit`, unresolved ones included. */
+  total?: number;
+  /** Unresolved pairs left out because `includeUnresolved` was not set. */
+  unresolvedHidden?: number;
 }
 
 /** One chronicle → spine assignment. */

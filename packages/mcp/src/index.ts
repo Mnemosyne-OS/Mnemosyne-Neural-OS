@@ -43,18 +43,21 @@ import { unwrapContent, selectResonances, toResonanceView, resonanceLine, voiceE
 import { localStamp, parseStoredTime, LOCAL_TIME_NOTE } from './local-time.js';
 import { renderCovenant } from './covenant.js';
 import { renderVaultList } from './vault-list.js';
+import { formatDreamBridges } from './dream-bridges-format.js';
 import { recordCall } from './usage.js';
 import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget, vaultGrant, vaultForHostDefault } from './vault-target.js';
 import { AGENT_TOOLS, handleAgentTool, sessionsRoots } from './agents.js';
 import { annotated } from './annotations.js';
 import { handleTodoAdd } from './todo-tool.js';
+import { handleReviewTool } from './review-tool.js';
+import { workingTreeOf } from '@mnemosyne_os/agent-transcripts/node';
 import { handleTodoApply, handleTodoList } from './todo-edit-tool.js';
 import { handleAgendaList, handleAgendaRemove, handleAgendaUpdate } from './agenda-edit-tool.js';
 import { handleCockpitUpdate } from './cockpit-tool.js';
 import { handleAgendaAdd } from './agenda-tool.js';
 import { handlePhemeRadar, handlePhemeWatch } from './pheme-tool.js';
 import { installHint, setupHint } from './install-hint.js';
-import { needsRunningApp, FILE_PATH_CAVEAT, APP_NOT_RUNNING_MESSAGE } from './app-only-tools.js';
+import { needsRunningApp, FILE_PATH_CAVEAT, APP_RUNNING_CAVEAT, APP_NOT_RUNNING_MESSAGE } from './app-only-tools.js';
 import { spawn }         from 'node:child_process';
 import { existsSync }    from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -234,6 +237,17 @@ async function waitForRender(
   return job;
 }
 
+/**
+ * The `mnemosyne-review-wait` command that ships next to this server (doc 196
+ * §15), quoted for a shell, or undefined when this build has none (run from
+ * source, or a bundle that left it out): a STILL WAITING answer never names a
+ * command that is not there.
+ */
+function reviewListenCommand(): string | undefined {
+  const file = join(dirname(fileURLToPath(import.meta.url)), 'review-wait.js');
+  return existsSync(file) ? `node "${file}"` : undefined;
+}
+
 const MCP_MANIFEST = {
   // 🚨 THE ID IS THE GRANT KEY, never a display string. The host stores the
   // approved scopes against it (`sdk-ws-server`'s registry, persisted), so
@@ -282,6 +296,14 @@ const MCP_MANIFEST = {
     // sensitive — first-party auto-grant applies. There is no posting scope.
     'pheme:profile',
     'pheme:read',
+    // Ask the human about a video and wait for their answer (doc 196). Not
+    // sensitive: the file must sit in the send folders, the answer goes back
+    // to the caller only, and an approval never publishes anything.
+    'review:ask',
+    // Push one local file to Hermes' Telegram home channel (Bot API). Not
+    // sensitive — first-party auto-grant; the recipient is always the home
+    // chat the person already configured, never a chat id from the caller.
+    'telegram:homeSend',
     // [v1.6] Voice rendering. A SENSITIVE scope on the host: even though this
     // MCP is first-party, the human is asked for it once, by name, and the
     // dialog says what it means. Declaring it here is a REQUEST, and a denial
@@ -291,7 +313,7 @@ const MCP_MANIFEST = {
   vaults:          DECLARED_VAULTS,
   intents:         [
     'QUERY', 'INGEST', 'GIT_LOG', 'LIST_AGENTS', 'LIST_VAULTS', 'BRIDGE_READ', 'TODO_WRITE', 'TODO_READ', 'AGENDA_WRITE', 'AGENDA_READ', 'COCKPIT_WRITE',
-    'PHEME_PROFILE', 'PHEME_READ',
+    'PHEME_PROFILE', 'PHEME_READ', 'TELEGRAM_HOME_SEND', 'REVIEW_ASK',
     ...(VOICE_ENABLED ? ['VOICE_SPEAK'] : []),
     // [v1.11] Erasure. Declared only when the human armed MNEMO_FORGET, so a
     // default install cannot be talked into deleting anything: the host refuses
@@ -459,7 +481,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_dream_bridges',
-    description: 'List the connections the Dream State engine found between memories while the machine was idle. Each bridge links two memories, sometimes from different vaults, with a Dream Bridge Score, a raw cosine similarity, and a short excerpt of both sides. Use it to surface associations the memory made on its own, to audit whether they are insightful or noise, or to seed creative exploration. An empty list is normal and means the engine has not produced bridges yet. It runs on idle time, when the user enables it in Settings.',
+    description: 'List the connections the Dream State engine found between memories while the machine was idle. Each bridge links two memories, sometimes from different vaults, with a Dream Bridge Score, a raw cosine similarity, and a short excerpt of both sides. A side marked "inferred" was matched on its id and spine type in the only vault that fits (older scans did not record the vault): likely, not certain. Use it to surface associations the memory made on its own, to audit whether they are insightful or noise, or to seed creative exploration. An empty list is normal and means the engine has not produced bridges yet. It runs on idle time, when the user enables it in Settings.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -479,6 +501,10 @@ const TOOLS = [
         chronicle_id: {
           type:        'number',
           description: 'Only bridges touching this chronicle id (either endpoint).',
+        },
+        include_unresolved: {
+          type:        'boolean',
+          description: 'Also list bridges where a memory could not be found (ambiguous or missing side). Default false: they are left out and counted.',
         },
       },
     },
@@ -709,13 +735,13 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_todo_list',
-    description: 'Read the user\'s To-do backlog back: the lists that exist and the tasks in them, each with the id (and the short number, #42) you need to change it, its status, priority, whether it is a note or waits in triage, and the names of its attached files. Call this before mnemosyne_todo_update, which names tasks by id or number. A phrase like "delete the task about the invoice" reads perfectly and can still match the wrong task. This is also the way to answer "what is on my plate", or to check whether something is already filed before you add a duplicate. ' + FILE_PATH_CAVEAT + ' Scope todo:read.',
+    description: 'Read the user\'s To-do backlog back: the lists that exist (the person may call a list a category or a project) and the tasks in them, each with the id (and the short number, #42) you need to change it, its status, priority, whether it is a note or waits in triage, and the names of its attached files. Call this before mnemosyne_todo_update, which names tasks by id or number. A phrase like "delete the task about the invoice" reads perfectly and can still match the wrong task. This is also the way to answer "what is on my plate", or to check whether something is already filed before you add a duplicate. Without list, the answer opens with the tasks that need attention (overdue, due within 7 days, high priority, in progress), each with its reason: answer from those first. ' + FILE_PATH_CAVEAT + ' Scope todo:read.',
     inputSchema: {
       type: 'object',
       properties: {
         list: {
           type:        'string',
-          description: 'Only this list, by displayed name (case-insensitive) or by the key shown in brackets. Omitted = every list. A name that matches nothing returns NO tasks rather than silently widening to all of them.',
+          description: 'Only this list, by displayed name (case-insensitive) or by the key shown in brackets. « The Cursor category » or « my Vitrine Studio tasks » name a list: pass it here. Omitted = every list. A name that matches nothing returns NO tasks rather than silently widening to all of them.',
         },
         include_done: {
           type:        'boolean',
@@ -804,6 +830,45 @@ const TOOLS = [
         },
       },
       required: ['ops'],
+    },
+  },
+  // The review door (doc 196): ask the human about a video, wait for THAT answer.
+  {
+    name:        'mnemosyne_review_open',
+    description: 'Ask the human to review a video or image you produced. It shows in the review panel of Mnemosyne OS and, when the human paired the review bot, on their phone (Telegram) with Approve / Change / Reject buttons. Returns the review id: pass it to mnemosyne_review_wait. The file must be an absolute path inside ~/.mnemosyne/generations, ~/.mnemosyne/voiceovers or ~/.mnemosyne/outbox (copy a render there first); anything else is refused with OUTSIDE_SEND_FOLDERS. For a retake of a review, pass its id as parentId: the panel shows the versions side by side. ' + APP_RUNNING_CAVEAT + ' Scope review:ask.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path:     { type: 'string', description: 'Absolute path of the video or image (.mp4 .mov .webm .png .jpg .webp .gif).' },
+        title:    { type: 'string', description: 'Short title the human sees, e.g. "Alberto birthday v2" (max 120 characters).' },
+        question: { type: 'string', description: 'Optional: what you want them to look at (max 600 characters).' },
+        parentId: { type: 'string', description: 'Optional: the review this one is a retake of.' },
+        fps:      { type: 'number', description: 'Optional: the video frame rate (e.g. 30, from the render settings). The panel steps frame by frame at this rate and the notes of the human come back with exact frame numbers. Without it the panel assumes 30 and the human can change it.' },
+        project:  { type: 'string', description: 'Optional: the film project id this render belongs to (the Films window of Mnemosyne OS, e.g. "stop-aux-gadgets"; `avatar-film status <film>` prints it). The review then shows on the board of that film. A retake (parentId) keeps the project of its parent.' },
+      },
+      required: ['path', 'title'],
+    },
+  },
+  {
+    name:        'mnemosyne_review_wait',
+    description: 'Wait for the human\'s answers to ONE review (from mnemosyne_review_open), from the app or from their phone. Returns every answer given after `after`, oldest first: verdict approve / changes / reject, or null for a plain comment (the human can send frame notes alone, without a verdict), plus the text (a voice note arrives transcribed) and the second of the video it points at when they gave one. From the app an answer can carry frame notes: exact frame numbers (counted at the fps shown), each with what to fix there. Pass `after` (the createdAt of the review, or the `after` the last result told you) so an answer given before you started waiting is not missed. ONE CALL WAITS AT MOST ~45 s, so it never outlives your client\'s own tool timeout. When it returns STILL WAITING, nothing was decided: call it again with the same id and the same after, in a loop, for as long as you mean to listen. The human sees in the panel whether an agent is listening. ' + APP_RUNNING_CAVEAT + ' Scope review:ask.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        id:              { type: 'string', description: 'The review id.' },
+        after:           { type: 'number', description: 'Epoch ms: only answers strictly after this count. Default: now.' },
+        timeout_seconds: { type: 'number', description: 'How long this one call waits, default and max 45 (raised only by MNEMO_REVIEW_WAIT_MAX_S for a client known to wait longer). To listen longer, call again on STILL WAITING.' },
+      },
+      required: ['id'],
+    },
+  },
+  {
+    name:        'mnemosyne_review_get',
+    description: 'Read one review as it stands: its state (waiting / approved / changes / rejected), every answer so far, and its publishing state. Does not wait. ' + APP_RUNNING_CAVEAT + ' Scope review:ask.',
+    inputSchema: {
+      type: 'object',
+      properties: { id: { type: 'string', description: 'The review id.' } },
+      required: ['id'],
     },
   },
   {
@@ -924,6 +989,30 @@ const TOOLS = [
         },
       },
       required: ['events'],
+    },
+  },
+  {
+    name:        'mnemosyne_telegram_send',
+    description:
+      'Send one local file (video, photo, audio, pdf) to the user\'s Telegram home chat — the same Hermes bot channel they already configured. '
+      + 'Use it when a render or export finished on disk and the user is not at the machine: pass the absolute path, optionally a short caption. '
+      + 'The recipient is NEVER chosen by you: only TELEGRAM_HOME_CHANNEL from the assistant .env. '
+      + 'Caps: 48 MB, allow-listed types (mp4/mov/webm/mkv, jpg/png/webp/gif, wav/mp3/ogg, pdf). '
+      + APP_RUNNING_CAVEAT
+      + ' Refusals: NO_TELEGRAM (bot or home chat missing), TOO_LARGE, BAD_TYPE, NOT_A_FILE, BAD_REQUEST.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: {
+          type:        'string',
+          description: 'Absolute path of the file on this machine (e.g. a finished MP4). Relative paths are refused.',
+        },
+        caption: {
+          type:        'string',
+          description: 'Optional caption shown under the media (max 1024 characters).',
+        },
+      },
+      required: ['path'],
     },
   },
 ];
@@ -1317,23 +1406,13 @@ class MnemoMcpServer {
         const minDbs      = args['min_dbs']      !== undefined ? Number(args['min_dbs'])       : undefined;
         const sessionId   = args['session_id']   !== undefined ? String(args['session_id'])    : undefined;
         const chronicleId = args['chronicle_id'] !== undefined ? Number(args['chronicle_id'])  : undefined;
+        const includeUnresolved = args['include_unresolved'] === true;
 
-        const result = await client.dreamBridges({ limit, minDbs, sessionId, chronicleId });
+        const result = await client.dreamBridges({ limit, minDbs, sessionId, chronicleId, includeUnresolved });
         if (!result.success) {
           return text(`Could not read dream bridges: ${result.error ?? 'unknown error'}`);
         }
-        const bridges = result.bridges ?? [];
-        if (bridges.length === 0) {
-          return text('No dream bridges yet. The Dream State engine has not produced connections: it runs while the machine is idle (enable/force it in Mnemosyne OS Settings → Dream).');
-        }
-
-        const rows = bridges.map((b, i) => [
-          `### [${i + 1}] dbs ${b.dbs.toFixed(3)} · cosine ${b.cosine.toFixed(3)} · ${b.scannedAt}`,
-          `- **From** [${b.from.chronicleId}] ${b.from.spineType || '?'} (vault:${b.from.vault})${b.from.excerpt ? `: ${b.from.excerpt}` : ''}`,
-          `- **To** [${b.to.chronicleId}] ${b.to.spineType || '?'} (vault:${b.to.vault})${b.to.excerpt ? `: ${b.to.excerpt}` : ''}`,
-        ].join('\n')).join('\n\n');
-
-        return text(`# Dream bridges (${bridges.length})\n\n_Connections Mnemosyne dreamed while idle. Judge insightfulness before acting on them._\n\n${rows}`);
+        return text(formatDreamBridges(result));
       }
 
       // ── mnemosyne_spine_assignments ──────────────────────────────────────────
@@ -1475,6 +1554,11 @@ class MnemoMcpServer {
       case 'mnemosyne_todo_categories': {
         return text(await handleTodoApply(client, MCP_MANIFEST.id as string, args));
       }
+      case 'mnemosyne_review_open':
+      case 'mnemosyne_review_wait':
+      case 'mnemosyne_review_get': {
+        return text(await handleReviewTool(client, MCP_MANIFEST.id as string, tool, args, { listenCommand: reviewListenCommand(), treeOf: workingTreeOf }));
+      }
       case 'mnemosyne_agenda_list': {
         return text(await handleAgendaList(client, MCP_MANIFEST.id as string, args));
       }
@@ -1577,6 +1661,33 @@ class MnemoMcpServer {
       }
 
       // ── Voice rendering ───────────────────────────────────────────────────────
+
+      case 'mnemosyne_telegram_send': {
+        const filePath = String(args['path'] ?? '').trim();
+        if (!filePath) return text('Nothing to send: `path` is empty. Pass an absolute path to a local file.');
+        const caption = args['caption'] !== undefined ? String(args['caption']) : undefined;
+        try {
+          const r = await client.telegramSendHomeFile({ path: filePath, caption });
+          return text(
+            `Sent to your Telegram home chat as **${r.method}**: \`${r.filename}\` (${r.bytes} bytes).`
+          );
+        } catch (err) {
+          const code = err instanceof Error ? err.message : String(err);
+          if (code === 'NO_TELEGRAM') {
+            return text('Telegram home is not ready: set the Hermes bot token and TELEGRAM_HOME_CHANNEL in the assistant, then retry.');
+          }
+          if (code === 'TOO_LARGE') {
+            return text('File is over 48 MB (Telegram bot upload limit). Compress or split it, then retry.');
+          }
+          if (code === 'BAD_TYPE') {
+            return text('File type not allowed. Use mp4/mov/webm/mkv, jpg/png/webp/gif, wav/mp3/ogg, or pdf.');
+          }
+          if (code === 'NOT_A_FILE' || code === 'BAD_REQUEST') {
+            return text(`Cannot send that path (${code}): need an absolute path to an existing file.`);
+          }
+          return text(`Telegram send refused: ${code}`);
+        }
+      }
 
       case 'mnemosyne_voice_list': {
         const r = await client.voiceEngines();
