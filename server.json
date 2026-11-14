@@ -8,26 +8,25 @@
     "source": "github"
   },
   "websiteUrl": "https://mnemosyne-os.io",
-  "version": "2.1.3",
+  "version": "2.4.0",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@mnemosyne_os/mcp",
-      "version": "2.1.3",
+      "version": "2.4.0",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
           "name": "MNEMO_DEFAULT_VAULT",
-          "description": "Vault used when a call does not name one. The vaults are the user's own domains of memory (code, notes, journal); nothing outside the granted list is reachable.",
-          "isRequired": false,
-          "default": "DEV"
+          "description": "Vault used when a call does not name one, and always reachable. Vaults are the user's own domains of memory, such as code, notes or a journal. Left unset, the server uses the first vault of MNEMO_VAULTS, or DEV when there is no list.",
+          "isRequired": false
         },
         {
           "name": "MNEMO_VAULTS",
-          "description": "Comma-separated list of vaults this server may reach. Narrow it: a vault left out here cannot be read even by mistake.",
+          "description": "Comma-separated list of the vaults this server may reach, besides the default. Once set, it is the whole list: a vault left out is refused. Left unset, the server reaches DEV, PERSONAL and SOCIAL.",
           "isRequired": false,
           "default": "DEV,PERSONAL,SOCIAL"
         },
