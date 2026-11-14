@@ -94,9 +94,9 @@ different sentences, because they are two different problems.
 
 ### Claude Desktop, one click
 
-Download **[Mnemosyne-OS-MCP-2.1.3.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v1.9.0-infinity/Mnemosyne-OS-MCP-2.1.3.mcpb)**
-(4.1 MB), then open Claude Desktop → **Settings → Extensions** and drop the
-file into that panel. That is the whole install. The 25 tools appear straight away, and the same
+Download **[Mnemosyne-OS-MCP-2.4.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v2.2.1-infinity/Mnemosyne-OS-MCP-2.4.0.mcpb)**
+(4.4 MB), then open Claude Desktop → **Settings → Extensions** and drop the
+file into that panel. That is the whole install. The 31 tools appear straight away, and the same
 panel offers the three optional settings: default vault, other vaults, and the
 port the desktop application listens on.
 
