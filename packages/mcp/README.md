@@ -309,17 +309,15 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 
 ---
 
-## The 29 tools your agent gets
+## The 31 tools your agent gets
 
-Twenty-six of the 29 are in the table below. The table also lists
-`mnemosyne_memory_forget`, the erasure tool, which is not one of the 29: it
-appears only when you set `MNEMO_FORGET=1`. The three that read the other agents
-on this machine have their own section further down. Setting `MNEMO_VOICE=1`
-adds the three voice tools documented further up, and `MNEMO_FORGET=1` adds the
-erasure tool, for 33 in all.
+Twenty-six are in the table below. The three that read the other agents on this
+machine, and the two that update the Mac app, have their own sections further down. Setting `MNEMO_VOICE=1` adds the
+three voice tools documented further up, and `MNEMO_FORGET=1` adds the erasure
+tool, for 35 in all.
 
-Eight of them read or write the To-do backlog and the calendar. All eight carry
-the same requirement:
+Six of them read or write the To-do backlog and the calendar. All six carry the
+same requirement:
 
 Works with the app closed on a dev install (the headless daemon reads the file); an npm install has no daemon and needs the app running.
 
@@ -328,9 +326,9 @@ Works with the app closed on a dev install (the headless daemon reads the file);
 | **`mnemosyne_about`** | Re-read the briefing the agent was handed on connect: the governance tenet, the vault protection model, the spine model, and the rules for an agent working on someone else's memory. Call it if your client did not surface the server instructions. |
 | **`mnemosyne_memory_query`** | Semantic search. It returns raw chronicles, ranked by vector similarity fused with a local BM25 channel and weighted by spineType. Supports `spine_type_filter`, `max_content_chars` and `limit` (50 max). |
 | **`mnemosyne_memory_ask`** | Ask a question, get a synthesized prose answer grounded in the vault, plus its source chronicles. Use it for why, who and how questions that span many memories. It runs the full RAG pipeline, which also makes it the better retriever, and it is slower than `query`. |
-| **`mnemosyne_vault_list`** | List the vaults Mnemosyne OS exposes, with each one's token, name, chronicle count and the description written in its panel in the app. Call it to discover valid `vault` targets. A vault with no description is left without one, and the list says how many reachable vaults have none. |
+| **`mnemosyne_vault_list`** | List the vaults this server can reach, with each one's token, name, chronicle count and the description written in its panel in the app. Call it to discover valid `vault` targets. A vault outside `MNEMO_VAULTS` is counted, never named, and no local path is printed. A vault with no description is left without one, and the list says how many reachable vaults have none. |
 | **`mnemosyne_memory_forget`** | Erase one chronicle for good, by the id `mnemosyne_memory_query` returned. Absent unless you set `MNEMO_FORGET=1`, and the app wants the `FORGET` intent on top of that. You arm erasure by hand, because writing a new chronicle cannot undo it. |
-| **`mnemosyne_memory_ingest`** | Persist a memory. Pick a `spine_type`: ARCHITECTURE, DECISION, DEBUG, BUGFIX, FEATURE, NOTE, SESSION, RESONANCE or CUSTOM. |
+| **`mnemosyne_memory_ingest`** | Persist a memory. Pick a `spine_type`: ARCHITECTURE, DECISION, BUGFIX, FEATURE, NOTE, SESSION, RESONANCE or CUSTOM. |
 | **`mnemosyne_todo_add`** | Put tasks into the user's **To-do backlog**, in order and optionally under named steps. Name the `list`, or pass `create_list: true`. An unknown name is refused with the lists that exist. With a window open the write goes through the widget's own store; on macOS with the window closed the app writes the file directly. Scope `todo:write`. |
 | **`mnemosyne_cockpit_update`** | Your own **status card** on the user's canvas: `state` working, waiting, done, blocked or closed, a `title`, one `status` line, up to 4 `detail` lines. You declare the state, and the app prints it next to the time since your last call, so call at real milestones. "waiting" and "blocked" make the card pulse and the taskbar flash. The answer carries the messages the user left on your card. Send `desktop` once, with the name of a board the user gives you, and this session’s cards go there for the rest of the conversation; leave it out and they go to whichever board answers for this project. Claude Code names the card by its `CLAUDE_CODE_SESSION_ID`; other clients (Cursor, Antigravity…) pass `session`, any stable id for the conversation, on every call. Needs the app window open. Scope `cockpit:write`. |
 | **`mnemosyne_pheme_watch`** | Add a subreddit, a Hacker News query or a topic to the user's **Pheme radar**, or take one off. The lists are theirs. An operation that would empty one is refused, each one reports its own outcome, and the user gets a receipt in Pheme naming the agent and what changed. It posts nowhere. Needs the app running, though Pheme itself can be closed. Scope `pheme:profile`. |
@@ -352,6 +350,18 @@ Works with the app closed on a dev install (the headless daemon reads the file);
 | **`mnemosyne_git_log`** | Recent commits from the git repository Mnemosyne OS is configured to read (requires `monorepo:read` scope). |
 | **`mnemosyne_spine_assignments`** | How the memories were actually classified: chronicle-to-spine assignments for a vault, newest first, with whole-vault counts per spine and, on request, the taxonomy tree. It is also where the taxon ids come from, so read it instead of guessing a `spine_type_filter`. |
 | **`mnemosyne_dream_bridges`** | The links the Dream State engine found on its own while the machine sat idle, each with its score and an excerpt of both sides, sometimes across two vaults. An empty list is the normal answer and means it has produced none yet, never that the query failed. |
+
+### Updating Mnemosyne OS on a Mac
+
+The Mac build is not notarized yet, so the app cannot update itself. These two
+let your agent do the update the careful way, **with the app closed**.
+
+| Tool | What it does |
+|---|---|
+| **`mnemosyne_mac_update_check`** | The installed version, the latest release, the macOS version, whether the app runs, and whether the key files exist (never their content). Writes nothing. |
+| **`mnemosyne_mac_update_install`** | Downloads the dmg and checks its sha512 against `latest-mac.yml`, backs up the key files, asks the app to quit (never kills it), verifies the new app's signature, swaps it in (the old one is kept) and relaunches. Needs the exact version and `confirm: true`. |
+
+macOS then asks **you** for Keychain access: click **Always Allow**. Your agent never clicks it.
 
 ### Seeing the other agents on this machine
 
@@ -539,10 +549,12 @@ vault the agent already uses.
 
 ### Which vaults can my agent see?
 
-Ask the agent to run **`mnemosyne_vault_list`**. It lists every vault
-Mnemosyne OS exposes, with its id, name and chronicle count, and it flags the
-ones outside your `MNEMO_VAULTS` config. Those are refused until you
-add them.
+Ask the agent to run **`mnemosyne_vault_list`**. It lists the vaults your
+`MNEMO_VAULTS` config grants, with their token, name and chronicle count.
+The other vaults of the machine are only counted: their names, descriptions
+and paths stay off the agent's screen, and out of the model it sends them to.
+To grant one, read its token in the vault panel of the app, add it to
+`MNEMO_VAULTS` and restart the client.
 
 ### Tool result is too large for my context window
 

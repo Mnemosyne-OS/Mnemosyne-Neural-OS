@@ -47,6 +47,7 @@ import { formatDreamBridges } from './dream-bridges-format.js';
 import { recordCall } from './usage.js';
 import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget, vaultGrant, vaultForHostDefault } from './vault-target.js';
 import { AGENT_TOOLS, handleAgentTool, sessionsRoots } from './agents.js';
+import { MAC_UPDATE_TOOLS, handleMacUpdateTool } from './mac-update.js';
 import { annotated } from './annotations.js';
 import { handleTodoAdd } from './todo-tool.js';
 import { handleReviewTool } from './review-tool.js';
@@ -326,6 +327,23 @@ const MCP_MANIFEST = {
 
 const TOOLS = [
   {
+    name:        'mnemosyne_mac_update_check',
+    description: 'macOS only. Check whether a newer Mnemosyne OS is published and what an update would do, without writing anything. It reads the installed version in /Applications, the latest release manifest (latest-mac.yml), the macOS version, whether the app is running, and whether the key files exist (never their content). Works with the app closed. Call it before mnemosyne_mac_update_install and show its answer to the person.',
+    inputSchema: { type: 'object', properties: {} },
+  },
+  {
+    name:        'mnemosyne_mac_update_install',
+    description: 'macOS only. Install the latest Mnemosyne OS release in place of the one in /Applications, the way a careful person would. It downloads the dmg and checks its size and sha512 against latest-mac.yml, copies keys.enc, keys-transfer.json and model-config.json to ~/.mnemosyne/update-backups/<time>/, asks the app to quit and waits for its own shutdown (it never kills it), copies the new app beside the old one, verifies its signature, swaps them (the old app goes to the backup folder) and relaunches. It stops at the first refusal and says which. Works with the app closed. After it, macOS asks the PERSON for Keychain access: tell them to click Always Allow; never click it for them. Needs the exact version mnemosyne_mac_update_check reported and confirm: true.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        version: { type: 'string', description: 'The version mnemosyne_mac_update_check reported as the latest release, exactly.' },
+        confirm: { type: 'boolean', description: 'true, once the person agreed to the update.' },
+      },
+      required: ['version', 'confirm'],
+    },
+  },
+  {
     name:        'mnemosyne_about',
     description: 'Re-read the server instructions: the governance tenet, the vault protection model (NORMAL and MAXIMUM, mixableWith, isolated sandbox vaults), the spine model, and the rules for an agent working on someone else\'s memory. Most clients show this text on connect. Call it if yours did not, or to read it again.',
     inputSchema: { type: 'object', properties: {} },
@@ -347,7 +365,7 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Vault TOKEN to search, case-insensitive. A token is the folder name uppercased, with spaces and hyphens as underscores. The path-shaped id from mnemosyne_vault_list also works. This deployment's default is "${DEFAULT_VAULT}". It is also scoped for: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. That list is configuration rather than a census, so call mnemosyne_vault_list for the vaults that exist on this machine. Anything outside the list is refused.`,
+          description: `Vault TOKEN to search, case-insensitive. A token is the folder name uppercased, with spaces and hyphens as underscores. This deployment's default is "${DEFAULT_VAULT}". It is also scoped for: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. That list is configuration rather than a census, so call mnemosyne_vault_list to see which of them exist on this machine. Anything outside the list is refused.`,
           default:     DEFAULT_VAULT,
         },
         spine_type_filter: {
@@ -385,7 +403,7 @@ const TOOLS = [
   },
   {
     name:        'mnemosyne_vault_list',
-    description: 'List the memory vaults this Mnemosyne OS exposes, each with its token, display name, memory count and, when the owner wrote one, a line on what it holds. Call it first when you are unsure which vault to work against, or when the user names a store you have not seen. Pass the bold token as the `vault` argument of the other tools. The `id` line is a local path and the other tools do not take it. Vaults this server was not configured for are flagged here and refused until the user adds them.',
+    description: 'List the memory vaults this server can reach, each with its token, display name, memory count and, when the owner wrote one, a line on what it holds. Call it first when you are unsure which vault to work against, or when the user names a store you have not seen. Pass the bold token as the `vault` argument of the other tools. A vault outside this server\'s grant is never named here; the note under the list, when there is one, says how the user grants it.',
     inputSchema: {
       type:       'object',
       properties: {},
@@ -409,7 +427,7 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Target vault TOKEN: the folder name uppercased, with spaces and hyphens as underscores. The path-shaped id from mnemosyne_vault_list also works. Default for this deployment: "${DEFAULT_VAULT}". Scoped tokens, which are configuration rather than a census: ${DECLARED_VAULTS.join(', ')}. Ingest is permanent, so confirm the vault exists with mnemosyne_vault_list before writing anywhere new.`,
+          description: `Target vault TOKEN: the folder name uppercased, with spaces and hyphens as underscores. Default for this deployment: "${DEFAULT_VAULT}". Scoped tokens, which are configuration rather than a census: ${DECLARED_VAULTS.join(', ')}. Ingest is permanent, so confirm the vault exists with mnemosyne_vault_list before writing anywhere new.`,
           default:     DEFAULT_VAULT,
         },
       },
@@ -1285,6 +1303,14 @@ class MnemoMcpServer {
       // connect on purpose: the whole value of "is another session live on my
       // branch" is that it costs nothing and works with the app closed. A
       // backend hop here would make the cheapest question the slowest one.
+      // The macOS update quits and replaces the very app the actions server
+      // runs from: answered here, never through a backend (doc 228).
+      if (MAC_UPDATE_TOOLS.has(name)) {
+        return {
+          content: [{ type: 'text', text: await handleMacUpdateTool(name, args as Record<string, unknown>) }],
+        };
+      }
+
       if (AGENT_TOOLS.has(name)) {
         return {
           content: [{

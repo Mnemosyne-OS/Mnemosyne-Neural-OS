@@ -132,7 +132,10 @@ test('an unmeasured census is an UNKNOWN, never an empty world', () => {
 test('a declared list that matches nothing says so instead of pointing nowhere', () => {
   const err = refusalOf(resolveVaultTarget('archipel', ['DEV', 'PERSONAL'], 'DEV', PRESENT));
   assert.match(err, /NONE of the vaults/i);
-  assert.match(err, /mnemosyne_vault_list/);
+  // Not mnemosyne_vault_list: since 2026-11-10 it lists only the grant, so it
+  // would answer "none" again. The names are read in the app, by the user.
+  assert.match(err, /vault panel of the app/);
+  assert.ok(!/mnemosyne_vault_list/.test(err), err);
 });
 
 test('presence never widens or narrows what is ACCEPTED', () => {

@@ -206,8 +206,10 @@ function reachableLine(
   const both = declared.filter(v => live.has(v));
   if (both.length > 0) return `Reachable right now: ${both.join(', ')}.`;
 
+  // mnemosyne_vault_list lists only the grant, so it cannot say what exists
+  // outside it: the names are in the app, and the user is the one who reads them.
   return `NONE of the vaults this MCP declares (${declared.join(', ')}) exists on the host. ` +
-         `Call mnemosyne_vault_list to see what does.`;
+         `The user reads the vault tokens in the vault panel of the app.`;
 }
 
 /**

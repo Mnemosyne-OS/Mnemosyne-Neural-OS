@@ -64,6 +64,8 @@ export const NO_BACKEND_TOOLS: ReadonlySet<string> = new Set([
   'mnemosyne_agent_list',
   'mnemosyne_agent_files',
   'mnemosyne_agent_collisions',
+  'mnemosyne_mac_update_check',
+  'mnemosyne_mac_update_install',
 ]);
 
 /**

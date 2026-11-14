@@ -14,6 +14,8 @@
 /** The human-readable name a client shows beside each tool. */
 export const TOOL_TITLES: Record<string, string> = {
   mnemosyne_about:             'About Mnemosyne OS',
+  mnemosyne_mac_update_check:  'Check for a Mac update',
+  mnemosyne_mac_update_install: 'Install the Mac update',
   mnemosyne_memory_query:      'Search chronicles',
   mnemosyne_memory_ask:        'Ask the vault',
   mnemosyne_memory_ingest:     'Save a memory',
@@ -63,6 +65,7 @@ export const READ_ONLY_TOOLS = new Set<string>([
   'mnemosyne_agent_list',
   'mnemosyne_agent_collisions',
   'mnemosyne_agent_files',
+  'mnemosyne_mac_update_check',
   'mnemosyne_pheme_radar',
   'mnemosyne_todo_list',
   'mnemosyne_todo_categories',
@@ -83,6 +86,8 @@ export const READ_ONLY_TOOLS = new Set<string>([
  * stop and ask before it runs.
  */
 export const DESTRUCTIVE_TOOLS = new Set<string>([
+  // Replaces the installed app (the old one is kept in a backup folder): a client should ask first.
+  'mnemosyne_mac_update_install',
   'mnemosyne_memory_forget',
   'mnemosyne_todo_update',
   'mnemosyne_agenda_update',

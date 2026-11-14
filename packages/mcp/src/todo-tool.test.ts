@@ -19,6 +19,13 @@ test('a success names the list, the count and whether it was created', () => {
   assert.match(renderTodoAdd({ ok: true, added: 1, listLabel: 'En cours' }, 1), /Filed 1 task into "En cours"\./);
 });
 
+test('CAP_REACHED says the human set it and forbids squeezing the plan in (doc 221)', () => {
+  const s = renderTodoAdd({ ok: false, error: 'CAP_REACHED', lists: ['En cours'] }, 4);
+  assert.match(s, /cap on open tasks/);
+  assert.match(s, /Nothing was written/);
+  assert.match(s, /Do not retry/);
+});
+
 test('LIST_NOT_FOUND hands over the lists that exist and the way forward', () => {
   const s = renderTodoAdd({ ok: false, error: 'LIST_NOT_FOUND', lists: ['En cours', 'Perso'] }, 2);
   assert.match(s, /No list by that name/);

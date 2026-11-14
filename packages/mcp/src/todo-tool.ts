@@ -103,6 +103,9 @@ export function renderTodoAdd(result: TodoAddResult, asked: number): string {
       return 'The list name was empty. Name an existing list or pass create_list: true with a name.';
     case 'EMPTY_PLAN':
       return 'Nothing to file: every task was blank after trimming.';
+    case 'CAP_REACHED':
+      // doc 221 §6: a rule the human chose, not a fault to retry around.
+      return 'The human set a cap on open tasks in their To-do and this plan does not fit. Nothing was written. Tell them; they finish or archive tasks before more can go in. Do not retry, and do not split the plan to squeeze it in.';
     case 'NO_WINDOW':
     case 'NO_BACKLOG':
       // A closed app is no longer a refusal (the host writes the file itself),
