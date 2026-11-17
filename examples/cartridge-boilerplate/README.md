@@ -32,6 +32,36 @@ Then, in Mnemosyne: **MnemoHub → My dev apps → link this folder**.
 > The first dev-linked cartridge is free. The **second and beyond require an
 > active Engramm license** (`DEV_LINK_LICENSE_REQUIRED`). Budget for it.
 
+## Your version, and its updates
+
+The host tells an open cartridge its installed version and whether a newer one
+is published, in the same `onHostConfig` message as the theme. The template
+shows both in its header with `src/UpdateNotice.tsx`:
+
+- a badge with the version;
+- when a newer version is out, a line with a button that opens the Mnemosyne
+  Hub on your cartridge's page. It installs nothing.
+
+Do not fetch your own manifest from GitHub for this. The host already checks,
+the way the Hub does, at most once a day. Requires
+`@mnemosyne_os/cartridge-sdk` ≥ 0.5.0.
+
+## Let an agent drive it
+
+People use Mnemosyne OS with agents: the one in their IDE, the voice
+assistant, Hermes. Your app must declare what an agent can do in it, or an
+agent can only open it.
+
+The template declares two actions in `mnemo-plugin.json`, under
+`agentActions`. `notes` lists the notes, `addNote` saves one.
+`src/agentActions.ts` serves them with `sdk.onAgentActions`. Each action calls
+the same function as the button. `src/agentActions.test.ts` checks that every
+declared action has its handler, and the reverse.
+
+Replace them with your own actions. The rules and the limits are in
+`AGENTS.md`, section « Let an agent drive your app ». Requires
+`@mnemosyne_os/cartridge-sdk` ≥ 0.6.0.
+
 ## The five-minute tour
 
 `src/App.tsx` is the whole demo. In boot order:
@@ -114,6 +144,9 @@ want your app in front of people, not because it will pay this month.
 | `vite.config.ts` | `base: './'` and port 5185 — both load-bearing, see above. |
 | `src/sdk/mnemo-sdk.ts` | A one-line re-export of the shared package. **Do not add methods**; the transport lives in `@mnemosyne_os/cartridge-sdk`. |
 | `src/App.tsx` | The demo: sandbox vault, memory write/read, inference, native dialog. |
+| `src/agentActions.ts` | The agent door: the handlers of the `agentActions` declared in the manifest. |
+| `src/agentActions.test.ts` | Checks that the manifest's actions and the handlers match, one to one. |
+| `src/UpdateNotice.tsx` | The version badge and the « a newer version is out » line, with `src/updateStrings.ts`. |
 | `src/App.test.tsx` | The example test. Read it before replacing it: it encodes why the file is `.tsx`, why it awaits the settled state, and what "honest degradation" means here. |
 | `src/test-setup.ts` | Registers the DOM matchers. Carries a trap comment worth reading before you touch the import. |
 | `tsconfig.eslint.json` | The lint-and-typecheck project. `tsconfig.json` excludes the tests so shipping does not need vitest; this one includes them so something types them. |

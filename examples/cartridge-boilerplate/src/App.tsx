@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import manifest from '../mnemo-plugin.json';
+import { UpdateNotice } from './UpdateNotice';
 import { MnemoCartridgeSDK } from './sdk/mnemo-sdk';
 import GestureCube from './GestureCube';
+import { boilerplateAgentHandlers, type NoteDoor } from './agentActions';
 
 // Must match "name" in mnemo-plugin.json — the host keys your sandbox vault on
 // it. Rename it later and the old vault is orphaned, with no migration path.
@@ -74,13 +77,25 @@ export default function App() {
   };
   useEffect(() => { bootSandbox(); }, []);
 
+  const fetchNotes = async (target: string): Promise<any[]> => {
+    const res = await sdk.socialQuery(target, 20);
+    return Array.isArray(res?.chronicles) ? res.chronicles : Array.isArray(res) ? res : [];
+  };
+
   const refreshNotes = async (target: string) => {
     try {
-      const res = await sdk.socialQuery(target, 20);
-      setNotes(Array.isArray(res?.chronicles) ? res.chronicles : Array.isArray(res) ? res : []);
+      setNotes(await fetchNotes(target));
     } catch (err: any) {
       setErrorMsg(err.message);
     }
+  };
+
+  /** The « Remember » button's function. The agent door calls it too (addNote). */
+  const saveNote = async (text: string) => {
+    if (!vault) throw new Error('The sandbox vault is not ready yet');
+    // Always target the sandbox vault by name — never a vault you don't own.
+    await sdk.socialIngest(vault, text, SPINE);
+    await refreshNotes(vault);
   };
 
   const handleSaveNote = async () => {
@@ -88,16 +103,44 @@ export default function App() {
     setBusy(true);
     setErrorMsg('');
     try {
-      // Always target the sandbox vault by name — never a vault you don't own.
-      await sdk.socialIngest(vault, note.trim(), SPINE);
+      await saveNote(note.trim());
       setNote('');
-      await refreshNotes(vault);
     } catch (err: any) {
       setErrorMsg(err.message || 'Could not write to the sandbox');
     } finally {
       setBusy(false);
     }
   };
+
+  /** The notes the panel shows, as text. The agent door reads them (notes). */
+  const listNotes = async (): Promise<string[]> => {
+    if (!vault) throw new Error('The sandbox vault is not ready yet');
+    return (await fetchNotes(vault)).map((c) => String(c?.content ?? c));
+  };
+
+  // ── The agent door (agentActions.ts, doc 149) ───────────────────────────
+  // An agent in an IDE, the voice assistant or Hermes calls the actions that
+  // mnemo-plugin.json declares, and they run HERE, in this open window.
+  // Subscribe ONCE: the handlers reach the latest render's functions through
+  // this ref, so a re-render never re-subscribes and never serves a stale vault.
+  const door = useRef<NoteDoor>({ list: listNotes, save: saveNote });
+  door.current = { list: listNotes, save: saveNote };
+  useEffect(() => {
+    const sub = sdk.onAgentActions(boilerplateAgentHandlers({
+      list: () => door.current.list(),
+      save: (text) => door.current.save(text),
+    }));
+    // Outside the shell, or a declaration the host refused: say why, never
+    // silently. An unmount before the host answered is not a failure.
+    let mounted = true;
+    sub.ready.catch((err: Error) => {
+      if (mounted) console.warn('Agent actions unavailable:', err.message);
+    });
+    return () => {
+      mounted = false;
+      sub.off();
+    };
+  }, []);
 
   const handleInference = async () => {
     if (!prompt.trim()) return;
@@ -138,6 +181,8 @@ export default function App() {
           <h1 style={styles.title}>Cartridge Starter Template</h1>
           <p style={styles.subtitle}>Secured by Mnemosyne OS Zero-Trust Sandbox</p>
         </div>
+        {/* The version, and the host's « a newer version is out » (doc 142). */}
+        <UpdateNotice sdk={sdk} bundledVersion={manifest.version} initialLang={new URLSearchParams(window.location.search).get('lang') ?? undefined} />
       </header>
 
       <main className="g-grid" style={styles.main}>

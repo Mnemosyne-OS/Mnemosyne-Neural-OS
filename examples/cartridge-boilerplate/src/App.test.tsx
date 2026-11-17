@@ -23,6 +23,7 @@
  */
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import manifest from '../mnemo-plugin.json';
 
 describe('the panel with no host answering', () => {
   it('names the refusal and offers a retry, instead of going blank', async () => {
@@ -52,5 +53,30 @@ describe('the panel with no host answering', () => {
     // The failure reached the console too. Never let a catch swallow one.
     expect(warned).toHaveBeenCalled();
     warned.mockRestore();
+  });
+});
+
+describe('the panel inside the host', () => {
+  it('serves the agent actions its manifest declares, and stops on unmount', () => {
+    // A frame stands in for the host: the SDK posts to window.parent.
+    const frame = document.createElement('iframe');
+    document.body.appendChild(frame);
+    const hostWin = frame.contentWindow as Window;
+    const posted: Array<{ type: string; actions?: string[] }> = [];
+    vi.spyOn(hostWin, 'postMessage').mockImplementation((m: unknown) => { posted.push(m as never); });
+    const parent = Object.getOwnPropertyDescriptor(window, 'parent');
+    Object.defineProperty(window, 'parent', { configurable: true, get: () => hostWin });
+    try {
+      const { unmount } = render(<App />);
+      // Without this subscription an agent can open the app and do nothing in it.
+      const subscribed = posted.find((m) => m.type === 'MNEMO_AGENT_SUBSCRIBE');
+      expect([...(subscribed?.actions ?? [])].sort()).toEqual(manifest.agentActions.map((a) => a.id).sort());
+      unmount();
+      expect(posted.some((m) => m.type === 'MNEMO_AGENT_UNSUBSCRIBE')).toBe(true);
+    } finally {
+      if (parent) Object.defineProperty(window, 'parent', parent);
+      vi.restoreAllMocks();
+      frame.remove();
+    }
   });
 });

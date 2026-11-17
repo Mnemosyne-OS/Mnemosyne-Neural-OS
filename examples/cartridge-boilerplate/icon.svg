@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Cartridge Boilerplate">
+  <!-- An empty cartridge, drawn in dashes: the shape a new one starts from.
+       Replace this file with your cartridge's own icon (mnemo-plugin.json "icon"). -->
+  <defs>
+    <radialGradient id="cb-bloom" cx="50%" cy="42%" r="58%">
+      <stop offset="0%" stop-color="#8caaff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#8caaff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0b0d14"/>
+  <rect width="64" height="64" rx="14" fill="url(#cb-bloom)"/>
+  <path d="M18 10h22l8 8v36a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2z" fill="none" stroke="#8caaff" stroke-width="2" stroke-dasharray="4 3" stroke-linejoin="round"/>
+  <g fill="#8caaff" opacity="0.7">
+    <rect x="21" y="48" width="3" height="5" rx="0.8"/>
+    <rect x="27" y="48" width="3" height="5" rx="0.8"/>
+    <rect x="33" y="48" width="3" height="5" rx="0.8"/>
+    <rect x="39" y="48" width="3" height="5" rx="0.8"/>
+  </g>
+  <path d="M32 24v14M25 31h14" stroke="#ece7e1" stroke-width="2.6" stroke-linecap="round"/>
+</svg>

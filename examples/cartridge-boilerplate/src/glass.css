@@ -25,6 +25,18 @@
   --g-radius: 18px;
 }
 
+/* The page paints no ground of its own: inside Mnemosyne OS the window paints
+   the theme's ground and this frame stays transparent. Its color-scheme must
+   be the app's base (the SDK sets data-theme to it): when they differ,
+   Chromium paints an opaque white canvas behind the page (measured
+   2026-11-12). Never paint body with --bg-void: that is the board's colour. */
+:root { color-scheme: dark; }
+:root[data-theme='light'] { color-scheme: light; }
+/* main.tsx marks the page `in-host` when it runs in a window. A cartridge
+   that later paints its body keeps the window's ground inside the OS all the
+   same. */
+html.in-host, html.in-host body, html.in-host #root { background: transparent; }
+
 .glass {
   position: relative;
   background: var(--glass-fill);
