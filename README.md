@@ -94,9 +94,9 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 ## Why open core, not open source
 
 <div align="center">
-<a href="https://youtu.be/U4bJfQaKSJo"><img src="https://i.ytimg.com/vi/U4bJfQaKSJo/maxresdefault.jpg" width="80%" alt="Mnemosyne OS video on YouTube" /></a>
+<a href="https://youtu.be/U4bJfQaKSJo"><img src="https://i.ytimg.com/vi/U4bJfQaKSJo/maxresdefault.jpg" width="80%" alt="How Mnemosyne OS Remembers: Resonance Core Engine Masterclass (EP01)" /></a>
 <br/>
-<a href="https://youtu.be/U4bJfQaKSJo">▶ Watch on YouTube</a>
+<a href="https://youtu.be/U4bJfQaKSJo">▶ <b>How Mnemosyne OS Remembers</b>: Resonance Core Engine Masterclass (EP01)</a>
 </div>
 
 <br/>
