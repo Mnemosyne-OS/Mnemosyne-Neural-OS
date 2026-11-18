@@ -91,6 +91,28 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 > **📖 The user documentation is live at [docs.mnemosyne-os.io](https://docs.mnemosyne-os.io)**, with every engine explained step by step, in
 > [English](https://docs.mnemosyne-os.io/) · [Français](https://docs.mnemosyne-os.io/fr/) · [Español](https://docs.mnemosyne-os.io/es/).
 
+## Why open core, not open source
+
+<div align="center">
+<a href="https://youtu.be/U4bJfQaKSJo"><img src="https://i.ytimg.com/vi/U4bJfQaKSJo/maxresdefault.jpg" width="80%" alt="Mnemosyne OS video on YouTube" /></a>
+<br/>
+<a href="https://youtu.be/U4bJfQaKSJo">▶ Watch on YouTube</a>
+</div>
+
+<br/>
+
+The tools you build with are open. The SDK, the MnemoForge CLI, the examples
+and the handbook are MIT. You can fork them and ship your own apps.
+
+The memory engine inside the app is sealed. We call it the Resonance Engine.
+It took months of intensive work by one independent lab.
+Licences for the app pay for that work and for the open tools around it.
+
+Your memory stays on your own machine. Your vaults and your files belong to you.
+
+Details and the full licence table:
+[Open-core & Licensing](#open-core--licensing).
+
 ## For developers
 
 | | |
@@ -601,7 +623,7 @@ per user by the [Engramm](#the-engramm-license), an on-chain license bound to yo
 subscription, while the SDK and CLI you *build with* stay MIT.
 
 **Why the core is closed.** Everything you need to *build* is open; what stays sealed is
-the part that took years of full-time R&D to get right, the memory engines (Spine,
+the part that took months of intensive R&D to get right, the memory engines (Spine,
 Retrieval, Dream State) behind the LongMemEval numbers above. Keeping that core
 proprietary is what lets an independent lab sustain the project, fund the open ecosystem
 around it, and grow a team, instead of handing a hard-won engine to anyone who would
