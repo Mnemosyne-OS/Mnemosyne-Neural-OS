@@ -64,6 +64,31 @@
           "content": { "content_type": "text", "parts": ["So what temperature at 2000 m?"] }
         },
         "parent": "n2b",
+        "children": ["n3h"]
+      },
+      "n3h": {
+        "id": "n3h",
+        "_comment": "MUST BE SKIPPED as 'hidden': a USER node the person never typed in this chat. Custom instructions travel this way. Kept, they would be remembered as something the person said here.",
+        "message": {
+          "author": { "role": "user" },
+          "create_time": 1767518101.0,
+          "recipient": "all",
+          "metadata": { "is_visually_hidden_from_conversation": true },
+          "content": { "content_type": "text", "parts": ["I live in Lyon and prefer metric units."] }
+        },
+        "parent": "n3",
+        "children": ["n3t"]
+      },
+      "n3t": {
+        "id": "n3t",
+        "_comment": "MUST BE SKIPPED as 'tool-call': an ASSISTANT node addressed to the memory tool, not to the person.",
+        "message": {
+          "author": { "role": "assistant" },
+          "create_time": 1767518102.0,
+          "recipient": "bio",
+          "content": { "content_type": "text", "parts": ["User prefers metric units."] }
+        },
+        "parent": "n3h",
         "children": ["n4"]
       },
       "n4": {
@@ -71,9 +96,10 @@
         "message": {
           "author": { "role": "assistant" },
           "create_time": 1767518400.0,
+          "recipient": "all",
           "content": { "content_type": "text", "parts": ["About 93 degrees Celsius."] }
         },
-        "parent": "n3",
+        "parent": "n3t",
         "children": []
       }
     }

@@ -32,7 +32,7 @@
  */
 /** The three client calls (ws-client.ts), so a test can fake them. */
 export interface ReviewRpc {
-  reviewOpen(p: Record<string, unknown>): Promise<{ id: string; version: number; createdAt: number; reused?: boolean }>;
+  reviewOpen(p: Record<string, unknown>): Promise<{ id: string; version: number; createdAt: number; reused?: boolean; linkedTo?: string }>;
   reviewWait(p: Record<string, unknown>, timeoutMs: number): Promise<{ state: string; answer: Answer; answers?: Answer[] }>;
   reviewGet(id: unknown): Promise<{ id: string; title: string; state: string; version: number; answers: Answer[] }>;
 }
@@ -90,9 +90,15 @@ export function describeAnswer(a: Answer): string {
 
 const REFUSALS: Record<string, string> = {
   OUTSIDE_SEND_FOLDERS: 'Refused: the file is outside ~/.mnemosyne/generations, ~/.mnemosyne/voiceovers and ~/.mnemosyne/outbox. Copy it into ~/.mnemosyne/outbox and open the review on that copy.',
-  BAD_TYPE: 'Refused: a review carries a video or an image (.mp4 .mov .webm .png .jpg .webp .gif).',
+  BAD_TYPE: 'Refused: a review carries a video or an image (.mp4 .mov .webm .png .jpg .webp .gif), and a thumbnail (thumbnailOf) is a still picture (.png .jpg .webp).',
   NOT_A_FILE: 'Refused: no file at that path.',
   PARENT_UNKNOWN: 'Refused: parentId names no review.',
+  UNKNOWN_TARGET: 'Refused: thumbnailOf names no video. Pass the id of the video this picture illustrates, never the id of another thumbnail (a new picture for the same video is a retake: parentId).',
+  RETAKE_MISMATCH: 'Refused: a retake keeps what its first version is. A thumbnail is never a retake of a video: open it with thumbnailOf alone. A new picture for the same video is a retake of the earlier picture (parentId), and it keeps that video.',
+  FILE_WAITING: 'Refused: this file already waits as another review (a plain review, a thumbnail of another video, or another film, lang or format). Wait for that review, or save the new picture or video under a new file name.',
+  TRANSCRIPT_BAD: 'Refused: transcript must be an absolute path to a .srt, .vtt or .txt file. Nothing was opened: fix the transcript path, or open the review without it.',
+  TRANSCRIPT_MISSING: 'Refused: no file at the transcript path. Nothing was opened: fix the transcript path, or open the review without it.',
+  TRANSCRIPT_OUTSIDE_HOME: 'Refused: the transcript file is outside the home folder. Nothing was opened: copy it under the home folder, or open the review without it.',
   UNKNOWN_REVIEW: 'No review has that id.',
   TIMEOUT: 'TIMEOUT: no answer yet. Nothing was decided.',
   BAD_REQUEST: 'Refused: the arguments are not what this tool takes (absolute path, a title up to 120 characters, a review id).',
@@ -174,6 +180,9 @@ export async function handleReviewTool(
       const r = await client.reviewOpen({ appId, ...asked, ...agent });
       if (r.reused) {
         return `Review ${r.id} already waits on this file (version ${r.version}): reused, nothing new was sent. Answers given since it opened count: call mnemosyne_review_wait { id: "${r.id}", after: ${r.createdAt} }. For a retake, open the new file with parentId: "${r.id}".`;
+      }
+      if (r.linkedTo) {
+        return `Review ${r.id} opened as version ${r.version} of the video of review ${r.linkedTo}: its file name continues that video's file, so it was linked as a retake. Pass parentId yourself next time. Now call mnemosyne_review_wait { id: "${r.id}", after: ${r.createdAt} }.`;
       }
       return `Review ${r.id} opened (version ${r.version}, createdAt ${r.createdAt}). Now call mnemosyne_review_wait { id: "${r.id}", after: ${r.createdAt} }.`;
     }

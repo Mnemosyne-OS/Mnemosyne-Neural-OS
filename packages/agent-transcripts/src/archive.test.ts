@@ -421,3 +421,88 @@ describe('describeArchive', () => {
     expect(describeArchive(noSpec)).toEqual([]);
   });
 });
+
+describe('formats seen in the wild (public descriptions, 2026-11-18)', () => {
+  const msg = (over: Record<string, unknown>) => ({ text: 'hi', at: '2026-01-01T10:00:00Z', ...over });
+
+  it('a second spelling of the turn list and the role is read like the first', () => {
+    // Claude.ai's export is reported both as chat_messages + sender and as
+    // messages + role. Declared as lists, the first present wins.
+    const conn = flat({
+      conversation: { id: 'uuid', title: 'name', turns: ['chat_messages[]', 'messages[]'] },
+      turn: { role: ['sender', 'role'], text: 'text', time: 'at' },
+    });
+    const a = readArchive(conn, JSON.stringify([{ uuid: 'a', name: 'A', chat_messages: [msg({ sender: 'human' })] }]));
+    const b = readArchive(conn, JSON.stringify([{ uuid: 'b', name: 'B', messages: [msg({ role: 'assistant', text: 'yo' })] }]));
+    expect(a?.conversations[0].turns).toMatchObject([{ role: 'human', text: 'hi' }]);
+    expect(b?.conversations[0].turns).toMatchObject([{ role: 'assistant', text: 'yo' }]);
+  });
+
+  it('🚨 ONE conversation saved on its own (an extension export) reads as a list of one', () => {
+    const one = { uuid: 'x', name: 'Solo', messages: [msg({ sender: 'human' }), msg({ sender: 'assistant', text: 'ok' })] };
+    const st = readArchive(flat(), JSON.stringify(one));
+    expect(st).toMatchObject({ rootFound: true, recordsSeen: 1 });
+    expect(st?.conversations[0].turns).toHaveLength(2);
+  });
+
+  it('🎭 any OTHER object is still "root not found", never "1 record"', () => {
+    expect(readArchive(flat(), JSON.stringify({ settings: { theme: 'dark' } }))).toMatchObject({ rootFound: false, recordsSeen: 0 });
+  });
+
+  describe('turns that have a role and are still not the conversation', () => {
+    const mapped = (): Connector => ({
+      id: 'm', displayName: 'M', version: '0', format: 'json', kind: 'archive',
+      filePattern: '.json', fields: {},
+      archive: {
+        root: '', grouping: 'openai-mapping',
+        conversation: { id: 'conversation_id', nodes: 'mapping', current: 'current_node' },
+        turn: {
+          parent: 'parent', role: 'message.author.role', parts: 'message.content.parts[]',
+          recipient: 'message.recipient', hidden: 'message.metadata.is_visually_hidden_from_conversation',
+        },
+        speakTo: ['all'],
+        roles: { human: ['user'], assistant: ['assistant'] },
+      },
+    });
+    const node = (role: string, text: string, parent: string, extra: Record<string, unknown> = {}) => ({
+      parent, message: { author: { role }, content: { parts: [text] }, ...extra },
+    });
+    const run1 = (mapping: Record<string, unknown>, current: string) =>
+      readArchive(mapped(), JSON.stringify([{ conversation_id: 'c', current_node: current, mapping: { root: { parent: null, message: null }, ...mapping } }]));
+
+    it('a hidden user node (custom instructions) is counted as hidden, never kept', () => {
+      const st = run1({
+        ci: node('user', 'my custom instructions', 'root', { metadata: { is_visually_hidden_from_conversation: true } }),
+        q: node('user', 'question', 'ci'),
+        a: node('assistant', 'answer', 'q', { recipient: 'all' }),
+      }, 'a');
+      expect(st?.conversations[0].turns.map(t => t.text)).toEqual(['question', 'answer']);
+      expect(st?.skipped).toEqual([{ reason: 'hidden', count: 1 }]);
+    });
+
+    it('an assistant node addressed to a tool (the memory tool) is a tool-call, never kept', () => {
+      const st = run1({
+        q: node('user', 'question', 'root'),
+        t: node('assistant', 'User likes tea.', 'q', { recipient: 'bio' }),
+        a: node('assistant', 'answer', 't', { recipient: 'all' }),
+      }, 'a');
+      expect(st?.conversations[0].turns.map(t => t.text)).toEqual(['question', 'answer']);
+      expect(st?.skipped).toEqual([{ reason: 'tool-call', count: 1 }]);
+    });
+
+    it('a turn with NO recipient at all is kept: older exports never wrote one', () => {
+      const st = run1({ q: node('user', 'question', 'root'), a: node('assistant', 'answer', 'q') }, 'a');
+      expect(st?.conversations[0].turns).toHaveLength(2);
+      expect(st?.skipped).toEqual([]);
+    });
+
+    it('a regenerated tool call off the path is not an abandoned turn', () => {
+      const st = run1({
+        q: node('user', 'question', 'root'),
+        a: node('assistant', 'answer', 'q', { recipient: 'all' }),
+        old: node('assistant', 'note', 'q', { recipient: 'bio' }),
+      }, 'a');
+      expect(st?.conversations[0].abandonedTurns).toBe(0);
+    });
+  });
+});

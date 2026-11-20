@@ -40,6 +40,13 @@ test('the film project reaches the app as given (doc 200 §9)', async () => {
   assert.deepEqual(c.calls[0]?.[1], { appId: 'mnemosyne-mcp', path: '/x.mp4', title: 't', project: 'stop-aux-gadgets' });
 });
 
+test('the film, its language, its shape and the video a thumbnail illustrates reach the app as given (doc 244 §10)', async () => {
+  const c = fake({ id: 'rv_2', version: 1, createdAt: 60 });
+  const asked = { path: '/t.png', title: 't', film: 'apres-troll', lang: 'fr', format: 'portrait', thumbnailOf: 'rv_1' };
+  await handleReviewTool(c, 'mnemosyne-mcp', 'mnemosyne_review_open', asked, { env: {} });
+  assert.deepEqual(c.calls[0]?.[1], { appId: 'mnemosyne-mcp', ...asked });
+});
+
 test('one wait never outlives the client: capped at 45 s per call, the env can raise it', async () => {
   const c = fake({ state: 'changes', answer: { at: 9, from: 'telegram', verdict: 'changes', text: 'coupe à 8 s', atSecond: 8 } });
   const out = await handleReviewTool(c, 'a', 'mnemosyne_review_wait', { id: 'rv_1', timeout_seconds: 900 }, { env: {} });
@@ -95,6 +102,13 @@ test('the fence refusal tells the agent where to copy the file', async () => {
   assert.match(out, /Copy it into ~\/\.mnemosyne\/outbox/);
 });
 
+test('the thumbnail refusals tell the agent what to do instead (doc 244 §10)', async () => {
+  const say = (code: string) => handleReviewTool(fake(null, code), 'a', 'mnemosyne_review_open', { path: '/t.png', title: 't', thumbnailOf: 'rv_0000000000000001' });
+  assert.match(await say('UNKNOWN_TARGET'), /never the id of another thumbnail.*retake: parentId/);
+  assert.match(await say('RETAKE_MISMATCH'), /never a retake of a video: open it with thumbnailOf alone/);
+  assert.match(await say('FILE_WAITING'), /already waits as another review.*new file name/);
+});
+
 test('a voice note without a transcript says why', () => {
   assert.match(describeAnswer({ at: 1, from: 'telegram', verdict: null, audioPath: '/r/v.ogg', transcript: 'NO_MODEL' }), /NOT transcribed: no listening model/);
   assert.match(describeAnswer({ at: 1, from: 'telegram', verdict: 'changes', audioPath: '/r/v.ogg', text: 'plus court' }), /voice note, transcribed\): "plus court"/);
@@ -125,6 +139,13 @@ test('a file asked again is the review already waiting: the agent is told to wai
   const out = await handleReviewTool(fake({ id: 'rv_1', version: 1, createdAt: 50, reused: true }), 'a', 'mnemosyne_review_open', { path: '/x.mp4', title: 't' });
   assert.match(out, /already waits on this file/);
   assert.match(out, /mnemosyne_review_wait \{ id: "rv_1", after: 50 \}/);
+});
+
+test('a retake the app linked by its file name says so, and which video it continues (doc 244 §4)', async () => {
+  const out = await handleReviewTool(fake({ id: 'rv_2', version: 3, createdAt: 60, linkedTo: 'rv_1' }), 'a', 'mnemosyne_review_open', { path: '/x-v3.mp4', title: 't' });
+  assert.match(out, /opened as version 3 of the video of review rv_1/);
+  assert.match(out, /Pass parentId yourself next time/);
+  assert.match(out, /mnemosyne_review_wait \{ id: "rv_2", after: 60 \}/);
 });
 
 test('the review keeps the session that opened it, from the harness env only', async () => {

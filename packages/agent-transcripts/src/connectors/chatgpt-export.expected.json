@@ -43,6 +43,14 @@
     {
       "reason": "non-text-part",
       "count": 1
+    },
+    {
+      "reason": "hidden",
+      "count": 1
+    },
+    {
+      "reason": "tool-call",
+      "count": 1
     }
   ]
 }

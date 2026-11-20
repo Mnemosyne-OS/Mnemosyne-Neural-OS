@@ -64,11 +64,26 @@ The answer comes back to you as one line you can act on.
    stops pinning for 30 s (or presses "wake now"): act on all of them in one retake.
    Frame n starts at n / fps seconds.
 8. **One review per version.** A retake is a new review with `parentId`, so the human sees
-   v1 and v2 side by side. Do not reuse an old review id for a new file.
+   v1 and v2 side by side. Do not reuse an old review id for a new file. A retake opened
+   without `parentId` is linked by its file name when it continues one under review (same
+   folder, same name, a higher `-vN`, or the same file again): the answer then says which
+   video it continues. Pass `parentId` yourself all the same.
 9. **Use the moment.** "at 8s" in an answer points at second 8 of THAT version.
 10. **Name the film.** When the human keeps a board of the film in the Films window, pass its
     id as `project` to `mnemosyne_review_open`: the review then shows on that film's board. A
     retake with `parentId` keeps its parent's film.
+11. **Say which film, which language, which shape.** Give the same `film` key (lowercase,
+    digits, dashes) to every language and every shape of one film, with `lang` (two letters)
+    and `format` (`landscape`, `portrait` or `square`). The review window shows them as one
+    film with a tab per video. A retake keeps them from its parent.
+12. **A thumbnail asked.** The human can ask you for a thumbnail: a COMMENT names the size and
+    `thumbnailOf: "<id>"`. Render the picture, then open it with
+    `mnemosyne_review_open { path, title, thumbnailOf: "<id>" }` and wait on it. It shows as a
+    proposed thumbnail of that video, never as a video of its own. A second picture for the
+    same video is a retake of your first one (`parentId`). `thumbnailOf` always names the
+    video: naming another thumbnail is refused (`UNKNOWN_TARGET`). A picture is never a
+    retake of a video (`RETAKE_MISMATCH`), and a file already waiting keeps what it is: save a
+    new picture under a new file name (`FILE_WAITING`).
 
 ## Setup (if the review tools are missing)
 

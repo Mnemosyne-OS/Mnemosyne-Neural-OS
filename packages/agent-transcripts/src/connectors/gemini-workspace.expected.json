@@ -1,0 +1,26 @@
+{
+  "_comment": "Written from the fixture by reading it, BEFORE the reader was run over it.",
+  "source": "gemini-workspace",
+  "turnsOnly": false,
+  "recordsSeen": 1,
+  "conversations": [
+    {
+      "id": null,
+      "title": "Repotting a fig tree",
+      "startedAt": "2026-10-02T08:10:00.000Z",
+      "endedAt": "2026-10-02T08:14:00.000Z",
+      "abandonedTurns": 0,
+      "attachments": [],
+      "turns": [
+        { "role": "human", "text": "When should I repot my fig tree?", "at": "2026-10-02T08:10:00.000Z" },
+        { "role": "assistant", "text": "In early spring, before new growth starts.", "at": "2026-10-02T08:10:20.000Z" },
+        { "role": "human", "text": "And the pot size?", "at": "2026-10-02T08:13:00.000Z" },
+        { "role": "assistant", "text": "One size up, about 5 cm wider.", "at": "2026-10-02T08:14:00.000Z" }
+      ]
+    }
+  ],
+  "skipped": [
+    { "reason": "thoughts", "count": 2 },
+    { "reason": "unknown-role", "count": 1 }
+  ]
+}

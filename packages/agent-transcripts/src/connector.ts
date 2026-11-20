@@ -103,6 +103,21 @@ export interface TelegramSpec {
   callActions?: string[];
 }
 
+/** One side of a `keyed-turns` conversation (see ArchiveSpec.keyed). */
+export interface KeyedSide {
+  /** The key that marks a turn as this side's (`user_turn`). */
+  key: string;
+  /** A plain text field inside it (`prompt`). */
+  text?: string;
+  /** A list of parts inside it (`text[]`)… */
+  parts?: string;
+  /** …each giving its text from the first of these fields present. */
+  partText?: string[];
+  time?: string;
+  /** Fields of this side that hold no words for the other side, counted as `thoughts`. */
+  skipped?: string[];
+}
+
 /**
  * How a provider's export is laid out. Declared, never inferred.
  *
@@ -127,13 +142,30 @@ export interface ArchiveSpec {
    *                     over; the reader reports `turnsOnly` and the app says
    *                     so rather than inventing threads.
    */
-  grouping: 'openai-mapping' | 'flat-turns' | 'none';
+  grouping: 'openai-mapping' | 'flat-turns' | 'keyed-turns' | 'none';
+  /**
+   * `keyed-turns`: each turn is an object with ONE key naming its side
+   * (`{ user_turn: {…} }` or `{ system_turn: {…} }`), the shape of the Gemini
+   * in Workspace history in a Google Takeout (measured 2026-11-19). Declared,
+   * never guessed: the key names are the role, and each side says where its
+   * words are. `parts` + `partText` read a list of objects, the first present
+   * field of each giving its text. `skipped` names the side's fields that are
+   * NOT words said to the other side (the model's reasoning), counted.
+   */
+  keyed?: {
+    human: KeyedSide;
+    assistant: KeyedSide;
+  };
   conversation?: {
     id?: string;
     title?: string;
     createdAt?: string;
-    /** flat-turns: where the ordered turns sit. */
-    turns?: string;
+    /**
+     * flat-turns: where the ordered turns sit. A LIST when the same export has
+     * been seen under two spellings: the first path that holds an array wins.
+     * Claude.ai's export is reported under both `chat_messages` and `messages`.
+     */
+    turns?: string | string[];
     /** openai-mapping: the node map, and the pointer to the live leaf. */
     nodes?: string;
     current?: string;
@@ -141,13 +173,29 @@ export interface ArchiveSpec {
   /** flat-turns and openai-mapping: how to read one turn. */
   turn?: {
     parent?: string;
-    role?: string;
+    /** A list when two spellings exist (`sender`, `role`): the first present wins. */
+    role?: string | string[];
     /** A plain string field. */
     text?: string;
     /** An array of content parts; strings are kept, other parts counted. */
     parts?: string;
     time?: string;
+    /**
+     * Who the turn was ADDRESSED to. OpenAI writes `all` for the conversation
+     * and a tool name (`bio`, `web`, `python`, `dalle.text2im`…) for a call the
+     * model made. A turn whose value is present and not in `speakTo` is a tool
+     * call, counted and never kept: the memory tool's `bio` turns would
+     * otherwise enter the vault as things ChatGPT said to the person.
+     */
+    recipient?: string;
+    /**
+     * A flag that marks a turn the provider never showed (custom instructions,
+     * injected context). `true` there means skipped and counted as `hidden`.
+     */
+    hidden?: string;
   };
+  /** The `recipient` values that mean "said in the conversation". */
+  speakTo?: string[];
   /** `none`: how to read one activity record. */
   record?: {
     time?: string;
@@ -163,6 +211,16 @@ export interface ArchiveSpec {
    * silently files the model's words as the person's.
    */
   roles?: { human: string[]; assistant: string[] };
+  /**
+   * The model's name, written on every one of its turns once the export is in
+   * memory (`ChatGPT`, `Claude`, `Gemini`).
+   *
+   * 🚨 A generic "Assistant" is read back later by ANOTHER assistant: the one
+   * answering from the vault. It then cannot tell its own words from the old
+   * provider's, nor the person's from either. The name is declared, never
+   * guessed from the file, because the export itself never states it.
+   */
+  assistantName?: string;
   /**
    * Literal prefixes to strip off a record's human text, longest first.
    *

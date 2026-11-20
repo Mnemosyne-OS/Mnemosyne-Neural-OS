@@ -13,6 +13,7 @@
   "archive": {
     "root": "",
     "grouping": "none",
+    "assistantName": "Gemini",
     "record": {
       "time": "time",
       "humanText": "title",

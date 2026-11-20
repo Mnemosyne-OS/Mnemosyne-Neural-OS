@@ -1,0 +1,39 @@
+[
+  {
+    "_comment": "SYNTHETIC. This package is public: no real conversation appears here. The SHAPE is the one measured on a real Takeout (2026-11-19); the words are invented. In the Takeout each conversation is its own conversation_<id>.txt; the zip reader joins them into this list.",
+    "title": "Repotting a fig tree",
+    "creation_time": "2026-10-02T08:10:00.000000+00:00",
+    "last_modification_time": "2026-10-02T08:14:00.000000+00:00",
+    "conversation_turns": [
+      { "user_turn": { "prompt": "When should I repot my fig tree?", "turn_index": 1, "turn_last_modified": "2026-10-02T08:10:00.000000+00:00" } },
+      {
+        "system_turn": {
+          "_comment": "Two thoughts and a citation: neither is kept as Gemini's words; the thoughts are counted.",
+          "model_thoughts": [
+            { "headline": "Season", "description": "Thinking about the season." },
+            { "headline": "Roots", "description": "Thinking about the roots." }
+          ],
+          "citations": [{ "display_text": "A source", "url": "https://example.com/fig" }],
+          "text": [
+            { "preamble": "" },
+            { "data": "In early spring, before new growth starts." }
+          ],
+          "turn_index": 2,
+          "turn_last_modified": "2026-10-02T08:10:20.000000+00:00"
+        }
+      },
+      { "user_turn": { "prompt": "And the pot size?", "turn_index": 3, "turn_last_modified": "2026-10-02T08:13:00.000000+00:00" } },
+      {
+        "system_turn": {
+          "text": [{ "content": "One size up, about 5 cm wider." }],
+          "turn_index": 4,
+          "turn_last_modified": "2026-10-02T08:14:00.000000+00:00"
+        }
+      },
+      {
+        "_comment": "MUST BE SKIPPED as 'unknown-role': neither user_turn nor system_turn.",
+        "tool_turn": { "turn_index": 5 }
+      }
+    ]
+  }
+]

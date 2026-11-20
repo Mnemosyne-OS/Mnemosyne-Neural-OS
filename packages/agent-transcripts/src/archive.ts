@@ -26,7 +26,7 @@
  *     is not there.
  */
 
-import { pick, asString, type Connector } from './connector';
+import { pick, asString, type Connector, type KeyedSide } from './connector';
 
 /** Who said it. The two values every provider agrees on, whatever they call them. */
 export type Role = 'human' | 'assistant';
@@ -120,6 +120,23 @@ export type SkipReason =
   | 'no-turns'
   /** A content part that was not text: an image pointer, an audio asset. */
   | 'non-text-part'
+  /**
+   * A turn the provider never showed in the conversation (custom instructions,
+   * injected context). Kept, it would be filed as something the person said.
+   */
+  | 'hidden'
+  /**
+   * A turn the model addressed to a TOOL, not to the person (the memory tool,
+   * web search, code). Kept, ChatGPT's notes to its own memory would read as
+   * things it told the person.
+   */
+  | 'tool-call'
+  /**
+   * The model's reasoning, shown apart from its answer (Gemini's
+   * `model_thoughts`). Not words said to the person, so not kept as theirs;
+   * counted, one per thought.
+   */
+  | 'thoughts'
   /** A record that was not an object at all. */
   | 'malformed';
 
@@ -301,6 +318,31 @@ function textOf(
   return kept.join('\n');
 }
 
+/** The value at the first of several declared paths that holds one. */
+export function pickFirst(obj: unknown, paths: string | string[] | undefined): unknown {
+  for (const p of Array.isArray(paths) ? paths : [paths]) {
+    const v = pick(obj, p);
+    if (v !== undefined && v !== null) return v;
+  }
+  return undefined;
+}
+
+/**
+ * Why a turn that has a role is still not part of the conversation, or null.
+ *
+ * Both checks are DECLARED by the connector: a field it does not name is never
+ * consulted, and an absent value keeps the turn (an older export that never
+ * wrote `recipient` was all conversation).
+ */
+function offConversation(node: unknown, spec: NonNullable<Connector['archive']>): 'hidden' | 'tool-call' | null {
+  if (spec.turn?.hidden && pick(node, spec.turn.hidden) === true) return 'hidden';
+  if (spec.turn?.recipient && spec.speakTo?.length) {
+    const to = asString(pick(node, spec.turn.recipient));
+    if (to && !spec.speakTo.includes(to)) return 'tool-call';
+  }
+  return null;
+}
+
 /** Which side of the conversation a role value names. Declared, never guessed. */
 function roleOf(raw: unknown, roles: { human: string[]; assistant: string[] } | undefined): Role | null {
   const v = asString(raw);
@@ -402,7 +444,13 @@ export function readArchive(conn: Connector, text: string): ArchiveState | null 
   }
 
   const rootVal = spec.root ? pick(doc, spec.root) : doc;
-  const records = Array.isArray(rootVal) ? rootVal : null;
+  // 🚨 ONE conversation saved on its own, the way browser extensions export
+  // the chat on screen: an object, not a list. Read as a list of one, but only
+  // when the object carries the conversation's own turns or node map, so any
+  // other JSON object still says "root not found" instead of "1 record".
+  const single = !spec.root && rootVal !== null && typeof rootVal === 'object' && !Array.isArray(rootVal)
+    && pickFirst(rootVal, spec.conversation?.turns ?? spec.conversation?.nodes) !== undefined;
+  const records = Array.isArray(rootVal) ? rootVal : single ? [rootVal] : null;
   const skips = new Skips();
   const state: ArchiveState = {
     source: conn.id,
@@ -418,6 +466,7 @@ export function readArchive(conn: Connector, text: string): ArchiveState | null 
     if (!rec || typeof rec !== 'object') { skips.add('malformed'); continue; }
     if (spec.grouping === 'none') readActivityRecord(spec, rec, state, skips);
     else if (spec.grouping === 'openai-mapping') readMappedConversation(spec, rec, state, skips);
+    else if (spec.grouping === 'keyed-turns') readKeyedConversation(spec, rec, state, skips);
     else readFlatConversation(spec, rec, state, skips);
   }
 
@@ -496,18 +545,71 @@ function readFlatConversation(
   conv.id = asString(pick(rec, c.id));
   conv.title = asString(pick(rec, c.title));
 
-  const turns = pick(rec, c.turns);
+  const turns = pickFirst(rec, c.turns);
   if (!Array.isArray(turns)) { skips.add('malformed'); return; }
 
   for (const t of turns) {
     if (!t || typeof t !== 'object') { skips.add('malformed'); continue; }
-    const role = roleOf(pick(t, spec.turn?.role), spec.roles);
+    const off = offConversation(t, spec);
+    if (off) { skips.add(off); continue; }
+    const role = roleOf(pickFirst(t, spec.turn?.role), spec.roles);
     pushTurn(conv, role, textOf(t, spec.turn, skips), toIso(pick(t, spec.turn?.time)), skips);
   }
 
   if (!conv.turns.length) { skips.add('no-turns'); return; }
   stampConversation(conv, toIso(pick(rec, c.createdAt)));
   state.conversations.push(conv);
+}
+
+/**
+ * A conversation whose turns each carry ONE key naming their side
+ * (`{ user_turn: {…} }`, `{ system_turn: {…} }`), Gemini in Workspace.
+ * A turn with neither declared key is `unknown-role`, never guessed.
+ */
+function readKeyedConversation(
+  spec: NonNullable<Connector['archive']>,
+  rec: object,
+  state: ArchiveState,
+  skips: Skips,
+): void {
+  const c = spec.conversation ?? {};
+  const sides = spec.keyed;
+  const turns = pickFirst(rec, c.turns);
+  if (!sides || !Array.isArray(turns)) { skips.add('malformed'); return; }
+  const conv = newConversation();
+  conv.id = asString(pick(rec, c.id));
+  conv.title = asString(pick(rec, c.title));
+
+  for (const t of turns) {
+    if (!t || typeof t !== 'object') { skips.add('malformed'); continue; }
+    const role: Role | null = sides.human.key in t ? 'human' : sides.assistant.key in t ? 'assistant' : null;
+    if (!role) { skips.add('unknown-role'); continue; }
+    const side = role === 'human' ? sides.human : sides.assistant;
+    const body = (t as Record<string, unknown>)[side.key];
+    for (const f of side.skipped ?? []) skips.add('thoughts', pickList(body, f).length);
+    pushTurn(conv, role, keyedText(body, side), toIso(pick(body, side.time)), skips);
+  }
+
+  if (!conv.turns.length) { skips.add('no-turns'); return; }
+  stampConversation(conv, toIso(pick(rec, c.createdAt)));
+  state.conversations.push(conv);
+}
+
+/** The words of one keyed side: its plain field, else its parts joined. */
+function keyedText(body: unknown, side: KeyedSide): string {
+  const direct = side.text ? asString(pick(body, side.text)) : null;
+  if (direct && direct.trim()) return direct;
+  const parts = side.parts ? pickList(body, side.parts) : [];
+  return parts
+    .map(p => {
+      for (const f of side.partText ?? []) {
+        const s = asString(pick(p, f));
+        if (s && s.trim()) return s;
+      }
+      return '';
+    })
+    .filter(Boolean)
+    .join('\n\n');
 }
 
 /** A conversation holding a node map with parent pointers (see walkOpenAiPath). */
@@ -531,11 +633,16 @@ function readMappedConversation(
 
   const onPath = new Set(path);
   for (const node of path) {
-    const role = roleOf(pick(node, spec.turn?.role), spec.roles);
+    const role = roleOf(pickFirst(node, spec.turn?.role), spec.roles);
     // A system or tool node is part of the path but not part of the
     // conversation. It is not a defect, so it is not counted as a skip: only
     // roles the connector declared and could not place are.
     if (!role) continue;
+    // A user or assistant node can still be off the conversation: custom
+    // instructions ride as a hidden USER node, the memory tool's writes as an
+    // ASSISTANT node addressed to `bio`. Counted, never kept.
+    const off = offConversation(node, spec);
+    if (off) { skips.add(off); continue; }
     pushTurn(conv, role, textOf(node, spec.turn, skips), toIso(pick(node, spec.turn?.time)), skips);
   }
 
@@ -545,7 +652,7 @@ function readMappedConversation(
   for (const id of Object.keys(nodes)) {
     const node = nodes[id];
     if (onPath.has(node)) continue;
-    if (roleOf(pick(node, spec.turn?.role), spec.roles)) conv.abandonedTurns++;
+    if (roleOf(pickFirst(node, spec.turn?.role), spec.roles) && !offConversation(node, spec)) conv.abandonedTurns++;
   }
 
   if (!conv.turns.length) { skips.add('no-turns'); return; }

@@ -20,6 +20,8 @@ import claudeFixture from './claude-ai-export.fixture.json?raw';
 import claudeExpected from './claude-ai-export.expected.json';
 import geminiFixture from './gemini-takeout.fixture.json?raw';
 import geminiExpected from './gemini-takeout.expected.json';
+import workspaceFixture from './gemini-workspace.fixture.json?raw';
+import workspaceExpected from './gemini-workspace.expected.json';
 
 interface Case {
   id: ArchiveConnectorId;
@@ -31,6 +33,7 @@ const CASES: Case[] = [
   { id: 'chatgpt-export', fixture: chatgptFixture, expected: chatgptExpected },
   { id: 'claude-ai-export', fixture: claudeFixture, expected: claudeExpected },
   { id: 'gemini-takeout', fixture: geminiFixture, expected: geminiExpected },
+  { id: 'gemini-workspace', fixture: workspaceFixture, expected: workspaceExpected },
 ];
 
 /** Reason order is a Map insertion order, which is an implementation detail.
@@ -83,12 +86,36 @@ describe('the archive catalogue', () => {
     expect(/^(MEASURED|NOT MEASURED)/.test(note as string)).toBe(true);
   });
 
-  it('knows that only the Gemini connector is measured today', () => {
+  it('knows that only the two Gemini connectors are measured today', () => {
     // This assertion is meant to FAIL the day someone runs another connector
     // over a real export and forgets to say so in its `_verified` note.
     expect(archiveConnectorIsVerified(ARCHIVE_CONNECTORS['gemini-takeout'])).toBe(true);
+    expect(archiveConnectorIsVerified(ARCHIVE_CONNECTORS['gemini-workspace'])).toBe(true);
     expect(archiveConnectorIsVerified(ARCHIVE_CONNECTORS['chatgpt-export'])).toBe(false);
     expect(archiveConnectorIsVerified(ARCHIVE_CONNECTORS['claude-ai-export'])).toBe(false);
+  });
+
+  it('the SHIPPED Claude connector reads the second spelling (messages + role)', () => {
+    // Held on the real connector file, not a hand-built one: removing
+    // `messages[]` or `role` from claude-ai-export.json broke no test before
+    // (verifier pass, 2026-11-18, M42/M43).
+    const doc = [{
+      uuid: 'x', name: 'Second spelling', created_at: '2026-01-01T10:00:00Z',
+      messages: [
+        { role: 'human', text: 'Is the second spelling read?', created_at: '2026-01-01T10:00:00Z' },
+        { role: 'assistant', text: 'It is.', created_at: '2026-01-01T10:00:05Z' },
+      ],
+    }];
+    const st = readArchive(ARCHIVE_CONNECTORS['claude-ai-export'], JSON.stringify(doc));
+    expect(st?.conversations[0]?.turns.map(t => [t.role, t.text])).toEqual([
+      ['human', 'Is the second spelling read?'], ['assistant', 'It is.'],
+    ]);
+  });
+
+  it.each(entries)('%s names its model for the memory it writes', (_key, conn) => {
+    // Without it every imported turn is signed "Assistant", which the assistant
+    // reading the vault later takes for itself.
+    expect(conn.archive?.assistantName?.trim()).toBeTruthy();
   });
 
   it.each(entries)('%s carries no executable pattern', (_key, conn) => {

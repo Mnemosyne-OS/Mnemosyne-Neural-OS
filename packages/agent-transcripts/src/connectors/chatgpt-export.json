@@ -12,6 +12,7 @@
     "root": "",
     "_groupingWhy": "This export is a TREE, not a list. Every regeneration hangs off the same parent as the answer it replaced, so a conversation the person remembers as linear can hold three contradictory answers to one question. Flattening 'mapping' puts all three into memory and poisons every later search. The reader walks 'parent' up from 'current_node' instead, and counts what it left behind.",
     "grouping": "openai-mapping",
+    "assistantName": "ChatGPT",
     "conversation": {
       "id": "conversation_id",
       "title": "title",
@@ -23,8 +24,13 @@
       "parent": "parent",
       "role": "message.author.role",
       "parts": "message.content.parts[]",
-      "time": "message.create_time"
+      "time": "message.create_time",
+      "recipient": "message.recipient",
+      "hidden": "message.metadata.is_visually_hidden_from_conversation"
     },
+    "speakTo": ["all"],
+    "_offConversationWhy": "Checked 2026-11-18 against public descriptions of the format (no real export on this machine): custom instructions ride as a hidden USER node (content_type user_editable_context), and the model's tool calls are ASSISTANT nodes whose recipient names the tool (bio for its memory, web, python, dalle.text2im). Kept, the person would be remembered saying their own custom instructions and ChatGPT would be remembered saying its notes to its own memory. Both are counted (hidden, tool-call), never kept. A turn with no recipient at all is kept: older exports never wrote one.",
+    "_splitFiles": "Newer exports are reported to split the list across conversations-000.json, conversations-001.json and so on. Each file is the same array, so each one imports on its own.",
     "_timeTrap": "create_time is a FLOAT OF EPOCH SECONDS, not milliseconds. Read as milliseconds it lands in January 1970 - a convincing date that sorts every imported conversation before everything else the person owns. The reader splits at 1e11; see toIso in archive.ts.",
     "_rolesWhy": "Only user and assistant are declared. A 'system' or 'tool' node sits ON the kept path but is not part of the conversation, so the reader passes over it without counting it as a loss - it was never the person's words nor the model's reply.",
     "roles": {

@@ -12,14 +12,16 @@
   "archive": {
     "root": "",
     "grouping": "flat-turns",
+    "assistantName": "Claude",
     "conversation": {
       "id": "uuid",
       "title": "name",
       "createdAt": "created_at",
-      "turns": "chat_messages[]"
+      "turns": ["chat_messages[]", "messages[]"]
     },
+    "_spellingsWhy": "Checked 2026-11-18 against public parsers (no real export on this machine): the same export is reported with chat_messages and sender, and also with messages and role. Both spellings are declared, first present wins. A single conversation saved by a browser extension is the same object without the surrounding list, and reads as a list of one.",
     "turn": {
-      "role": "sender",
+      "role": ["sender", "role"],
       "text": "text",
       "parts": "content[]",
       "time": "created_at"

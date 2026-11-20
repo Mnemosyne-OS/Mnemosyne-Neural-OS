@@ -1,0 +1,37 @@
+{
+  "id": "gemini-workspace",
+  "displayName": "Gemini in Workspace (Takeout)",
+  "version": "0.1.0",
+  "format": "json",
+  "kind": "archive",
+  "_comment": "A connector is DATA, never code. It says how to read a file, never WHERE that file is - the human picks it. Paths use dots for object keys and [] to walk an array. Nothing here is evaluated.",
+  "_verified": "MEASURED on 2026-11-19 on a real French Google Takeout of this machine: 10 files under Takeout/Gemini dans Workspace/Conversation History/conversation_*.txt, each ONE conversation in JSON despite the .txt name. 24 user turns, 24 system turns, 32 model thoughts, 7 citations. The key names below come from that file; the words never left it.",
+  "_where": "Google Takeout, product Gemini (Workspace accounts). The zip holds one conversation_<id>.txt per conversation; the zip reader joins them into one list.",
+  "_whyKeyed": "A turn is not a record with a role field: it is an object with ONE key, user_turn or system_turn, and that key IS the role. A turn with neither key is counted as unknown-role, never guessed.",
+  "_thoughtsWhy": "system_turn.model_thoughts is the model's reasoning, shown apart from its answer. It was never said to the person, so it is not kept as Gemini's words; each thought is counted as `thoughts`. Citations are not words either and are left out.",
+  "filePattern": ".txt",
+  "archive": {
+    "root": "",
+    "grouping": "keyed-turns",
+    "assistantName": "Gemini",
+    "conversation": {
+      "title": "title",
+      "createdAt": "creation_time",
+      "turns": "conversation_turns[]"
+    },
+    "keyed": {
+      "human": { "key": "user_turn", "text": "prompt", "time": "turn_last_modified" },
+      "assistant": {
+        "key": "system_turn",
+        "parts": "text[]",
+        "partText": ["data", "content", "preamble"],
+        "time": "turn_last_modified",
+        "skipped": ["model_thoughts[]"]
+      }
+    }
+  },
+  "mark": {
+    "label": "GW",
+    "tint": "#1a73e8"
+  }
+}

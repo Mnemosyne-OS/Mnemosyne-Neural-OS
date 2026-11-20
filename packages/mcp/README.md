@@ -94,7 +94,7 @@ different sentences, because they are two different problems.
 
 ### Claude Desktop, one click
 
-Download **[Mnemosyne-OS-MCP-2.4.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v2.2.1-infinity/Mnemosyne-OS-MCP-2.4.0.mcpb)**
+Download **[Mnemosyne-OS-MCP-2.5.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v2.3.0-infinity/Mnemosyne-OS-MCP-2.5.0.mcpb)**
 (4.4 MB), then open Claude Desktop → **Settings → Extensions** and drop the
 file into that panel. That is the whole install. The 31 tools appear straight away, and the same
 panel offers the three optional settings: default vault, other vaults, and the
@@ -622,6 +622,7 @@ carries it and keeps it at its own version.
 | `os_image_generate` | Draws a picture, billed per picture on the person's Mnemosyne credits. |
 | `os_video_generate`, `os_video_status` | Makes a short video clip from a first and a last picture, billed per second on the same credits. |
 | `os_avatar_film`, `os_avatar_status` | Makes a video of the person's particle avatar saying the lines given, with a voice of Mnemosyne OS, on their computer. No credits. |
+| `os_video_compose`, `os_video_compose_status` | Makes a video from the person's notes (a note, a folder or a tag), read by a voice of Mnemosyne OS, on their computer. The agent writes the script or the app's model does; the cloud model only when asked. |
 
 **Connect it.** In the app, open **Settings › Agents › Connect my coding agent**.
 For Cursor and Antigravity, one click writes both servers into the agent's

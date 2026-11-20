@@ -134,6 +134,7 @@ import cursor from './connectors/cursor.json';
 import chatgptExport from './connectors/chatgpt-export.json';
 import claudeAiExport from './connectors/claude-ai-export.json';
 import geminiTakeout from './connectors/gemini-takeout.json';
+import geminiWorkspace from './connectors/gemini-workspace.json';
 import whatsappBrowserExport from './connectors/whatsapp-browser-export.json';
 import whatsappNativeExport from './connectors/whatsapp-native-export.json';
 import whatsappNativeAndroid from './connectors/whatsapp-native-android.json';
@@ -175,15 +176,16 @@ export const CONNECTORS = {
  * `readSession` reachable with an archive connector, which fails as an empty
  * result rather than as an error.
  *
- * ⚠️ Only `gemini-takeout` has been run over a real export. The other two are
- * written against documented shape; each file says so in its own `_verified`,
- * and `archiveConnectorIsVerified` reads that rather than letting a caller
- * assume.
+ * ⚠️ Only `gemini-takeout` and `gemini-workspace` have been run over a real
+ * export. The other two are written against documented shape; each file says
+ * so in its own `_verified`, and `archiveConnectorIsVerified` reads that rather
+ * than letting a caller assume.
  */
 export const ARCHIVE_CONNECTORS = {
   'chatgpt-export': chatgptExport as Connector,
   'claude-ai-export': claudeAiExport as Connector,
   'gemini-takeout': geminiTakeout as Connector,
+  'gemini-workspace': geminiWorkspace as Connector,
 } as const;
 
 export type ArchiveConnectorId = keyof typeof ARCHIVE_CONNECTORS;
