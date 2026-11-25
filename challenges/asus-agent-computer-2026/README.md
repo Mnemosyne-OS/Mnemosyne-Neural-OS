@@ -6,13 +6,25 @@ Catégorie : **High-End**.
 
 ## 1. Le projet
 
-Mnemosyne OS est une mémoire locale pour vos agents IA.
-L'application tourne sur votre PC, sous Windows, macOS ou Linux.
-Elle range vos notes, vos documents, votre code et vos conversations dans des coffres.
-Vos agents interrogent ces coffres et y écrivent ce qu'ils apprennent.
+Mnemosyne OS est un système d'exploitation IA qui tourne sur votre PC.
+Il marche sous Windows, macOS et Linux, avec une interface en 7 langues.
+La version 2.3.0 est sortie le 20/11/2026.
+
+Au centre, il y a votre mémoire.
+L'application range vos notes, vos documents, votre code et vos conversations dans des coffres.
 Les données restent sur votre disque.
 
-La version 2.3.0 est sortie le 20/11/2026.
+Autour de cette mémoire, l'application fait tourner :
+- Irina, une assistante qui parle et écoute en local ;
+- l'agent Hermes, qui gère votre agenda et vos tâches et répond sur Telegram ;
+- vos agents de code (Claude Code, Cursor, Antigravity), branchés par MCP ;
+- une salle de contrôle où vos agents de code apparaissent en cartes : une commande risquée attend votre accord ;
+- Theia, un moteur de vision qui indexe vos images en local ;
+- des applications installées depuis MnemoHub : CRM, lecteur de PDF à voix haute, traducteur, suite pour restaurant ;
+- un bureau qui se pilote à la voix, ou aux gestes par la webcam ;
+- Synaptic P2P, qui relie vos machines sur le réseau local, sans cloud.
+
+Tous ces éléments lisent la même mémoire.
 
 ## 2. Tester la démo en 15 minutes
 
@@ -55,6 +67,15 @@ Les outils `mnemosyne_agent_list` et `mnemosyne_agent_collisions` lisent les jou
 que Claude Code, Antigravity et Cursor écrivent déjà sur le disque.
 Ils signalent quand deux agents modifient le même fichier.
 Ils marchent même application fermée, sans dépenser de token.
+
+### Étape 6 : installer une application
+
+1. Ouvrez MnemoHub, le magasin d'applications.
+2. Installez MnemoReader, puis ouvrez un PDF.
+3. Il le lit à voix haute et surligne chaque mot lu.
+
+Le code source de MnemoReader est public :
+https://github.com/Mnemosyne-OS/MnemoReader---MnemosyneOS
 
 ## 3. Le code à lire dans le dépôt
 
@@ -118,7 +139,12 @@ Sur un modèle local, ce coût tombe à zéro, mais le modèle doit tenir en VRA
 
 ## 7. Ce que la Radeon AI PRO R9700 changerait
 
-La carte a 32 Go de VRAM.
+La carte de 6 Go sert aussi à la dictée, à la voix et à la vision.
+Le 17/11, j'ai mesuré le 8B pendant que d'autres programmes occupaient la carte.
+Avec 2 Go déjà pris, il écrit 66 tokens par seconde.
+Avec 5 Go déjà pris, il tombe à 31,5.
+
+La R9700 a 32 Go de VRAM.
 Le fichier du 24B fait 14,5 Go : il y tient entier, avec de la place pour un long contexte.
 L'agent Hermes pourrait alors tourner en local sur un modèle trois fois plus grand.
 
