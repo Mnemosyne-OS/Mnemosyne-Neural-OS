@@ -47,6 +47,8 @@ export const TOOL_TITLES: Record<string, string> = {
   mnemosyne_review_get:        'Read a review',
   mnemosyne_voice_speak:       'Render a script to a WAV',
   mnemosyne_voice_status:      'Check the voice engine',
+  mnemosyne_voice_scene:       'Render a scene with several voices',
+  mnemosyne_voice_scene_status: 'Check a voice scene',
   mnemosyne_telegram_send:     'Send a file to Telegram home',
 };
 
@@ -72,6 +74,7 @@ export const READ_ONLY_TOOLS = new Set<string>([
   'mnemosyne_agenda_list',
   'mnemosyne_voice_list',
   'mnemosyne_voice_status',
+  'mnemosyne_voice_scene_status',
 ]);
 
 /**

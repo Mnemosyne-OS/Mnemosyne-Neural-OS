@@ -94,7 +94,7 @@ different sentences, because they are two different problems.
 
 ### Claude Desktop, one click
 
-Download **[Mnemosyne-OS-MCP-2.5.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v2.3.0-infinity/Mnemosyne-OS-MCP-2.5.0.mcpb)**
+Download **[Mnemosyne-OS-MCP-2.6.0.mcpb](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/download/v2.4.0-infinity/Mnemosyne-OS-MCP-2.6.0.mcpb)**
 (4.4 MB), then open Claude Desktop → **Settings → Extensions** and drop the
 file into that panel. That is the whole install. The 31 tools appear straight away, and the same
 panel offers the three optional settings: default vault, other vaults, and the
@@ -268,8 +268,8 @@ stayed reachable whatever the list said.
 
 ## Optional: let your agent render a voice
 
-Mnemosyne OS ships local, offline text-to-speech engines that can clone a voice from a short reference clip. With one env var, your agent gets three extra tools that turn a written script into a **WAV file
-on disk**. They are made for voice-overs: TikTok, YouTube, podcast, narration.
+Mnemosyne OS ships local, offline text-to-speech engines that can clone a voice from a short reference clip. With one env var, your agent gets five extra tools that turn a written script into a **WAV file
+on disk**. They are made for voice-overs (TikTok, YouTube, podcast, narration) and for scenes with several characters.
 
 ```json
 "env": {
@@ -282,6 +282,8 @@ on disk**. They are made for voice-overs: TikTok, YouTube, podcast, narration.
 | **`mnemosyne_voice_list`** | List the local engines, installed or not, and the reference voices available for cloning. Call it first. |
 | **`mnemosyne_voice_speak`** | Render a script to a WAV. Long scripts are split at sentence boundaries and re-assembled into one file, with nothing truncated. It returns a job: the tool waits, then hands back a job id if the render is still going. |
 | **`mnemosyne_voice_status`** | Poll or cancel a render. It returns the file path once the render is done. |
+| **`mnemosyne_voice_scene`** | Render a scene with several characters. Each line opens with `<\|speaker:N\|>` (0 to 15, the tags Fish Audio Drama 3 reads), and `cast` gives every speaker a reference voice. A speaker with no voice is refused. You get one WAV per line, a `scene.json` and the assembled `scene.wav`. Stage directions like `[laughs]` are removed and reported, not played. With `scene_id` and `line`, it says one line again (new words optional) without re-rendering the others. |
+| **`mnemosyne_voice_scene_status`** | Poll or cancel a scene, or list the scenes of the session. It returns every line file once the scene is done. |
 
 **Off by default, on purpose.** Turning it on makes Mnemosyne OS ask *you* to
 authorize `voice:speak`. That permission is never auto-granted, not even to
@@ -313,8 +315,8 @@ You should see a structured response with 5–10 chronicles, each tagged with it
 
 Twenty-six are in the table below. The three that read the other agents on this
 machine, and the two that update the Mac app, have their own sections further down. Setting `MNEMO_VOICE=1` adds the
-three voice tools documented further up, and `MNEMO_FORGET=1` adds the erasure
-tool, for 35 in all.
+five voice tools documented further up, and `MNEMO_FORGET=1` adds the erasure
+tool, for 37 in all.
 
 Six of them read or write the To-do backlog and the calendar. All six carry the
 same requirement:

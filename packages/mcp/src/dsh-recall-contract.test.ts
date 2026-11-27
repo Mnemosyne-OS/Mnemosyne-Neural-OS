@@ -39,7 +39,7 @@ function answer(chronicles: MnemoChronicle[], maxContentChars = 600): string {
 test('the plugin reads every row this server prints, with its type, date, caveats and text', { skip }, () => {
   const text = answer([
     chronicle({ content: JSON.stringify({ raw: 'My validation drink is lapsang-93807.' }) }),
-    chronicle({ id: '2', source_app_id: 'DOCWATCH', content: 'A design note.', freshness: { filePath: 'docs/a.md', state: 'missing' } }),
+    chronicle({ id: '2', source_app_id: 'DOCWATCH', content: 'A design note on `rankFusion()`.', freshness: { filePath: 'docs/a.md', state: 'missing' } }),
     chronicle({ id: '3', spineType: 'DOCUMENT', content: 'x'.repeat(700) }),
     chronicle({ id: '4', spineType: 'DECISION', content: 'We chose BM25.', timestamp: 'not a time', score: undefined }),
   ]);

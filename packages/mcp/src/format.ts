@@ -120,7 +120,69 @@ export function voiceError(code: string | undefined): string {
   if (raw.startsWith('SCRIPT_TOO_LONG')) {
     return `${raw}\n\nSplit the script into scenes and render one file per scene.`;
   }
+  if (raw.startsWith('UNCAST_SPEAKER') || raw.startsWith('MISSING_CAST') || raw.startsWith('BAD_CAST_ENTRY')) {
+    return `${raw}\n\nEvery speaker number used in the script needs a voice in \`cast\`, e.g. {"0": "default", "1": "narrateur"}.`
+      + ` Take the names from mnemosyne_voice_list and ask the user which voice plays which character. Do NOT give two characters the default voice to get past this.`;
+  }
+  if (raw.startsWith('SCENE_NO_SPEAKER') || raw.startsWith('SCENE_TEXT_BEFORE_FIRST_SPEAKER') || raw.startsWith('SPEAKER_OUT_OF_RANGE')) {
+    return `${raw}\n\nOpen every line with <|speaker:N|>, N from 0 to 15, and put no words before the first tag.`;
+  }
+  if (raw.startsWith('EMPTY_LINE')) {
+    return `${raw}\n\nStage directions are removed, never spoken, so a line made only of them has nothing to say. Add words or drop the line.`;
+  }
   return raw;
+}
+
+/** The shape {@link sceneReport} needs: a subset of the host's scene object. */
+export interface VoiceSceneLike {
+  id: string;
+  state: string;
+  engine?: string;
+  dir?: string;
+  lines?: Array<{ index: number; speaker: number; clone: string; text: string; directions: string[]; path: string | null; takes: number }>;
+  linesDone?: number;
+  path?: string | null;
+  seconds?: number | null;
+  directionsRemoved?: number;
+  error?: string | null;
+}
+
+/**
+ * Report a scene's state to the agent (doc 262). Like a render, a scene still
+ * going is reported as still going, with the id to poll. A finished scene
+ * lists every line file, so a retake can name its line, and says which stage
+ * directions were dropped: the human must know a "[laughs]" was not played.
+ */
+export function sceneReport(scene: VoiceSceneLike, waited: number): string {
+  const lines = scene.lines ?? [];
+  const done = scene.linesDone ?? 0;
+  const dropped = lines.filter((l) => l.directions.length)
+    .map((l) => `line ${l.index}: ${l.directions.map((d) => `[${d}]`).join(' ')}`);
+  const droppedNote = dropped.length
+    ? `\n\n⚠ Stage directions removed, NOT played (no local engine plays them): ${dropped.join('; ')}. Tell the user.`
+    : '';
+
+  if (scene.state === 'done') {
+    const rows = lines.map((l) =>
+      `| ${l.index} | ${l.speaker} | ${l.clone} | ${l.takes} | \`${l.path ?? '-'}\` |`).join('\n');
+    return `# Scene ready\n\n**Scene:** \`${scene.path}\`\n`
+      + `**Length:** ${scene.seconds === null || scene.seconds === undefined ? 'unknown' : `${scene.seconds}s`}`
+      + ` · ${lines.length} lines on ${scene.engine ?? 'the local engine'}\n`
+      + `**Folder:** \`${scene.dir ?? '(unknown)'}\` (one WAV per line, scene.json, scene.wav)\n\n`
+      + `| Line | Speaker | Voice | Takes | File |\n|---|---|---|---|---|\n${rows}`
+      + `${droppedNote}\n\nTell the user the scene path. To say one line again, call mnemosyne_voice_scene with this scene_id and the line number.`;
+  }
+  if (scene.state === 'failed') {
+    return `# Scene failed\n\n${voiceError(scene.error ?? undefined)}\n\nScene \`${scene.id}\`, ${done}/${lines.length} line files written`
+      + ` in \`${scene.dir ?? '(unknown)'}\` (named in scene.json).`;
+  }
+  if (scene.state === 'cancelled') {
+    return `Scene \`${scene.id}\` was cancelled after ${done}/${lines.length} lines. No scene.wav was written.`;
+  }
+  return `# Still rendering\n\nScene \`${scene.id}\`: ${done}/${lines.length} lines done.\n\n`
+    + `${waited > 0 ? `Waited ${human(waited)}; ` : ''}`
+    + `synthesis runs at roughly real time. Call mnemosyne_voice_scene_status with this scene id to check again. Do NOT start the scene over.`
+    + droppedNote;
 }
 
 /** The shape {@link renderReport} needs — a subset of the host's job object. */
@@ -237,6 +299,11 @@ export function freshnessLine(freshness: unknown): string | null {
 export function queryRefusal(result: QueryResult, vault: string, filterHint = ''): string | null {
   const failure = searchFailure(result, vault);
   if (failure !== null) return failure;
+  if (result.chronicles.length === 0 && result._semantic?.embedStall === true) {
+    // Only the words were searched: no match there says nothing about the meaning.
+    return `No chronicles found in vault:${vault} by their words${filterHint}. The local embedder was busy, so the search by meaning did not run: `
+      + `this says nothing about what the vault holds. Retry in about 30 s, one search at a time.`;
+  }
   if (result.chronicles.length === 0) {
     return `No chronicles found in vault:${vault} for this query${filterHint}. The search ran and matched nothing.`;
   }
@@ -257,11 +324,31 @@ export function searchFailure(result: QueryResult, vault: string): string | null
   }
   const semantic = result._semantic;
   if (semantic && semantic.wanted === true && semantic.used === false) {
+    // EMBED_STALL (2026-11-25, four searches sent at once): the one local
+    // embedder is busy, usually for under a minute. Say so, say when to come
+    // back, and say that parallel searches only queue on it.
+    if ((semantic.error ?? '').includes('EMBED_STALL')) {
+      return `Mnemosyne could not run this search on vault:${vault}: the local embedder is busy (${semantic.error}). `
+        + `Nothing is wrong with the vault, and no results are shown. Retry in about 30 s. `
+        + `All searches share that one embedder, so send them one at a time rather than in parallel. `
+        + `mnemosyne_memory_ask still answers meanwhile, from the words of the vault.`;
+    }
     return `Mnemosyne could not run this search on vault:${vault}: ${semantic.error || 'no reason given'}. `
       + `The app fell back to its most recent memories, which are not results for this query, so none are shown. `
       + `This says nothing about what the vault holds. Retry once the embedder is back, or use mnemosyne_memory_ask.`;
   }
   return null;
+}
+
+/**
+ * The line above results the app ranked by their words alone because the
+ * embedder was busy (`_semantic.embedStall`, doc 178 §14.9), or null. The
+ * rows are real matches, but the search by meaning did not run.
+ */
+export function embedStallNote(result: QueryResult): string | null {
+  if (result._semantic?.embedStall !== true) return null;
+  return 'The local embedder was busy, so these results are ranked by their words alone, not by meaning. '
+    + 'A paraphrase may be missing: retry in about 30 s, one search at a time, for the full search.';
 }
 
 /**
@@ -292,6 +379,23 @@ const DOC_SPINES = new Set([
   'DOCUMENT', 'VISION', 'NOTE', 'IDEATIONAL', 'HYPOTHESIS', 'CONTEXTUAL', 'CONCERN',
 ]);
 
+// Strong signs that a text names code: the identifiers the design-doc warning
+// asks the agent to verify. Kept strict on purpose: bare CamelCase ("PowerPoint",
+// "DocuSign") and document extensions (.pdf, .docx, .md) appear in any business
+// document and say nothing about code.
+const CODE_SIGNS: readonly RegExp[] = [
+  /`[^`\n]+`/,                                    // an inline code span, or a fence
+  /\b[\w-]+\.(?:ts|tsx|js|jsx|mjs|cjs|py|rs|go|java|kt|cs|cpp|hpp|rb|php|swift|vue|svelte|sql|ps1|sh|json|ya?ml|toml)\b/i,
+  /(?:^|[\s("'])(?:src|packages|apps|lib)\/[\w.-]/m, // a repository path
+  /\b[A-Za-z_$][\w$]*\(\)/,                        // a call: foo()
+  /\w::\w/,                                        // a scoped name: A::B
+];
+
+/** Whether a text names code identifiers (file paths, calls, inline code). */
+export function namesCode(text: string): boolean {
+  return CODE_SIGNS.some(re => re.test(text));
+}
+
 /**
  * Whether a query row is design material an agent should check against the
  * source code before trusting its identifiers.
@@ -300,11 +404,19 @@ const DOC_SPINES = new Set([
  * only when the row came from a file on disk (DocWatch): an agent's own note
  * ("my validation drink is …") carried the "verify against the actual source
  * code" warning, seen under DeepSeek Harness on 2026-10-28.
+ *
+ * The body must also name code. A contract, a maintenance procedure or a
+ * telework agreement read by DocWatch is a NOTE from a file too, and on
+ * 2026-11-25 every row of three demo vaults of company documents carried the
+ * "verify against the actual source code" line: noise to the agent reading
+ * them, and tokens on every row. Judged on the whole body, never the snippet,
+ * so the warning does not depend on `max_content_chars`.
  */
-export function isDesignDoc(spineType: unknown, sourceAppId: unknown): boolean {
+export function isDesignDoc(spineType: unknown, sourceAppId: unknown, body: string): boolean {
   const spine = String(spineType ?? '').toUpperCase();
   if (!DOC_SPINES.has(spine)) return false;
-  return spine !== 'NOTE' || String(sourceAppId ?? '').toUpperCase() === 'DOCWATCH';
+  if (spine === 'NOTE' && String(sourceAppId ?? '').toUpperCase() !== 'DOCWATCH') return false;
+  return namesCode(body);
 }
 
 export interface QueryRowOptions {
@@ -338,7 +450,7 @@ export function formatQueryRow(c: MnemoChronicle, index: number, options: QueryR
     ...(savedAt !== null ? [`**Date:** ${localStamp(savedAt)}`] : []),
     `**Source:** ${c.source_app_id}`,
     // Design material is flagged so an agent verifies its identifiers before trusting them.
-    ...(isDesignDoc(c.spineType, c.source_app_id)
+    ...(isDesignDoc(c.spineType, c.source_app_id, raw)
       ? ['> ⚠️ Design/vision doc: verify class names, file paths and identifiers against the actual source code before relying on them.']
       : []),
     ...(stale ? [stale] : []),

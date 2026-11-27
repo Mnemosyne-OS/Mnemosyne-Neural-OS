@@ -27,6 +27,10 @@
  *   sdk.voice.speak         — { appId, text, engine?, language?, clone?, … } → { job }
  *   sdk.voice.status        — { appId, jobId? } → { job } | { jobs }
  *   sdk.voice.cancel        — { appId, jobId } → { stopped, job }
+ *   sdk.voice.scene.start   — { appId, script, cast, engine?, language?, title? } → { scene }
+ *   sdk.voice.scene.status  — { appId, sceneId? } → { scene } | { scenes }
+ *   sdk.voice.scene.retake  — { appId, sceneId, line, text? } → { scene }
+ *   sdk.voice.scene.cancel  — { appId, sceneId } → { stopped, scene }
  */
 
 import { WebSocket } from 'ws';
@@ -74,6 +78,8 @@ export interface QueryResult {
   error?:     string;
   _semantic?: {
     wanted: boolean; used: boolean; error?: string; vectorDim?: number; vaultSize?: number;
+    /** The embedder was busy: the rows were ranked by their words alone (doc 178 §14.9). */
+    embedStall?: boolean;
     /**
      * On a words-only vault: how many served rows the engine would admit into a
      * chat answer, and the verdict per row in rank order. Read untrusted.
@@ -289,6 +295,44 @@ export interface VoiceJobResult {
   success: boolean;
   job?:    VoiceJob;
   jobs?:   VoiceJob[];
+  stopped?: boolean;
+  error?:  string;
+}
+
+/** One line of a scene (doc 262), as the host reports it. */
+export interface VoiceSceneLine {
+  index:      number;
+  speaker:    number;
+  text:       string;
+  /** Stage directions removed from this line, never spoken. */
+  directions: string[];
+  clone:      string;
+  path:       string | null;
+  seconds:    number | null;
+  takes:      number;
+}
+
+export interface VoiceScene {
+  id:     string;
+  state:  'rendering' | 'done' | 'failed' | 'cancelled';
+  engine: string;
+  language: string;
+  /** Folder holding the line files, scene.json and scene.wav. */
+  dir:    string;
+  lines:  VoiceSceneLine[];
+  linesDone: number;
+  path:   string | null;
+  seconds: number | null;
+  directionsRemoved: number;
+  startedAt:  string;
+  finishedAt: string | null;
+  error:  string | null;
+}
+
+export interface VoiceSceneResult {
+  success: boolean;
+  scene?:  VoiceScene;
+  scenes?: VoiceScene[];
   stopped?: boolean;
   error?:  string;
 }
@@ -597,6 +641,40 @@ export class MnemoWsClient {
   /** Ask a render to stop at its next segment boundary. */
   async voiceCancel(jobId: string): Promise<VoiceJobResult> {
     return await this._rpc<VoiceJobResult>('sdk.voice.cancel', { appId: this.manifest.id, jobId });
+  }
+
+  /** Start a scene (doc 262): `<|speaker:N|>` lines, each speaker cast to a clone. Returns a scene job. */
+  async voiceSceneStart(p: {
+    script:    string;
+    cast:      Record<string, string>;
+    engine?:   string;
+    language?: string;
+    title?:    string;
+  }): Promise<VoiceSceneResult> {
+    const params: Record<string, unknown> = { appId: this.manifest.id, script: p.script, cast: p.cast };
+    if (p.engine   !== undefined) params['engine']   = p.engine;
+    if (p.language !== undefined) params['language'] = p.language;
+    if (p.title    !== undefined) params['title']    = p.title;
+    return await this._rpc<VoiceSceneResult>('sdk.voice.scene.start', params);
+  }
+
+  /** State of one scene, or every scene of the session when no id is given. */
+  async voiceSceneStatus(sceneId?: string): Promise<VoiceSceneResult> {
+    const params: Record<string, unknown> = { appId: this.manifest.id };
+    if (sceneId) params['sceneId'] = sceneId;
+    return await this._rpc<VoiceSceneResult>('sdk.voice.scene.status', params);
+  }
+
+  /** Say one line of a finished scene again; `text` replaces its words. */
+  async voiceSceneRetake(sceneId: string, line: number, text?: string): Promise<VoiceSceneResult> {
+    const params: Record<string, unknown> = { appId: this.manifest.id, sceneId, line };
+    if (text !== undefined) params['text'] = text;
+    return await this._rpc<VoiceSceneResult>('sdk.voice.scene.retake', params);
+  }
+
+  /** Ask a scene to stop at its next line boundary. */
+  async voiceSceneCancel(sceneId: string): Promise<VoiceSceneResult> {
+    return await this._rpc<VoiceSceneResult>('sdk.voice.scene.cancel', { appId: this.manifest.id, sceneId });
   }
 
   /**

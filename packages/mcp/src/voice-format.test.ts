@@ -13,7 +13,7 @@
 
 import { test } from 'node:test';
 import assert    from 'node:assert/strict';
-import { voiceError, renderReport, type VoiceJobLike } from './format.js';
+import { voiceError, renderReport, sceneReport, type VoiceJobLike } from './format.js';
 
 const job = (over: Partial<VoiceJobLike>): VoiceJobLike => ({
   id: 'job-1', state: 'rendering', engine: 'chatterbox', clone: 'default',
@@ -87,6 +87,45 @@ test('each host code gets the one next move that is actually right', () => {
   assert.match(voiceError('SCOPE_DENIED: "voice:speak"'), /MNEMO_VOICE=1/);
   assert.match(voiceError('LICENSE_REQUIRED'), /Nothing to retry/);
   assert.match(voiceError('SCRIPT_TOO_LONG: 30000 characters'), /scenes/);
+});
+
+test('a scene refusal sends the agent to ASK who plays whom, never to fill the gap with the default (doc 262)', () => {
+  const out = voiceError('UNCAST_SPEAKER:1 — give speaker 1 a voice from the library');
+  assert.match(out, /mnemosyne_voice_list/);
+  assert.match(out, /ask the user which voice plays which character/);
+  assert.match(out, /Do NOT give two characters the default voice/);
+  assert.match(voiceError('SCENE_NO_SPEAKER: open each line'), /<\|speaker:N\|>, N from 0 to 15/);
+  assert.match(voiceError('EMPTY_LINE:2 — only stage directions (laughs)'), /never spoken/);
+});
+
+const sceneLine = (index: number, over: Record<string, unknown> = {}) => ({
+  index, speaker: index % 2, clone: index % 2 ? 'narrateur' : 'default', text: 'x',
+  directions: [] as string[], path: `/s/line-00${index}.wav`, takes: 1, ...over,
+});
+
+test('a finished scene lists every line file and names the dropped stage directions', () => {
+  const out = sceneReport({
+    id: 's1', state: 'done', engine: 'qwen3', dir: '/s', path: '/s/scene.wav', seconds: 9.5, directionsRemoved: 1,
+    lines: [sceneLine(1), sceneLine(2, { directions: ['laughs'] })], linesDone: 2,
+  }, 0);
+  assert.match(out, /Scene ready/);
+  assert.match(out, /`\/s\/scene\.wav`/);
+  assert.match(out, /\| 2 \| 0 \| default \| 1 \| `\/s\/line-002\.wav` \|/);
+  assert.match(out, /NOT played[\s\S]*line 2: \[laughs\][\s\S]*Tell the user/);
+});
+
+test('a scene still rendering is reported as still rendering, with the id to poll', () => {
+  const out = sceneReport({ id: 's1', state: 'rendering', lines: [sceneLine(1), sceneLine(2)], linesDone: 1 }, 30);
+  assert.match(out, /Still rendering[\s\S]*1\/2 lines/);
+  assert.match(out, /mnemosyne_voice_scene_status[\s\S]*Do NOT start the scene over/);
+  assert.doesNotMatch(out, /Scene ready/);
+});
+
+test('a failed scene says how many line files survived and where', () => {
+  const out = sceneReport({
+    id: 's1', state: 'failed', dir: '/s', error: 'SAMPLE_RATE_CHANGED: line 2', lines: [sceneLine(1), sceneLine(2)], linesDone: 1,
+  }, 0);
+  assert.match(out, /Scene failed[\s\S]*SAMPLE_RATE_CHANGED[\s\S]*1\/2 line files written in `\/s`/);
 });
 
 test('an unrecognized code is passed through rather than dressed up', () => {

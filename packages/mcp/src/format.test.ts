@@ -17,10 +17,12 @@ import {
   freshnessLine,
   queryRefusal,
   searchFailure,
+  embedStallNote,
   findPosition,
   scoreLabel,
   readCoverage,
   isDesignDoc,
+  namesCode,
   formatQueryRow,
   resonanceLine,
 } from './format.js';
@@ -165,6 +167,48 @@ test('queryRefusal refuses the fallback to recent memories even when it carries 
   assert.match(out, /empty vector/);
 });
 
+test('an EMBED_STALL says the embedder is busy, when to retry, and not to search in parallel', () => {
+  // MCP demo 2026-11-25: four searches at once, four EMBED_STALL, then four retries.
+  const out = queryRefusal(queryResult({
+    chronicles: [chronicle({ id: '1', score: 1 })],
+    _semantic:  { wanted: true, used: false, error: 'EMBED_STALL: the embedder did not answer in time' },
+  }), 'DEMO_TECHNIQUE');
+  assert.ok(out);
+  assert.match(out, /busy/);
+  assert.match(out, /retry in about 30 s/i);
+  assert.match(out, /one at a time/);
+  assert.match(out, /mnemosyne_memory_ask/);
+  // Any other failure keeps the plain wording.
+  const other = queryRefusal(queryResult({
+    chronicles: [chronicle({ id: '1', score: 1 })],
+    _semantic:  { wanted: true, used: false, error: 'modelManager.embed returned empty vector' },
+  }), 'NOTES');
+  assert.doesNotMatch(other ?? '', /busy/);
+});
+
+test('a search the app served by its words while the embedder was busy is shown, and says so', () => {
+  const stalled = queryResult({
+    chronicles: [chronicle({ id: '1', score: 1 })],
+    _semantic:  { wanted: true, used: true, embedStall: true, error: 'EMBED_STALL: busy' },
+  });
+  assert.equal(queryRefusal(stalled, 'DEMO_TECHNIQUE'), null);
+  const note = embedStallNote(stalled);
+  assert.ok(note);
+  assert.match(note, /words alone/);
+  assert.match(note, /retry in about 30 s/i);
+  assert.equal(embedStallNote(queryResult({ _semantic: { wanted: true, used: true } })), null);
+});
+
+test('a words-only search that matched nothing during a stall is not "the vault holds nothing"', () => {
+  const out = queryRefusal(queryResult({
+    chronicles: [],
+    _semantic:  { wanted: true, used: true, embedStall: true, error: 'EMBED_STALL: busy' },
+  }), 'DEMO_TECHNIQUE');
+  assert.ok(out);
+  assert.match(out, /busy/);
+  assert.doesNotMatch(out, /The search ran and matched nothing/);
+});
+
 test('queryRefusal treats an app that sends no _semantic as a real search', () => {
   // Absent is not false: an older app cannot say, so its rows are shown.
   assert.equal(queryRefusal(queryResult({}), 'NOTES'), null);
@@ -239,20 +283,43 @@ test('readCoverage counts the admitted rows, and ignores per-row verdicts that d
 
 // ── isDesignDoc ────────────────────────────────────────────────────────────────
 
+// A section of an architecture doc as DocWatch stores it (split at headings).
+const ARCH_SECTION = '## 3. The ranker\n\n`fuseRanks()` in `packages/core-engine/src/retrieval/rank-fusion.ts` merges the two channels.';
+// Excerpts of the demo vaults of 2026-11-25 (fictional company documents).
+const CONTRACT = '## Article 4 : Prix et révision\n\nLes prix de la grille tarifaire 2026 sont fermes jusqu\'au 31 décembre 2026. Toute révision est notifiée par écrit avec un préavis de 60 jours.';
+const PROCEDURE = '## 2. Consignation\n\n1. Couper le sectionneur Q1 du compresseur C12.\n2. Poser le cadenas personnel et l\'étiquette « Ne pas manœuvrer ».\n3. Vérifier l\'absence de tension (VAT) avant toute intervention.';
+
 test('isDesignDoc: an agent\'s own NOTE is not a design doc, a NOTE read from a file is', () => {
   // NOTE is the ingest tool's default spine; CORE is what an agent's ingest is stored as.
-  assert.equal(isDesignDoc('NOTE', 'CORE'), false);
-  assert.equal(isDesignDoc('NOTE', 'DOCWATCH'), true);
-  assert.equal(isDesignDoc('note', 'docwatch'), true);
-  assert.equal(isDesignDoc('NOTE', undefined), false);
+  assert.equal(isDesignDoc('NOTE', 'CORE', ARCH_SECTION), false);
+  assert.equal(isDesignDoc('NOTE', 'DOCWATCH', ARCH_SECTION), true);
+  assert.equal(isDesignDoc('note', 'docwatch', ARCH_SECTION), true);
+  assert.equal(isDesignDoc('NOTE', undefined, ARCH_SECTION), false);
 });
 
 test('isDesignDoc: the other design spines are flagged whatever their source, the rest never', () => {
-  assert.equal(isDesignDoc('DOCUMENT', 'CORE'), true);
-  assert.equal(isDesignDoc('VISION', 'DOCWATCH'), true);
-  assert.equal(isDesignDoc('HYPOTHESIS', undefined), true);
-  assert.equal(isDesignDoc('DECISION', 'DOCWATCH'), false);
-  assert.equal(isDesignDoc(undefined, 'DOCWATCH'), false);
+  assert.equal(isDesignDoc('DOCUMENT', 'CORE', ARCH_SECTION), true);
+  assert.equal(isDesignDoc('VISION', 'DOCWATCH', ARCH_SECTION), true);
+  assert.equal(isDesignDoc('HYPOTHESIS', undefined, ARCH_SECTION), true);
+  assert.equal(isDesignDoc('DECISION', 'DOCWATCH', ARCH_SECTION), false);
+  assert.equal(isDesignDoc(undefined, 'DOCWATCH', ARCH_SECTION), false);
+});
+
+test('isDesignDoc: a business document read from a file names no code, so it carries no warning', () => {
+  for (const body of [CONTRACT, PROCEDURE]) {
+    assert.equal(isDesignDoc('NOTE', 'DOCWATCH', body), false, body);
+    assert.equal(isDesignDoc('DOCUMENT', 'DOCWATCH', body), false, body);
+  }
+});
+
+test('namesCode: each strong sign of code counts, business words never', () => {
+  for (const code of ['see `ranker`', 'in index.ts', 'under packages/mcp', 'call fuse()', 'Vault::open']) {
+    assert.equal(namesCode(code), true, code);
+  }
+  // Brand CamelCase and document extensions appear in any company file.
+  for (const plain of ['Signed with DocuSign, sent as PowerPoint', 'see contrat-cadre.pdf and grille.xlsx', 'CR-rdv-Orbel-2026-11-05.md', CONTRACT, PROCEDURE]) {
+    assert.equal(namesCode(plain), false, plain);
+  }
 });
 
 // ── formatQueryRow ─────────────────────────────────────────────────────────────
@@ -260,11 +327,25 @@ test('isDesignDoc: the other design spines are flagged whatever their source, th
 const WARNING = /Design\/vision doc: verify/;
 const row = (over: Partial<MnemoChronicle>, notAdmitted = false): string =>
   formatQueryRow(chronicle({ content: JSON.stringify({ raw: 'My validation drink is lapsang-93807.' }), ...over }), 0, { maxContentChars: 600, notAdmitted });
+const arch = JSON.stringify({ raw: ARCH_SECTION });
 
-test('formatQueryRow warns on a NOTE read from a file, never on an agent\'s own NOTE', () => {
-  assert.doesNotMatch(row({ spineType: 'NOTE', source_app_id: 'CORE' }), WARNING);
-  assert.match(row({ spineType: 'NOTE', source_app_id: 'DOCWATCH' }), WARNING);
-  assert.match(row({ spineType: 'DOCUMENT', source_app_id: 'CORE' }), WARNING);
+test('formatQueryRow warns on a design doc read from a file, never on an agent\'s own NOTE', () => {
+  assert.doesNotMatch(row({ spineType: 'NOTE', source_app_id: 'CORE', content: arch }), WARNING);
+  assert.match(row({ spineType: 'NOTE', source_app_id: 'DOCWATCH', content: arch }), WARNING);
+  assert.match(row({ spineType: 'DOCUMENT', source_app_id: 'CORE', content: arch }), WARNING);
+});
+
+test('formatQueryRow does not warn on a contract or a procedure read from a file', () => {
+  for (const raw of [CONTRACT, PROCEDURE]) {
+    assert.doesNotMatch(row({ spineType: 'NOTE', source_app_id: 'DOCWATCH', content: JSON.stringify({ raw }) }), WARNING, raw);
+  }
+});
+
+test('formatQueryRow judges the whole body, not the snippet it prints', () => {
+  // The code sign sits past the cut: the warning must not depend on max_content_chars.
+  const late = JSON.stringify({ raw: 'Prose. '.repeat(40) + 'Then `fuseRanks()`.' });
+  const cut = formatQueryRow(chronicle({ spineType: 'NOTE', source_app_id: 'DOCWATCH', content: late }), 0, { maxContentChars: 50 });
+  assert.match(cut, WARNING);
 });
 
 test('formatQueryRow prints a date only when the stored time can be read', () => {

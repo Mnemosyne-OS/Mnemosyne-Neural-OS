@@ -54,6 +54,19 @@ export function toVaultToken(raw: string): string {
   return segment.toUpperCase().replace(/[-\s]/g, '_');
 }
 
+/**
+ * Every demo vault's token starts with this (doc 149 §21): disposable vaults
+ * an agent sets up for a demo with the `vault.demoCreate` action.
+ */
+export const DEMO_TOKEN_PREFIX = 'DEMO_';
+
+/**
+ * The scope that lets this server READ any demo vault without listing it in
+ * MNEMO_VAULTS. The HOST grants it per call, and only for a vault that carries
+ * the demo marker: a real vault someone named DEMO_X stays behind its own scope.
+ */
+export const DEMO_READ_SCOPE = 'vault:demo:read';
+
 export type VaultResolution =
   | { ok: true;  vault: string }
   | { ok: false; error: string };
@@ -236,6 +249,8 @@ export function resolveVaultTarget(
   declared: readonly string[],
   fallback: string,
   present?: readonly string[] | null,
+  /** A READ may name a demo vault outside the list; the host checks the marker (doc 149 §21). Never a write. */
+  opts: { demoRead?: boolean } = {},
 ): VaultResolution {
   const requested = (raw ?? '').trim();
   if (!requested) return { ok: true, vault: fallback };
@@ -252,6 +267,12 @@ export function resolveVaultTarget(
 
   for (const candidate of [token, plain]) {
     if (candidate && known.has(candidate)) return { ok: true, vault: candidate };
+  }
+
+  // A demo vault is reachable for READS without a MNEMO_VAULTS entry: the host
+  // answers SCOPE_DENIED for any DEMO_ name that is not a real demo vault.
+  if (opts.demoRead && token.startsWith(DEMO_TOKEN_PREFIX) && token.length > DEMO_TOKEN_PREFIX.length) {
+    return { ok: true, vault: token };
   }
 
   return {

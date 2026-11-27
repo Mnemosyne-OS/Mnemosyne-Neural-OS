@@ -41,6 +41,8 @@ export const TOOL_RPC: Readonly<Record<string, readonly string[]>> = {
   mnemosyne_voice_list:        ['sdk.voice.engines'],
   mnemosyne_voice_speak:       ['sdk.voice.speak'],
   mnemosyne_voice_status:      ['sdk.voice.status', 'sdk.voice.cancel'],
+  mnemosyne_voice_scene:       ['sdk.voice.scene.start', 'sdk.voice.scene.retake', 'sdk.voice.scene.status'],
+  mnemosyne_voice_scene_status: ['sdk.voice.scene.status', 'sdk.voice.scene.cancel'],
   mnemosyne_todo_add:          ['sdk.todo.add'],
   mnemosyne_todo_list:         ['sdk.todo.read'],
   mnemosyne_todo_update:       ['sdk.todo.read', 'sdk.todo.apply'],

@@ -62,6 +62,18 @@ test('resolveVaultTarget falls back to the deployment default when empty', () =>
   assert.deepEqual(resolveVaultTarget('',        DECLARED, 'DEVELOPPEMENT'), { ok: true, vault: 'DEVELOPPEMENT' });
 });
 
+test('a READ may name a demo vault outside MNEMO_VAULTS; the host checks the marker (doc 149 §21)', () => {
+  const read = { demoRead: true };
+  assert.deepEqual(resolveVaultTarget('DEMO_TECHNIQUE', DECLARED, 'DEVELOPPEMENT', undefined, read), { ok: true, vault: 'DEMO_TECHNIQUE' });
+  assert.deepEqual(resolveVaultTarget('demo-rh', DECLARED, 'DEVELOPPEMENT', undefined, read), { ok: true, vault: 'DEMO_RH' });
+  // A write never: ingest into a demo vault stays refused here.
+  assert.equal(resolveVaultTarget('DEMO_TECHNIQUE', DECLARED, 'DEVELOPPEMENT').ok, false);
+  assert.equal(resolveVaultTarget('DEMO_TECHNIQUE', DECLARED, 'DEVELOPPEMENT', undefined, { demoRead: false }).ok, false);
+  // The prefix alone is not a vault, and a vault outside the list that is not DEMO_ stays refused.
+  assert.equal(resolveVaultTarget('DEMO_', DECLARED, 'DEVELOPPEMENT', undefined, read).ok, false);
+  assert.equal(resolveVaultTarget('JOURNAL', DECLARED, 'DEVELOPPEMENT', undefined, read).ok, false);
+});
+
 test('resolveVaultTarget honours a declared token that carries a hyphen', () => {
   // Underscore-aliasing must not HIDE a vault the deployment declared verbatim.
   const declared = ['DEV', 'MY-VAULT'];

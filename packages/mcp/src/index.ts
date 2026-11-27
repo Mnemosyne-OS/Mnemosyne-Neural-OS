@@ -38,14 +38,14 @@ import {
 // supported` (tsup-bundled ws calls __require2() at module load time). The MCP
 // must boot under plain `node dist/index.js` because that's how Claude Desktop
 // and Claude Code launch it. We talk the same wire protocol via a local client.
-import { BackendRefusedError, MnemoWsClient, type VoiceJob } from './ws-client.js';
-import { unwrapContent, selectResonances, toResonanceView, resonanceLine, voiceError, renderReport, freshnessLine, queryRefusal, searchFailure, findPosition, readCoverage, formatQueryRow } from './format.js';
+import { BackendRefusedError, MnemoWsClient, type VoiceJob, type VoiceScene } from './ws-client.js';
+import { unwrapContent, selectResonances, toResonanceView, resonanceLine, voiceError, renderReport, sceneReport,freshnessLine, queryRefusal, searchFailure, embedStallNote, findPosition, readCoverage, formatQueryRow } from './format.js';
 import { localStamp, parseStoredTime, LOCAL_TIME_NOTE } from './local-time.js';
 import { renderCovenant } from './covenant.js';
 import { renderVaultList } from './vault-list.js';
 import { formatDreamBridges } from './dream-bridges-format.js';
 import { recordCall } from './usage.js';
-import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget, vaultGrant, vaultForHostDefault } from './vault-target.js';
+import { toVaultToken, resolveVaultTarget, refuseUndeclaredWriteTarget, vaultGrant, vaultForHostDefault, DEMO_READ_SCOPE } from './vault-target.js';
 import { AGENT_TOOLS, handleAgentTool, sessionsRoots } from './agents.js';
 import { MAC_UPDATE_TOOLS, handleMacUpdateTool } from './mac-update.js';
 import { annotated } from './annotations.js';
@@ -165,11 +165,13 @@ async function targetVault(
     return { refusal: refuseUndeclaredWriteTarget(DECLARED_VAULTS, await measureVaults(client)) };
   }
 
-  const r = resolveVaultTarget(requested, DECLARED_VAULTS, DEFAULT_VAULT);
+  // Reads may name a demo vault outside MNEMO_VAULTS (doc 149 §21); writes never.
+  const demo = { demoRead: intent === 'read' };
+  const r = resolveVaultTarget(requested, DECLARED_VAULTS, DEFAULT_VAULT, undefined, demo);
   if (r.ok) return { vault: r.vault };
 
   const present = await measureVaults(client);
-  const measured = resolveVaultTarget(requested, DECLARED_VAULTS, DEFAULT_VAULT, present);
+  const measured = resolveVaultTarget(requested, DECLARED_VAULTS, DEFAULT_VAULT, present, demo);
   return { refusal: measured.ok ? r.error : measured.error };
 }
 
@@ -238,6 +240,25 @@ async function waitForRender(
   return job;
 }
 
+/** {@link waitForRender} for a scene (doc 262): same widening poll, same rule, a scene still going comes back as still going. */
+async function waitForScene(
+  client: MnemoWsClient,
+  started: VoiceScene,
+  waitSeconds: number,
+): Promise<VoiceScene> {
+  const deadline = Date.now() + waitSeconds * 1000;
+  let scene = started;
+  let interval = 1_000;
+  while (scene.state === 'rendering' && Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, Math.min(interval, Math.max(0, deadline - Date.now()))));
+    interval = Math.min(interval * 1.4, 8_000);
+    const r = await client.voiceSceneStatus(scene.id);
+    if (r.success && r.scene) scene = r.scene;
+    else break;
+  }
+  return scene;
+}
+
 /**
  * The `mnemosyne-review-wait` command that ships next to this server (doc 196
  * §15), quoted for a shell, or undefined when this build has none (run from
@@ -271,6 +292,10 @@ const MCP_MANIFEST = {
   // the server returns SCOPE_DENIED on queries against unlisted vaults.
   scopes:          [
     ...DECLARED_VAULTS.flatMap(v => [`vault:read:${v}`, `vault:write:${v}`]),
+    // Demo vaults an agent set up with vault.demoCreate (doc 149 §21): READ only,
+    // whatever MNEMO_VAULTS says. The host grants a call only for a vault that
+    // carries the demo marker, so this reaches no real vault.
+    DEMO_READ_SCOPE,
     'monorepo:read', 'agents:read',
     // [v1.2] Read-only introspection: Dream State bridges.
     'bridge:read',
@@ -365,7 +390,7 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Vault TOKEN to search, case-insensitive. A token is the folder name uppercased, with spaces and hyphens as underscores. This deployment's default is "${DEFAULT_VAULT}". It is also scoped for: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. That list is configuration rather than a census, so call mnemosyne_vault_list to see which of them exist on this machine. Anything outside the list is refused.`,
+          description: `Vault TOKEN to search, case-insensitive. A token is the folder name uppercased, with spaces and hyphens as underscores. This deployment's default is "${DEFAULT_VAULT}". It is also scoped for: ${DECLARED_VAULTS.filter(v => v !== DEFAULT_VAULT).join(', ') || '(none)'}. That list is configuration rather than a census, so call mnemosyne_vault_list to see which of them exist on this machine. Anything outside the list is refused, except a demo vault (DEMO_ token, made with the vault.demoCreate action), which is readable here.`,
           default:     DEFAULT_VAULT,
         },
         spine_type_filter: {
@@ -394,7 +419,7 @@ const TOOLS = [
         },
         vault: {
           type:        'string',
-          description: `Vault to reason over, case-insensitive. Default for this deployment: "${DEFAULT_VAULT}". A vault this server is not scoped for is refused.`,
+          description: `Vault to reason over, case-insensitive. Default for this deployment: "${DEFAULT_VAULT}". A vault this server is not scoped for is refused, except a demo vault (DEMO_ token), which is readable.`,
           default:     DEFAULT_VAULT,
         },
       },
@@ -1043,7 +1068,10 @@ const TOOLS = [
 // ── Voice tools — present only when MNEMO_VOICE=1 (see VOICE_ENABLED) ─────────
 
 /** Tools whose thrown host errors get the voice guidance instead of a raw code. */
-const VOICE_TOOL_NAMES = new Set(['mnemosyne_voice_list', 'mnemosyne_voice_speak', 'mnemosyne_voice_status']);
+const VOICE_TOOL_NAMES = new Set([
+  'mnemosyne_voice_list', 'mnemosyne_voice_speak', 'mnemosyne_voice_status',
+  'mnemosyne_voice_scene', 'mnemosyne_voice_scene_status',
+]);
 
 const VOICE_TOOLS = [
   {
@@ -1103,6 +1131,71 @@ const VOICE_TOOLS = [
         cancel: {
           type:        'boolean',
           description: 'Stop this render instead of reporting on it.',
+          default:     false,
+        },
+      },
+    },
+  },
+  {
+    name:        'mnemosyne_voice_scene',
+    description: 'Render a scene with several characters, each in its own local voice: a dialogue, a sketch, a radio drama. Write the script with one tag per line, the way Fish Audio Drama 3 reads it: "<|speaker:0|> Bonjour. <|speaker:1|> Salut !" (speakers 0 to 15). Give `cast`, which maps every speaker number to a clone name from mnemosyne_voice_list. A speaker with no voice is refused, never given the default. The host writes one WAV per line, scene.json and the assembled scene.wav, and returns the paths.\n\nStage directions such as [laughs] or [sighs] are REMOVED and reported, never spoken: no local engine plays them. Tell the user which ones were dropped.\n\nTo say ONE line again, call this tool with `scene_id` and `line` (1-based), plus `text` to change its words. The other lines are not re-rendered. Same voice as before; the same tone is not guaranteed.\n\nThis is a job like mnemosyne_voice_speak: it waits up to wait_seconds, then returns a scene id to poll with mnemosyne_voice_scene_status. Never start a scene over.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        script: {
+          type:        'string',
+          description: 'The scene, every line opening with <|speaker:N|>. Written for the EAR, like mnemosyne_voice_speak. Required to start a scene; omit for a retake.',
+        },
+        cast: {
+          type:        'object',
+          description: 'Speaker number → clone name, e.g. {"0": "default", "1": "narrateur"}. Every speaker of the script needs one. Ask the user who plays whom; do NOT guess.',
+          additionalProperties: { type: 'string' },
+        },
+        engine: {
+          type:        'string',
+          description: 'A cloning engine: "qwen3", "chatterbox" or "zonos". Omit to let the host pick. "piper" is refused (it cannot clone).',
+        },
+        language: {
+          type:        'string',
+          description: 'Short language code ("fr", "en", "es"…). Default: "fr".',
+        },
+        title: {
+          type:        'string',
+          description: 'Short label for the scene folder, so a human recognises it later.',
+        },
+        scene_id: {
+          type:        'string',
+          description: 'Retake: the scene id of a finished scene.',
+        },
+        line: {
+          type:        'number',
+          description: 'Retake: the 1-based number of the line to say again.',
+        },
+        text: {
+          type:        'string',
+          description: 'Retake: new words for that line. Omit to say the same words again.',
+        },
+        wait_seconds: {
+          type:        'number',
+          description: 'How long to wait before returning a scene id to poll (default: 60, max: 240).',
+          default:     60,
+        },
+      },
+    },
+  },
+  {
+    name:        'mnemosyne_voice_scene_status',
+    description: 'Check a scene started by mnemosyne_voice_scene: lines done and, once finished, the folder, every line file and scene.wav. Call it with no scene id to list the scenes of this session. A scene can also be stopped here, at the next line boundary, and then no scene.wav is written.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scene_id: {
+          type:        'string',
+          description: 'The scene id returned by mnemosyne_voice_scene. Omit to list every scene.',
+        },
+        cancel: {
+          type:        'boolean',
+          description: 'Stop this scene instead of reporting on it.',
           default:     false,
         },
       },
@@ -1397,7 +1490,10 @@ class MnemoMcpServer {
         const filterLine = spineTypeFilter?.length
           ? `\nFilter: spineType ∈ {${spineTypeFilter.join(', ')}}` : '';
         const coverageLine = coverage ? `\n${coverage.summary}` : '';
-        return text(`# Mnemosyne Query: "${query}"\n\n${result.chronicles.length} result(s) · snippet=${maxContentChars}c${filterLine}${coverageLine}\n${LOCAL_TIME_NOTE}\n\n${formatted}`);
+        // [EMBED-STALL] Ranked by their words alone: say it above the rows.
+        const stall = embedStallNote(result);
+        const stallLine = stall ? `\n⚠️ ${stall}` : '';
+        return text(`# Mnemosyne Query: "${query}"\n\n${result.chronicles.length} result(s) · snippet=${maxContentChars}c${filterLine}${coverageLine}${stallLine}\n${LOCAL_TIME_NOTE}\n\n${formatted}`);
       }
 
       // ── mnemosyne_memory_ask ────────────────────────────────────────────────────────
@@ -1785,6 +1881,54 @@ class MnemoMcpServer {
         if (!jobs.length) return text('No voice render in this session.');
         return text(`# Voice renders (${jobs.length})\n\n` + jobs.map((j) =>
           `- \`${j.id}\`: **${j.state}** · ${j.segmentsDone}/${j.segments} segments · ${j.path ?? 'no file'}`
+        ).join('\n'));
+      }
+
+      case 'mnemosyne_voice_scene': {
+        const waitSeconds = Math.min(240, Math.max(0, Number(args['wait_seconds'] ?? 60)));
+        const sceneId = args['scene_id'] !== undefined ? String(args['scene_id']) : '';
+        if (sceneId) {
+          // A retake: one line said again, the rest of the scene untouched.
+          const line = Number(args['line']);
+          if (!Number.isInteger(line) || line < 1) return text('A retake needs `line`, the 1-based number of the line to say again.');
+          const r = await client.voiceSceneRetake(sceneId, line, args['text'] !== undefined ? String(args['text']) : undefined);
+          if (!r.success || !r.scene) return text(voiceError(r.error));
+          return text(sceneReport(await waitForScene(client, r.scene, waitSeconds), waitSeconds));
+        }
+        const script = String(args['script'] ?? '');
+        if (!script.trim()) return text('Nothing to speak: `script` is empty. To retake a line, give `scene_id` and `line`.');
+        const cast = args['cast'];
+        if (!cast || typeof cast !== 'object' || Array.isArray(cast)) {
+          return text(voiceError('MISSING_CAST: give `cast`, e.g. {"0": "default", "1": "narrateur"}'));
+        }
+        const started = await client.voiceSceneStart({
+          script,
+          cast:     cast as Record<string, string>,
+          engine:   args['engine']   !== undefined ? String(args['engine'])   : undefined,
+          language: args['language'] !== undefined ? String(args['language']) : undefined,
+          title:    args['title']    !== undefined ? String(args['title'])    : undefined,
+        });
+        if (!started.success || !started.scene) return text(voiceError(started.error));
+        return text(sceneReport(await waitForScene(client, started.scene, waitSeconds), waitSeconds));
+      }
+
+      case 'mnemosyne_voice_scene_status': {
+        const sceneId = args['scene_id'] !== undefined ? String(args['scene_id']) : '';
+        if (args['cancel'] === true) {
+          if (!sceneId) return text('Give a `scene_id` to cancel.');
+          const r = await client.voiceSceneCancel(sceneId);
+          if (!r.success) return text(voiceError(r.error));
+          return text(r.stopped
+            ? `Scene \`${sceneId}\` will stop at the next line boundary. No scene.wav will be written.`
+            : `Scene \`${sceneId}\` was not running, nothing to stop.`);
+        }
+        const r = await client.voiceSceneStatus(sceneId || undefined);
+        if (!r.success) return text(voiceError(r.error));
+        if (r.scene) return text(sceneReport(r.scene, 0));
+        const scenes = r.scenes ?? [];
+        if (!scenes.length) return text('No voice scene in this session.');
+        return text(`# Voice scenes (${scenes.length})\n\n` + scenes.map((s) =>
+          `- \`${s.id}\`: **${s.state}** · ${s.linesDone}/${s.lines.length} lines · ${s.path ?? 'no scene.wav'}`
         ).join('\n'));
       }
 
