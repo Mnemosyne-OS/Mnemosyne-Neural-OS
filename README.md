@@ -21,7 +21,7 @@
 
 <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4"><img src="assets/teaser-v2-harness.gif" width="360" alt="Irina, the assistant, made of particles: curiosity is a lovely flaw, but she is still working on her harnesses. Follow Mnemosyne OS for version 2. Her agenda pops open on Friday, 9:00, Build Release 2.0. Oops, you didn't see that. The screen switches off." /></a>
 <br/>
-<em>v2.3.0 · Your Conversations is out: bring your ChatGPT, Claude and Gemini conversations home. Irina still works on her harnesses · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4">watch with sound</a></em>
+<em>v2.4.0 · Every Language is out: ask in one language, find your documents in another. Irina still works on her harnesses · <a href="https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/blob/main/assets/teaser-v2-harness.mp4">watch with sound</a></em>
 
 <br/>
 
@@ -40,7 +40,7 @@
 [![Mnemosyne OS Benchmark](https://img.shields.io/badge/LongMemEval--M-77.1%25_on_holdout_questions_·_verifiable-33ffd6?style=flat-square)](https://github.com/Mnemosyne-OS/MnemosyneOS---benchmarks/tree/main/longmemeval-rerun-2026-10)
 ![License](https://img.shields.io/badge/license-open--core-8b5cf6)
 ![Interface languages](https://img.shields.io/badge/interface-7_languages-a98bff)
-[![version](https://img.shields.io/badge/version-v2.3.0--infinity-f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
+[![version](https://img.shields.io/badge/version-v2.4.0--infinity-f59e0b)](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases)
 
 <br/><br/>
 
@@ -76,14 +76,14 @@ gh attestation verify Mnemosyne-OS-Infinity-Setup-x64.exe -R Mnemosyne-OS/Mnemos
 ---
 
 > [!IMPORTANT]
-> **💬 New in 2.3.0 · Your Conversations.** Import your ChatGPT, Claude and Gemini conversations:
-> drop the export file on the desktop, read each conversation, then keep it in its own vault.
-> A menu that reacts under the pointer (Magnify or Elastic) and three new icon packs.
-> A command palette in the title bar, where you set your keyboard shortcuts.
-> Choose the stable or the beta update channel in Settings › About.
-> **Known issue on macOS:** Piper voices do not work yet. A fix is coming soon.
+> **🌍 New in 2.4.0 · Every Language.** Search in all your languages: ask in English,
+> and Mnemosyne OS also finds the document written in French or Spanish.
+> A new search engine written in Rust is faster in large vaults.
+> The list of Whisper dictation models follows your graphics card.
+> A local model starts even when the graphics card is full, on llama.cpp v1.1.0.
+> **Piper voices now speak on macOS.**
 >
-> **[→ The release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.3.0-infinity)** · [Connect your coding agent](https://mnemosyne-os.io/mcp)
+> **[→ The release notes](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.4.0-infinity)** · [Connect your coding agent](https://mnemosyne-os.io/mcp)
 
 <div align="center">
 <a href="https://mnemosyne-os.io/hermes"><img src="https://raw.githubusercontent.com/Mnemosyne-OS/MnemoHermes/main/docs/tour.gif" width="80%" alt="The MnemoHermes cockpit opening from the Mnemosyne OS dock, then its Tasks, Agents, Tools, Skills, Memory inbox and Settings tabs" /></a>
@@ -693,7 +693,7 @@ bound to the founder's research identity, ORCID
 ## Roadmap
 
 ### Shipped
-- [x] 🚀 **Infinity Edition, 32 public releases**, now at [**v2.3.0 · Your Conversations**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.3.0-infinity)
+- [x] 🚀 **Infinity Edition, 33 public releases**, now at [**v2.4.0 · Every Language**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.4.0-infinity)
 - [x] 🖼️ **Theia, image memory and visual recall**: Mnemosyne's sister engine (named for the Titaness of sight) gives every vault an eye: your images are embedded **locally** (SigLIP 2, no cloud, no API), recall answers with thumbnails under the reply, and a living gallery shows them with categories the engine discovers on its own: categories you can rate, correct, rename or teach, because the human's word always outranks the model's guess. Off by default; one Settings toggle installs, downloads pinned weights and indexes.
 - [x] 🕸️ **Synaptic P2P** (beta, since v1.5.0): two installs connect directly over libp2p, with no cloud relay. Give someone a vault to read, send mail between installs, keep one vault together, and give each of your machines a role
 - [x] 📚 **Memory cartridges**: public knowledge fetched from its official source into your memory, starting with laws, medicine, science, world history, known vulnerabilities and trademarks
@@ -736,6 +736,7 @@ A new build ships most weeks. Windows builds are **code-signed** (Certum OV, RFC
 
 | Date | Release | In one line |
 |------|---------|-------------|
+| **Nov 27, 2026** | [**v2.4.0 · Every Language**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.4.0-infinity) | **Search in all your languages**: ask in English, find a French or Spanish document. A **search engine written in Rust** for large vaults. Whisper models ranked for your graphics card. Local models on **llama.cpp v1.1.0**, and they start on a full card. **Piper voices speak on macOS.** Windows, macOS and Linux. |
 | **Nov 20, 2026** | [**v2.3.0 · Your Conversations**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.3.0-infinity) | **Import your ChatGPT, Claude and Gemini conversations** from their export file, each one kept in its own vault. A menu that reacts under the pointer, three new icon packs, a **command palette** in the title bar. Choose the stable or the beta update channel. On macOS, Piper voices do not work yet: a fix is coming. Windows, macOS and Linux. |
 | **Nov 14, 2026** | [**v2.2.1 · Stronger Backups**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.2.1-infinity) | **Automatic, encrypted backup** to the folder of your choice, keys included. **Screen captures for your coding assistant** (Ctrl+Shift+Alt+S). Install a voice model from Hugging Face with « Use this model ». **The Mac app is signed and notarized by Apple**: Keychain access is asked once, then no more at updates. Windows, macOS and Linux. |
 | **Nov 9, 2026** | [**v2.2.0 · The Sentinel**](https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS/releases/tag/v2.2.0-infinity) | **Sentinel gets a face**: your avatar watches the locked screen on every display, unlock by code, Windows Hello or Touch ID. **Settings › Harness** shows what your AI receives on each turn. Git repos are sorted into docs, code and history vaults before they are read. Compatible with **graphify** (a Code graph window). Hermes Agent 0.23 with the Mnemosyne OS plugin. In test: a local decision model checks the orb's voice commands. |
